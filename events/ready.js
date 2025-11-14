@@ -2,6 +2,7 @@ const { ActivityType } = require('discord.js');
 const { botStatusCollection } = require('../mongodb');
 const colors = require('../UI/colors/colors');
 const config = require('../config');
+const TrackHandler = require('../handlers/trackHandler');
 
 module.exports = {
     name: 'clientReady',
@@ -149,6 +150,12 @@ module.exports = {
        
         checkAndUpdateInterval();
 
+        // Initialize server tracking
+        const trackHandler = new TrackHandler(client);
+        client.trackHandler = trackHandler;
+        await trackHandler.initialize();
+
         console.log('\x1b[31m[ CORE ]\x1b[0m \x1b[32m%s\x1b[0m', 'Bot Activity Cycle Running ✅');
+        console.log('\x1b[31m[ TRACK ]\x1b[0m \x1b[32m%s\x1b[0m', 'Server Tracking System Initialized ✅');
     }
 };
