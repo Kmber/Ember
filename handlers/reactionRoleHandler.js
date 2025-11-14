@@ -113,7 +113,7 @@ const {
         .setRequired(true)
         .setPlaceholder('Choose your roles!')
         .setValue('Choose your roles!');
-  
+
       const colorInput = new TextInputBuilder()
         .setCustomId('color')
         .setLabel('Embed Color (Hex)')
@@ -122,10 +122,18 @@ const {
         .setRequired(false)
         .setPlaceholder('#6366f1')
         .setValue('#6366f1');
-  
+
+      const imageInput = new TextInputBuilder()
+        .setCustomId('image')
+        .setLabel('Embed Image URL (optional)')
+        .setStyle(TextInputStyle.Short)
+        .setRequired(false)
+        .setPlaceholder('https://example.com/image.png');
+
       modal.addComponents(
         new ActionRowBuilder().addComponents(titleInput),
-        new ActionRowBuilder().addComponents(colorInput)
+        new ActionRowBuilder().addComponents(colorInput),
+        new ActionRowBuilder().addComponents(imageInput)
       );
   
       await interaction.showModal(modal);
@@ -142,9 +150,11 @@ const {
   
       const title = interaction.fields.getTextInputValue('title');
       const color = interaction.fields.getTextInputValue('color') || '#6366f1';
-  
+      const image = interaction.fields.getTextInputValue('image') || null;
+
       setup.title = title;
       setup.color = color;
+      setup.image = image;
       await setup.save();
   
       await this.updateSetupMessage(setup);
@@ -422,6 +432,7 @@ const {
         .setTitle(setup.title || 'Reaction Role Setup')
         .setDescription(setup.description || 'Setup in progress...')
         .setColor(setup.color || '#6366f1')
+        .setImage(setup.image)
         .setFooter({
           text: `Setup ID: ${setup.setupId} • ${setup.roles.length}/5 roles • Type: ${setup.type || 'Not set'}`,
           iconURL: message.guild.iconURL()
@@ -513,6 +524,7 @@ const {
         .setTitle(setup.title)
         .setDescription(setup.description)
         .setColor(setup.color)
+        .setImage(setup.image)
         .setFooter({
           text: `React with the ${setup.type} below to get your roles!`,
           iconURL: interaction.guild.iconURL()

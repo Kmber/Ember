@@ -45,6 +45,11 @@ const reactionRoleSchema = new mongoose.Schema({
     type: String,
     default: '#6366f1'
   },
+
+  image: {
+    type: String,
+    default: null
+  },
   
   // FIXED: Allow empty during setup
   type: {
