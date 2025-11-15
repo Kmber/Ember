@@ -7,17 +7,18 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 
+const GIFT_MINIMUM = 10;
+const GIFT_MAXIMUM = 1000000;
+const GIFT_TAX_RATE = 0.02;
+
 module.exports = {
-    name: 'donate',
+    name: 'gift',
     aliases: ['give', 'transfer'],
-    description: 'Donate money to another user with v2 components',
-    usage: '!donate @user <amount>',
+    description: 'Bestow a gift of Embers upon another denizen of the realm.',
+    usage: '!gift @user <amount>',
     cooldown: 5000,
     async execute(message, args) {
         try {
-
-
-            
             if (args.length < 2) {
                 const components = [];
 
@@ -26,7 +27,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Command Usage\n## MISSING REQUIRED PARAMETERS\n\n> **Correct Usage:** \`!donate @user <amount>\`\n> **Example:** \`!donate @friend 1000\`\n> **Donate All:** \`!donate @friend all\``)
+                        .setContent(`# ❌ Invalid Command Usage\n## A GIFT REQUIRES A RECIPIENT AND AN AMOUNT\n\n> **Correct Usage:** \`!gift @user <amount>\`\n> **Example:** \`!gift @friend 1000\`\n> **Gift All:** \`!gift @friend all\``)
                 );
 
                 components.push(usageContainer);
@@ -37,7 +38,6 @@ module.exports = {
                 });
             }
 
-         
             const target = message.mentions.users.first();
             if (!target) {
                 const components = [];
@@ -47,7 +47,7 @@ module.exports = {
 
                 noUserContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ No User Mentioned\n## RECIPIENT REQUIRED\n\n> You need to mention a valid user to donate to!\n> **Example:** \`!donate @friend 500\`\n\n**💡 Tip:** Make sure to use @ to mention the user properly.`)
+                        .setContent(`# ❌ No Recipient Mentioned\n## A GIFT MUST HAVE A DESTINATION\n\n> You must mention a valid denizen of the realm to bestow a gift upon!\n> **Example:** \`!gift @friend 500\`\n\n**💡 Tip:** Use the @ symbol to mention the user correctly.`)
                 );
 
                 components.push(noUserContainer);
@@ -61,15 +61,15 @@ module.exports = {
             if (target.id === message.author.id) {
                 const components = [];
 
-                const selfDonateContainer = new ContainerBuilder()
+                const selfGiftContainer = new ContainerBuilder()
                     .setAccentColor(0xF39C12);
 
-                selfDonateContainer.addTextDisplayComponents(
+                selfGiftContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Self-Donation Not Allowed\n## CANNOT DONATE TO YOURSELF\n\n> Nice try, but you cannot donate to yourself!\n> Find a friend to share your wealth with instead.`)
+                        .setContent(`# 🚫 A Gift to Oneself?\n## SUCH ACTS ARE FORBIDDEN\n\n> A noble gesture, but you cannot bestow a gift upon yourself!\n> Share your fortune with another soul in the realm.`)
                 );
 
-                components.push(selfDonateContainer);
+                components.push(selfGiftContainer);
 
                 return message.reply({
                     components: components,
@@ -80,15 +80,15 @@ module.exports = {
             if (target.bot) {
                 const components = [];
 
-                const botDonateContainer = new ContainerBuilder()
+                const botGiftContainer = new ContainerBuilder()
                     .setAccentColor(0xF39C12);
 
-                botDonateContainer.addTextDisplayComponents(
+                botGiftContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🤖 Bot Donations Not Allowed\n## BOTS DON'T NEED MONEY\n\n> You cannot donate to bots! They don't have economy profiles.\n> Find a real person to help instead.`)
+                        .setContent(`# 🤖 A Gift for an Automaton?\n## THEY HAVE NO NEED FOR EMBERS\n\n> You cannot gift Embers to a bot! They have no presence in the ethereal economy.\n> Find a mortal to receive your generosity.`)
                 );
 
-                components.push(botDonateContainer);
+                components.push(botGiftContainer);
 
                 return message.reply({
                     components: components,
@@ -96,26 +96,15 @@ module.exports = {
                 });
             }
 
-
-        
             let amount;
             try {
-                if (args[1] === 'all' || args[1] === 'max') {
-                   
-                    const tempProfile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-                    
-                    if (typeof tempProfile.wallet !== 'number') {
-                        tempProfile.wallet = 0;
-                        await tempProfile.save();
-                    }
-                    
-                    amount = tempProfile.wallet;
+                const tempProfile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+                if (args[1].toLowerCase() === 'all' || args[1].toLowerCase() === 'max') {
+                    amount = tempProfile.embers;
                 } else {
                     amount = parseInt(args[1].replace(/[,$]/g, ''), 10);
                 }
             } catch (parseError) {
-
-                
                 const components = [];
 
                 const parseErrorContainer = new ContainerBuilder()
@@ -123,7 +112,7 @@ module.exports = {
 
                 parseErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Amount Format\n## PARSING ERROR\n\n> Could not understand the amount: \`${args[1]}\`\n> **Valid formats:** \`1000\`, \`1,000\`, \`$1000\`, \`all\`, \`max\``)
+                        .setContent(`# ❌ Illegible Amount\n## THE SCRIBE IS CONFUSED\n\n> The amount you inscribed is unreadable: \`${args[1]}\`\n> **Valid Forms:** \`1000\`, \`1,000\`, \`all\`, \`max\``)
                 );
 
                 components.push(parseErrorContainer);
@@ -142,7 +131,7 @@ module.exports = {
 
                 invalidAmountContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Donation Amount\n## AMOUNT MUST BE POSITIVE\n\n> Please enter a valid donation amount greater than zero!\n> **Examples:** \`!donate @friend 100\` or \`!donate @friend all\``)
+                        .setContent(`# ❌ A Worthless Gift\n## THE AMOUNT MUST BE GREATER THAN ZERO\n\n> You must bestow a gift of value!\n> **Examples:** \`!gift @friend 100\` or \`!gift @friend all\``)
                 );
 
                 components.push(invalidAmountContainer);
@@ -153,7 +142,7 @@ module.exports = {
                 });
             }
 
-            if (amount < 10) {
+            if (amount < GIFT_MINIMUM) {
                 const components = [];
 
                 const minAmountContainer = new ContainerBuilder()
@@ -161,7 +150,7 @@ module.exports = {
 
                 minAmountContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💰 Minimum Donation Required\n## AMOUNT TOO SMALL\n\n> Minimum donation amount is **\`$10\`**\n> You tried to donate: **\`$${amount}\`**\n\n**💡 Tip:** Small donations help cover transaction fees better with larger amounts.`)
+                        .setContent(`# 💰 A Meager Offering\n## A MORE SUBSTANTIAL GIFT IS REQUIRED\n\n> The minimum gift is **\`${GIFT_MINIMUM} Embers\`**.\n> You attempted to gift: **\`${amount} Embers\`**\n\n**💡 A Scribe's Note:** A larger gift is a more meaningful gesture and covers the cost of its transcription.`)
                 );
 
                 components.push(minAmountContainer);
@@ -172,7 +161,7 @@ module.exports = {
                 });
             }
 
-            if (amount > 1000000) {
+            if (amount > GIFT_MAXIMUM) {
                 const components = [];
 
                 const maxAmountContainer = new ContainerBuilder()
@@ -180,7 +169,7 @@ module.exports = {
 
                 maxAmountContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💎 Maximum Donation Limit\n## AMOUNT TOO LARGE\n\n> Maximum donation amount is **\`$1,000,000\`**\n> You tried to donate: **\`$${amount.toLocaleString()}\`**\n\n**💡 Tip:** Make multiple smaller donations if needed.`)
+                        .setContent(`# 💎 A Gift of Unprecedented Scale\n## SUCH GENEROSITY IS TOO GREAT FOR A SINGLE TRANSACTION\n\n> The maximum gift is **\`${GIFT_MAXIMUM.toLocaleString()} Embers\`**.\n> You attempted to gift: **\`${amount.toLocaleString()} Embers\`**\n\n**💡 A Scribe's Note:** If you wish to bestow such a fortune, you must do so in multiple, smaller gifts.`)
                 );
 
                 components.push(maxAmountContainer);
@@ -191,32 +180,11 @@ module.exports = {
                 });
             }
 
-  
-
-         
             let donorProfile, recipientProfile;
             
             try {
-          
                 donorProfile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-                
-                if (typeof donorProfile.wallet !== 'number') {
-      
-                    donorProfile.wallet = Number(donorProfile.wallet) || 0;
-                    await donorProfile.save();
-                }
-                
-                if (!Array.isArray(donorProfile.transactions)) {
-             
-                    donorProfile.transactions = [];
-                    await donorProfile.save();
-                }
-                
-    
-                
             } catch (donorError) {
-              
-                
                 const components = [];
 
                 const donorErrorContainer = new ContainerBuilder()
@@ -224,7 +192,7 @@ module.exports = {
 
                 donorErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Donor Profile Error\n## ACCOUNT ACCESS FAILED\n\n> Error accessing your profile. Please try \`!balance\` first to initialize your account.\n\n**💡 Troubleshooting:** Wait 30 seconds and try the command again.`)
+                        .setContent(`# ❌ Donor Profile Unreadable\n## YOUR OWN CHRONICLE IS OBSCURED\n\n> Your own economic profile could not be read. Try \`!balance\` to refresh your chronicle.\n\n**💡 Troubleshooting:** Wait a moment and try the command again.`)
                 );
 
                 components.push(donorErrorContainer);
@@ -236,26 +204,8 @@ module.exports = {
             }
 
             try {
-         
                 recipientProfile = await EconomyManager.getProfile(target.id, message.guild.id);
-                
-                if (typeof recipientProfile.wallet !== 'number') {
-     
-                    recipientProfile.wallet = Number(recipientProfile.wallet) || 0;
-                    await recipientProfile.save();
-                }
-                
-                if (!Array.isArray(recipientProfile.transactions)) {
-    
-                    recipientProfile.transactions = [];
-                    await recipientProfile.save();
-                }
-                
-
-                
             } catch (recipientError) {
-
-                
                 const components = [];
 
                 const recipientErrorContainer = new ContainerBuilder()
@@ -263,7 +213,7 @@ module.exports = {
 
                 recipientErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Recipient Profile Error\n## ACCOUNT ACCESS FAILED\n\n> Error accessing **${target.username}**'s profile.\n> They may need to use \`!balance\` first to initialize their account.`)
+                        .setContent(`# ❌ Recipient Profile Unreadable\n## THEIR CHRONICLE IS OBSCURED\n\n> The economic profile of **${target.username}** could not be read.\n> They may need to use \`!balance\` to establish their chronicle.`)
                 );
 
                 components.push(recipientErrorContainer);
@@ -274,8 +224,7 @@ module.exports = {
                 });
             }
 
-           
-            if (donorProfile.wallet < amount) {
+            if (donorProfile.embers < amount) {
                 const components = [];
 
                 const insufficientContainer = new ContainerBuilder()
@@ -283,7 +232,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds\n## CANNOT COMPLETE DONATION\n\n> You don't have enough money for this donation!`)
+                        .setContent(`# 💸 An Empty Coin Purse\n## YOU CANNOT GIFT WHAT YOU DO NOT HAVE\n\n> Your coin purse does not hold enough Embers for this gift!`)
                 );
 
                 components.push(insufficientContainer);
@@ -295,7 +244,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **BALANCE BREAKDOWN**\n\n**Your Current Balance:** \`$${donorProfile.wallet.toLocaleString()}\`\n**Donation Amount:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - donorProfile.wallet).toLocaleString()}\``)
+                        .setContent(`## 💰 **A TALE OF TWO PURSES**\n\n**Your Coin Purse:** \`${donorProfile.embers.toLocaleString()} Embers\`\n**Intended Gift:** \`${amount.toLocaleString()} Embers\`\n**The Difference:** \`${(amount - donorProfile.embers).toLocaleString()} Embers\``)
                 );
 
                 components.push(balanceContainer);
@@ -306,96 +255,66 @@ module.exports = {
                 });
             }
 
-
-
-          
             try {
-                const originalDonorWallet = donorProfile.wallet;
-                const originalRecipientWallet = recipientProfile.wallet;
-                
-               
-                const tax = Math.floor(amount * 0.02); 
+                const tax = Math.floor(amount * GIFT_TAX_RATE);
                 const netAmount = amount - tax;
 
-               
-                donorProfile.wallet = Math.max(0, donorProfile.wallet - amount);
-                recipientProfile.wallet = Math.max(0, recipientProfile.wallet + netAmount);
+                donorProfile.embers -= amount;
+                recipientProfile.embers += netAmount;
 
-
-
-               
                 const timestamp = new Date();
                 
                 donorProfile.transactions.push({
                     type: 'expense',
                     amount: amount,
-                    description: `Donated to ${target.username}`,
-                    category: 'donation',
+                    description: `Gifted to ${target.username}`,
+                    category: 'gift',
                     timestamp: timestamp
                 });
 
                 recipientProfile.transactions.push({
                     type: 'income',
                     amount: netAmount,
-                    description: `Received donation from ${message.author.username}`,
-                    category: 'donation',
+                    description: `Received gift from ${message.author.username}`,
+                    category: 'gift',
                     timestamp: timestamp
                 });
 
-           
-                if (typeof donorProfile.experience === 'number') {
-                    donorProfile.experience += Math.min(50, Math.floor(amount / 1000));
-                } else {
-                    donorProfile.experience = Math.min(50, Math.floor(amount / 1000));
-                }
+                donorProfile.experience += Math.min(50, Math.floor(amount / 1000));
+                recipientProfile.experience += 5;
 
-                if (typeof recipientProfile.experience === 'number') {
-                    recipientProfile.experience += 5;
-                } else {
-                    recipientProfile.experience = 5;
-                }
-
-
-
-              
                 await donorProfile.save();
                 await recipientProfile.save();
 
-
-
-               
                 const components = [];
 
-              
                 const headerContainer = new ContainerBuilder()
                     .setAccentColor(0x2ECC71);
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💝 Donation Successful!\n## GENEROSITY IN ACTION\n\n> **${message.author.username}** donated **\`$${amount.toLocaleString()}\`** to **${target.username}**!\n> Your kindness makes the community stronger!`)
+                        .setContent(`# 💝 A Gift Bestowed!\n## GENEROSITY ECHOES THROUGH THE REALM\n\n> **${message.author.username}** has gifted **\`${amount.toLocaleString()} Embers\`** to **${target.username}**!\n> Such kindness strengthens the bonds between the people.`)
                 );
 
                 components.push(headerContainer);
 
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-             
                 const detailsContainer = new ContainerBuilder()
                     .setAccentColor(0x27AE60);
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 📊 **TRANSACTION DETAILS**')
+                        .setContent('## 📊 **THE SCRIBES LEDGER**')
                 );
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Donation Amount:** \`$${amount.toLocaleString()}\`\n**💸 Transaction Fee:** \`$${tax.toLocaleString()}\` (2%)\n**💎 Net Received:** \`$${netAmount.toLocaleString()}\`\n**⏰ Timestamp:** \`${timestamp.toLocaleString()}\``)
+                        .setContent(`**💰 The Gift:** \`${amount.toLocaleString()} Embers\`\n**💸 The Crown's Tithe:** \`${tax.toLocaleString()} Embers\` (${GIFT_TAX_RATE * 100}%)\n**💎 The Net Bestowment:** \`${netAmount.toLocaleString()} Embers\`\n**⏰ The Hour of Giving:** \`${timestamp.toLocaleString()}\``)
                 );
 
                 components.push(detailsContainer);
 
-               
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const balancesContainer = new ContainerBuilder()
@@ -403,17 +322,17 @@ module.exports = {
 
                 balancesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 🏦 **UPDATED BALANCES**')
+                        .setContent('## 🏦 **THE STATE OF THE COFFERS**')
                 );
 
                 balancesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**${message.author.username}** (You)\n> **New Balance:** \`$${donorProfile.wallet.toLocaleString()}\`\n> **XP Gained:** \`+${Math.min(50, Math.floor(amount / 1000))}\``)
+                        .setContent(`**${message.author.username}** (The Giver)\n> **New Coin Purse:** \`${donorProfile.embers.toLocaleString()} Embers\`\n> **Arcane Power Gained:** \`+${Math.min(50, Math.floor(amount / 1000))}\``)
                 );
 
                 balancesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**${target.username}** (Recipient)\n> **New Balance:** \`$${recipientProfile.wallet.toLocaleString()}\`\n> **XP Gained:** \`+5\``)
+                        .setContent(`**${target.username}** (The Receiver)\n> **New Coin Purse:** \`${recipientProfile.embers.toLocaleString()} Embers\`\n> **Arcane Power Gained:** \`+5\``)
                 );
 
                 components.push(balancesContainer);
@@ -423,22 +342,17 @@ module.exports = {
                     flags: MessageFlags.IsComponentsV2
                 });
 
-              
                 try {
-                    await target.send(`💸 You received a $${netAmount.toLocaleString()} donation from **${message.author.username}** in **${message.guild.name}**!`);
+                    await target.send(`💸 You have received a gift of **${netAmount.toLocaleString()} Embers** from **${message.author.username}** in **${message.guild.name}**!`);
                 } catch (dmError) {
-                    //console.log(`[DONATE] Could not DM recipient: ${dmError.message}`);
+                    // It is not critical if the DM fails.
                 }
 
             } catch (transactionError) {
-                //console.error(`[DONATE] Transaction execution error:`, transactionError);
                 throw transactionError;
             }
 
         } catch (error) {
-            //console.error(`[DONATE] Main error for users ${message.author.id} -> ${args[0]}:`, error);
-            
-    
             const components = [];
 
             const errorContainer = new ContainerBuilder()
@@ -446,7 +360,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ❌ Donation Failed\n## TRANSACTION ERROR\n\n> An error occurred while processing your donation to **${target?.username || 'unknown user'}**.`)
+                    .setContent(`# ❌ A Gift Lost to the Ether\n## A SCRIBING ERROR HAS OCCURRED\n\n> An error occurred while attempting to bestow your gift upon **${target?.username || 'an unknown soul'}**.`)
             );
 
             components.push(errorContainer);
@@ -458,12 +372,12 @@ module.exports = {
 
             errorDetailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🔍 **ERROR DETAILS**')
+                    .setContent('## 🔍 **A DEEPER LOOK INTO THE ERROR**')
             );
 
             errorDetailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**Error Message:**\n\`\`\`${error.message || 'Unknown error'}\`\`\``)
+                    .setContent(`**The Error's Name:**\n\`\`\`${error.message || 'An Unknown Anomaly'}\`\`\``)
             );
 
             errorDetailsContainer.addTextDisplayComponents(
@@ -472,7 +386,6 @@ module.exports = {
             );
 
             components.push(errorDetailsContainer);
-
         
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -481,7 +394,7 @@ module.exports = {
 
             troubleshootContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🛠️ **TROUBLESHOOTING STEPS**\n\n**1.** Both users should try \`!balance\` first\n**2.** Wait 30 seconds and try again\n**3.** Contact an admin if the issue persists\n**4.** Provide the error code above for faster support`)
+                    .setContent(`## 🛠️ **TROUBLESHOOTING THE ANOMALY**\n\n**1.** Both you and the recipient should try \`!balance\` to refresh your chronicles.\n**2.** Wait a moment and attempt the gift again.\n**3.** If the ether remains disturbed, contact a Realm Administrator.\n**4.** Provide the error code for a swifter resolution.`)
             );
 
             components.push(troubleshootContainer);

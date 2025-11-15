@@ -8,14 +8,13 @@ const {
 const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
-    name: 'work',
-    description: 'Work to earn money (affected by family bonds and active effects) with v2 components',
+    name: 'quest',
+    description: 'Embark on a quest to earn Embers and experience.',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-          
-            const cooldownCheck = EconomyManager.checkCooldown(profile, 'work');
+            const cooldownCheck = EconomyManager.checkCooldown(profile, 'quest');
             if (cooldownCheck.onCooldown) {
                 const { hours, minutes } = cooldownCheck.timeLeft;
                 const components = [];
@@ -25,11 +24,10 @@ module.exports = {
 
                 cooldownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⏰ Work Cooldown Active\n## TAKE A WELL-DESERVED BREAK\n\n> You've already worked recently and need time to rest before your next shift!`)
+                        .setContent(`# ⏰ On a Quest\n## YOU MUST RECOVER YOUR STRENGTH\n\n> You have already embarked on a quest recently and need time to recover.`)
                 );
 
                 components.push(cooldownContainer);
-
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const timeContainer = new ContainerBuilder()
@@ -37,7 +35,7 @@ module.exports = {
 
                 timeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⏱️ **COOLDOWN INFORMATION**\n\n**Time Remaining:** \`${hours}h ${minutes}m\`\n**Next Work Available:** \`${new Date(Date.now() + cooldownCheck.totalMs).toLocaleTimeString()}\`\n**Cooldown Duration:** \`1 hour\`\n\n> Use this time to plan your next financial moves!`)
+                        .setContent(`## ⏱️ **RECOVERY TIME**\n\n**Time Remaining:** \`${hours}h ${minutes}m\`\n**Next Quest Available:** \`${new Date(Date.now() + cooldownCheck.totalMs).toLocaleTimeString()}\`\n**Cooldown Duration:** \`1 hour\`\n\n> Use this time to prepare for your next adventure!`)
                 );
 
                 components.push(timeContainer);
@@ -49,27 +47,25 @@ module.exports = {
             }
             
             const baseEarnings = Math.floor(Math.random() * 500) + 200;
-            const workMultiplier = EconomyManager.calculateWorkMultiplier(profile);
+            const questMultiplier = EconomyManager.calculateQuestMultiplier(profile);
             
-          
-            let familyEarnings = 0;
-            const hasProperty = profile.properties.length > 0;
+            let followerEarnings = 0;
+            const hasStronghold = profile.strongholds.length > 0;
             
-            if (hasProperty && profile.familyMembers.length > 0) {
-                profile.familyMembers.forEach(member => {
-                    const memberEarnings = member.salary * member.workEfficiency * (member.bond / 100);
-                    familyEarnings += memberEarnings;
+            if (hasStronghold && profile.followers.length > 0) {
+                profile.followers.forEach(follower => {
+                    const followerContribution = follower.salary * follower.questEfficiency * (follower.loyalty / 100);
+                    followerEarnings += followerContribution;
                 });
             }
             
-            const personalEarnings = Math.floor(baseEarnings * workMultiplier);
-            const totalEarnings = personalEarnings + Math.floor(familyEarnings);
+            const personalEarnings = Math.floor(baseEarnings * questMultiplier);
+            const totalEarnings = personalEarnings + Math.floor(followerEarnings);
             
-            profile.wallet += totalEarnings;
+            profile.embers += totalEarnings;
             profile.experience += 10;
-            profile.cooldowns.work = new Date();
+            profile.cooldowns.quest = new Date();
             
-         
             const requiredXP = profile.level * 100;
             let leveledUp = false;
             if (profile.experience >= requiredXP) {
@@ -78,54 +74,47 @@ module.exports = {
                 leveledUp = true;
             }
             
-         
             profile.transactions.push({
                 type: 'income',
                 amount: totalEarnings,
-                description: 'Work earnings',
-                category: 'work'
+                description: 'Quest rewards',
+                category: 'quest'
             });
             
             await profile.save();
 
-         
             const components = [];
 
-        
             const headerContainer = new ContainerBuilder()
                 .setAccentColor(0x4CAF50);
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 💼 Work Shift Complete!\n## ANOTHER PRODUCTIVE DAY\n\n> You've completed a hard day's work and earned your wages!\n> ${leveledUp ? '🎉 **BONUS: You leveled up!**' : 'Keep building your career and wealth!'}`)
+                    .setContent(`# ⚔️ Quest Complete!\n## A SUCCESSFUL ADVENTURE\n\n> You have completed your quest and earned your rewards!\n> ${leveledUp ? '🎉 **BONUS: You have leveled up!**' : 'Continue your journey to build your legend!'}`)
             );
 
             components.push(headerContainer);
-
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-           
             const earningsContainer = new ContainerBuilder()
                 .setAccentColor(0x27AE60);
 
             earningsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 💰 **EARNINGS BREAKDOWN**')
+                    .setContent('## 💰 **QUEST REWARDS**')
             );
 
             earningsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💼 Personal Earnings:** \`$${personalEarnings.toLocaleString()}\`\n**👨‍👩‍👧‍👦 Family Contribution:** \`$${Math.floor(familyEarnings).toLocaleString()}\`\n**💎 Total Earnings:** \`$${totalEarnings.toLocaleString()}\``)
+                    .setContent(`**⚔️ Personal Reward:** \`${personalEarnings.toLocaleString()} Embers\`\n**👥 Follower Contribution:** \`${Math.floor(followerEarnings).toLocaleString()} Embers\`\n**💎 Total Earnings:** \`${totalEarnings.toLocaleString()} Embers\``)
             );
 
             earningsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📈 Work Multiplier:** \`${workMultiplier.toFixed(2)}x\`\n**⭐ Experience Gained:** \`+10 XP\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\``)
+                    .setContent(`**📈 Quest Multiplier:** \`${questMultiplier.toFixed(2)}x\`\n**⭐ Experience Gained:** \`+10 XP\`\n**💳 New Coin Purse:** \`${profile.embers.toLocaleString()} Embers\``)
             );
 
             components.push(earningsContainer);
-
-          
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const progressContainer = new ContainerBuilder()
@@ -134,17 +123,17 @@ module.exports = {
             if (leveledUp) {
                 progressContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎉 **LEVEL UP CELEBRATION!**\n\n> **Congratulations!** You've reached **Level ${profile.level}**!\n> Your hard work is paying off with career advancement!`)
+                        .setContent(`## 🎉 **LEVEL UP!**\n\n> **Congratulations!** You have reached **Level ${profile.level}**!\n> Your power and influence grow!`)
                 );
 
                 progressContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🆙 New Level:** \`${profile.level}\`\n**🔄 Experience Reset:** \`0 / ${profile.level * 100} XP\`\n**🎯 Benefits:** Higher earnings potential and new opportunities!`)
+                        .setContent(`**🆙 New Level:** \`${profile.level}\`\n**🔄 Experience Reset:** \`0 / ${profile.level * 100} XP\`\n**🎯 Benefits:** Greater rewards and new opportunities await!`)
                 );
             } else {
                 progressContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 📊 **PROGRESS TRACKING**')
+                        .setContent('## 📊 **PROGRESS**')
                 );
 
                 progressContainer.addTextDisplayComponents(
@@ -155,48 +144,46 @@ module.exports = {
 
             components.push(progressContainer);
 
-          
-            if (profile.familyMembers.length > 0) {
+            if (profile.followers.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                const familyContainer = new ContainerBuilder()
-                    .setAccentColor(hasProperty ? 0x9B59B6 : 0xF39C12);
+                const followerContainer = new ContainerBuilder()
+                    .setAccentColor(hasStronghold ? 0x9B59B6 : 0xF39C12);
 
-                if (hasProperty) {
-                    familyContainer.addTextDisplayComponents(
+                if (hasStronghold) {
+                    followerContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent('## 👨‍👩‍👧‍👦 **FAMILY WORKFORCE**')
+                            .setContent('## 👥 **LOYAL FOLLOWERS**')
                     );
 
-                    const familyDetails = profile.familyMembers.slice(0, 3).map(member => {
-                        const memberEarnings = member.salary * member.workEfficiency * (member.bond / 100);
-                        return `**${member.name}** (${member.relationship})\n> **Contribution:** \`$${Math.floor(memberEarnings).toLocaleString()}\` • **Bond:** \`${member.bond}%\``;
+                    const followerDetails = profile.followers.slice(0, 3).map(follower => {
+                        const followerContribution = follower.salary * follower.questEfficiency * (follower.loyalty / 100);
+                        return `**${follower.name}** (${follower.role})\n> **Contribution:** \`${Math.floor(followerContribution).toLocaleString()} Embers\` • **Loyalty:** \`${follower.loyalty}%\``;
                     }).join('\n\n');
 
-                    familyContainer.addTextDisplayComponents(
+                    followerContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(familyDetails)
+                            .setContent(followerDetails)
                     );
 
-                    if (profile.familyMembers.length > 3) {
-                        familyContainer.addTextDisplayComponents(
+                    if (profile.followers.length > 3) {
+                        followerContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`*...and ${profile.familyMembers.length - 3} more family members contributed!*`)
+                                .setContent(`*...and ${profile.followers.length - 3} more followers contributed!*`)
                         );
                     }
                 } else {
-                    familyContainer.addTextDisplayComponents(
+                    followerContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏠 **FAMILY NEEDS HOUSING**\n\n> Your **${profile.familyMembers.length}** family members want to help with work earnings, but they need a home first!\n\n**💡 Solution:** Purchase a property to unlock family workforce contributions and boost your income significantly!`)
+                            .setContent(`## 🏰 **FOLLOWERS NEED A STRONGHOLD**\n\n> Your **${profile.followers.length}** followers wish to aid you, but they need a stronghold to operate from!\n\n**💡 Solution:** Acquire a stronghold to unlock follower contributions and greatly increase your quest rewards!`)
                     );
                 }
 
-                components.push(familyContainer);
+                components.push(followerContainer);
             }
 
-          
-            const activeWorkEffects = profile.activeEffects.filter(e => e.type === 'work_boost');
-            if (activeWorkEffects.length > 0) {
+            const activeQuestEffects = profile.activeEffects.filter(e => e.type === 'quest_boost');
+            if (activeQuestEffects.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const effectsContainer = new ContainerBuilder()
@@ -204,10 +191,10 @@ module.exports = {
 
                 effectsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## ⚡ **ACTIVE WORK BOOSTS**')
+                        .setContent('## ⚡ **ACTIVE QUEST BOOSTS**')
                 );
 
-                const effectsText = activeWorkEffects.map(effect => {
+                const effectsText = activeQuestEffects.map(effect => {
                     const timeLeft = Math.ceil((effect.expiryTime - new Date()) / (60 * 60 * 1000));
                     return `**\`${effect.name}\`**\n> **Multiplier:** \`${effect.multiplier}x\` • **Duration:** \`${timeLeft}h remaining\``;
                 }).join('\n\n');
@@ -219,24 +206,23 @@ module.exports = {
 
                 effectsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**⚡ Total Active Boosts:** \`${activeWorkEffects.length}\`\n\n> These effects are currently boosting your work earnings!`)
+                        .setContent(`**⚡ Total Active Boosts:** \`${activeQuestEffects.length}\`\n\n> These effects are currently boosting your quest rewards!`)
                 );
 
                 components.push(effectsContainer);
             }
 
-           
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-            const nextWorkContainer = new ContainerBuilder()
+            const nextQuestContainer = new ContainerBuilder()
                 .setAccentColor(0x95A5A6);
 
-            nextWorkContainer.addTextDisplayComponents(
+            nextQuestContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📅 **NEXT WORK SHIFT**\n\n**Next Work Available:** \`${new Date(Date.now() + 3600000).toLocaleDateString()} at ${new Date(Date.now() + 3600000).toLocaleTimeString()}\`\n**Cooldown Duration:** \`1 hour\`\n**Current Time:** \`${new Date().toLocaleString()}\`\n\n> Keep working regularly to build wealth and level up your character!`)
+                    .setContent(`## 📅 **NEXT QUEST**\n\n**Next Quest Available:** \`${new Date(Date.now() + 3600000).toLocaleDateString()} at ${new Date(Date.now() + 3600000).toLocaleTimeString()}\`\n**Cooldown Duration:** \`1 hour\`\n**Current Time:** \`${new Date().toLocaleString()}\`\n\n> Continue your quests to build your legend and fortune!`)
             );
 
-            components.push(nextWorkContainer);
+            components.push(nextQuestContainer);
 
             await message.reply({
                 components: components,
@@ -244,15 +230,14 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in work command:', error);
+            console.error('Error in quest command:', error);
 
-        
-            const errorContainer = new ContainerBuilder()
+            const errorContainer = a.ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **WORK ERROR**\n\nSomething went wrong while processing your work shift. Please try again in a moment.')
+                    .setContent('## ❌ **QUEST ERROR**\n\nSomething went wrong while embarking on your quest. Please try again in a moment.')
             );
 
             return message.reply({

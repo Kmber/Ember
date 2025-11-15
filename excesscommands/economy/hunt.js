@@ -9,10 +9,10 @@ const { EconomyManager } = require('../../models/economy/economy');
 const { HuntingManager } = require('../../models/economy/huntingManager');
 
 module.exports = {
-    name: 'hunt',
-    aliases: ['expedition', 'safari'],
-    description: 'Go on a hunting expedition in the wild jungle',
-    usage: '!hunt',
+    name: 'slay',
+    aliases: ['monsterhunt', 'hunt'],
+    description: 'Embark on a quest to slay a monster and claim its bounty.',
+    usage: '!slay',
     cooldown: 300, 
     async execute(message) {
         try {
@@ -28,7 +28,7 @@ module.exports = {
 
                 cooldownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⏰ Expedition Cooldown\n## RECOVERY TIME\n\n> You need to rest between hunting expeditions!\n> **Time Remaining:** ${minutes}m ${seconds}s`)
+                        .setContent(`# ⏰ Quest Cooldown\n## RECOVERY TIME\n\n> You must recover your strength between monster hunts!\n> **Time Remaining:** ${minutes}m ${seconds}s`)
                 );
 
                 return message.reply({
@@ -38,7 +38,7 @@ module.exports = {
             }
 
          
-            if (profile.huntingVehicles.length === 0 || profile.huntingWeapons.length === 0) {
+            if (profile.huntingMounts.length === 0 || profile.huntingWeapons.length === 0) {
                 const components = [];
 
                 const noEquipmentContainer = new ContainerBuilder()
@@ -46,7 +46,7 @@ module.exports = {
 
                 noEquipmentContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Missing Equipment\n## EXPEDITION CANCELLED\n\n> You need both a vehicle and weapon to go hunting!`)
+                        .setContent(`# 🚫 Unprepared for the Hunt\n## QUEST CANCELLED\n\n> You require a mount and a weapon to hunt monsters!`)
                 );
 
                 components.push(noEquipmentContainer);
@@ -57,7 +57,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **GET STARTED**\n\n**Command:** \`!huntshop\`\n**Buy:** Vehicles, weapons, and companions\n**Starting Budget:** You have $${profile.wallet.toLocaleString()} available`)
+                        .setContent(`## 🛒 **GET STARTED**\n\n**Command:** \`!bestiary\`\n**Buy:** Mounts, weapons, and familiars\n**Starting Budget:** You have ${profile.embers.toLocaleString()} Embers available`)
                 );
 
                 components.push(helpContainer);
@@ -77,14 +77,14 @@ module.exports = {
 
                 injuredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🩸 Too Injured to Hunt\n## MEDICAL ATTENTION NEEDED\n\n> Your health is too low (${profile.huntingProfile.currentHealth}/100)!\n> **Minimum Required:** 20 HP`)
+                        .setContent(`# 🩸 Too Wounded to Continue\n## MEDICAL ATTENTION NEEDED\n\n> Your vitality is too low (${profile.huntingProfile.currentHealth}/100)!\n> **Minimum Required:** 20 HP`)
                 );
 
                 const healingCost = Math.floor((100 - profile.huntingProfile.currentHealth) * 50);
                 
                 injuredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏥 Healing Cost:** $${healingCost.toLocaleString()}\n**💡 Command:** \`!heal self\``)
+                        .setContent(`**🏥 Healing Cost:** ${healingCost.toLocaleString()} Embers\n**💡 Command:** \`!attunefamiliar\``)
                 );
 
                 components.push(injuredContainer);
@@ -105,7 +105,7 @@ module.exports = {
             
             if (huntResult.success) {
                 profile.huntingStats.successfulHunts += 1;
-                profile.huntingStats.animalsKilled += 1;
+                profile.huntingStats.beastsSlain += 1;
                 
              
                 huntResult.loot.forEach(item => {
@@ -125,12 +125,12 @@ module.exports = {
         
             const totalCosts = Object.values(huntResult.costs).reduce((sum, cost) => sum + cost, 0);
             if (totalCosts > 0) {
-                profile.wallet = Math.max(0, profile.wallet - totalCosts);
+                profile.embers = Math.max(0, profile.embers - totalCosts);
                 
                 profile.transactions.push({
                     type: 'expense',
                     amount: totalCosts,
-                    description: 'Hunting expedition costs',
+                    description: 'Monster hunting quest costs',
                     category: 'hunting'
                 });
             }
@@ -149,7 +149,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🎯 Successful Hunt!\n## ${huntResult.animal.name.toUpperCase()} DEFEATED\n\n> You successfully hunted a **${huntResult.animal.name}** (Tier ${huntResult.animal.tier})!`)
+                        .setContent(`# 🎯 Monster Slain!\n## ${huntResult.beast.name.toUpperCase()} VANQUISHED\n\n> You have slain a **${huntResult.beast.name}** (Tier ${huntResult.beast.tier})!`)
                 );
 
                 components.push(headerContainer);
@@ -161,7 +161,7 @@ module.exports = {
 
                 combatContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚔️ **COMBAT REPORT**`)
+                        .setContent(`## ⚔️ **BATTLE REPORT**`)
                 );
 
                 combatContainer.addTextDisplayComponents(
@@ -185,11 +185,11 @@ module.exports = {
 
                     lootContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💎 **LOOT COLLECTED**`)
+                            .setContent(`## 💎 **BOUNTY CLAIMED**`)
                     );
 
                     const lootText = huntResult.loot.slice(0, 5).map(item => 
-                        `**${item.name}** (${item.rarity})\n> **Value:** $${item.currentValue.toLocaleString()} • **Type:** ${item.type}`
+                        `**${item.name}** (${item.rarity})\n> **Value:** ${item.currentValue.toLocaleString()} Embers • **Type:** ${item.type}`
                     ).join('\n\n');
 
                     lootContainer.addTextDisplayComponents(
@@ -214,7 +214,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💥 Hunt Failed!\n## ${huntResult.animal.name.toUpperCase()} ESCAPED\n\n> The **${huntResult.animal.name}** proved too powerful and escaped!`)
+                        .setContent(`# 💥 The Beast Escaped!\n## ${huntResult.beast.name.toUpperCase()} FLED\n\n> The **${huntResult.beast.name}** proved too formidable and escaped!`)
                 );
 
                 components.push(headerContainer);
@@ -225,7 +225,7 @@ module.exports = {
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚑 **CASUALTIES**`)
+                        .setContent(`## 🚑 **WOUNDS AND LOSSES**`)
                 );
 
                 failureContainer.addTextDisplayComponents(
@@ -235,7 +235,7 @@ module.exports = {
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏥 Medical Costs:** $${huntResult.costs.healing.toLocaleString()}\n**⭐ Experience:** +${huntResult.experience} XP (participation)\n**💡 Tip:** Upgrade your equipment or bring more companions!`)
+                        .setContent(`**🏥 Medical Costs:** ${huntResult.costs.healing.toLocaleString()} Embers\n**⭐ Experience:** +${huntResult.experience} XP (participation)\n**💡 Tip:** Enchant your equipment or bring more familiars!`)
                 );
 
                 components.push(failureContainer);
@@ -250,11 +250,11 @@ module.exports = {
 
                 injuryContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🩹 **COMPANION INJURIES**`)
+                        .setContent(`## 🩹 **FAMILIAR INJURIES**`)
                 );
 
                 const injuryText = huntResult.companionInjuries.map(injury =>
-                    `**${injury.name}** - Injured!\n> **Healing Cost:** $${injury.healingCost.toLocaleString()}`
+                    `**${injury.name}** - Injured!\n> **Healing Cost:** ${injury.healingCost.toLocaleString()} Embers`
                 ).join('\n\n');
 
                 injuryContainer.addTextDisplayComponents(
@@ -264,7 +264,7 @@ module.exports = {
 
                 injuryContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Command:** \`!heal companions\` to restore them`)
+                        .setContent(`**💡 Command:** \`!attunefamiliar all\` to restore them`)
                 );
 
                 components.push(injuryContainer);
@@ -279,12 +279,12 @@ module.exports = {
 
                 costsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💸 **EXPEDITION COSTS**`)
+                        .setContent(`## 💸 **QUEST EXPENSES**`)
                 );
 
                 const costBreakdown = Object.entries(huntResult.costs)
                     .filter(([key, value]) => value > 0)
-                    .map(([key, value]) => `**${key.replace('_', ' ').toUpperCase()}:** $${value.toLocaleString()}`)
+                    .map(([key, value]) => `**${key.replace('_', ' ').toUpperCase()}:** ${value.toLocaleString()} Embers`)
                     .join('\n');
 
                 costsContainer.addTextDisplayComponents(
@@ -294,7 +294,7 @@ module.exports = {
 
                 costsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Total Cost:** $${totalCosts.toLocaleString()}\n**💰 Remaining Balance:** $${profile.wallet.toLocaleString()}`)
+                        .setContent(`**💳 Total Cost:** ${totalCosts.toLocaleString()} Embers\n**💰 Remaining Embers:** ${profile.embers.toLocaleString()}`)
                 );
 
                 components.push(costsContainer);
@@ -306,14 +306,14 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in hunt command:', error);
+            console.error('Error in slay command:', error);
             
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## ❌ **HUNTING ERROR**\n\n${error.message || 'Something went wrong during your hunting expedition.'}`)
+                    .setContent(`## ❌ **HUNTING QUEST FAILED**\n\n${error.message || 'An unforeseen obstacle has thwarted your hunt.'}`)
             );
 
             return message.reply({

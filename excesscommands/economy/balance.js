@@ -9,79 +9,77 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'balance',
-    aliases: ['bal', 'money'],
-    description: 'Check your financial status with v2 components',
+    aliases: ['bal', 'embers'],
+    description: 'Check your worldly possessions and status.',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            const totalWealth = profile.wallet + profile.bank + profile.familyVault;
-            const securityLevel = EconomyManager.calculateSecurityLevel(profile);
-            const vaultCapacity = EconomyManager.getVaultCapacity(profile);
-            const bankLimit = EconomyManager.getBankLimit(profile);
+            const totalWealth = profile.embers + profile.royal_treasury + profile.family_strongbox;
+            const wardingLevel = EconomyManager.calculateWardingLevel(profile);
+            const treasuryCapacity = EconomyManager.getTreasuryCapacity(profile);
+            const royalTreasuryLimit = EconomyManager.getRoyalTreasuryLimit(profile);
             
             const components = [];
 
-        
+            // Header
             const headerContainer = new ContainerBuilder()
                 .setAccentColor(0x2ECC71);
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 💼 ${message.author.username}'s Financial Portfolio\n## YOUR COMPLETE FINANCIAL OVERVIEW\n\n> Your current financial status and wealth information`)
+                    .setContent(`# 📜 ${message.author.username}\'s Chronicle of Wealth\\n## A TALLY OF YOUR WORLDLY POSSESSIONS\\n\\n> Your current standing in the realm and accounting of your riches.`)
             );
 
             components.push(headerContainer);
 
-         
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-          
-            const cashContainer = new ContainerBuilder()
+            // Liquid Assets -> Hoard
+            const hoardContainer = new ContainerBuilder()
                 .setAccentColor(0x3498DB);
 
-            cashContainer.addTextDisplayComponents(
+            hoardContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 💰 **LIQUID ASSETS**')
+                    .setContent('## 🔥 **EMBER HOARD**')
             );
 
-            cashContainer.addTextDisplayComponents(
+            hoardContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💵 Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 Bank Balance:** \`$${profile.bank.toLocaleString()}\`\n**📊 Bank Limit:** \`$${bankLimit.toLocaleString()}\``)
+                    .setContent(`**💰 Coin Purse:** \\`${profile.embers.toLocaleString()} Embers\\\`\\n**👑 Royal Treasury:** \\`${profile.royal_treasury.toLocaleString()} Embers\\\`\\n**📈 Treasury Limit:** \\`${royalTreasuryLimit.toLocaleString()} Embers\\``)
             );
 
-            cashContainer.addTextDisplayComponents(
+            hoardContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏠 Family Vault:** \`$${profile.familyVault.toLocaleString()}\`\n**📦 Vault Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**🛡️ Security Level:** \`${securityLevel}%\``)
+                    .setContent(`**🏰 Family Strongbox:** \\`${profile.family_strongbox.toLocaleString()} Embers\\\`\\n**📦 Treasury Capacity:** \\`${treasuryCapacity.toLocaleString()} Embers\\\`\\n**🛡️ Warding Level:** \\`${wardingLevel}%\\``)
             );
 
-            components.push(cashContainer);
+            components.push(hoardContainer);
 
-           
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-        
-            const wealthContainer = new ContainerBuilder()
+            // Wealth Summary -> Realm Standing
+            const realmStandingContainer = new ContainerBuilder()
                 .setAccentColor(0xF39C12);
 
-            wealthContainer.addTextDisplayComponents(
+            realmStandingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 📊 **WEALTH SUMMARY**')
+                    .setContent('## ⚔️ **REALM STANDING**')
             );
 
-            wealthContainer.addTextDisplayComponents(
+            realmStandingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Total Net Worth:** \`$${totalWealth.toLocaleString()}\`\n**📈 Character Level:** \`${profile.level}\`\n**⭐ Experience Points:** \`${profile.experience.toLocaleString()} XP\``)
+                    .setContent(`**💎 Total Net Worth:** \\`${totalWealth.toLocaleString()} Embers\\\`\\n**🌟 Character Level:** \\`${profile.level}\\\`\\n**✨ Arcane Power:** \\`${profile.experience.toLocaleString()} XP\\``)
             );
 
-            wealthContainer.addTextDisplayComponents(
+            realmStandingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👨‍👩‍👧‍👦 Family Bond:** \`${profile.familyBond}%\`\n**🏆 Reputation:** \`${profile.reputation}\``)
+                    .setContent(`**👨‍👩‍👧‍👦 Family Loyalty:** \\`${profile.familyBond}%\\\`\\n**🏆 Renown:** \\`${profile.reputation}\\``)
             );
 
-            components.push(wealthContainer);
+            components.push(realmStandingContainer);
 
-            
+            // Active Effects -> Blessings & Curses
             if (profile.activeEffects && profile.activeEffects.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -90,29 +88,23 @@ module.exports = {
 
                 effectsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## ⚡ **ACTIVE ENHANCEMENT EFFECTS**')
+                        .setContent('## ✨ **BLESSINGS & CURSES**')
                 );
 
                 let effectsText = profile.activeEffects.map(effect => {
                     const timeLeft = Math.ceil((effect.expiryTime - new Date()) / (60 * 60 * 1000));
-                    const stackText = effect.stacks > 1 ? ` (×${effect.stacks})` : '';
-                    return `**\`${effect.name}\`**${stackText} • ${effect.description || 'Active boost'}\n\n> **Duration:** \`${timeLeft}h remaining\``;
-                }).join('\n\n');
+                    const stackText = effect.stacks > 1 ? ` (x${effect.stacks})` : '';
+                    return `**\\\`${effect.name}\\\`**${stackText} • ${effect.description || 'An active enchantment'}\\n\\n> **Duration:** \\`${timeLeft}h remaining\\``;
+                }).join('\\n\\n');
 
                 effectsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
                         .setContent(effectsText)
                 );
 
-                effectsContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder()
-                        .setContent(`**⚡ Total Active Effects:** \`${profile.activeEffects.length}\``)
-                );
-
                 components.push(effectsContainer);
             }
 
-       
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const footerContainer = new ContainerBuilder()
@@ -120,12 +112,12 @@ module.exports = {
 
             footerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📅 **ACCOUNT INFORMATION**\n\n**Last Updated:** \`${new Date().toLocaleString()}\`\n**Profile Created:** \`${new Date(profile.createdAt).toLocaleDateString()}\``)
+                    .setContent(`## 📅 **SCRIBE'S NOTES**\\n\\n**Last Scribed:** \\`${new Date().toLocaleString()}\\`\\n**Chronicle Began:** \\`${new Date(profile.createdAt).toLocaleDateString()}\\``)
             );
 
             components.push(footerContainer);
 
-          
+            // Send the message
             await message.reply({
                 components: components,
                 flags: MessageFlags.IsComponentsV2
@@ -134,13 +126,13 @@ module.exports = {
         } catch (error) {
             console.error('Error in balance command:', error);
             
-         
+            // Error Message
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **BALANCE ERROR**\n\nUnable to retrieve your financial information. Please try again in a moment.')
+                    .setContent('## ❌ **SCROLLING ERROR**\\n\\nUnable to read your chronicle of wealth. Please try again in a moment.')
             );
 
             return message.reply({

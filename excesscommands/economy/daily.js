@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'daily',
-    description: 'Claim your daily reward with v2 components',
+    description: 'Claim your daily blessing of Embers.',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
@@ -29,7 +29,7 @@ module.exports = {
 
                 cooldownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⏰ Daily Reward Cooldown\n## PATIENCE REWARDS DEDICATION\n\n> You've already claimed your daily reward! Come back tomorrow for another chance to earn.\n> Daily rewards reset every 24 hours to maintain balance and encourage regular play.`)
+                        .setContent(`# ⏰ Daily Blessing Cooldown\n## THE GODS REWARD THE FAITHFUL\n\n> You have already received your daily blessing! Return on the morrow for another.\n> Blessings are bestowed every 24 hours to honor the dedicated.`)
                 );
 
                 components.push(cooldownContainer);
@@ -41,7 +41,7 @@ module.exports = {
 
                 timeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⏱️ **TIME UNTIL NEXT REWARD**\n\n**Time Remaining:** \`${hoursLeft}h ${minutesLeft}m\`\n**Next Available:** \`${new Date(now + timeLeft).toLocaleDateString()} at ${new Date(now + timeLeft).toLocaleTimeString()}\`\n**Current Streak:** \`${profile.dailyStreak} days\`\n\n> Keep your streak alive by claiming daily rewards consistently!`)
+                        .setContent(`## ⏱️ **TIME UNTIL NEXT BLESSING**\n\n**Time Remaining:** \`${hoursLeft}h ${minutesLeft}m\`\n**Next Available:** \`${new Date(now + timeLeft).toLocaleDateString()} at ${new Date(now + timeLeft).toLocaleTimeString()}\`\n**Current Allegiance:** \`${profile.dailyStreak} days\`\n\n> Maintain your allegiance by claiming your blessing each day!`)
                 );
 
                 components.push(timeContainer);
@@ -52,9 +52,7 @@ module.exports = {
                 });
             }
             
-           
-            const wasYesterday = profile.cooldowns.daily && 
-                (now - profile.cooldowns.daily.getTime()) < (2 * oneDayMs);
+            const wasYesterday = profile.cooldowns.daily && (now - profile.cooldowns.daily.getTime()) < (2 * oneDayMs);
             
             if (wasYesterday) {
                 profile.dailyStreak += 1;
@@ -62,72 +60,65 @@ module.exports = {
                 profile.dailyStreak = 1;
             }
             
-          
-            const baseReward = 500;
-            const streakBonus = Math.min(profile.dailyStreak * 50, 1000); 
-            const roleBonus = profile.purchasedRoles
-                .filter(r => !r.expiryDate || r.expiryDate > new Date())
-                .reduce((sum, role) => sum + (role.benefits.familyBonus * 100), 0);
+            const baseBlessing = 500;
+            const allegianceBonus = Math.min(profile.dailyStreak * 50, 1000);
+            const titleBonus = profile.acquiredTitles
+                .filter(t => !t.expiryDate || t.expiryDate > new Date())
+                .reduce((sum, title) => sum + (title.benefits.followerBonus * 100), 0);
             
-            const totalReward = baseReward + streakBonus + roleBonus;
+            const totalBlessing = baseBlessing + allegianceBonus + titleBonus;
             
-         
-            profile.wallet += totalReward;
+            profile.embers += totalBlessing;
             profile.cooldowns.daily = new Date();
             profile.experience += 5;
 
-          
             profile.transactions.push({
                 type: 'income',
-                amount: totalReward,
-                description: `Daily reward (${profile.dailyStreak} day streak)`,
+                amount: totalBlessing,
+                description: `Daily blessing (${profile.dailyStreak} day allegiance)`,
                 category: 'daily'
             });
             
             await profile.save();
             
-            
             const components = [];
 
-        
             const successContainer = new ContainerBuilder()
                 .setAccentColor(0xFFD700);
 
             const streakMessage = profile.dailyStreak === 1 ? 
-                'Starting fresh with a new daily streak!' : 
-                `Amazing ${profile.dailyStreak}-day consistency!`;
+                'You have begun a new allegiance!' : 
+                `A commendable ${profile.dailyStreak}-day allegiance!`;
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🎁 Daily Reward Claimed!\n## CONSISTENCY PAYS OFF\n\n> Congratulations! You've successfully claimed your daily reward of **\`$${totalReward.toLocaleString()}\`**!\n> ${streakMessage}`)
+                    .setContent(`# 🎁 Daily Blessing Received!\n## YOUR LOYALTY IS REWARDED\n\n> Congratulations! You have received a daily blessing of **\`${totalBlessing.toLocaleString()} Embers\`**!\n> ${streakMessage}`)
             );
 
             components.push(successContainer);
 
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-       
             const breakdownContainer = new ContainerBuilder()
                 .setAccentColor(0xFFC107);
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 💰 **REWARD BREAKDOWN**')
+                    .setContent('## 💰 **BLESSING BREAKDOWN**')
             );
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Base Daily Reward:** \`$${baseReward.toLocaleString()}\`\n**🔥 Streak Bonus:** \`$${streakBonus.toLocaleString()}\` (${profile.dailyStreak} days)\n**👑 Role Bonus:** \`$${roleBonus.toLocaleString()}\`\n**💰 Total Reward:** \`$${totalReward.toLocaleString()}\``)
+                    .setContent(`**💎 Base Daily Blessing:** \`${baseBlessing.toLocaleString()} Embers\`\n**🔥 Allegiance Bonus:** \`${allegianceBonus.toLocaleString()} Embers\` (${profile.dailyStreak} days)\n**👑 Title Bonus:** \`${titleBonus.toLocaleString()} Embers\`\n**💰 Total Blessing:** \`${totalBlessing.toLocaleString()} Embers\``)
             );
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**⭐ Experience Gained:** \`+5 XP\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**📊 Transaction Logged:** Daily reward recorded`)
+                    .setContent(`**✨ Arcane Power Gained:** \`+5 XP\`\n**💳 New Coin Purse Balance:** \`${profile.embers.toLocaleString()} Embers\`\n**📊 Ledger Updated:** Daily blessing recorded`)
             );
 
             components.push(breakdownContainer);
 
-        
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const streakContainer = new ContainerBuilder()
@@ -135,34 +126,31 @@ module.exports = {
 
             streakContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🔥 **DAILY STREAK STATUS**')
+                    .setContent('## 🔥 **ALLEGIANCE STATUS**')
             );
 
-            const streakBonusPercent = Math.min((profile.dailyStreak * 10), 200);
-            const maxStreakBonus = Math.min(profile.dailyStreak * 50, 1000);
-            const nextStreakBonus = Math.min((profile.dailyStreak + 1) * 50, 1000);
+            const nextAllegianceBonus = Math.min((profile.dailyStreak + 1) * 50, 1000);
 
             streakContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🔥 Current Streak:** \`${profile.dailyStreak} days\`\n**💵 Current Bonus:** \`$${maxStreakBonus}\` per day\n**📈 Next Day Bonus:** \`$${nextStreakBonus}\`\n**🎯 Max Bonus:** \`$1,000\` (20+ day streak)`)
+                    .setContent(`**🔥 Current Allegiance:** \`${profile.dailyStreak} days\`\n**💵 Current Bonus:** \`${allegianceBonus}\` per day\n**📈 Next Day's Bonus:** \`${nextAllegianceBonus}\`\n**🎯 Max Bonus:** \`1,000 Embers\` (20+ day allegiance)`)
             );
 
             if (profile.dailyStreak >= 7) {
                 streakContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏆 STREAK MILESTONE!** You've maintained a ${profile.dailyStreak}-day streak!\n\n> Excellent dedication! Keep this momentum going for maximum rewards!`)
+                        .setContent(`**🏆 ALLEGIANCE MILESTONE!** You have maintained a ${profile.dailyStreak}-day allegiance!\n\n> Your dedication is noted! Continue for even greater rewards!`)
                 );
             } else {
                 streakContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Streak Tips:** Claim daily rewards consistently to build up massive bonus earnings!\n\n> ${7 - profile.dailyStreak} more days until your first weekly milestone!`)
+                        .setContent(`**💡 Allegiance Tips:** Claim your blessing daily to build a powerful bonus!\n\n> ${7 - profile.dailyStreak} more days until your first weekly milestone!`)
                 );
             }
 
             components.push(streakContainer);
 
-       
-            if (roleBonus > 0) {
+            if (titleBonus > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const roleContainer = new ContainerBuilder()
@@ -170,19 +158,18 @@ module.exports = {
 
                 roleContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 👑 **PREMIUM ROLE BENEFITS**')
+                        .setContent('## 👑 **NOBLE TITLE BENEFITS**')
                 );
 
-                const activeRoles = profile.purchasedRoles.filter(r => !r.expiryDate || r.expiryDate > new Date());
+                const activeTitles = profile.acquiredTitles.filter(t => !t.expiryDate || t.expiryDate > new Date());
                 roleContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Active Premium Roles:** \`${activeRoles.length}\`\n**Daily Role Bonus:** \`$${roleBonus.toLocaleString()}\`\n**Monthly Role Value:** \`$${(roleBonus * 30).toLocaleString()}\`\n\n> Your premium membership is enhancing your daily earnings!`)
+                        .setContent(`**Active Noble Titles:** \`${activeTitles.length}\`\n**Daily Title Bonus:** \`${titleBonus.toLocaleString()} Embers\`\n**Monthly Title Value:** \`${(titleBonus * 30).toLocaleString()} Embers\`\n\n> Your noble status enhances your daily blessings!`)
                 );
 
                 components.push(roleContainer);
             }
 
-         
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const nextRewardContainer = new ContainerBuilder()
@@ -190,7 +177,7 @@ module.exports = {
 
             nextRewardContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📅 **NEXT DAILY REWARD**\n\n**Next Claim Available:** \`${new Date(now + oneDayMs).toLocaleDateString()} at ${new Date(now + oneDayMs).toLocaleTimeString()}\`\n**Projected Next Reward:** \`$${baseReward + nextStreakBonus + roleBonus}\`\n**Streak Continuation:** Come back within 48 hours to maintain your streak\n\n> Set a daily reminder to maximize your earning potential!`)
+                    .setContent(`## 📅 **NEXT DAILY BLESSING**\n\n**Next Blessing Available:** \`${new Date(now + oneDayMs).toLocaleDateString()} at ${new Date(now + oneDayMs).toLocaleTimeString()}\`\n**Projected Next Blessing:** \`${baseBlessing + nextAllegianceBonus + titleBonus}\`\n**Allegiance Continuation:** Return within 48 hours to maintain your allegiance\n\n> Set a reminder to maximize your divine favor!`)
             );
 
             components.push(nextRewardContainer);
@@ -203,13 +190,12 @@ module.exports = {
         } catch (error) {
             console.error('Error in daily command:', error);
 
-         
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **DAILY REWARD ERROR**\n\nSomething went wrong while processing your daily reward. Please try again in a moment.')
+                    .setContent('## ❌ **DIVINE INTERFERENCE**\n\nSomething went wrong while bestowing your daily blessing. Please try again in a moment.')
             );
 
             return message.reply({

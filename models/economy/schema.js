@@ -1,37 +1,31 @@
 const mongoose = require('mongoose');
 
-// Hunting Vehicle Schema
-const huntingVehicleSchema = new mongoose.Schema({
-    vehicleId: String,
+// Conveyance Schema
+const conveyanceSchema = new mongoose.Schema({
+    conveyanceId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['atv', 'jeep', 'truck', 'helicopter', 'tank']
-    },
+    type: { type: String, enum: ['steed', 'chariot', 'wagon', 'airship', 'golem'] },
     tier: { type: Number, min: 1, max: 5 },
-    durability: { type: Number, min: 0, max: 100, default: 100 },
+    durability: { type: Number, min: 0, max: 300, default: 100 },
     maxDurability: { type: Number, default: 100 },
     fuelCapacity: { type: Number, default: 100 },
     currentFuel: { type: Number, default: 100 },
     capacity: { type: Number, default: 5 },
-    jungleDepth: { type: Number, min: 1, max: 10 },
+    dungeonDepth: { type: Number, min: 1, max: 10 },
     purchasePrice: Number,
     maintenanceCost: { type: Number, default: 100 },
     dateAcquired: { type: Date, default: Date.now }
 });
 
-// Hunting Weapon Schema - ✅ SINGLE DECLARATION ONLY
-const huntingWeaponSchema = new mongoose.Schema({
+// Weapon Schema
+const weaponSchema = new mongoose.Schema({
     weaponId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['bow', 'crossbow', 'rifle', 'sniper', 'tranquilizer', 'net_gun'] // ✅ FIXED: net_gun
-    },
+    type: { type: String, enum: ['bow', 'crossbow', 'staff', 'lance', 'cannon', 'soul-trapper', 'chain-caster'] },
     tier: { type: Number, min: 1, max: 5 },
     damage: { type: Number, min: 10, max: 500 },
     accuracy: { type: Number, min: 50, max: 100 },
-    durability: { type: Number, min: 0, max: 100, default: 100 },
+    durability: { type: Number, min: 0, max: 200, default: 100 },
     maxDurability: { type: Number, default: 100 },
     ammoCapacity: { type: Number, default: 30 },
     currentAmmo: { type: Number, default: 30 },
@@ -41,16 +35,13 @@ const huntingWeaponSchema = new mongoose.Schema({
     dateAcquired: { type: Date, default: Date.now }
 });
 
-// Hunting Companion Schema
-const huntingCompanionSchema = new mongoose.Schema({
-    companionId: String,
+// Ally Schema
+const allySchema = new mongoose.Schema({
+    allyId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['dog', 'falcon', 'tracker', 'medic', 'veteran_hunter'] // ✅ FIXED: veteran_hunter
-    },
+    type: { type: String, enum: ['wolf', 'raven', 'scout', 'cleric', 'knight'] },
     tier: { type: Number, min: 1, max: 5 },
-    health: { type: Number, min: 0, max: 100, default: 100 },
+    health: { type: Number, min: 0, max: 150, default: 100 },
     maxHealth: { type: Number, default: 100 },
     stamina: { type: Number, min: 0, max: 100, default: 100 },
     skill: { type: Number, min: 1, max: 100, default: 50 },
@@ -64,17 +55,14 @@ const huntingCompanionSchema = new mongoose.Schema({
     dateAcquired: { type: Date, default: Date.now }
 });
 
-// Hunting Warehouse Schema
-const huntingWarehouseSchema = new mongoose.Schema({
-    warehouseId: String,
+// Trove Schema
+const troveSchema = new mongoose.Schema({
+    troveId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['basic_storage', 'cooled_storage', 'premium_vault', 'exotic_preserve', 'legendary_sanctuary'] // ✅ FIXED: All underscores
-    },
+    type: { type: String, enum: ['pack', 'chest', 'vault', 'menagerie', 'pocket_dimension'] },
     tier: { type: Number, min: 1, max: 5 },
     capacity: { type: Number, default: 20 },
-    preservation: { type: Number, min: 1, max: 10, default: 5 },
+    preservation: { type: Number, min: 1, max: 60, default: 5 },
     bonusMultiplier: { type: Number, default: 1.0 },
     currentItems: { type: Number, default: 0 },
     maintenanceCost: { type: Number, default: 500 },
@@ -83,18 +71,12 @@ const huntingWarehouseSchema = new mongoose.Schema({
     dateAcquired: { type: Date, default: Date.now }
 });
 
-// Hunting Inventory Item Schema
-const huntingInventorySchema = new mongoose.Schema({
-    itemId: String,
+// Loot Schema
+const lootSchema = new mongoose.Schema({
+    lootId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['animal', 'pelt', 'meat', 'trophy', 'rare_material', 'loot_box', 'artifact'] // ✅ FIXED: rare_material, loot_box
-    },
-    rarity: {
-        type: String,
-        enum: ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic']
-    },
+    type: { type: String, enum: ['monster_part', 'core', 'essence', 'trophy', 'ectoplasm', 'treasure_chest', 'soulstone'] },
+    rarity: { type: String, enum: ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'] },
     baseValue: Number,
     currentValue: Number,
     weight: { type: Number, default: 1 },
@@ -105,16 +87,13 @@ const huntingInventorySchema = new mongoose.Schema({
     description: String
 });
 
-// Business Schema
-const businessSchema = new mongoose.Schema({
-    businessId: String,
+// Guild Schema
+const guildSchema = new mongoose.Schema({
+    guildId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['restaurant', 'tech_startup', 'real_estate', 'car_dealership', 'security_company', 'casino'] // ✅ FIXED: All underscores
-    },
+    type: { type: String, enum: ['alchemists_guild', 'arcane_academy', 'mercenary_guild', 'beast_masters_guild', 'royal_guard', 'shadow_syndicate'] },
     level: { type: Number, default: 1, max: 10 },
-    employees: { type: Number, default: 0 },
+    apprentices: { type: Number, default: 0 },
     revenue: { type: Number, default: 0 },
     expenses: { type: Number, default: 0 },
     profit: { type: Number, default: 0 },
@@ -129,68 +108,52 @@ const businessSchema = new mongoose.Schema({
     dateAcquired: { type: Date, default: Date.now }
 });
 
-// Heist Schema
-const heistSchema = new mongoose.Schema({
-    heistId: String,
+// Raid Schema
+const raidSchema = new mongoose.Schema({
+    raidId: String,
     plannerUserId: String,
-    targetType: {
-        type: String,
-        enum: ['central_bank', 'casino_vault', 'mansion_safe', 'jewelry_store', 'armored_truck'] // ✅ FIXED: All underscores
-    },
+    targetType: { type: String, enum: ['ancient_dragon_hoard', 'elven_treasury', 'lich_phylactery', 'dwarven_gem_mine', 'kings_caravan'] },
     targetName: String,
     difficulty: { type: Number, min: 1, max: 5 },
     requiredMembers: { type: Number, min: 3, max: 6 },
     members: [{
         userId: String,
         username: String,
-        role: {
-            type: String,
-            enum: ['mastermind', 'hacker', 'driver', 'muscle', 'lookout', 'safecracker']
-        },
+        role: { type: String, enum: ['warlord', 'arcanist', 'scout', 'vanguard', 'sentinel', 'berserker', 'rune_forger'] },
         confirmed: { type: Boolean, default: false },
         equipment: [String]
     }],
     plannedDate: Date,
     executionDate: Date,
-    status: {
-        type: String,
-        enum: ['planning', 'recruiting', 'ready', 'in_progress', 'completed', 'failed', 'cancelled'], // ✅ FIXED: in_progress
-        default: 'planning'
-    },
-    potential_payout: Number, // ✅ FIXED: potential_payout
-    actual_payout: Number, // ✅ FIXED: actual_payout
-    success_chance: { type: Number, default: 0 }, // ✅ FIXED: success_chance
-    heat_level: { type: Number, default: 0 }, // ✅ FIXED: heat_level
-    preparation_time: { type: Number, default: 0 }, // ✅ FIXED: preparation_time
-    equipment_cost: { type: Number, default: 0 }, // ✅ FIXED: equipment_cost
+    status: { type: String, enum: ['planning', 'recruiting', 'ready', 'in_progress', 'completed', 'failed', 'cancelled'], default: 'planning' },
+    potential_payout: Number,
+    actual_payout: Number,
+    success_chance: { type: Number, default: 0 },
+    notoriety_level: { type: Number, default: 0 },
+    preparation_time: { type: Number, default: 0 },
+    equipment_cost: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now }
 });
 
-const heistCollectionSchema = new mongoose.Schema({
-    heistId: { type: String, required: true, unique: true },
+const raidCollectionSchema = new mongoose.Schema({
+    raidId: { type: String, required: true, unique: true },
     guildId: { type: String, required: true },
-    ...heistSchema.obj
+    ...raidSchema.obj
 });
 
 const transactionSchema = new mongoose.Schema({
-    type: {
-        type: String,
-        enum: ['income', 'expense', 'transfer', 'investment', 'trade', 'racing', 'robbery', 'family_work', 'gambling', 'shop'], // ✅ FIXED: family_work
-        required: true
-    },
+    type: { type: String, enum: ['income', 'expense', 'transfer', 'investment', 'trade', 'arena_battle', 'pillage', 'family_quest', 'mystic_gambling', 'market_purchase', 'dungeon_raid', 'monster_hunt'], required: true },
     amount: { type: Number, required: true },
     description: String,
     category: String,
     timestamp: { type: Date, default: Date.now }
 });
 
-const carSchema = new mongoose.Schema({
-    carId: String,
+// Mount Schema
+const mountSchema = new mongoose.Schema({
+    mountId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['economy', 'sports', 'luxury', 'supercar', 'hypercar']
-    },
+    type: { type: String, enum: ['ground', 'predator', 'flying', 'dragonkin', 'dragon'] },
     speed: { type: Number, min: 1, max: 100 },
     acceleration: { type: Number, min: 1, max: 100 },
     handling: { type: Number, min: 1, max: 100 },
@@ -198,39 +161,34 @@ const carSchema = new mongoose.Schema({
     purchasePrice: Number,
     currentValue: Number,
     maintenanceCost: Number,
-    raceWins: { type: Number, default: 0 },
-    raceLosses: { type: Number, default: 0 },
-    totalDistance: { type: Number, default: 0 },
+    battleWins: { type: Number, default: 0 },
+    battleLosses: { type: Number, default: 0 },
+    totalDistanceTraveled: { type: Number, default: 0 },
     dateAcquired: { type: Date, default: Date.now }
 });
 
-const petSchema = new mongoose.Schema({
-    petId: String,
+// Familiar Schema
+const familiarSchema = new mongoose.Schema({
+    familiarId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['dog', 'cat', 'bird', 'security_dog', 'guard_cat'] // ✅ FIXED: security_dog, guard_cat
-    },
+    type: { type: String, enum: ['shadow', 'demon', 'construct', 'stonekin', 'undead'] },
     breed: String,
     securityLevel: { type: Number, min: 1, max: 100 },
     happiness: { type: Number, min: 0, max: 100, default: 50 },
     health: { type: Number, min: 0, max: 100, default: 100 },
     hunger: { type: Number, min: 0, max: 100, default: 50 },
     cleanliness: { type: Number, min: 0, max: 100, default: 50 },
-    lastFed: Date,
-    lastGroomed: Date,
-    lastPlayed: Date,
+    lastNourished: Date,
+    lastAttuned: Date,
+    lastBonded: Date,
     purchasePrice: Number,
-    dateAdopted: { type: Date, default: Date.now }
+    dateSummoned: { type: Date, default: Date.now }
 });
 
 const familyMemberSchema = new mongoose.Schema({
     memberId: String,
     name: String,
-    relationship: {
-        type: String,
-        enum: ['spouse', 'child', 'parent', 'sibling', 'grandparent']
-    },
+    relationship: { type: String, enum: ['spouse', 'child', 'parent', 'sibling', 'grandparent'] },
     age: Number,
     profession: String,
     salary: Number,
@@ -240,38 +198,33 @@ const familyMemberSchema = new mongoose.Schema({
     totalTrips: { type: Number, default: 0 }
 });
 
-const propertySchema = new mongoose.Schema({
-    propertyId: String,
+// Stronghold Schema
+const strongholdSchema = new mongoose.Schema({
+    strongholdId: String,
     name: String,
-    type: {
-        type: String,
-        enum: ['studio', 'apartment', 'house', 'mansion', 'penthouse', 'estate']
-    },
+    type: { type: String, enum: ['tower', 'spire', 'citadel', 'fortress', 'keep'] },
     purchasePrice: Number,
     currentValue: Number,
     monthlyRent: Number,
     utilities: Number,
     securityLevel: { type: Number, min: 1, max: 10, default: 1 },
     maxFamilyMembers: Number,
-    hasGarage: { type: Boolean, default: false },
-    garageCapacity: { type: Number, default: 0 },
-    vaultCapacity: { type: Number, default: 0 },
-    condition: {
-        type: String,
-        enum: ['poor', 'fair', 'good', 'excellent'],
-        default: 'good'
-    },
+    hasStable: { type: Boolean, default: false },
+    stableCapacity: { type: Number, default: 0 },
+    treasuryCapacity: { type: Number, default: 0 },
+    condition: { type: String, enum: ['poor', 'fair', 'good', 'excellent'], default: 'good' },
     dateAcquired: Date
 });
 
-const roleSchema = new mongoose.Schema({
-    roleId: String,
-    roleName: String,
+// Title Schema
+const titleSchema = new mongoose.Schema({
+    titleId: String,
+    titleName: String,
     price: Number,
     benefits: {
         workMultiplier: { type: Number, default: 1.0 },
-        racingBonus: { type: Number, default: 0 },
-        robberyProtection: { type: Number, default: 0 },
+        arenaBonus: { type: Number, default: 0 },
+        pillageProtection: { type: Number, default: 0 },
         familyBonus: { type: Number, default: 0 }
     },
     datePurchased: { type: Date, default: Date.now },
@@ -282,10 +235,7 @@ const roleSchema = new mongoose.Schema({
 const activeEffectSchema = new mongoose.Schema({
     effectId: String,
     name: String,
-    type: { 
-        type: String, 
-        enum: ['gambling_luck', 'work_boost', 'robbery_protection', 'vault_boost', 'bank_boost'] // ✅ FIXED: All underscores
-    },
+    type: { type: String, enum: ['mystic_luck', 'quest_boost', 'pillage_protection', 'treasury_boost', 'royal_treasury_boost'] },
     multiplier: { type: Number, default: 1 },
     stacks: { type: Number, default: 1, max: 5 },
     startTime: { type: Date, default: Date.now },
@@ -293,74 +243,74 @@ const activeEffectSchema = new mongoose.Schema({
     description: String
 });
 
-// ✅ MAIN ECONOMY SCHEMA
+// MAIN ECONOMY SCHEMA
 const economySchema = new mongoose.Schema({
     userId: { type: String, required: true },
     guildId: { type: String, required: true },
     
     // Basic Economy
-    wallet: { type: Number, default: 1000, min: 0 },
-    bank: { type: Number, default: 0, min: 0 },
-    bankLimit: { type: Number, default: 10000 },
+    embers: { type: Number, default: 1000, min: 0 },
+    royal_treasury: { type: Number, default: 0, min: 0 },
+    treasury_limit: { type: Number, default: 10000 },
     
     // Family System
-    familyVault: { type: Number, default: 0, min: 0 },
+    family_strongbox: { type: Number, default: 0, min: 0 },
     familyMembers: [familyMemberSchema],
     familyBond: { type: Number, min: 0, max: 100, default: 0 },
     
-    // Vehicle System
-    cars: [carSchema],
-    activeCar: String,
+    // Mount System
+    mounts: [mountSchema],
+    activeMount: String,
     
-    // Pet System
-    pets: [petSchema],
-    maxPets: { type: Number, default: 1 },
+    // Familiar System
+    familiars: [familiarSchema],
+    maxFamiliars: { type: Number, default: 1 },
     
-    // Property System
-    properties: [propertySchema],
-    primaryResidence: String,
+    // Stronghold System
+    strongholds: [strongholdSchema],
+    primaryStronghold: String,
     
-    // Business System
-    businesses: [businessSchema],
-    maxBusinesses: { type: Number, default: 1 },
-    businessSkill: { type: Number, default: 0, max: 100 },
+    // Guild System
+    guilds: [guildSchema],
+    maxGuilds: { type: Number, default: 1 },
+    guildManagementSkill: { type: Number, default: 0, max: 100 },
     
-    // Heist System
-    activeHeists: [String],
-    completedHeists: { type: Number, default: 0 },
-    failedHeists: { type: Number, default: 0 },
-    heistSkill: { type: Number, default: 0, max: 100 },
-    heatLevel: { type: Number, default: 0, max: 100 },
-    jailTime: Date,
+    // Raid System
+    activeRaids: [String],
+    completedRaids: { type: Number, default: 0 },
+    failedRaids: { type: Number, default: 0 },
+    raidingSkill: { type: Number, default: 0, max: 100 },
+    notoriety: { type: Number, default: 0, max: 100 },
+    banishmentTime: Date,
     
-    // ✅ HUNTING SYSTEM
-    huntingVehicles: [huntingVehicleSchema],
-    activeVehicle: String,
-    huntingWeapons: [huntingWeaponSchema],
+    // MONSTER HUNTING SYSTEM
+    conveyances: [conveyanceSchema],
+    activeConveyance: String,
+    weapons: [weaponSchema],
     activeWeapon: String,
-    huntingCompanions: [huntingCompanionSchema],
-    activeCompanions: [String],
-    maxCompanions: { type: Number, default: 2 },
-    huntingWarehouses: [huntingWarehouseSchema],
-    huntingInventory: [huntingInventorySchema],
+    allies: [allySchema],
+    activeAllies: [String],
+    maxAllies: { type: Number, default: 2 },
+    troves: [troveSchema],
+    loot: [lootSchema],
 
-    // Hunting Stats
+    // Monster Hunting Stats
     huntingStats: {
         totalHunts: { type: Number, default: 0 },
         successfulHunts: { type: Number, default: 0 },
         failedHunts: { type: Number, default: 0 },
-        animalsKilled: { type: Number, default: 0 },
+        monstersSlain: { type: Number, default: 0 },
         totalDamageDealt: { type: Number, default: 0 },
         totalDamageTaken: { type: Number, default: 0 },
-        deepestJungleLevel: { type: Number, default: 1 },
-        rareAnimalsFound: { type: Number, default: 0 },
-        lootBoxesFound: { type: Number, default: 0 },
+        deepestDungeonLevel: { type: Number, default: 1 },
+        rareMonstersFound: { type: Number, default: 0 },
+        treasureChestsFound: { type: Number, default: 0 },
         totalEarnings: { type: Number, default: 0 },
-        huntingSkill: { type: Number, default: 0, max: 100 },
+        monsterHuntingSkill: { type: Number, default: 0, max: 100 },
         survivalSkill: { type: Number, default: 0, max: 100 }
     },
 
-    // Hunting Profile
+    // Hunter Profile
     huntingProfile: {
         hunterLevel: { type: Number, default: 1 },
         hunterExperience: { type: Number, default: 0 },
@@ -370,13 +320,13 @@ const economySchema = new mongoose.Schema({
         stamina: { type: Number, default: 100, min: 0, max: 100 },
         lastHunt: Date,
         expeditionCount: { type: Number, default: 0 },
-        currentLocation: { type: String, default: 'base_camp' }, // ✅ FIXED: base_camp
+        currentLocation: { type: String, default: 'sanctuary' },
         licenses: [String],
         achievements: [String]
     },
     
-    // Role System
-    purchasedRoles: [roleSchema],
+    // Title System
+    acquiredTitles: [titleSchema],
     
     // Active Effects System
     activeEffects: [activeEffectSchema],
@@ -386,35 +336,35 @@ const economySchema = new mongoose.Schema({
     experience: { type: Number, default: 0 },
     reputation: { type: Number, default: 0 },
     
-    // Racing Stats
-    racingStats: {
-        totalRaces: { type: Number, default: 0 },
+    // Arena Stats
+    arenaStats: {
+        totalBattles: { type: Number, default: 0 },
         wins: { type: Number, default: 0 },
         losses: { type: Number, default: 0 },
         earnings: { type: Number, default: 0 },
         winStreak: { type: Number, default: 0 }
     },
     
-    // Security & Robbery
-    lastRobbed: Date,
-    robberyAttempts: { type: Number, default: 0 },
-    successfulRobberies: { type: Number, default: 0 },
+    // Security & Pillage
+    lastPillaged: Date,
+    pillageAttempts: { type: Number, default: 0 },
+    successfulPillages: { type: Number, default: 0 },
     
     // Enhanced Cooldowns
     cooldowns: {
         daily: Date,
         weekly: Date,
-        work: Date,
-        race: Date,
-        trip: Date,
-        petCare: Date,
-        robbery: Date,
-        beg: Date,
-        gambling: Date,
-        shop: Date,
-        business: Date,
-        heist: Date,
-        hunt: Date // ✅ ADDED hunt cooldown
+        quest: Date,
+        arena_battle: Date,
+        journey: Date,
+        familiarCare: Date,
+        pillage: Date,
+        plead: Date,
+        mystic_gambling: Date,
+        market: Date,
+        guild: Date,
+        raid: Date,
+        hunt: Date
     },
     
     dailyStreak: { type: Number, default: 0 },
@@ -424,14 +374,13 @@ const economySchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now }
 });
 
-// ✅ CRITICAL FIX: Add compound unique index
+// Add compound unique index
 economySchema.index({ userId: 1, guildId: 1 }, { unique: true });
 
 // Pre-save middleware to update timestamp and clean expired effects
 economySchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     
-    // Clean expired effects
     this.activeEffects = this.activeEffects.filter(effect => 
         new Date(effect.expiryTime) > new Date()
     );
@@ -441,5 +390,5 @@ economySchema.pre('save', function(next) {
 
 module.exports = {
     Economy: mongoose.model('Economy', economySchema),
-    Heist: mongoose.model('Heist', heistCollectionSchema)
+    Raid: mongoose.model('Raid', raidCollectionSchema)
 };

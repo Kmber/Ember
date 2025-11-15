@@ -8,44 +8,29 @@ const {
 const { Economy } = require('../../models/economy/economy');
 
 module.exports = {
-    name: 'leaderboard',
-    aliases: ['lb', 'top'],
-    description: 'View server leaderboards with v2 components',
-    usage: '!leaderboard [wealth/level/racing/family]',
+    name: 'annals',
+    aliases: ['lb', 'top', 'legends'],
+    description: 'View the Annals of the Realm, showcasing the most powerful and influential adventurers.',
+    usage: '!annals [wealth|renown|conquests|allegiance]',
     async execute(message, args) {
         try {
             const type = args[0]?.toLowerCase() || 'wealth';
-            const validTypes = ['wealth', 'level', 'racing', 'family'];
+            const validTypes = ['wealth', 'renown', 'conquests', 'allegiance'];
             
             if (!validTypes.includes(type)) {
                 const components = [];
-
-                const invalidTypeContainer = new ContainerBuilder()
-                    .setAccentColor(0xE74C3C);
-
+                const invalidTypeContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
                 invalidTypeContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Leaderboard Type\n## PLEASE SELECT VALID CATEGORY\n\n> **\`${type}\`** is not a valid leaderboard category!\n> Choose from the available options below.`)
+                    new TextDisplayBuilder().setContent(`# ❌ Invalid Chronicle Category\n## PLEASE SELECT A VALID ANNALS\n\n> **\`${type}\`** is not a valid category!\n> Choose from the available chronicles below.`)
                 );
-
                 components.push(invalidTypeContainer);
-
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-                const typesContainer = new ContainerBuilder()
-                    .setAccentColor(0x3498DB);
-
+                const typesContainer = new ContainerBuilder().setAccentColor(0x3498DB);
                 typesContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder()
-                        .setContent(`## 🏆 **AVAILABLE LEADERBOARDS**\n\n**💰 \`wealth\`** - Total wealth (wallet + bank + family vault)\n**⭐ \`level\`** - Player levels and experience points\n**🏁 \`racing\`** - Racing wins and success rates\n**👨‍👩‍👧‍👦 \`family\`** - Family bonds and household sizes\n\n**Example:** \`!leaderboard wealth\``)
+                    new TextDisplayBuilder().setContent(`## 🏆 **AVAILABLE ANNALS**\n\n**💰 \`wealth\`** - Total wealth (Embers, Treasury, Guild Coffers)\n**⭐ \`renown\`** - Adventurer levels and experience\n**⚔️ \`conquests\`** - Campaign victories and success rates\n**👥 \`allegiance\`** - Retinue loyalty and size\n\n**Example:** \`!annals wealth\``)
                 );
-
                 components.push(typesContainer);
-
-                return message.reply({
-                    components: components,
-                    flags: MessageFlags.IsComponentsV2
-                });
+                return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
 
             let leaderboardData = [];
@@ -53,289 +38,132 @@ module.exports = {
             let emoji = '';
             let description = '';
 
-        
             switch (type) {
                 case 'wealth':
                     leaderboardData = await Economy.aggregate([
                         { $match: { guildId: message.guild.id } },
-                        { $addFields: { totalWealth: { $add: ['$wallet', '$bank', '$familyVault'] } } },
+                        { $addFields: { totalWealth: { $add: ['$embers', '$treasury', '$guild_coffers'] } } },
                         { $sort: { totalWealth: -1 } },
                         { $limit: 15 }
                     ]);
-                    title = 'Wealth Champions';
+                    title = 'Lords of Wealth';
                     emoji = '💰';
-                    description = 'Top players by total wealth (wallet + bank + family vault)';
+                    description = 'The most affluent adventurers by total wealth (Embers, Treasury, and Guild Coffers)';
                     break;
-
-                case 'level':
-                    leaderboardData = await Economy.find({ guildId: message.guild.id })
-                        .sort({ level: -1, experience: -1 })
-                        .limit(15);
-                    title = 'Experience Leaders';
+                case 'renown':
+                    leaderboardData = await Economy.find({ guildId: message.guild.id }).sort({ level: -1, experience: -1 }).limit(15);
+                    title = 'Legends of Renown';
                     emoji = '⭐';
-                    description = 'Top players by level and experience points';
+                    description = 'The most legendary adventurers by level and experience';
                     break;
-
-                case 'racing':
-                    leaderboardData = await Economy.find({ guildId: message.guild.id })
-                        .sort({ 'racingStats.wins': -1 })
-                        .limit(15);
-                    title = 'Racing Champions';
-                    emoji = '🏁';
-                    description = 'Top players by racing victories and win rates';
+                case 'conquests':
+                    leaderboardData = await Economy.find({ guildId: message.guild.id }).sort({ 'campaignStats.wins': -1 }).limit(15);
+                    title = 'Warlords of Conquest';
+                    emoji = '⚔️';
+                    description = 'The most dominant warlords by successful campaigns';
                     break;
-
-                case 'family':
-                    leaderboardData = await Economy.find({ 
-                        guildId: message.guild.id,
-                        'familyMembers.0': { $exists: true }
-                    })
-                    .sort({ familyBond: -1 })
-                    .limit(15);
-                    title = 'Family Leaders';
-                    emoji = '👨‍👩‍👧‍👦';
-                    description = 'Top players by family bonds and household management';
+                case 'allegiance':
+                    leaderboardData = await Economy.find({ guildId: message.guild.id, 'followers.0': { $exists: true } }).sort({ followerLoyalty: -1 }).limit(15);
+                    title = 'Masters of Allegiance';
+                    emoji = '👥';
+                    description = 'The most influential leaders by retinue loyalty and size';
                     break;
             }
 
             if (!leaderboardData || leaderboardData.length === 0) {
                 const components = [];
-
-                const noDataContainer = new ContainerBuilder()
-                    .setAccentColor(0xF39C12);
-
-                noDataContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder()
-                        .setContent(`# 📊 No Leaderboard Data\n## CATEGORY CURRENTLY EMPTY\n\n> No data found for the **${type}** leaderboard!\n> Be the first to make your mark on this leaderboard!`)
-                );
-
+                const noDataContainer = new ContainerBuilder().setAccentColor(0xF39C12);
+                noDataContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 📊 No Entries in the Annals\n## THIS CHRONICLE IS YET TO BE WRITTEN\n\n> No data found for the **${type}** annals!\n> Be the first to carve your name into history!`));
                 components.push(noDataContainer);
-
-                components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-                const encouragementContainer = new ContainerBuilder()
-                    .setAccentColor(0x9B59B6);
-
-                encouragementContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder()
-                        .setContent(`## 🚀 **GET STARTED**\n\n**💡 Tips to appear on this leaderboard:**\n> • Participate in economy activities\n> • Build wealth through work and businesses\n> • Level up through regular activity\n> • Start racing and building family relationships\n\n> Your journey to the top starts now!`)
-                );
-
-                components.push(encouragementContainer);
-
-                return message.reply({
-                    components: components,
-                    flags: MessageFlags.IsComponentsV2
-                });
+                return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
 
             const components = [];
-
-          
-            const headerContainer = new ContainerBuilder()
-                .setAccentColor(0xFFD700);
-
-            headerContainer.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent(`# ${emoji} ${title}\n## ${message.guild.name.toUpperCase()} LEADERBOARD\n\n> ${description}\n> Celebrating the top performers in our economy!`)
-            );
-
+            const headerContainer = new ContainerBuilder().setAccentColor(0xFFD700);
+            headerContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`# ${emoji} ${title}\n## THE ANNALS OF ${message.guild.name.toUpperCase()}\n\n> ${description}\n> Honoring the most legendary figures of our realm!`));
             components.push(headerContainer);
-
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-         
-            const podiumContainer = new ContainerBuilder()
-                .setAccentColor(0xFFC107);
-
-            podiumContainer.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent('## 🏆 **TOP 3 PODIUM**')
-            );
-
+            const podiumContainer = new ContainerBuilder().setAccentColor(0xFFC107);
+            podiumContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('## 🏆 **INNER CIRCLE**'));
             const topThree = leaderboardData.slice(0, 3);
             topThree.forEach((profile, index) => {
                 const user = message.guild.members.cache.get(profile.userId);
-                const username = user ? user.displayName : 'Unknown User';
+                const username = user ? user.displayName : 'A mysterious figure';
                 const medal = ['🥇', '🥈', '🥉'][index];
-                
                 let valueText = '';
                 switch (type) {
-                    case 'wealth':
-                        valueText = `$${profile.totalWealth.toLocaleString()}`;
+                    case 'wealth': valueText = `${(profile.totalWealth || 0).toLocaleString()} Embers`; break;
+                    case 'renown': valueText = `Level ${profile.level} (${profile.experience} XP)`; break;
+                    case 'conquests':
+                        const totalCampaigns = profile.campaignStats.totalCampaigns || 0;
+                        const winRate = totalCampaigns > 0 ? ((profile.campaignStats.wins / totalCampaigns) * 100).toFixed(1) : '0.0';
+                        valueText = `${profile.campaignStats.wins} victories (${winRate}% success)`;
                         break;
-                    case 'level':
-                        valueText = `Level ${profile.level} (${profile.experience} XP)`;
-                        break;
-                    case 'racing':
-                        const totalRaces = profile.racingStats.totalRaces || (profile.racingStats.wins + profile.racingStats.losses);
-                        const winRate = totalRaces > 0 ? ((profile.racingStats.wins / totalRaces) * 100).toFixed(1) : '0.0';
-                        valueText = `${profile.racingStats.wins} wins (${winRate}% rate)`;
-                        break;
-                    case 'family':
-                        valueText = `${profile.familyBond}% bond (${profile.familyMembers.length} members)`;
-                        break;
+                    case 'allegiance': valueText = `${profile.followerLoyalty}% loyalty (${profile.followers.length} followers)`; break;
                 }
-
-                podiumContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder()
-                        .setContent(`${medal} **${username}**\n> ${valueText}`)
-                );
+                podiumContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`${medal} **${username}**\n> ${valueText}`)));
             });
-
             components.push(podiumContainer);
 
-        
             if (leaderboardData.length > 3) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
                 const remainingData = leaderboardData.slice(3);
-                const rankingGroups = [];
-                
-                for (let i = 0; i < remainingData.length; i += 6) {
-                    rankingGroups.push(remainingData.slice(i, i + 6));
-                }
-
-                rankingGroups.forEach((group, groupIndex) => {
-                    const rankingContainer = new ContainerBuilder()
-                        .setAccentColor(0x95A5A6);
-
-                    rankingContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder()
-                            .setContent(`## 📊 **RANKINGS ${groupIndex === 0 ? '4-9' : '10-15'}**`)
-                    );
-
-                    const rankingText = group.map((profile, index) => {
-                        const actualRank = 4 + (groupIndex * 6) + index;
-                        const user = message.guild.members.cache.get(profile.userId);
-                        const username = user ? user.displayName : 'Unknown User';
-                        
-                        let valueText = '';
-                        switch (type) {
-                            case 'wealth':
-                                valueText = `$${profile.totalWealth.toLocaleString()}`;
-                                break;
-                            case 'level':
-                                valueText = `Level ${profile.level} (${profile.experience} XP)`;
-                                break;
-                            case 'racing':
-                                const totalRaces = profile.racingStats.totalRaces || (profile.racingStats.wins + profile.racingStats.losses);
-                                const winRate = totalRaces > 0 ? ((profile.racingStats.wins / totalRaces) * 100).toFixed(1) : '0.0';
-                                valueText = `${profile.racingStats.wins} wins (${winRate}%)`;
-                                break;
-                            case 'family':
-                                valueText = `${profile.familyBond}% bond (${profile.familyMembers.length} members)`;
-                                break;
-                        }
-
-                        return `**${actualRank}.** ${username}\n> ${valueText}`;
-                    }).join('\n\n');
-
-                    rankingContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder()
-                            .setContent(rankingText)
-                    );
-
-                    components.push(rankingContainer);
-
-                    if (groupIndex < rankingGroups.length - 1) {
-                        components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+                const rankingContainer = new ContainerBuilder().setAccentColor(0x95A5A6);
+                rankingContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('## 📜 **CHRONICLES OF HEROES (4-15)**'));
+                const rankingText = remainingData.map((profile, index) => {
+                    const actualRank = 4 + index;
+                    const user = message.guild.members.cache.get(profile.userId);
+                    const username = user ? user.displayName : 'A mysterious figure';
+                    let valueText = '';
+                    switch (type) {
+                        case 'wealth': valueText = `${(profile.totalWealth || 0).toLocaleString()} Embers`; break;
+                        case 'renown': valueText = `Level ${profile.level} (${profile.experience} XP)`; break;
+                        case 'conquests':
+                             const totalCampaigns = profile.campaignStats.totalCampaigns || 0;
+                             const winRate = totalCampaigns > 0 ? ((profile.campaignStats.wins / totalCampaigns) * 100).toFixed(1) : '0.0';
+                             valueText = `${profile.campaignStats.wins} victories (${winRate}% success)`;
+                             break;
+                        case 'allegiance': valueText = `${profile.followerLoyalty}% loyalty (${profile.followers.length} followers)`; break;
                     }
-                });
+                    return `**${actualRank}.** ${username}\n> ${valueText}`;
+                }).join('\n\n');
+                rankingContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(rankingText));
+                components.push(rankingContainer);
             }
 
-         
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-            const statsContainer = new ContainerBuilder()
-                .setAccentColor(0x17A2B8);
-
-            statsContainer.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent('## 📈 **LEADERBOARD STATISTICS**')
-            );
-
+            const statsContainer = new ContainerBuilder().setAccentColor(0x17A2B8);
+            statsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('## 📈 **ANNALS STATISTICS**'));
             let statsText = '';
             switch (type) {
                 case 'wealth':
-                    const totalWealth = leaderboardData.reduce((sum, p) => sum + p.totalWealth, 0);
-                    const averageWealth = totalWealth / leaderboardData.length;
-                    statsText = `**💰 Combined Top 15 Wealth:** \`$${totalWealth.toLocaleString()}\`\n**📊 Average Top 15 Wealth:** \`$${Math.floor(averageWealth).toLocaleString()}\`\n**🏆 Wealth Gap:** \`$${(leaderboardData[0].totalWealth - leaderboardData[leaderboardData.length - 1].totalWealth).toLocaleString()}\``;
+                    const totalWealth = leaderboardData.reduce((sum, p) => sum + (p.totalWealth || 0), 0);
+                    statsText = `**💰 Combined Wealth of Legends:** ${totalWealth.toLocaleString()} Embers`;
                     break;
-                case 'level':
+                case 'renown':
                     const averageLevel = leaderboardData.reduce((sum, p) => sum + p.level, 0) / leaderboardData.length;
-                    const totalXP = leaderboardData.reduce((sum, p) => sum + p.experience, 0);
-                    statsText = `**⭐ Average Level:** \`${averageLevel.toFixed(1)}\`\n**🎯 Total Experience:** \`${totalXP.toLocaleString()} XP\`\n**📊 Level Range:** \`${leaderboardData[leaderboardData.length - 1].level} - ${leaderboardData[0].level}\``;
+                    statsText = `**⭐ Average Renown Level:** ${averageLevel.toFixed(1)}`;
                     break;
-                case 'racing':
-                    const totalWins = leaderboardData.reduce((sum, p) => sum + p.racingStats.wins, 0);
-                    const averageWins = totalWins / leaderboardData.length;
-                    statsText = `**🏁 Total Wins:** \`${totalWins}\`\n**📊 Average Wins:** \`${averageWins.toFixed(1)}\`\n**🏆 Top Racer:** \`${leaderboardData[0].racingStats.wins} wins\``;
+                case 'conquests':
+                    const totalWins = leaderboardData.reduce((sum, p) => sum + p.campaignStats.wins, 0);
+                    statsText = `**⚔️ Total Campaigns Won:** ${totalWins}`;
                     break;
-                case 'family':
-                    const averageBond = leaderboardData.reduce((sum, p) => sum + p.familyBond, 0) / leaderboardData.length;
-                    const totalMembers = leaderboardData.reduce((sum, p) => sum + p.familyMembers.length, 0);
-                    statsText = `**❤️ Average Family Bond:** \`${averageBond.toFixed(1)}%\`\n**👥 Total Family Members:** \`${totalMembers}\`\n**🏠 Largest Family:** \`${Math.max(...leaderboardData.map(p => p.familyMembers.length))} members\``;
+                case 'allegiance':
+                    const averageLoyalty = leaderboardData.reduce((sum, p) => sum + p.followerLoyalty, 0) / leaderboardData.length;
+                    statsText = `**❤️ Average Retinue Loyalty:** ${averageLoyalty.toFixed(1)}%`;
                     break;
             }
-
-            statsContainer.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent(`${statsText}\n\n**📊 Players Ranked:** \`${leaderboardData.length}\`\n**📅 Last Updated:** \`${new Date().toLocaleString()}\``)
-            );
-
+            statsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`${statsText}\n**📅 Annals Last Scribed:** ${new Date().toLocaleString()}`));
             components.push(statsContainer);
 
-          
-            components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-            const tipsContainer = new ContainerBuilder()
-                .setAccentColor(0x6F42C1);
-
-            let tipText = '';
-            switch (type) {
-                case 'wealth':
-                    tipText = '💡 **Wealth Building Tips:** Work regularly, run businesses, invest in properties, and save money in your bank and family vault!';
-                    break;
-                case 'level':
-                    tipText = '💡 **Leveling Tips:** Complete daily activities, work consistently, participate in all economy features to gain XP!';
-                    break;
-                case 'racing':
-                    tipText = '💡 **Racing Tips:** Buy better cars, maintain their condition, and practice regularly to improve your win rate!';
-                    break;
-                case 'family':
-                    tipText = '💡 **Family Tips:** Take regular family trips, build strong relationships, and expand your household size!';
-                    break;
-            }
-
-            tipsContainer.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent(`## 💡 **CLIMB THE RANKS**\n\n${tipText}\n\n**🔄 Other Leaderboards:** Try \`!leaderboard wealth\`, \`!leaderboard level\`, \`!leaderboard racing\`, or \`!leaderboard family\``)
-            );
-
-            components.push(tipsContainer);
-
-            await message.reply({
-                components: components,
-                flags: MessageFlags.IsComponentsV2
-            });
+            await message.reply({ components, flags: MessageFlags.IsComponentsV2 });
 
         } catch (error) {
-            console.error('Error in leaderboard command:', error);
-
-        
-            const errorContainer = new ContainerBuilder()
-                .setAccentColor(0xE74C3C);
-
-            errorContainer.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent('## ❌ **LEADERBOARD ERROR**\n\nSomething went wrong while generating the leaderboard. Please try again in a moment.')
-            );
-
-            return message.reply({
-                components: [errorContainer],
-                flags: MessageFlags.IsComponentsV2
-            });
+            console.error('Error in annals command:', error);
+            const errorContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
+            errorContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('## ❌ **ANNALS ERROR**\n\nSomething went wrong while transcribing the annals. The histories are momentarily lost.'));
+            return message.reply({ components: [errorContainer], flags: MessageFlags.IsComponentsV2 });
         }
     }
 };

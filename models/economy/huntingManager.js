@@ -1,28 +1,28 @@
 const { EconomyManager } = require('./economy');
 const { 
-    HUNTING_ANIMALS, 
-    HUNTING_VEHICLES, 
+    MONSTERS, 
+    CONVEYANCES, 
     HUNTING_WEAPONS, 
-    HUNTING_COMPANIONS, 
-    HUNTING_WAREHOUSES,
-    LOOT_BOXES,
-    FUEL_TYPES,
-    AMMO_TYPES,
-    MAINTENANCE_SUPPLIES
+    ALLIES, 
+    TROVES,
+    TREASURE_CHESTS,
+    ESSENCE_TYPES,
+    CHARGE_TYPES,
+    REINFORCEMENT_KITS
 } = require('./constants/huntingData');
 
 class HuntingManager {
-    // Generate random animal based on jungle depth and vehicle capability
-    static generateRandomAnimal(jungleDepth, huntingSkill = 0) {
-        const availableAnimals = Object.entries(HUNTING_ANIMALS).filter(([key, animal]) => 
-            animal.requiredJungleDepth <= jungleDepth
+    // Generate random monster based on dungeon depth and conveyance capability
+    static generateRandomMonster(dungeonDepth, huntingSkill = 0) {
+        const availableMonsters = Object.entries(MONSTERS).filter(([key, monster]) => 
+            monster.requiredDungeonDepth <= dungeonDepth
         );
 
-        if (availableAnimals.length === 0) {
-            return HUNTING_ANIMALS.rabbit;
+        if (availableMonsters.length === 0) {
+            return MONSTERS.forest_sprite;
         }
 
-        // Higher skill increases chance of finding rare animals
+        // Higher skill increases chance of finding rare monsters
         const skillBonus = huntingSkill * 0.01;
         const rarityWeights = {
             common: 50 - (skillBonus * 10),
@@ -36,26 +36,26 @@ class HuntingManager {
         const totalWeight = Object.values(rarityWeights).reduce((sum, weight) => sum + Math.max(0, weight), 0);
         let random = Math.random() * totalWeight;
 
-        for (const [key, animal] of availableAnimals) {
-            const weight = rarityWeights[animal.rarity] || 1;
+        for (const [key, monster] of availableMonsters) {
+            const weight = rarityWeights[monster.rarity] || 1;
             random -= Math.max(0, weight);
             if (random <= 0) {
-                return { key, ...animal };
+                return { key, ...monster };
             }
         }
 
-        return { key: availableAnimals[0][0], ...availableAnimals[0][1] };
+        return { key: availableMonsters[0][0], ...availableMonsters[0][1] };
     }
 
-    // Calculate combat damage with weapon and companion bonuses
-    static calculateDamage(weapon, companions, criticalHit = false) {
+    // Calculate combat damage with weapon and ally bonuses
+    static calculateDamage(weapon, allies, criticalHit = false) {
         let baseDamage = weapon.damage;
         
         const upgradeBonus = weapon.upgradeLevel * 0.1;
         baseDamage *= (1 + upgradeBonus);
 
-        companions.forEach(companion => {
-            if (companion.specialAbility === 'damage_boost' && companion.health > 50) {
+        allies.forEach(ally => {
+            if (ally.specialAbility === 'damage_boost' && ally.health > 50) {
                 baseDamage *= 1.2;
             }
         });
@@ -68,45 +68,44 @@ class HuntingManager {
         return Math.floor(baseDamage * variance);
     }
 
-    // ✅ NEW: Calculate realistic fuel consumption
-    static calculateFuelConsumption(vehicle, animal, jungleDepth) {
-        let baseFuelCost = animal.fuelConsumption || 10;
+    // Calculate fuel consumption
+    static calculateFuelConsumption(conveyance, monster, dungeonDepth) {
+        let baseFuelCost = monster.fuelConsumption || 10;
         
-        const vehicleEfficiency = {
-            'atv': 1.2,
-            'jeep': 1.0,
-            'truck': 1.5,
-            'helicopter': 2.0,
-            'tank': 2.5
+        const conveyanceEfficiency = {
+            'steed': 1.2,
+            'chariot': 1.0,
+            'wagon': 1.5,
+            'airship': 2.0,
+            'golem': 2.5
         };
         
-        const depthMultiplier = 1 + (jungleDepth * 0.3);
+        const depthMultiplier = 1 + (dungeonDepth * 0.3);
         
         const finalFuelCost = Math.ceil(
             baseFuelCost * 
-            (vehicleEfficiency[vehicle.type] || 1.0) * 
+            (conveyanceEfficiency[conveyance.type] || 1.0) * 
             depthMultiplier
         );
         
         return Math.max(5, finalFuelCost);
     }
     
-    // ✅ NEW: Calculate realistic ammo consumption  
-    static calculateAmmoConsumption(weapon, animal, huntResult) {
-        const baseAmmoRange = animal.ammoConsumption || { min: 1, max: 3 };
+    // Calculate ammo consumption  
+    static calculateAmmoConsumption(weapon, monster, huntResult) {
+        const baseAmmoRange = monster.ammoConsumption || { min: 1, max: 3 };
         
         let ammoUsed = Math.floor(Math.random() * (baseAmmoRange.max - baseAmmoRange.min + 1)) + baseAmmoRange.min;
         
         const weaponEfficiency = {
             'bow': 1.0,
             'crossbow': 0.8,
-            'rifle': 0.6,
-            'sniper': 0.4,
-            'tranquilizer': 1.2,
-            'net_gun': 1.5
+            'staff': 0.6,
+            'lance': 0.4,
+            'cannon': 1.2
         };
         
-        const agilityFactor = 1 + (animal.agility / 200);
+        const agilityFactor = 1 + (monster.agility / 200);
         const successFactor = huntResult.success ? 1.0 : 1.8;
         const accuracyFactor = Math.max(0.5, 1.0 - (weapon.accuracy / 200));
         
@@ -125,11 +124,11 @@ class HuntingManager {
     static async executeHunt(profile) {
         const results = {
             success: false,
-            animal: null,
+            monster: null,
             damageDealt: 0,
             damageTaken: 0,
             loot: [],
-            companionInjuries: [],
+            allyInjuries: [],
             experience: 0,
             skillGain: 0,
             costs: {
@@ -144,42 +143,42 @@ class HuntingManager {
             }
         };
 
-        const vehicle = profile.huntingVehicles.find(v => v.vehicleId === profile.activeVehicle);
+        const conveyance = profile.conveyances.find(v => v.conveyanceId === profile.activeConveyance);
         const weapon = profile.huntingWeapons.find(w => w.weaponId === profile.activeWeapon);
-        const companions = profile.huntingCompanions.filter(c => 
-            profile.activeCompanions.includes(c.companionId) && c.health > 0
+        const allies = profile.allies.filter(c => 
+            profile.activeAllies.includes(c.allyId) && c.health > 0
         );
 
-        if (!vehicle || !weapon) {
-            throw new Error('No active vehicle or weapon equipped!');
+        if (!conveyance || !weapon) {
+            throw new Error('No active conveyance or weapon equipped!');
         }
 
-        if (vehicle.currentFuel < 5) {
+        if (conveyance.currentFuel < 5) {
             throw new Error('Not enough fuel for expedition! Need at least 5 fuel units.');
         }
         if (weapon.currentAmmo < 1) {
             throw new Error('Weapon needs ammunition! Use !huntshop ammo to buy ammo.');
         }
 
-        const animal = this.generateRandomAnimal(vehicle.jungleDepth, profile.huntingStats.huntingSkill);
-        results.animal = animal;
+        const monster = this.generateRandomMonster(conveyance.dungeonDepth, profile.huntingSkill);
+        results.monster = monster;
 
-        const fuelNeeded = this.calculateFuelConsumption(vehicle, animal, vehicle.jungleDepth);
-        if (vehicle.currentFuel < fuelNeeded) {
-            throw new Error(`Not enough fuel! Need ${fuelNeeded} fuel units, have ${vehicle.currentFuel}.`);
+        const fuelNeeded = this.calculateFuelConsumption(conveyance, monster, conveyance.dungeonDepth);
+        if (conveyance.currentFuel < fuelNeeded) {
+            throw new Error(`Not enough fuel! Need ${fuelNeeded} fuel units, have ${conveyance.currentFuel}.`);
         }
         
-        vehicle.currentFuel = Math.max(0, vehicle.currentFuel - fuelNeeded);
+        conveyance.currentFuel = Math.max(0, conveyance.currentFuel - fuelNeeded);
         results.consumption.fuelUsed = fuelNeeded;
 
         // Combat simulation
-        let animalHealth = animal.health;
-        let hunterHealth = profile.huntingProfile.currentHealth;
+        let monsterHealth = monster.health;
+        let hunterHealth = profile.currentHealth;
         let roundCount = 0;
         const maxRounds = 10;
         let totalAmmoUsed = 0;
 
-        while (animalHealth > 0 && hunterHealth > 0 && roundCount < maxRounds && weapon.currentAmmo > 0) {
+        while (monsterHealth > 0 && hunterHealth > 0 && roundCount < maxRounds && weapon.currentAmmo > 0) {
             roundCount++;
 
             if (weapon.currentAmmo > 0) {
@@ -192,20 +191,20 @@ class HuntingManager {
                 
                 let hitChance = weapon.accuracy;
                 
-                companions.forEach(companion => {
-                    if (companion.specialAbility === 'tracking' && companion.health > 30) {
+                allies.forEach(ally => {
+                    if (ally.specialAbility === 'tracking' && ally.health > 30) {
                         hitChance += 10;
                     }
                 });
 
-                hitChance -= (animal.agility * 0.3);
+                hitChance -= (monster.agility * 0.3);
                 hitChance = Math.max(20, Math.min(95, hitChance));
 
                 if (Math.random() * 100 < hitChance) {
                     const criticalHit = Math.random() * 100 < weapon.criticalChance;
-                    const damage = this.calculateDamage(weapon, companions, criticalHit);
+                    const damage = this.calculateDamage(weapon, allies, criticalHit);
                     
-                    animalHealth -= damage;
+                    monsterHealth -= damage;
                     results.damageDealt += damage;
                     
                     weapon.durability = Math.max(0, weapon.durability - 1);
@@ -214,26 +213,26 @@ class HuntingManager {
                 break;
             }
 
-            if (animalHealth > 0) {
-                let animalDamage = animal.damage;
+            if (monsterHealth > 0) {
+                let monsterDamage = monster.damage;
                 
                 let protectionReduction = 0;
-                companions.forEach(companion => {
-                    if (companion.health > 50) {
+                allies.forEach(ally => {
+                    if (ally.health > 50) {
                         protectionReduction += 10;
                         
                         if (Math.random() * 100 < 20) {
                             const injury = Math.floor(15 + Math.random() * 20);
-                            companion.health = Math.max(0, companion.health - injury);
-                            companion.injured = companion.health < 30;
+                            ally.health = Math.max(0, ally.health - injury);
+                            ally.injured = ally.health < 30;
                             
-                            if (companion.injured) {
-                                companion.injuryTime = new Date();
-                                companion.healingCost = Math.floor(500 + (injury * 50));
-                                results.companionInjuries.push({
-                                    name: companion.name,
+                            if (ally.injured) {
+                                ally.injuryTime = new Date();
+                                ally.healingCost = Math.floor(500 + (injury * 50));
+                                results.allyInjuries.push({
+                                    name: ally.name,
                                     injury: injury,
-                                    healingCost: companion.healingCost
+                                    healingCost: ally.healingCost
                                 });
                             }
                             protectionReduction += 20;
@@ -241,21 +240,21 @@ class HuntingManager {
                     }
                 });
 
-                animalDamage = Math.max(5, animalDamage - protectionReduction);
-                hunterHealth -= animalDamage;
-                results.damageTaken += animalDamage;
+                monsterDamage = Math.max(5, monsterDamage - protectionReduction);
+                hunterHealth -= monsterDamage;
+                results.damageTaken += monsterDamage;
             }
         }
 
         results.consumption.ammoUsed = totalAmmoUsed;
 
-        if (animalHealth <= 0) {
+        if (monsterHealth <= 0) {
             results.success = true;
-            results.loot = this.generateLoot(animal, profile.huntingStats.huntingSkill);
-            results.experience = Math.floor(50 + (animal.tier * 25));
-            results.skillGain = Math.floor(1 + (animal.tier * 0.5));
+            results.loot = this.generateLoot(monster, profile.huntingSkill);
+            results.experience = Math.floor(50 + (monster.tier * 25));
+            results.skillGain = Math.floor(1 + (monster.tier * 0.5));
             
-            const lootBoxChance = 10 + (profile.huntingStats.huntingSkill * 0.2);
+            const lootBoxChance = 10 + (profile.huntingSkill * 0.2);
             if (Math.random() * 100 < lootBoxChance) {
                 const lootBox = this.generateLootBox();
                 results.loot.push(lootBox);
@@ -267,10 +266,10 @@ class HuntingManager {
             results.experience = 10;
         }
 
-        profile.huntingProfile.currentHealth = Math.max(0, hunterHealth);
+        profile.currentHealth = Math.max(0, hunterHealth);
         
-        if (vehicle.durability < 50) {
-            const repairCost = Math.floor((100 - vehicle.durability) * 50);
+        if (conveyance.durability < 50) {
+            const repairCost = Math.floor((100 - conveyance.durability) * 50);
             results.costs.repairs = repairCost;
         }
 
@@ -278,11 +277,11 @@ class HuntingManager {
     }
 
     // Generate loot from successful hunt
-    static generateLoot(animal, huntingSkill = 0) {
+    static generateLoot(monster, huntingSkill = 0) {
         const loot = [];
         const skillBonus = huntingSkill * 0.01;
 
-        Object.entries(animal.lootTable).forEach(([itemType, itemData]) => {
+        Object.entries(monster.lootTable).forEach(([itemType, itemData]) => {
             const chance = itemData.chance + (skillBonus * 10);
             
             if (Math.random() * 100 < chance) {
@@ -292,15 +291,15 @@ class HuntingManager {
                 
                 loot.push({
                     itemId: `${itemType}_${Date.now()}_${Math.random()}`,
-                    name: `${animal.name} ${itemType.replace('_', ' ')}`,
+                    name: `${monster.name} ${itemType.replace('_', ' ')}`,
                     type: itemType,
-                    rarity: animal.rarity,
+                    rarity: monster.rarity,
                     baseValue: itemData.value,
                     currentValue: value,
                     weight: 1,
                     quantity: 1,
                     huntDate: new Date(),
-                    description: `High-quality ${itemType} from ${animal.name}`
+                    description: `High-quality ${itemType} from ${monster.name}`
                 });
             }
         });
@@ -310,9 +309,9 @@ class HuntingManager {
 
     // Generate random loot box
     static generateLootBox() {
-        const boxTypes = Object.keys(LOOT_BOXES);
+        const boxTypes = Object.keys(TREASURE_CHESTS);
         const randomType = boxTypes[Math.floor(Math.random() * boxTypes.length)];
-        const boxData = LOOT_BOXES[randomType];
+        const boxData = TREASURE_CHESTS[randomType];
 
         return {
             itemId: `lootbox_${Date.now()}_${Math.random()}`,
@@ -355,28 +354,28 @@ class HuntingManager {
 
     // Calculate total storage capacity
     static calculateStorageCapacity(profile) {
-        return profile.huntingWarehouses.reduce((total, warehouse) => total + warehouse.capacity, 0);
+        return profile.troves.reduce((total, trove) => total + trove.capacity, 0);
     }
 
     // Calculate total inventory weight
     static calculateInventoryWeight(profile) {
-        return profile.huntingInventory.reduce((total, item) => total + (item.weight * item.quantity), 0);
+        return profile.inventory.reduce((total, item) => total + (item.weight * item.quantity), 0);
     }
 
-    // ✅ ENHANCED: Sell hunting items with warehouse bonuses
+    // Sell hunting items
     static async sellHuntingItems(profile, itemIds) {
         let totalValue = 0;
         const soldItems = [];
 
         itemIds.forEach(itemId => {
-            const itemIndex = profile.huntingInventory.findIndex(item => item.itemId === itemId);
+            const itemIndex = profile.inventory.findIndex(item => item.itemId === itemId);
             if (itemIndex !== -1) {
-                const item = profile.huntingInventory[itemIndex];
+                const item = profile.inventory[itemIndex];
                 
                 let sellValue = item.currentValue;
-                const warehouse = profile.huntingWarehouses.find(w => item.location === w.warehouseId);
-                if (warehouse) {
-                    sellValue = Math.floor(sellValue * warehouse.bonusMultiplier);
+                const trove = profile.troves.find(w => item.location === w.troveId);
+                if (trove) {
+                    sellValue = Math.floor(sellValue * trove.bonusMultiplier);
                 }
 
                 totalValue += sellValue * item.quantity;
@@ -387,12 +386,12 @@ class HuntingManager {
                     rarity: item.rarity
                 });
 
-                profile.huntingInventory.splice(itemIndex, 1);
+                profile.inventory.splice(itemIndex, 1);
             }
         });
 
         if (totalValue > 0) {
-            profile.wallet += totalValue;
+            profile.souls += totalValue;
             
             profile.transactions.push({
                 type: 'income',
@@ -407,47 +406,47 @@ class HuntingManager {
         return { totalValue, soldItems };
     }
 
-    // ✅ ENHANCED: Heal injured companions
-    static async healCompanions(profile, companionIds) {
+    // Heal injured allies
+    static async healAllies(profile, allyIds) {
         let totalCost = 0;
-        const healedCompanions = [];
+        const healedAllies = [];
 
-        companionIds.forEach(companionId => {
-            const companion = profile.huntingCompanions.find(c => c.companionId === companionId);
-            if (companion && companion.injured) {
-                totalCost += companion.healingCost;
-                companion.health = companion.maxHealth;
-                companion.injured = false;
-                companion.injuryTime = null;
+        allyIds.forEach(allyId => {
+            const ally = profile.allies.find(c => c.allyId === allyId);
+            if (ally && ally.injured) {
+                totalCost += ally.healingCost;
+                ally.health = ally.maxHealth;
+                ally.injured = false;
+                ally.injuryTime = null;
                 
-                healedCompanions.push({
-                    name: companion.name,
-                    cost: companion.healingCost
+                healedAllies.push({
+                    name: ally.name,
+                    cost: ally.healingCost
                 });
                 
-                companion.healingCost = 0;
+                ally.healingCost = 0;
             }
         });
 
         if (totalCost > 0) {
-            if (profile.wallet < totalCost) {
-                throw new Error(`Not enough money to heal companions! Need $${totalCost.toLocaleString()}`);
+            if (profile.souls < totalCost) {
+                throw new Error(`Not enough souls to heal allies! Need ${totalCost.toLocaleString()} souls`);
             }
 
-            profile.wallet -= totalCost;
+            profile.souls -= totalCost;
             
             profile.transactions.push({
                 type: 'expense',
                 amount: totalCost,
-                description: 'Healed injured companions',
+                description: 'Healed injured allies',
                 category: 'hunting'
             });
         }
 
-        return { totalCost, healedCompanions };
+        return { totalCost, healedAllies };
     }
 
-    // ✅ ENHANCED: Upgrade weapon with detailed results
+    // Upgrade weapon
     static async upgradeWeapon(profile, weaponId) {
         const weapon = profile.huntingWeapons.find(w => w.weaponId === weaponId);
         if (!weapon) {
@@ -458,10 +457,10 @@ class HuntingManager {
             throw new Error('Weapon is already at maximum upgrade level!');
         }
 
-        const upgradeCost = Math.floor(weapon.purchasePrice * 0.3 * (weapon.upgradeLevel + 1));
+        const upgradeCost = Math.floor(weapon.price * 0.3 * (weapon.upgradeLevel + 1));
         
-        if (profile.wallet < upgradeCost) {
-            throw new Error(`Not enough money! Upgrade costs $${upgradeCost.toLocaleString()}`);
+        if (profile.souls < upgradeCost) {
+            throw new Error(`Not enough souls! Upgrade costs ${upgradeCost.toLocaleString()} souls`);
         }
 
         // Store old stats
@@ -470,7 +469,7 @@ class HuntingManager {
         const oldCritChance = weapon.criticalChance;
 
         // Apply upgrades
-        profile.wallet -= upgradeCost;
+        profile.souls -= upgradeCost;
         weapon.upgradeLevel += 1;
         weapon.damage = Math.floor(weapon.damage * 1.1);
         weapon.accuracy = Math.min(100, weapon.accuracy + 2);
@@ -499,81 +498,81 @@ class HuntingManager {
         };
     }
 
-    // ✅ NEW: Upgrade vehicle
-    static async upgradeVehicle(profile, vehicleId) {
-        const vehicle = profile.huntingVehicles.find(v => v.vehicleId === vehicleId);
-        if (!vehicle) {
-            throw new Error('Vehicle not found!');
+    // Upgrade conveyance
+    static async upgradeConveyance(profile, conveyanceId) {
+        const conveyance = profile.conveyances.find(v => v.conveyanceId === conveyanceId);
+        if (!conveyance) {
+            throw new Error('Conveyance not found!');
         }
 
-        if (vehicle.tier >= 5) {
-            throw new Error('Vehicle is already at maximum tier!');
+        if (conveyance.tier >= 5) {
+            throw new Error('Conveyance is already at maximum tier!');
         }
 
-        const upgradeCost = Math.floor(vehicle.purchasePrice * 0.4 * vehicle.tier);
+        const upgradeCost = Math.floor(conveyance.price * 0.4 * conveyance.tier);
         
-        if (profile.wallet < upgradeCost) {
-            throw new Error(`Not enough money! Upgrade costs $${upgradeCost.toLocaleString()}`);
+        if (profile.souls < upgradeCost) {
+            throw new Error(`Not enough souls! Upgrade costs ${upgradeCost.toLocaleString()} souls`);
         }
 
-        const oldCapacity = vehicle.capacity;
-        const oldFuelCapacity = vehicle.fuelCapacity;
-        const oldJungleDepth = vehicle.jungleDepth;
+        const oldCapacity = conveyance.capacity;
+        const oldFuelCapacity = conveyance.fuelCapacity;
+        const oldDungeonDepth = conveyance.dungeonDepth;
 
-        profile.wallet -= upgradeCost;
-        vehicle.tier += 1;
-        vehicle.capacity = Math.floor(vehicle.capacity * 1.2);
-        vehicle.fuelCapacity = Math.floor(vehicle.fuelCapacity * 1.15);
-        vehicle.jungleDepth = Math.min(10, vehicle.jungleDepth + 1);
-        vehicle.maxDurability = Math.min(120, vehicle.maxDurability + 10);
-        vehicle.durability = vehicle.maxDurability;
+        profile.souls -= upgradeCost;
+        conveyance.tier += 1;
+        conveyance.capacity = Math.floor(conveyance.capacity * 1.2);
+        conveyance.fuelCapacity = Math.floor(conveyance.fuelCapacity * 1.15);
+        conveyance.dungeonDepth = Math.min(10, conveyance.dungeonDepth + 1);
+        conveyance.maxDurability = Math.min(120, conveyance.maxDurability + 10);
+        conveyance.durability = conveyance.maxDurability;
 
         profile.transactions.push({
             type: 'expense',
             amount: upgradeCost,
-            description: `Upgraded ${vehicle.name} to tier ${vehicle.tier}`,
+            description: `Upgraded ${conveyance.name} to tier ${conveyance.tier}`,
             category: 'hunting'
         });
 
         return {
             upgradeCost,
-            newTier: vehicle.tier,
+            newTier: conveyance.tier,
             improvements: {
-                capacity: vehicle.capacity - oldCapacity,
-                fuelCapacity: vehicle.fuelCapacity - oldFuelCapacity,
-                jungleDepth: vehicle.jungleDepth - oldJungleDepth
+                capacity: conveyance.capacity - oldCapacity,
+                fuelCapacity: conveyance.fuelCapacity - oldFuelCapacity,
+                dungeonDepth: conveyance.dungeonDepth - oldDungeonDepth
             }
         };
     }
 
-    // ✅ NEW: Refuel vehicle
-    static async refuelVehicle(profile, vehicleId, fuelType, quantity) {
-        const vehicle = profile.huntingVehicles.find(v => v.vehicleId === vehicleId);
-        if (!vehicle) {
-            throw new Error('Vehicle not found!');
+    // Refuel conveyance
+    static async refuelConveyance(profile, conveyanceId, fuelType, quantity) {
+        const conveyance = profile.conveyances.find(v => v.conveyanceId === conveyanceId);
+        if (!conveyance) {
+            throw new Error('Conveyance not found!');
         }
 
-        const fuel = FUEL_TYPES[fuelType];
+        const fuel = ESSENCE_TYPES[fuelType];
         if (!fuel) {
             throw new Error('Invalid fuel type!');
         }
 
         const totalCost = fuel.price * quantity;
-        if (profile.wallet < totalCost) {
-            throw new Error(`Not enough money! Need $${totalCost.toLocaleString()}`);
+        if (profile.souls < totalCost) {
+            throw new Error(`Not enough souls! Need ${totalCost.toLocaleString()} souls`);
         }
 
         const fuelToAdd = fuel.fuelValue * quantity;
-        const newFuelLevel = Math.min(vehicle.fuelCapacity, vehicle.currentFuel + fuelToAdd);
-        const actualFuelAdded = newFuelLevel - vehicle.currentFuel;
+        const newFuelLevel = Math.min(conveyance.fuelCapacity, conveyance.currentFuel + fuelToAdd);
+        const actualFuelAdded = newFuelLevel - conveyance.currentFuel;
 
-        vehicle.currentFuel = newFuelLevel;
-        profile.wallet -= totalCost;
+        conveyance.currentFuel = newFuelLevel;
+        profile.souls -= totalCost;
 
         profile.transactions.push({
             type: 'expense',
             amount: totalCost,
-            description: `Refueled ${vehicle.name} with ${quantity}x ${fuel.name}`,
+            description: `Refueled ${conveyance.name} with ${quantity}x ${fuel.name}`,
             category: 'hunting'
         });
 
@@ -584,14 +583,14 @@ class HuntingManager {
         };
     }
 
-    // ✅ NEW: Reload weapon
+    // Reload weapon
     static async reloadWeapon(profile, weaponId, ammoType, quantity) {
         const weapon = profile.huntingWeapons.find(w => w.weaponId === weaponId);
         if (!weapon) {
             throw new Error('Weapon not found!');
         }
 
-        const ammo = AMMO_TYPES[ammoType];
+        const ammo = CHARGE_TYPES[ammoType];
         if (!ammo) {
             throw new Error('Invalid ammo type!');
         }
@@ -601,8 +600,8 @@ class HuntingManager {
         }
 
         const totalCost = ammo.price * quantity;
-        if (profile.wallet < totalCost) {
-            throw new Error(`Not enough money! Need $${totalCost.toLocaleString()}`);
+        if (profile.souls < totalCost) {
+            throw new Error(`Not enough souls! Need ${totalCost.toLocaleString()} souls`);
         }
 
         const ammoToAdd = ammo.ammoValue * quantity;
@@ -610,7 +609,7 @@ class HuntingManager {
         const actualAmmoAdded = newAmmoLevel - weapon.currentAmmo;
 
         weapon.currentAmmo = newAmmoLevel;
-        profile.wallet -= totalCost;
+        profile.souls -= totalCost;
 
         profile.transactions.push({
             type: 'expense',

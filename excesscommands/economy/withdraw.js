@@ -9,8 +9,8 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'withdraw',
-    aliases: ['with'],
-    description: 'Withdraw money from your bank to your wallet with v2 components',
+    aliases: ['with', 'retrieve'],
+    description: 'Retrieve Embers from the Royal Treasury to your coin purse.',
     usage: '<amount | all | max>',
     async execute(message, args) {
         try {
@@ -26,7 +26,7 @@ module.exports = {
 
                 missingContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Missing Withdrawal Amount\n## PLEASE SPECIFY AMOUNT\n\n> Please specify an amount to withdraw from your bank account.`)
+                        .setContent(`# ❌ Missing Withdrawal Amount\n## YOU MUST SPECIFY AN AMOUNT OF EMBERS\n\n> Specify the number of Embers to retrieve from the Royal Treasury.`)
                 );
 
                 components.push(missingContainer);
@@ -38,7 +38,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!withdraw 1000\`** - Withdraw specific amount\n**\`!withdraw all\`** - Withdraw all bank funds\n**\`!withdraw max\`** - Withdraw maximum available\n\n**🏦 Available Balance:** \`$${profile.bank.toLocaleString()}\``)
+                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!withdraw 1000\`** - Retrieve a specific amount\n**\`!withdraw all\`** - Retrieve all Embers from the treasury\n**\`!withdraw max\`** - Retrieve the maximum available\n\n**👑 Available Balance:** \`${profile.royal_treasury.toLocaleString()} Embers\``)
                 );
 
                 components.push(usageContainer);
@@ -51,7 +51,7 @@ module.exports = {
 
             let amount;
             if (args[0] === 'all' || args[0] === 'max') {
-                amount = profile.bank;
+                amount = profile.royal_treasury;
             } else {
                 amount = parseInt(args[0], 10);
             }
@@ -64,7 +64,7 @@ module.exports = {
 
                 invalidContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Withdrawal Amount\n## PLEASE ENTER VALID NUMBER\n\n> Please enter a valid positive number or use special keywords.`)
+                        .setContent(`# ❌ Invalid Withdrawal Amount\n## PLEASE ENTER A VALID NUMBER\n\n> Enter a valid positive number of Embers or use a keyword.`)
                 );
 
                 components.push(invalidContainer);
@@ -76,7 +76,7 @@ module.exports = {
 
                 examplesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **VALID FORMATS**\n\n**Numbers:** \`1000\`, \`2500\`, \`10000\`\n**Keywords:** \`all\`, \`max\`\n**Invalid:** \`${args[0]}\` (not recognized)\n\n**🏦 Your Bank Balance:** \`$${profile.bank.toLocaleString()}\``)
+                        .setContent(`## 💡 **VALID FORMATS**\n\n**Numbers:** \`1000\`, \`2500\`, \`10000\`\n**Keywords:** \`all\`, \`max\`\n**Invalid:** \`${args[0]}\` (not recognized)\n\n**👑 Your Treasury Balance:** \`${profile.royal_treasury.toLocaleString()} Embers\``)
                 );
 
                 components.push(examplesContainer);
@@ -87,7 +87,7 @@ module.exports = {
                 });
             }
 
-            if (profile.bank < amount) {
+            if (profile.royal_treasury < amount) {
                 const components = [];
 
                 const insufficientContainer = new ContainerBuilder()
@@ -95,7 +95,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Bank Funds\n## NOT ENOUGH MONEY IN BANK\n\n> You don't have enough money in your bank account for this withdrawal!`)
+                        .setContent(`# 💸 Insufficient Treasury Funds\n## NOT ENOUGH EMBERS IN THE TREASURY\n\n> You do not have enough Embers in the Royal Treasury for this withdrawal!`)
                 );
 
                 components.push(insufficientContainer);
@@ -107,12 +107,12 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏦 **ACCOUNT BREAKDOWN**\n\n**Bank Balance:** \`$${profile.bank.toLocaleString()}\`\n**Attempted Withdrawal:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.bank).toLocaleString()}\`\n**Wallet Balance:** \`$${profile.wallet.toLocaleString()}\``)
+                        .setContent(`## 👑 **TREASURY BREAKDOWN**\n\n**Treasury Balance:** \`${profile.royal_treasury.toLocaleString()} Embers\`\n**Attempted Withdrawal:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.royal_treasury).toLocaleString()} Embers\`\n**Coin Purse Balance:** \`${profile.embers.toLocaleString()} Embers\``)
                 );
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Suggestions:**\n> • Try \`!withdraw all\` to withdraw everything\n> • Check \`!balance\` for complete financial overview\n> • Consider depositing more money first`)
+                        .setContent(`**💡 Suggestions:**\n> • Try \`!withdraw all\` to retrieve everything\n> • Check \`!balance\` for a complete chronicle of your wealth\n> • Consider depositing more Embers first`)
                 );
 
                 components.push(balanceContainer);
@@ -123,40 +123,35 @@ module.exports = {
                 });
             }
 
-            const newWallet = profile.wallet + amount;
-            const newBank = profile.bank - amount;
-            const totalWealth = newWallet + newBank + profile.familyVault;
+            const newCoinPurse = profile.embers + amount;
+            const newRoyalTreasury = profile.royal_treasury - amount;
+            const totalWealth = newCoinPurse + newRoyalTreasury + profile.family_strongbox;
 
-        
-            await EconomyManager.updateWallet(userId, guildId, amount);
-            await EconomyManager.updateBank(userId, guildId, -amount);
+            await EconomyManager.updateEmbers(userId, guildId, amount);
+            await EconomyManager.updateRoyalTreasury(userId, guildId, -amount);
 
-          
             profile.transactions.push({
                 type: 'transfer',
                 amount: amount,
-                description: 'Bank withdrawal',
+                description: 'Royal Treasury withdrawal',
                 category: 'banking'
             });
             await profile.save();
 
-       
             const components = [];
 
-  
             const headerContainer = new ContainerBuilder()
                 .setAccentColor(0x2ECC71);
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ✅ Withdrawal Successful!\n## MONEY TRANSFERRED TO WALLET\n\n> You have successfully withdrawn **\`$${amount.toLocaleString()}\`** from your bank to your wallet!\n> Your funds are now available for immediate use.`)
+                    .setContent(`# ✅ Withdrawal Successful!\n## EMBERS TRANSFERRED TO COIN PURSE\n\n> You have successfully retrieved **\`${amount.toLocaleString()} Embers\`** from the Royal Treasury to your coin purse!\n> Your Embers are now ready for use.`)
             );
 
             components.push(headerContainer);
 
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-    
             const detailsContainer = new ContainerBuilder()
                 .setAccentColor(0x27AE60);
 
@@ -167,12 +162,11 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Withdrawal Amount:** \`$${amount.toLocaleString()}\`\n**⏰ Transaction Time:** \`${new Date().toLocaleString()}\`\n**📝 Transaction Type:** \`Bank Withdrawal\`\n**🏷️ Category:** \`Banking\``)
+                    .setContent(`**💰 Withdrawal Amount:** \`${amount.toLocaleString()} Embers\`\n**⏰ Transaction Time:** \`${new Date().toLocaleString()}\`\n**📝 Transaction Type:** \`Royal Treasury Withdrawal\`\n**🏷️ Category:** \`Banking\``)
             );
 
             components.push(detailsContainer);
 
-       
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const balancesContainer = new ContainerBuilder()
@@ -180,22 +174,21 @@ module.exports = {
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🏦 **UPDATED ACCOUNT BALANCES**')
+                    .setContent('## 👑 **UPDATED BALANCES**')
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💳 Wallet Balance:** \`$${newWallet.toLocaleString()}\`\n**🏦 Bank Balance:** \`$${newBank.toLocaleString()}\`\n**🏠 Family Vault:** \`$${profile.familyVault.toLocaleString()}\``)
+                    .setContent(`**💳 Coin Purse Balance:** \`${newCoinPurse.toLocaleString()} Embers\`\n**👑 Royal Treasury Balance:** \`${newRoyalTreasury.toLocaleString()} Embers\`\n**🏰 Family Strongbox:** \`${profile.family_strongbox.toLocaleString()} Embers\``)
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Total Net Worth:** \`$${totalWealth.toLocaleString()}\`\n**📈 Liquid Assets:** \`$${newWallet.toLocaleString()}\` (Available for spending)\n**🛡️ Secured Assets:** \`$${(newBank + profile.familyVault).toLocaleString()}\``)
+                    .setContent(`**💎 Total Net Worth:** \`${totalWealth.toLocaleString()} Embers\`\n**📈 Liquid Embers:** \`${newCoinPurse.toLocaleString()} Embers\` (Available for use)\n**🛡️ Secured Embers:** \`${(newRoyalTreasury + profile.family_strongbox).toLocaleString()} Embers\``)
             );
 
             components.push(balancesContainer);
 
-          
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const tipsContainer = new ContainerBuilder()
@@ -203,12 +196,11 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **FINANCIAL MANAGEMENT TIPS**\n\n**💳 Wallet Money:** Ready for purchases, gambling, and donations\n**🏦 Bank Money:** Safer from robberies, earns potential interest\n**🔄 Quick Banking:** Use \`!deposit <amount>\` to secure funds again\n**📊 Monitoring:** Check \`!balance\` for complete financial overview\n\n> Keep some money in the bank for security and some in wallet for convenience!`)
+                    .setContent(`## 💡 **WEALTH MANAGEMENT TIPS**\n\n**💳 Coin Purse Embers:** Ready for the market, mystic gambling, and tributes\n**👑 Treasury Embers:** Safer from pillaging, may gain the crown's favor\n**🔄 Quick Banking:** Use \`!deposit <amount>\` to secure Embers again\n**📊 Monitoring:** Check \`!balance\` for a complete chronicle of your wealth\n\n> Keep some Embers in the treasury for security and some in your coin purse for convenience!`)
             );
 
             components.push(tipsContainer);
 
-         
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const footerContainer = new ContainerBuilder()
@@ -229,13 +221,12 @@ module.exports = {
         } catch (error) {
             console.error('Error in withdraw command:', error);
 
-        
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **WITHDRAWAL ERROR**\n\nSomething went wrong while processing your bank withdrawal. Please try again in a moment.')
+                    .setContent('## ❌ **WITHDRAWAL ERROR**\n\nSomething went wrong while processing your withdrawal from the Royal Treasury. Please try again in a moment.')
             );
 
             return message.reply({

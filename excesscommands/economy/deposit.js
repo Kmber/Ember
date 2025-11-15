@@ -9,23 +9,22 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'deposit',
-    aliases: ['dep'],
-    description: 'Deposit money into your bank with v2 components',
+    aliases: ['dep', 'secure'],
+    description: 'Secure your Embers in the Royal Treasury.',
     async execute(message, args) {
         try {
             const userId = message.author.id;
             const guildId = message.guild.id;
             const profile = await EconomyManager.getProfile(userId, guildId);
 
+            const royalTreasuryLimit = EconomyManager.getRoyalTreasuryLimit(profile);
+
             let amount;
-            if (args[0] === 'all' || args[0] === 'max') {
-                amount = Math.min(profile.wallet, profile.bankLimit - profile.bank);
+            if (args[0] && (args[0].toLowerCase() === 'all' || args[0].toLowerCase() === 'max')) {
+                amount = Math.min(profile.embers, royalTreasuryLimit - profile.royal_treasury);
             } else {
                 amount = parseInt(args[0], 10);
             }
-
-       
-            const bankLimit = EconomyManager.getBankLimit(profile);
 
             if (isNaN(amount) || amount <= 0) {
                 const components = [];
@@ -35,7 +34,7 @@ module.exports = {
 
                 invalidContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Deposit Amount\n## PLEASE SPECIFY VALID AMOUNT\n\n> Please specify a valid amount to deposit or use special keywords.`)
+                        .setContent(`# ❌ An Invalid Sum\n## YOU MUST DECREE A VALID NUMBER OF EMBERS\n\n> Decree a valid number of Embers to secure, or use a keyword.`)
                 );
 
                 components.push(invalidContainer);
@@ -47,7 +46,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!deposit 1000\`** - Deposit specific amount\n**\`!deposit all\`** - Deposit all available funds\n**\`!deposit max\`** - Deposit maximum possible\n\n**Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Available Space:** \`$${(bankLimit - profile.bank).toLocaleString()}\``)
+                        .setContent(`## 💡 **HOW TO SECURE YOUR EMBERS**\n\n**\`!deposit 1000\`** - Secure a specific amount.\n**\`!deposit all\`** - Secure all Embers from your coin purse.\n**\`!deposit max\`** - Secure the maximum possible amount.\n\n**Your Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**Available Treasury Space:** \`${(royalTreasuryLimit - profile.royal_treasury).toLocaleString()} Embers\``)
                 );
 
                 components.push(usageContainer);
@@ -58,7 +57,7 @@ module.exports = {
                 });
             }
 
-            if (amount > profile.wallet) {
+            if (amount > profile.embers) {
                 const components = [];
 
                 const insufficientContainer = new ContainerBuilder()
@@ -66,7 +65,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Wallet Funds\n## NOT ENOUGH MONEY TO DEPOSIT\n\n> You don't have enough money in your wallet for this deposit!`)
+                        .setContent(`# 💸 A Pauper's Purse\n## YOUR COIN PURSE LACKS THE REQUIRED EMBERS\n\n> You do not possess enough Embers for this deposit!`)
                 );
 
                 components.push(insufficientContainer);
@@ -78,7 +77,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **WALLET BREAKDOWN**\n\n**Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.wallet).toLocaleString()}\`\n\n**💡 Tip:** Try \`!deposit all\` to deposit everything you have!`)
+                        .setContent(`## 💰 **A SCRIBE'S RECKONING**\n\n**Your Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**Intended Deposit:** \`${amount.toLocaleString()} Embers\`\n**The Shortfall:** \`${(amount - profile.embers).toLocaleString()} Embers\`\n\n**💡 A Sage's Advice:** Try \`!deposit all\` to secure all the Embers you currently possess!`)
                 );
 
                 components.push(balanceContainer);
@@ -89,8 +88,8 @@ module.exports = {
                 });
             }
 
-            if (profile.bank + amount > bankLimit) {
-                const maxDeposit = bankLimit - profile.bank;
+            if (profile.royal_treasury + amount > royalTreasuryLimit) {
+                const maxDeposit = royalTreasuryLimit - profile.royal_treasury;
                 const components = [];
 
                 const limitContainer = new ContainerBuilder()
@@ -98,7 +97,7 @@ module.exports = {
 
                 limitContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏦 Bank Limit Exceeded\n## MAXIMUM CAPACITY REACHED\n\n> Your bank account doesn't have enough space for this deposit!`)
+                        .setContent(`# 👑 The Royal Treasury Overflows\n## ITS CAPACITY HAS BEEN REACHED\n\n> The Royal Treasury cannot hold this amount. Its vaults are too full!`)
                 );
 
                 components.push(limitContainer);
@@ -110,12 +109,12 @@ module.exports = {
 
                 limitDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **BANK CAPACITY DETAILS**\n\n**Current Bank Balance:** \`$${profile.bank.toLocaleString()}\`\n**Bank Limit:** \`$${bankLimit.toLocaleString()}\`\n**Available Space:** \`$${maxDeposit.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\``)
+                        .setContent(`## 📊 **TREASURY MANIFEST**\n\n**Current Treasury Hoard:** \`${profile.royal_treasury.toLocaleString()} Embers\`\n**Treasury Limit:** \`${royalTreasuryLimit.toLocaleString()} Embers\`\n**Available Space:** \`${maxDeposit.toLocaleString()} Embers\`\n**Intended Deposit:** \`${amount.toLocaleString()} Embers\``)
                 );
 
                 limitDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Solutions:**\n> • Try \`!deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your bank limit through properties or roles\n> • Use \`!deposit max\` for automatic maximum deposit`)
+                        .setContent(`**💡 A Chancellor's Counsel:**\n> • Try \`!deposit ${maxDeposit}\` to fill the remaining space.\n> • Expand your treasury by acquiring grander strongholds or noble titles.\n> • Use \`!deposit max\` to automatically deposit the maximum amount.`)
                 );
 
                 components.push(limitDetailsContainer);
@@ -126,56 +125,46 @@ module.exports = {
                 });
             }
 
-          
-            const newWallet = profile.wallet - amount;
-            const newBank = profile.bank + amount;
+            profile.embers -= amount;
+            profile.royal_treasury += amount;
 
-          
-            await EconomyManager.updateWallet(userId, guildId, -amount);
-            await EconomyManager.updateBank(userId, guildId, amount);
-
-         
             profile.transactions.push({
                 type: 'transfer',
                 amount: amount,
-                description: 'Bank deposit',
+                description: 'Deposited to Royal Treasury',
                 category: 'banking'
             });
             await profile.save();
 
-          
             const components = [];
 
-          
             const headerContainer = new ContainerBuilder()
                 .setAccentColor(0x2ECC71);
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ✅ Deposit Successful!\n## MONEY SAFELY BANKED\n\n> You have successfully deposited **\`$${amount.toLocaleString()}\`** into your bank account!\n> Your money is now secure and earning interest.`)
+                    .setContent(`# ✅ A Successful Deposit!\n## YOUR EMBERS ARE NOW SECURED\n\n> You have successfully secured **\`${amount.toLocaleString()} Embers\`** in the Royal Treasury!\n> Your wealth is now under the watchful eye of the Crown.`)
             );
 
             components.push(headerContainer);
 
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-        
             const detailsContainer = new ContainerBuilder()
                 .setAccentColor(0x27AE60);
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 📊 **TRANSACTION SUMMARY**')
+                    .setContent('## 📊 **THE SCRIBES LEDGER**')
             );
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Deposit Amount:** \`$${amount.toLocaleString()}\`\n**⏰ Transaction Time:** \`${new Date().toLocaleString()}\`\n**📝 Transaction Type:** \`Bank Deposit\`\n**🏷️ Category:** \`Banking\``)
+                    .setContent(`**💰 Deposit Amount:** \`${amount.toLocaleString()} Embers\`\n**⏰ Time of Deposit:** \`${new Date().toLocaleString()}\`\n**📝 Transaction Type:** \`Royal Treasury Deposit\`\n**🏷️ Category:** \`Banking\``)
             );
 
             components.push(detailsContainer);
 
-        
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const balancesContainer = new ContainerBuilder()
@@ -183,22 +172,21 @@ module.exports = {
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🏦 **UPDATED ACCOUNT BALANCES**')
+                    .setContent('## 👑 **THE STATE OF YOUR HOARD**')
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💳 Wallet Balance:** \`$${newWallet.toLocaleString()}\`\n**🏦 Bank Balance:** \`$${newBank.toLocaleString()}\`\n**📊 Bank Limit:** \`$${bankLimit.toLocaleString()}\``)
+                    .setContent(`**Your Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**Your Royal Treasury:** \`${profile.royal_treasury.toLocaleString()} Embers\`\n**Treasury Limit:** \`${royalTreasuryLimit.toLocaleString()} Embers\``)
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📈 Bank Usage:** \`${((newBank / bankLimit) * 100).toFixed(1)}%\`\n**💾 Remaining Space:** \`$${(bankLimit - newBank).toLocaleString()}\`\n**💎 Total Net Worth:** \`$${(newWallet + newBank + profile.familyVault).toLocaleString()}\``)
+                    .setContent(`**Treasury Fullness:** \`${((profile.royal_treasury / royalTreasuryLimit) * 100).toFixed(1)}%\`\n**Remaining Space:** \`${(royalTreasuryLimit - profile.royal_treasury).toLocaleString()} Embers\`\n**Total Worth:** \`${(profile.embers + profile.royal_treasury + profile.family_strongbox).toLocaleString()} Embers\``)
             );
 
             components.push(balancesContainer);
 
-     
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const tipsContainer = new ContainerBuilder()
@@ -206,7 +194,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **BANKING BENEFITS**\n\n**🛡️ Security:** Money in bank is safer from robberies\n**📈 Interest:** Bank money may earn passive income\n**🏠 Requirements:** Some purchases require banked funds\n**👨‍👩‍👧‍👦 Family:** Separate from family vault for organization\n\n> Use \`!withdraw <amount>\` to take money out when needed!`)
+                    .setContent(`## 💡 **THE BENEFITS OF THE TREASURY**\n\n**🛡️ Security:** Embers secured in the Treasury are safer from the grasp of pillagers.\n**📈 The King's Favor:** The Crown may, from time to time, grant favor to its most loyal subjects.\n**🏰 A Lord's Prerequisite:** Some grand acquisitions can only be made from the Royal Treasury.\n**👨‍👩‍👧‍👦 A Family's Wealth:** Keep your personal hoard separate from your family's strongbox for meticulous financial management.\n\n> Use \`!withdraw <amount>\` to retrieve your Embers when they are needed.`)
             );
 
             components.push(tipsContainer);
@@ -219,13 +207,12 @@ module.exports = {
         } catch (error) {
             console.error('Error in deposit command:', error);
 
-       
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **DEPOSIT ERROR**\n\nSomething went wrong while processing your bank deposit. Please try again in a moment.')
+                    .setContent('## ❌ A DEPOSIT GONE AWRY\n\nAn error occurred while attempting to deposit your Embers into the Royal Treasury. Please try again.')
             );
 
             return message.reply({

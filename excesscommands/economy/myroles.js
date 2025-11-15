@@ -9,34 +9,33 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'myroles',
-    aliases: ['roles'],
-    description: 'View your purchased premium roles with v2 components',
+    aliases: ['titles', 'mytitles'],
+    description: 'View your purchased lordly titles with v2 components',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             const now = new Date();
-            const activeRoles = profile.purchasedRoles.filter(role => 
+            const activeTitles = profile.purchasedRoles.filter(role => 
                 !role.expiryDate || new Date(role.expiryDate) > now
             );
             
-            const expiredRoles = profile.purchasedRoles.filter(role => 
+            const expiredTitles = profile.purchasedRoles.filter(role => 
                 role.expiryDate && new Date(role.expiryDate) <= now
             );
             
-            if (activeRoles.length === 0 && expiredRoles.length === 0) {
+            if (activeTitles.length === 0 && expiredTitles.length === 0) {
                 const components = [];
 
-                const noRolesContainer = new ContainerBuilder()
+                const noTitlesContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
-                noRolesContainer.addTextDisplayComponents(
+                noTitlesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 👑 No Premium Roles Found\n## BUILD YOUR PREMIUM COLLECTION\n\n> You don't have any premium roles yet! Premium roles provide significant advantages in your economy journey.\n> Unlock enhanced earnings, bonuses, and exclusive benefits with role memberships.`)
+                        .setContent(`# 👑 No Lordly Titles Found\n## FORGE YOUR LEGACY\n\n> You have not earned any lordly titles yet! Titles provide significant advantages in your dark journey.\n> Unlock enhanced power, bonuses, and exclusive benefits with these honors.`)
                 );
 
-                components.push(noRolesContainer);
-
+                components.push(noTitlesContainer);
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const purchaseContainer = new ContainerBuilder()
@@ -44,7 +43,7 @@ module.exports = {
 
                 purchaseContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **GET YOUR FIRST PREMIUM ROLE**\n\n**Step 1:** Use \`!buyrole\` to see available premium memberships\n**Step 2:** Choose a role that fits your budget and goals\n**Step 3:** Enjoy enhanced earnings and exclusive benefits\n**Step 4:** Stack multiple roles for maximum advantage!\n\n**💡 Benefits of Premium Roles:**\n> • Enhanced work earnings with multipliers\n> • Racing bonuses for competitive advantage\n> • Security boosts against robberies\n> • Family bonuses for household management\n> • Exclusive status and recognition`)
+                        .setContent(`## 🏆 **ACQUIRE YOUR FIRST TITLE**\n\n**Step 1:** Use \`!buyrole\` to see available lordly titles\n**Step 2:** Choose a title that fits your ambition and power\n**Step 3:** Enjoy enhanced earnings and exclusive benefits\n**Step 4:** Stack multiple titles for maximum dominion!\n\n**💡 Benefits of Lordly Titles:**\n> • Enhanced quest earnings with multipliers\n> • Conquest bonuses for competitive advantage\n> • Warding boosts against pillaging\n> • Retinue bonuses for follower management\n> • Exclusive status and recognition`)
                 );
 
                 components.push(purchaseContainer);
@@ -57,19 +56,17 @@ module.exports = {
 
             const components = [];
 
-          
             const headerContainer = new ContainerBuilder()
-                .setAccentColor(activeRoles.length > 0 ? 0xFFD700 : 0x808080);
+                .setAccentColor(activeTitles.length > 0 ? 0xFFD700 : 0x808080);
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 👑 ${message.author.username}'s Premium Roles\n## YOUR EXCLUSIVE MEMBERSHIPS\n\n> Welcome to your premium role collection! These memberships provide valuable bonuses and enhance your economy experience.\n> ${activeRoles.length > 0 ? `You have ${activeRoles.length} active membership${activeRoles.length !== 1 ? 's' : ''} working for you!` : 'All your memberships have expired - time to renew!'}`)
+                    .setContent(`# 👑 ${message.author.username}\'s Lordly Titles\n## YOUR EXCLUSIVE HONORS\n\n> Welcome to your collection of titles! These honors provide valuable bonuses and enhance your dominion.\n> ${activeTitles.length > 0 ? `You have ${activeTitles.length} active title${activeTitles.length !== 1 ? 's' : ''} empowering you!` : 'All your honors have faded - time to reclaim your glory!'}`)
             );
 
             components.push(headerContainer);
 
-            
-            if (activeRoles.length > 0) {
+            if (activeTitles.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const activeContainer = new ContainerBuilder()
@@ -77,16 +74,16 @@ module.exports = {
 
                 activeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 🟢 **ACTIVE PREMIUM MEMBERSHIPS**')
+                        .setContent('## 🟢 **ACTIVE LORDLY TITLES**')
                 );
 
-                activeRoles.forEach((role, index) => {
+                activeTitles.forEach((role, index) => {
                     const daysLeft = role.expiryDate ? 
                         Math.ceil((new Date(role.expiryDate) - now) / (1000 * 60 * 60 * 24)) : 
-                        'Permanent';
+                        'Eternal';
 
                     const timeLeftText = typeof daysLeft === 'number' ? 
-                        daysLeft > 0 ? `${daysLeft} days remaining` : 'Expires today!' :
+                        daysLeft > 0 ? `${daysLeft} days remaining` : 'Fades today!' :
                         daysLeft;
 
                     const purchaseDate = role.datePurchased ? 
@@ -94,12 +91,12 @@ module.exports = {
 
                     const roleText = `**${index + 1}. ${role.roleName}**\n` +
                         `> **⏰ Status:** \`${timeLeftText}\`\n` +
-                        `> **💼 Work Multiplier:** \`${role.benefits.workMultiplier}x\` bonus\n` +
-                        `> **🏁 Racing Bonus:** \`+$${role.benefits.racingBonus}\` per win\n` +
-                        `> **🛡️ Security Bonus:** \`+${role.benefits.robberyProtection}%\` protection\n` +
-                        `> **👨‍👩‍👧‍👦 Family Bonus:** \`+${role.benefits.familyBonus}\` multiplier\n` +
-                        `> **💰 Purchase Price:** \`$${role.price?.toLocaleString() || 'Unknown'}\`\n` +
-                        `> **📅 Purchased:** \`${purchaseDate}\``;
+                        `> **📜 Quest Multiplier:** \`${role.benefits.workMultiplier}x\` bonus\n` +
+                        `> **⚔️ Conquest Bonus:** \`+${role.benefits.racingBonus} Souls\` per win\n` +
+                        `> **🛡️ Warding Bonus:** \`+${role.benefits.robberyProtection}%\` protection\n` +
+                        `> **👥 Retinue Bonus:** \`+${role.benefits.familyBonus}\` multiplier\n` +
+                        `> **💰 Price:** \`${role.price?.toLocaleString() || 'Unknown'} Souls\`\n` +
+                        `> **📅 Bestowed:** \`${purchaseDate}\``;
 
                     activeContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
@@ -108,8 +105,6 @@ module.exports = {
                 });
 
                 components.push(activeContainer);
-
-            
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const benefitsContainer = new ContainerBuilder()
@@ -117,33 +112,32 @@ module.exports = {
 
                 benefitsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## ⚡ **COMBINED BENEFITS ACTIVE**')
+                        .setContent('## ⚡ **COMBINED POWERS ACTIVE**')
                 );
 
-                const totalWorkMultiplier = activeRoles.reduce((sum, role) => 
+                const totalQuestMultiplier = activeTitles.reduce((sum, role) => 
                     sum + (role.benefits.workMultiplier - 1), 0) + 1;
-                const totalRacingBonus = activeRoles.reduce((sum, role) => 
+                const totalConquestBonus = activeTitles.reduce((sum, role) => 
                     sum + role.benefits.racingBonus, 0);
-                const totalSecurityBonus = activeRoles.reduce((sum, role) => 
+                const totalWardingBonus = activeTitles.reduce((sum, role) => 
                     sum + role.benefits.robberyProtection, 0);
-                const totalFamilyBonus = activeRoles.reduce((sum, role) => 
+                const totalRetinueBonus = activeTitles.reduce((sum, role) => 
                     sum + role.benefits.familyBonus, 0);
 
                 benefitsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💼 Total Work Multiplier:** \`${totalWorkMultiplier.toFixed(2)}x\` (${((totalWorkMultiplier - 1) * 100).toFixed(0)}% bonus)\n**🏁 Total Racing Bonus:** \`+$${totalRacingBonus}\` per race win\n**🛡️ Total Security Bonus:** \`+${totalSecurityBonus}%\` robbery protection\n**👨‍👩‍👧‍👦 Total Family Bonus:** \`+${totalFamilyBonus}\` family multiplier`)
+                        .setContent(`**📜 Total Quest Multiplier:** \`${totalQuestMultiplier.toFixed(2)}x\` (${((totalQuestMultiplier - 1) * 100).toFixed(0)}% bonus)\n**⚔️ Total Conquest Bonus:** \`+${totalConquestBonus} Souls\` per conquest win\n**🛡️ Total Warding Bonus:** \`+${totalWardingBonus}%\` pillage protection\n**👥 Total Retinue Bonus:** \`+${totalRetinueBonus}\` retinue multiplier`)
                 );
 
                 benefitsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 ROI Status:** Your premium roles are actively enhancing every aspect of your economy!\n\n> These bonuses are applied automatically to all relevant activities.`)
+                        .setContent(`**🎯 Power Status:** Your titles are actively enhancing every aspect of your dominion!\n\n> These bonuses are applied automatically to all relevant activities.`)
                 );
 
                 components.push(benefitsContainer);
             }
 
-           
-            if (expiredRoles.length > 0) {
+            if (expiredTitles.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const expiredContainer = new ContainerBuilder()
@@ -151,17 +145,17 @@ module.exports = {
 
                 expiredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 🔴 **EXPIRED MEMBERSHIPS**')
+                        .setContent('## 🔴 **FADED HONORS**')
                 );
 
-                const recentExpired = expiredRoles.slice(-3);
+                const recentExpired = expiredTitles.slice(-3);
                 recentExpired.forEach((role, index) => {
                     const expiredDate = role.expiryDate ? 
                         new Date(role.expiryDate).toLocaleDateString() : 'Unknown';
 
-                    const expiredText = `**${index + 1}. ${role.roleName}** (Expired)\n` +
-                        `> **📅 Expired On:** \`${expiredDate}\`\n` +
-                        `> **💡 Status:** Benefits no longer active`;
+                    const expiredText = `**${index + 1}. ${role.roleName}** (Faded)\n` +
+                        `> **📅 Faded On:** \`${expiredDate}\`\n` +
+                        `> **💡 Status:** Powers no longer active`;
 
                     expiredContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
@@ -169,22 +163,21 @@ module.exports = {
                     );
                 });
 
-                if (expiredRoles.length > 3) {
+                if (expiredTitles.length > 3) {
                     expiredContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`*...and ${expiredRoles.length - 3} more expired roles*`)
+                            .setContent(`*...and ${expiredTitles.length - 3} more faded honors*`)
                     );
                 }
 
                 expiredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🔄 Renewal:** Use \`!buyrole\` to purchase new memberships and restore your premium benefits!`)
+                        .setContent(`**🔄 Reclaim Glory:** Use \`!buyrole\` to acquire new titles and restore your power!`)
                 );
 
                 components.push(expiredContainer);
             }
 
-      
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const managementContainer = new ContainerBuilder()
@@ -192,11 +185,11 @@ module.exports = {
 
             managementContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 💡 **ROLE MANAGEMENT TIPS**')
+                    .setContent('## 💡 **TITLE MANAGEMENT TIPS**')
             );
 
-            if (activeRoles.length > 0) {
-                const soonToExpire = activeRoles.filter(role => {
+            if (activeTitles.length > 0) {
+                const soonToExpire = activeTitles.filter(role => {
                     if (!role.expiryDate) return false;
                     const daysLeft = Math.ceil((new Date(role.expiryDate) - now) / (1000 * 60 * 60 * 24));
                     return daysLeft <= 3;
@@ -205,18 +198,18 @@ module.exports = {
                 if (soonToExpire.length > 0) {
                     managementContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**⚠️ EXPIRATION ALERT:** ${soonToExpire.length} role${soonToExpire.length !== 1 ? 's' : ''} expiring soon!\n**🔄 Action Needed:** Consider renewing to maintain your premium benefits.`)
+                            .setContent(`**⚠️ FADING ALERT:** ${soonToExpire.length} title${soonToExpire.length !== 1 ? 's' : ''} fading soon!\n**🔄 Action Needed:** Consider renewing to maintain your power.`)
                     );
                 }
 
                 managementContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🛒 Expand Collection:** Use \`!buyrole\` to add more premium roles\n**📊 Monitor Benefits:** Your roles are actively boosting your earnings\n**💰 ROI Tracking:** Premium roles typically pay for themselves quickly\n**⏰ Renewal Planning:** Plan renewals before expiration to avoid benefit gaps`)
+                        .setContent(`**🛒 Expand Collection:** Use \`!buyrole\` to acquire more titles\n**📊 Monitor Powers:** Your titles are actively boosting your might\n**💰 ROI Tracking:** Lordly titles typically pay for themselves quickly\n**⏰ Renewal Planning:** Plan renewals before expiration to avoid power gaps`)
                 );
             } else {
                 managementContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 Rebuild Your Collection:** All your memberships have expired\n**💡 Strategic Restart:** Choose roles that align with your current goals\n**📈 Compounding Benefits:** Multiple roles stack for maximum advantage\n**🔄 Fresh Start:** Use your experience to make better role choices`)
+                        .setContent(`**🎯 Rebuild Your Collection:** All your honors have faded\n**💡 Strategic Restart:** Choose titles that align with your current ambitions\n**📈 Compounding Powers:** Multiple titles stack for maximum advantage\n**🔄 Fresh Start:** Use your experience to make wiser choices`)
                 );
             }
 
@@ -230,13 +223,12 @@ module.exports = {
         } catch (error) {
             console.error('Error in myroles command:', error);
 
-        
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **ROLE COLLECTION ERROR**\n\nSomething went wrong while retrieving your premium roles. Please try again in a moment.')
+                    .setContent('## ❌ **TITLE COLLECTION ERROR**\n\nSomething went wrong while retrieving your lordly titles. Please try again in a moment.')
             );
 
             return message.reply({

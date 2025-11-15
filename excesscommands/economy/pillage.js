@@ -8,16 +8,15 @@ const {
 const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
-    name: 'rob',
-    description: 'Attempt to rob another player with v2 components (risky!)',
-    usage: '!rob @user',
+    name: 'pillage',
+    description: 'Attempt to pillage another player for Embers (risky!)',
+    usage: '!pillage @user',
     cooldown: 1800,
     async execute(message, args) {
         try {
-          
-            let robberProfile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            let pillagerProfile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            if (!robberProfile) {
+            if (!pillagerProfile) {
                 const components = [];
 
                 const profileErrorContainer = new ContainerBuilder()
@@ -25,7 +24,7 @@ module.exports = {
 
                 profileErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Profile Access Error\n## ACCOUNT INITIALIZATION REQUIRED\n\n> Unable to access your criminal profile!\n> Please use \`!balance\` first to initialize your account before attempting robberies.`)
+                        .setContent(`# ❌ Profile Access Error\n## ACCOUNT INITIALIZATION REQUIRED\n\n> Unable to access your pillager profile!\n> Please use \`!balance\` first to initialize your account before attempting to pillage.`)
                 );
 
                 components.push(profileErrorContainer);
@@ -36,19 +35,17 @@ module.exports = {
                 });
             }
 
-        
-            if (typeof robberProfile.wallet !== 'number') {
-                robberProfile.wallet = Number(robberProfile.wallet) || 0;
-                await robberProfile.save();
+            if (typeof pillagerProfile.embers !== 'number') {
+                pillagerProfile.embers = Number(pillagerProfile.embers) || 0;
+                await pillagerProfile.save();
             }
 
-            if (!robberProfile.cooldowns || typeof robberProfile.cooldowns !== 'object') {
-                robberProfile.cooldowns = {};
-                await robberProfile.save();
+            if (!pillagerProfile.cooldowns || typeof pillagerProfile.cooldowns !== 'object') {
+                pillagerProfile.cooldowns = {};
+                await pillagerProfile.save();
             }
 
-           
-            const cooldownCheck = EconomyManager.checkCooldown(robberProfile, 'robbery');
+            const cooldownCheck = EconomyManager.checkCooldown(pillagerProfile, 'pillage');
             if (cooldownCheck.onCooldown) {
                 const { minutes, seconds } = cooldownCheck.timeLeft;
                 const components = [];
@@ -58,11 +55,10 @@ module.exports = {
 
                 cooldownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⏰ Robbery Cooldown Active\n## CRIMINAL ACTIVITY RESTRICTED\n\n> You must wait before attempting another robbery!\n> **Time Remaining:** \`${minutes}m ${seconds}s\``)
+                        .setContent(`# ⏰ Pillage Cooldown Active\n## RAIdING ACTIVITY RESTRICTED\n\n> You must wait before attempting another pillage!\n> **Time Remaining:** \`${minutes}m ${seconds}s\``)
                 );
 
                 components.push(cooldownContainer);
-
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const patienceContainer = new ContainerBuilder()
@@ -70,7 +66,7 @@ module.exports = {
 
                 patienceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **USE THIS TIME WISELY**\n\n**🎯 Plan Your Next Target:** Scout potential victims\n**📈 Build Skills:** Work to increase your level for better success rates\n**🛡️ Study Security:** Learn about target protection methods\n**💰 Manage Resources:** Ensure you can handle potential fines\n\n> Patience and planning lead to successful heists!`)
+                        .setContent(`## 💡 **USE THIS TIME WISELY**\n\n**🎯 Plan Your Next Target:** Scout potential victims\n**📈 Build Power:** Complete quests to increase your level for better success rates\n**🛡️ Study Defenses:** Learn about target warding methods\n**💰 Manage Resources:** Ensure you can handle potential fines\n\n> Patience and planning lead to successful raids!`)
                 );
 
                 components.push(patienceContainer);
@@ -81,7 +77,6 @@ module.exports = {
                 });
             }
             
-       
             const target = message.mentions.users.first();
             if (!target) {
                 const components = [];
@@ -91,11 +86,10 @@ module.exports = {
 
                 noTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🎯 No Target Specified\n## ROBBERY TARGET REQUIRED\n\n> You need to mention someone to rob!\n> **Usage:** \`!rob @username\``)
+                        .setContent(`# 🎯 No Target Specified\n## PILLAGE TARGET REQUIRED\n\n> You need to mention someone to pillage!\n> **Usage:** \`!pillage @username\``)
                 );
 
                 components.push(noTargetContainer);
-
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const instructionsContainer = new ContainerBuilder()
@@ -103,7 +97,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🕵️ **HOW TO ROB SOMEONE**\n\n**Command:** \`!rob @target\`\n**Example:** \`!rob @JohnDoe\`\n\n**💡 Robbery Tips:**\n> • Target users with lower security levels\n> • Higher level robbers have better success rates\n> • Victims need at least $500 to be worth robbing\n> • Failed robberies result in fines and reputation loss\n> • Successful robberies give XP and stolen money`)
+                        .setContent(`## ⚔️ **HOW TO PILLAGE**\n\n**Command:** \`!pillage @target\`\n**Example:** \`!pillage @JohnDoe\`\n\n**💡 Pillage Tips:**\n> • Target users with lower warding levels\n> • Higher level pillagers have better success rates\n> • Victims need at least 500 Embers to be worth pillaging\n> • Failed pillages result in fines and reputation loss\n> • Successful pillages give XP and stolen Embers`)
                 );
 
                 components.push(instructionsContainer);
@@ -117,16 +111,15 @@ module.exports = {
             if (target.id === message.author.id) {
                 const components = [];
 
-                const selfRobContainer = new ContainerBuilder()
+                const selfPillageContainer = new ContainerBuilder()
                     .setAccentColor(0xF39C12);
 
-                selfRobContainer.addTextDisplayComponents(
+                selfPillageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🪞 Cannot Rob Yourself\n## LOGICAL IMPOSSIBILITY\n\n> You cannot rob yourself! That's not how crime works.\n> Find another target to attempt your robbery on.`)
+                        .setContent(`# 🪞 Cannot Pillage Yourself\n## LOGICAL IMPOSSIBILITY\n\n> You cannot pillage yourself! That's not how raiding works.\n> Find another target to attempt your pillage on.`)
                 );
 
-                components.push(selfRobContainer);
-
+                components.push(selfPillageContainer);
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const alternativeContainer = new ContainerBuilder()
@@ -134,7 +127,7 @@ module.exports = {
 
                 alternativeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **ALTERNATIVE MONEY METHODS**\n\n**💼 Work:** Use \`!work\` for legitimate income\n**🎰 Gamble:** Try \`!gamble\` for risky gains\n**🏪 Business:** Run businesses for passive income\n**🎁 Daily:** Claim \`!daily\` rewards regularly\n\n> Why rob yourself when you can rob others? 😏`)
+                        .setContent(`## 💰 **ALTERNATIVE EMBER GATHERING**\n\n**⚔️ Quest:** Use \`!quest\` for legitimate income\n**🎲 Gamble:** Try \`!gamble\` for risky gains\n**🏰 Stronghold:** Manage your stronghold for passive income\n**🎁 Daily:** Claim \`!daily\` rewards regularly\n\n> Why pillage yourself when you can pillage others? 😏`)
                 );
 
                 components.push(alternativeContainer);
@@ -148,16 +141,15 @@ module.exports = {
             if (target.bot) {
                 const components = [];
 
-                const botRobContainer = new ContainerBuilder()
+                const botPillageContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
-                botRobContainer.addTextDisplayComponents(
+                botPillageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🤖 Cannot Rob Bots\n## INVALID TARGET TYPE\n\n> Bots don't have money to steal and don't participate in the economy!\n> Choose a human player as your robbery target.`)
+                        .setContent(`# 🤖 Cannot Pillage Bots\n## INVALID TARGET TYPE\n\n> Bots don't have Embers to steal and don't participate in the economy!\n> Choose a human player as your pillage target.`)
                 );
 
-                components.push(botRobContainer);
-
+                components.push(botPillageContainer);
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const humanTargetContainer = new ContainerBuilder()
@@ -165,7 +157,7 @@ module.exports = {
 
                 humanTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 👥 **FIND HUMAN TARGETS**\n\n**🎯 Look For:** Active server members who participate in the economy\n**💰 Target Rich:** Players with high wallet balances\n**🛡️ Avoid Strong:** Users with high security levels (pets/properties)\n**⏰ Time It Right:** Rob when targets are likely offline\n\n> Focus on human players for successful robberies!`)
+                        .setContent(`## 👥 **FIND HUMAN TARGETS**\n\n**🎯 Look For:** Active server members who participate in the economy\n**💰 Target Rich:** Players with high Ember balances\n**🛡️ Avoid Strong:** Users with high warding levels (familiars/strongholds)\n**⏰ Time It Right:** Pillage when targets are likely offline\n\n> Focus on human players for successful pillages!`)
                 );
 
                 components.push(humanTargetContainer);
@@ -176,7 +168,6 @@ module.exports = {
                 });
             }
             
-        
             let victimProfile = await EconomyManager.getProfile(target.id, message.guild.id);
             
             if (!victimProfile) {
@@ -198,19 +189,17 @@ module.exports = {
                 });
             }
 
-            
-            if (typeof victimProfile.wallet !== 'number') {
-                victimProfile.wallet = Number(victimProfile.wallet) || 1000;
+            if (typeof victimProfile.embers !== 'number') {
+                victimProfile.embers = Number(victimProfile.embers) || 1000;
                 await victimProfile.save();
             }
 
-            if (!Array.isArray(victimProfile.pets)) {
-                victimProfile.pets = [];
+            if (!Array.isArray(victimProfile.familiars)) {
+                victimProfile.familiars = [];
                 await victimProfile.save();
             }
 
-         
-            if (victimProfile.wallet < 500) {
+            if (victimProfile.embers < 500) {
                 const components = [];
 
                 const poorTargetContainer = new ContainerBuilder()
@@ -218,11 +207,10 @@ module.exports = {
 
                 poorTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Target Too Poor\n## INSUFFICIENT ROBBERY VALUE\n\n> **${target.username}** only has **\`$${victimProfile.wallet.toLocaleString()}\`**!\n> Targets need at least **\`$500\`** to be worth robbing.`)
+                        .setContent(`# 💸 Target Too Poor\n## INSUFFICIENT PILLAGE VALUE\n\n> **${target.username}** only has **\`${victimProfile.embers.toLocaleString()} Embers\`**!\n> Targets need at least **\`500 Embers\`** to be worth pillaging.`)
                 );
 
                 components.push(poorTargetContainer);
-
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const betterTargetContainer = new ContainerBuilder()
@@ -230,7 +218,7 @@ module.exports = {
 
                 betterTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎯 **FIND BETTER TARGETS**\n\n**💰 Look For:** Users with substantial wallet balances\n**📊 Check Activity:** Active players tend to have more money\n**🏆 Target Winners:** Look for successful gamblers or workers\n**⏰ Wait Strategy:** Check back when they might have earned more\n\n**💡 Pro Tip:** Use \`!leaderboard wealth\` to scout rich targets!`)
+                        .setContent(`## 🎯 **FIND BETTER TARGETS**\n\n**💰 Look For:** Users with substantial Ember balances\n**📊 Check Activity:** Active players tend to have more Embers\n**🏆 Target Winners:** Look for successful gamblers or questers\n**⏰ Wait Strategy:** Check back when they might have earned more\n\n**💡 Pro Tip:** Use \`!leaderboard wealth\` to scout rich targets!`)
                 );
 
                 components.push(betterTargetContainer);
@@ -241,103 +229,92 @@ module.exports = {
                 });
             }
             
-      
-            const victimSecurity = EconomyManager.calculateSecurityLevel(victimProfile);
-            const robberLevel = robberProfile.level || 1;
+            const victimWarding = EconomyManager.calculateWardingLevel(victimProfile);
+            const pillagerLevel = pillagerProfile.level || 1;
             
             const baseSuccessChance = 30;
-            const levelBonus = Math.min(robberLevel * 2, 20);
-            const securityPenalty = victimSecurity * 0.5;
+            const levelBonus = Math.min(pillagerLevel * 2, 20);
+            const wardingPenalty = victimWarding * 0.5;
             
-            const successChance = Math.max(5, baseSuccessChance + levelBonus - securityPenalty);
+            const successChance = Math.max(5, baseSuccessChance + levelBonus - wardingPenalty);
             const success = Math.random() * 100 < successChance;
             
-           
-            robberProfile.cooldowns.robbery = new Date();
+            pillagerProfile.cooldowns.pillage = new Date();
             
             if (success) {
-                
-                const maxSteal = Math.min(victimProfile.wallet * 0.3, 5000);
+                const maxSteal = Math.min(victimProfile.embers * 0.3, 5000);
                 const stolenAmount = Math.floor(Math.random() * maxSteal) + 100;
                 
-                robberProfile.wallet += stolenAmount;
-                victimProfile.wallet = Math.max(0, victimProfile.wallet - stolenAmount);
+                pillagerProfile.embers += stolenAmount;
+                victimProfile.embers = Math.max(0, victimProfile.embers - stolenAmount);
                 
-                robberProfile.experience = (robberProfile.experience || 0) + 20;
-                robberProfile.reputation = Math.max((robberProfile.reputation || 0) - 10, -100);
-                robberProfile.successfulRobberies = (robberProfile.successfulRobberies || 0) + 1;
+                pillagerProfile.experience = (pillagerProfile.experience || 0) + 20;
+                pillagerProfile.reputation = Math.max((pillagerProfile.reputation || 0) - 10, -100);
+                pillagerProfile.successfulPillages = (pillagerProfile.successfulPillages || 0) + 1;
                 
-              
-                if (victimProfile.pets && victimProfile.pets.length > 0) {
-                    victimProfile.pets.forEach(pet => {
+                if (victimProfile.familiars && victimProfile.familiars.length > 0) {
+                    victimProfile.familiars.forEach(familiar => {
                         if (Math.random() < 0.5) {
-                            pet.health = Math.max(10, (pet.health || 100) - Math.floor(Math.random() * 15));
-                            pet.happiness = Math.max(0, (pet.happiness || 50) - Math.floor(Math.random() * 20));
+                            familiar.health = Math.max(10, (familiar.health || 100) - Math.floor(Math.random() * 15));
+                            familiar.bond = Math.max(0, (familiar.bond || 50) - Math.floor(Math.random() * 20));
                         }
                     });
                 }
                 
-             
-                if (!Array.isArray(robberProfile.transactions)) robberProfile.transactions = [];
+                if (!Array.isArray(pillagerProfile.transactions)) pillagerProfile.transactions = [];
                 if (!Array.isArray(victimProfile.transactions)) victimProfile.transactions = [];
 
-                robberProfile.transactions.push({
+                pillagerProfile.transactions.push({
                     type: 'income',
                     amount: stolenAmount,
-                    description: `Robbed ${target.username}`,
-                    category: 'robbery',
+                    description: `Pillaged ${target.username}`,
+                    category: 'pillage',
                     timestamp: new Date()
                 });
                 
                 victimProfile.transactions.push({
                     type: 'expense',
                     amount: stolenAmount,
-                    description: `Robbed by ${message.author.username}`,
-                    category: 'robbery',
+                    description: `Pillaged by ${message.author.username}`,
+                    category: 'pillage',
                     timestamp: new Date()
                 });
                 
-                await robberProfile.save();
+                await pillagerProfile.save();
                 await victimProfile.save();
                 
-              
                 const components = [];
 
-              
                 const successContainer = new ContainerBuilder()
                     .setAccentColor(0x4CAF50);
 
                 successContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💰 Robbery Successful!\n## CRIMINAL OPERATION COMPLETE\n\n> Congratulations! You successfully robbed **${target.username}** and got away clean!\n> Your criminal skills have proven effective in this daring theft.`)
+                        .setContent(`# 💰 Pillage Successful!\n## RAID OPERATION COMPLETE\n\n> Congratulations! You successfully pillaged **${target.username}** and got away with the loot!\n> Your raiding skills have proven effective in this daring attack.`)
                 );
 
                 components.push(successContainer);
-
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-              
                 const detailsContainer = new ContainerBuilder()
                     .setAccentColor(0x27AE60);
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 💎 **THEFT BREAKDOWN**')
+                        .setContent('## 💎 **THE LOOT**')
                 );
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 Target:** \`${target.username}\`\n**💰 Amount Stolen:** \`$${stolenAmount.toLocaleString()}\`\n**📊 Success Rate:** \`${successChance.toFixed(1)}%\`\n**🛡️ Target Security:** \`${victimSecurity}%\`\n**⭐ Experience Gained:** \`+20 XP\``)
+                        .setContent(`**🎯 Target:** \`${target.username}\`\n**💰 Amount Stolen:** \`${stolenAmount.toLocaleString()} Embers\`\n**📊 Success Rate:** \`${successChance.toFixed(1)}%\`\n**🛡️ Target Warding:** \`${victimWarding}%\`\n**⭐ Experience Gained:** \`+20 XP\``)
                 );
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Your New Balance:** \`$${robberProfile.wallet.toLocaleString()}\`\n**💸 Victim's Remaining:** \`$${victimProfile.wallet.toLocaleString()}\`\n**📈 Your Level:** \`${robberProfile.level || 1}\`\n**🏆 Successful Robberies:** \`${robberProfile.successfulRobberies}\``)
+                        .setContent(`**💳 Your New Coin Purse:** \`${pillagerProfile.embers.toLocaleString()} Embers\`\n**💸 Victim's Remaining:** \`${victimProfile.embers.toLocaleString()} Embers\`\n**📈 Your Level:** \`${pillagerProfile.level || 1}\`\n**🏆 Successful Pillages:** \`${pillagerProfile.successfulPillages}\``)
                 );
 
                 components.push(detailsContainer);
-
-             
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const consequencesContainer = new ContainerBuilder()
@@ -345,7 +322,7 @@ module.exports = {
 
                 consequencesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚠️ **ROBBERY CONSEQUENCES**\n\n**📉 Reputation Impact:** \`-10 reputation points\`\n**🐕 Pet Damage:** Some of the victim's pets may have been hurt during the robbery\n**⏰ Cooldown Applied:** \`30 minutes\` before your next robbery attempt\n**🔍 Increased Suspicion:** Law enforcement awareness heightened\n\n**💡 Advice:** Lay low and avoid suspicious activities for a while!`)
+                        .setContent(`## ⚠️ **PILLAGE CONSEQUENCES**\n\n**📉 Reputation Impact:** \`-10 reputation points\`\n**🐾 Familiar Harm:** Some of the victim's familiars may have been harmed during the raid\n**⏰ Cooldown Applied:** \`30 minutes\` before your next pillage attempt\n**🔍 Increased Infamy:** Your notoriety has grown\n\n**💡 Advice:** Lay low and avoid suspicious activities for a while!`)
                 );
 
                 components.push(consequencesContainer);
@@ -355,7 +332,6 @@ module.exports = {
                     flags: MessageFlags.IsComponentsV2
                 });
                 
-               
                 try {
                     const victimComponents = [];
 
@@ -364,11 +340,10 @@ module.exports = {
 
                     victimNotificationContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 🚨 You've Been Robbed!\n## CRIMINAL ATTACK IN ${message.guild.name.toUpperCase()}\n\n> **${message.author.username}** has successfully robbed you!\n> Your security measures were insufficient to prevent this theft.`)
+                            .setContent(`# 🚨 You've Been Pillaged!\n## RAID IN ${message.guild.name.toUpperCase()}\n\n> **${message.author.username}** has successfully pillaged you!\n> Your warding was insufficient to prevent this attack.`)
                     );
 
                     victimComponents.push(victimNotificationContainer);
-
                     victimComponents.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                     const lossDetailsContainer = new ContainerBuilder()
@@ -376,7 +351,7 @@ module.exports = {
 
                     lossDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💸 **LOSS DETAILS**\n\n**💰 Amount Lost:** \`$${stolenAmount.toLocaleString()}\`\n**🛡️ Your Security Level:** \`${victimSecurity}%\`\n**💳 Remaining Balance:** \`$${victimProfile.wallet.toLocaleString()}\`\n**🏠 Server:** \`${message.guild.name}\`\n\n**💡 Security Tip:** Buy pets and properties to increase your protection against future robberies!`)
+                            .setContent(`## 💸 **LOSS DETAILS**\n\n**💰 Amount Lost:** \`${stolenAmount.toLocaleString()} Embers\`\n**🛡️ Your Warding Level:** \`${victimWarding}%\`\n**💳 Remaining Coin Purse:** \`${victimProfile.embers.toLocaleString()} Embers\`\n**🏰 Server:** \`${message.guild.name}\`\n\n**💡 Warding Tip:** Attune familiars and acquire strongholds to increase your protection against future pillages!`)
                     );
 
                     victimComponents.push(lossDetailsContainer);
@@ -386,47 +361,42 @@ module.exports = {
                         flags: MessageFlags.IsComponentsV2
                     });
                 } catch (error) {
-                    console.log(`Could not notify robbery victim: ${target.tag}`);
+                    console.log(`Could not notify pillage victim: ${target.tag}`);
                 }
                 
             } else {
-             
                 const penalty = Math.floor(Math.random() * 2000) + 500;
-                robberProfile.wallet = Math.max(0, robberProfile.wallet - penalty);
-                robberProfile.reputation = Math.max((robberProfile.reputation || 0) - 5, -100);
-                robberProfile.robberyAttempts = (robberProfile.robberyAttempts || 0) + 1;
+                pillagerProfile.embers = Math.max(0, pillagerProfile.embers - penalty);
+                pillagerProfile.reputation = Math.max((pillagerProfile.reputation || 0) - 5, -100);
+                pillagerProfile.pillageAttempts = (pillagerProfile.pillageAttempts || 0) + 1;
                 
-                if (!Array.isArray(robberProfile.transactions)) {
-                    robberProfile.transactions = [];
+                if (!Array.isArray(pillagerProfile.transactions)) {
+                    pillagerProfile.transactions = [];
                 }
 
-                robberProfile.transactions.push({
+                pillagerProfile.transactions.push({
                     type: 'expense',
                     amount: penalty,
-                    description: `Failed robbery fine`,
-                    category: 'robbery',
+                    description: `Failed pillage fine`,
+                    category: 'pillage',
                     timestamp: new Date()
                 });
                 
-                await robberProfile.save();
+                await pillagerProfile.save();
                 
-               
                 const components = [];
 
-             
                 const failureContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚨 Robbery Failed!\n## CRIMINAL OPERATION COMPROMISED\n\n> You were caught attempting to rob **${target.username}**!\n> Law enforcement responded quickly and you face serious consequences.`)
+                        .setContent(`# 🚨 Pillage Failed!\n## RAID OPERATION COMPROMISED\n\n> You were caught attempting to pillage **${target.username}**!\n> The local guard responded quickly and you face serious consequences.`)
                 );
 
                 components.push(failureContainer);
-
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-           
                 const penaltyContainer = new ContainerBuilder()
                     .setAccentColor(0xDC3545);
 
@@ -437,17 +407,15 @@ module.exports = {
 
                 penaltyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💸 Fine Imposed:** \`$${penalty.toLocaleString()}\`\n**📊 Failure Chance:** \`${(100 - successChance).toFixed(1)}%\`\n**📉 Reputation Lost:** \`-5 reputation points\`\n**🛡️ Target Security:** \`${victimSecurity}%\` (too strong!)\n**📈 Your Level:** \`${robberProfile.level || 1}\` (need improvement)`)
+                        .setContent(`**💸 Fine Imposed:** \`${penalty.toLocaleString()} Embers\`\n**📊 Failure Chance:** \`${(100 - successChance).toFixed(1)}%\`\n**📉 Reputation Lost:** \`-5 reputation points\`\n**🛡️ Target Warding:** \`${victimWarding}%\` (too strong!)\n**📈 Your Level:** \`${pillagerProfile.level || 1}\` (need improvement)`)
                 );
 
                 penaltyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Remaining Balance:** \`$${robberProfile.wallet.toLocaleString()}\`\n**🎯 Total Robbery Attempts:** \`${robberProfile.robberyAttempts}\`\n**⏰ Cooldown Applied:** \`30 minutes\` before next attempt`)
+                        .setContent(`**💳 Remaining Coin Purse:** \`${pillagerProfile.embers.toLocaleString()} Embers\`\n**🎯 Total Pillage Attempts:** \`${pillagerProfile.pillageAttempts}\`\n**⏰ Cooldown Applied:** \`30 minutes\` before next attempt`)
                 );
 
                 components.push(penaltyContainer);
-
-          
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const improvementContainer = new ContainerBuilder()
@@ -455,7 +423,7 @@ module.exports = {
 
                 improvementContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **IMPROVE YOUR SUCCESS RATE**\n\n**📈 Level Up:** Work regularly to increase your level (current: ${robberProfile.level || 1})\n**🎯 Choose Easier Targets:** Look for users with lower security levels\n**🕵️ Scout First:** Research target security before attempting robberies\n**⏰ Timing:** Try robbing when targets are likely offline\n**💰 Build Funds:** Ensure you can afford potential failure fines\n\n**🎓 Remember:** Each level gives +2% success rate bonus!`)
+                        .setContent(`## 💡 **IMPROVE YOUR SUCCESS RATE**\n\n**📈 Level Up:** Complete quests to increase your level (current: ${pillagerProfile.level || 1})\n**🎯 Choose Easier Targets:** Look for users with lower warding levels\n**🕵️ Scout First:** Research target warding before attempting to pillage\n**⏰ Timing:** Try pillaging when targets are likely offline\n**💰 Build Funds:** Ensure you can afford potential failure fines\n\n**🎓 Remember:** Each level gives +2% success rate bonus!`)
                 );
 
                 components.push(improvementContainer);
@@ -467,7 +435,7 @@ module.exports = {
             }
             
         } catch (error) {
-            console.error('Error in rob command:', error);
+            console.error('Error in pillage command:', error);
             
             const components = [];
 
@@ -476,11 +444,10 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ❌ **ROBBERY SYSTEM ERROR**\n## OPERATION ABORTED\n\n> Something went wrong during the robbery attempt!\n> **Error:** \`${error.message}\``)
+                    .setContent(`# ❌ **PILLAGE SYSTEM ERROR**\n## OPERATION ABORTED\n\n> Something went wrong during the pillage attempt!\n> **Error:** \`${error.message}\``)
             );
 
             components.push(errorContainer);
-
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const troubleshootContainer = new ContainerBuilder()
@@ -488,7 +455,7 @@ module.exports = {
 
             troubleshootContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🛠️ **TROUBLESHOOTING STEPS**\n\n**1.** Both users should try \`!balance\` first to initialize accounts\n**2.** Wait 30 seconds and try the robbery again\n**3.** Ensure the target user is a valid server member\n**4.** Contact an admin if the issue persists\n\n**💡 Note:** System errors don't trigger cooldowns or penalties.`)
+                    .setContent(`## 🛠️ **TROUBLESHOOTING STEPS**\n\n**1.** Both users should try \`!balance\` first to initialize accounts\n**2.** Wait 30 seconds and try the pillage again\n**3.** Ensure the target user is a valid server member\n**4.** Contact an admin if the issue persists\n\n**💡 Note:** System errors don't trigger cooldowns or penalties.`)
             );
 
             components.push(troubleshootContainer);

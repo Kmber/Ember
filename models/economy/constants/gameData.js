@@ -1,222 +1,190 @@
-const CARS = {
-    'economy_sedan': {
-        name: 'Economy Sedan',
-        type: 'economy',
+const MOUNTS = {
+    'war_horse': {
+        name: 'War Horse',
+        type: 'ground',
         price: 15000,
-        speed: 45,
-        acceleration: 40,
-        handling: 50,
-        maintenanceCost: 200
+        capacity: 10,
+        stamina: 100,
+        wildernessDepth: 3,
+        durability: 100
     },
-    'sports_coupe': {
-        name: 'Sports Coupe',
-        type: 'sports',
+    'shadow_panther': {
+        name: 'Shadow Panther',
+        type: 'predator',
         price: 45000,
-        speed: 70,
-        acceleration: 75,
-        handling: 65,
-        maintenanceCost: 600
+        capacity: 15,
+        stamina: 120,
+        wildernessDepth: 5,
+        durability: 100
     },
-    'luxury_sedan': {
-        name: 'Luxury Sedan',
-        type: 'luxury',
+    'gryphon': {
+        name: 'Gryphon',
+        type: 'flying',
         price: 80000,
-        speed: 60,
-        acceleration: 55,
-        handling: 80,
-        maintenanceCost: 1000
+        capacity: 20,
+        stamina: 150,
+        wildernessDepth: 7,
+        durability: 100
     },
-    'supercar': {
-        name: 'Supercar',
-        type: 'supercar',
+    'drake': {
+        name: 'Drake',
+        type: 'dragonkin',
         price: 200000,
-        speed: 95,
-        acceleration: 90,
-        handling: 85,
-        maintenanceCost: 2500
+        capacity: 30,
+        stamina: 200,
+        wildernessDepth: 9,
+        durability: 100
     },
-    'hypercar': {
-        name: 'Hypercar',
-        type: 'hypercar',
+    'wyvern': {
+        name: 'Wyvern',
+        type: 'dragon',
         price: 500000,
-        speed: 100,
-        acceleration: 100,
-        handling: 95,
-        maintenanceCost: 5000
+        capacity: 50,
+        stamina: 250,
+        wildernessDepth: 10,
+        durability: 100
     }
 };
 
-const PETS = {
-    'house_cat': {
-        name: 'House Cat',
-        type: 'cat',
+const WEAPONS = {
+    'wooden_bow': {
+        name: 'Wooden Bow',
         price: 500,
-        securityLevel: 10,
-        breed: 'Domestic'
+        damage: 10,
+        accuracy: 70,
+        criticalChance: 5,
+        durability: 100
     },
-    'guard_dog': {
-        name: 'Guard Dog',
-        type: 'security_dog',
+    'iron_spear': {
+        name: 'Iron Spear',
         price: 2000,
-        securityLevel: 40,
-        breed: 'German Shepherd'
+        damage: 25,
+        accuracy: 75,
+        criticalChance: 10,
+        durability: 100
     },
-    'security_cat': {
-        name: 'Security Cat',
-        type: 'guard_cat',
-        price: 1500,
-        securityLevel: 25,
-        breed: 'Maine Coon'
-    },
-    'attack_dog': {
-        name: 'Attack Dog',
-        type: 'security_dog',
+    'steel_crossbow': {
+        name: 'Steel Crossbow',
         price: 5000,
-        securityLevel: 70,
-        breed: 'Rottweiler'
+        damage: 40,
+        accuracy: 85,
+        criticalChance: 15,
+        durability: 100
     },
-    'surveillance_bird': {
-        name: 'Surveillance Parrot',
-        type: 'bird',
-        price: 3000,
-        securityLevel: 35,
-        breed: 'Macaw'
+    'elven_longbow': {
+        name: 'Elven Longbow',
+        price: 15000,
+        damage: 60,
+        accuracy: 95,
+        criticalChance: 20,
+        durability: 100
+    },
+    'dragonbone_greatbow': {
+        name: 'Dragonbone Greatbow',
+        price: 50000,
+        damage: 100,
+        accuracy: 90,
+        criticalChance: 25,
+        durability: 100
     }
 };
 
-const PROPERTIES = {
-    'studio': {
+const STRONGHOLDS = {
+    'studio_apartment': {
         name: 'Studio Apartment',
-        type: 'studio',
         price: 50000,
-        monthlyRent: 800,
-        utilities: 150,
-        maxFamilyMembers: 1,
-        securityLevel: 1,
+        monthlyCost: 950,
+        familyCapacity: 1,
         vaultCapacity: 10000,
-        hasGarage: false,
-        garageCapacity: 0
+        securityLevel: 1,
+        garageSize: 0
     },
-    'apartment': {
+    'two_bedroom_apartment': {
         name: '2BR Apartment',
-        type: 'apartment',
         price: 120000,
-        monthlyRent: 1500,
-        utilities: 250,
-        maxFamilyMembers: 3,
-        securityLevel: 2,
+        monthlyCost: 1750,
+        familyCapacity: 3,
         vaultCapacity: 25000,
-        hasGarage: true,
-        garageCapacity: 1
+        securityLevel: 2,
+        garageSize: 1
     },
-    'house': {
+    'family_house': {
         name: 'Family House',
-        type: 'house',
         price: 300000,
-        monthlyRent: 2500,
-        utilities: 400,
-        maxFamilyMembers: 5,
-        securityLevel: 4,
+        monthlyCost: 2900,
+        familyCapacity: 5,
         vaultCapacity: 75000,
-        hasGarage: true,
-        garageCapacity: 2
+        securityLevel: 4,
+        garageSize: 2
     },
-    'mansion': {
+    'luxury_mansion': {
         name: 'Luxury Mansion',
-        type: 'mansion',
         price: 800000,
-        monthlyRent: 5000,
-        utilities: 800,
-        maxFamilyMembers: 8,
-        securityLevel: 7,
+        monthlyCost: 5800,
+        familyCapacity: 8,
         vaultCapacity: 200000,
-        hasGarage: true,
-        garageCapacity: 5
+        securityLevel: 7,
+        garageSize: 5
     },
-    'estate': {
+    'private_estate': {
         name: 'Private Estate',
-        type: 'estate',
         price: 2000000,
-        monthlyRent: 10000,
-        utilities: 1500,
-        maxFamilyMembers: 12,
-        securityLevel: 10,
+        monthlyCost: 11500,
+        familyCapacity: 12,
         vaultCapacity: 500000,
-        hasGarage: true,
-        garageCapacity: 10
+        securityLevel: 10,
+        garageSize: 10
     }
 };
 
 const ROLES = {
-    'vip': {
+    'premium_member': {
+        name: 'Premium Member',
+        price: 5000,
+        duration: 7,
+        benefits: {
+            workMultiplier: 1.2,
+            racingBonus: 500,
+            robberyProtection: 10
+        }
+    },
+    'vip_member': {
         name: 'VIP Member',
-        price: 50000,
-        duration: 30,
+        price: 15000,
+        duration: 14,
         benefits: {
             workMultiplier: 1.5,
             racingBonus: 1000,
-            robberyProtection: 20,
-            familyBonus: 0.2
+            robberyProtection: 20
         }
     },
-    'premium': {
-        name: 'Premium Member',
-        price: 100000,
+    'elite_member': {
+        name: 'Elite Member',
+        price: 30000,
         duration: 30,
         benefits: {
             workMultiplier: 2.0,
             racingBonus: 2500,
-            robberyProtection: 40,
-            familyBonus: 0.5
+            robberyProtection: 30
         }
     },
-    'diamond': {
-        name: 'Diamond Elite',
-        price: 250000,
+    'ultimate_member': {
+        name: 'Ultimate Member',
+        price: 50000,
         duration: 30,
         benefits: {
-            workMultiplier: 3.0,
+            workMultiplier: 2.5,
             racingBonus: 5000,
-            robberyProtection: 60,
-            familyBonus: 1.0
+            robberyProtection: 40
         }
     }
 };
 
-// NEW ENHANCED SHOP ITEMS
 const SHOP_ITEMS = {
-    'pet_food': {
-        name: 'Premium Pet Food',
-        price: 200,
-        description: 'Instantly restores 40 hunger and 10 health to all pets',
-        category: 'pet_care',
-        cooldown: 0
-    },
-    'car_repair': {
-        name: 'Car Repair Kit',
-        price: 1500,
-        description: 'Restores 30 durability to your active car',
-        category: 'vehicle',
-        cooldown: 0
-    },
-    'security_upgrade': {
-        name: 'Home Security System',
-        price: 5000,
-        description: 'Permanently increases your property security by 2 levels',
-        category: 'security',
-        cooldown: 0
-    },
-    'family_vacation': {
-        name: 'Family Vacation Package',
-        price: 3000,
-        description: 'Increases all family member bonds by 15%',
-        category: 'family',
-        cooldown: 0
-    },
     'lucky_charm': {
         name: 'Lucky Charm',
         price: 10000,
-        description: 'Increases work earnings by 50% for 7 days',
+        description: 'Increases work income by 50% for 7 days',
         category: 'boost',
         cooldown: 0,
         effect: {
@@ -225,9 +193,8 @@ const SHOP_ITEMS = {
             duration: 7 * 24 * 60 * 60 * 1000 // 7 days
         }
     },
-    // NEW ITEMS
-    'gambling_luck': {
-        name: 'Rabbit\'s Foot',
+    'rabbits_foot': {
+        name: 'Rabbits Foot',
         price: 5000,
         description: 'Increases gambling luck by 20% for 4 hours (stacks up to 5 times)',
         category: 'boost',
@@ -239,8 +206,41 @@ const SHOP_ITEMS = {
             stackable: true
         }
     },
-    'robbery_protection': {
-        name: 'Security Guard',
+    'family_vacation': {
+        name: 'Family Vacation Package',
+        price: 3000,
+        description: 'Increases all family member bonds by 15%',
+        category: 'family',
+        cooldown: 0
+    },
+    'car_insurance': {
+        name: 'Car Insurance',
+        price: 1500,
+        description: 'Restores 30 durability to your active car',
+        category: 'vehicle',
+        cooldown: 0
+    },
+    'home_security': {
+        name: 'Home Security System',
+        price: 5000,
+        description: 'Permanently increases your property security by 2 levels',
+        category: 'security',
+        cooldown: 0
+    },
+    'business_manager': {
+        name: 'Business Manager',
+        price: 30000,
+        description: 'Increases all business profits by 10% for 30 days',
+        category: 'business',
+        cooldown: 0,
+        effect: {
+            type: 'business_boost',
+            multiplier: 1.1,
+            duration: 30 * 24 * 60 * 60 * 1000 // 30 days
+        }
+    },
+    'personal_bodyguard': {
+        name: 'Personal Bodyguard',
         price: 15000,
         description: 'Provides +30% robbery protection for 24 hours',
         category: 'security',
@@ -251,8 +251,8 @@ const SHOP_ITEMS = {
             duration: 24 * 60 * 60 * 1000 // 24 hours
         }
     },
-    'vault_expansion': {
-        name: 'Vault Expansion Kit',
+    'extended_vault': {
+        name: 'Extended Vault',
         price: 25000,
         description: 'Doubles your vault capacity for 72 hours (resets on new property)',
         category: 'storage',
@@ -263,8 +263,8 @@ const SHOP_ITEMS = {
             duration: 72 * 60 * 60 * 1000 // 72 hours
         }
     },
-    'bank_upgrade': {
-        name: 'Premium Banking',
+    'offshore_account': {
+        name: 'Offshore Account',
         price: 30000,
         description: 'Increases bank deposit limit by 50% for 48 hours',
         category: 'storage',
@@ -277,4 +277,17 @@ const SHOP_ITEMS = {
     }
 };
 
-module.exports = { CARS, PETS, PROPERTIES, ROLES, SHOP_ITEMS };
+const FAMILIARS = {
+    'shadow_wisp': {
+        name: 'Shadow Wisp',
+        type: 'wisp',
+        tier: 1,
+        maxHealth: 50,
+        skill: 20,
+        specialAbility: 'scouting',
+        price: 1000,
+        description: 'A mysterious wisp that can scout ahead.'
+    }
+};
+
+module.exports = { MOUNTS, WEAPONS, STRONGHOLDS, ROLES, SHOP_ITEMS, FAMILIARS };

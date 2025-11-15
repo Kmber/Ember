@@ -1,177 +1,177 @@
 // constants/businessData.js
-const BUSINESS_TYPES = {
-    'restaurant': {
-        name: 'Restaurant Chain',
-        description: 'Serve customers and earn daily profits',
+const GUILD_TYPES = {
+    'alchemists_guild': {
+        name: 'Alchemists Guild',
+        description: 'Brew potions and transmute materials for daily profit.',
         baseCost: 50000,
-        dailyIncome: [200, 800], // min, max per level
+        dailyIncome: [200, 800],
         maxLevel: 10,
-        employeeCost: 150, // per employee per day
-        maxEmployees: 20,
+        apprenticeCost: 150,
+        maxApprentices: 20,
         upgradeCostMultiplier: 1.5,
-        categories: ['food_quality', 'service', 'location', 'marketing'],
+        categories: ['potion_mastery', 'transmutation', 'ingredient_sourcing', 'market_stall'],
         specialBonuses: {
-            family_discount: 'Family members eat free (saves $50/day per member)',
-            celebrity_chef: 'Hire famous chef (+50% income for 30 days)',
-            franchise: 'Expand to multiple locations (+25% base income)'
+            philosophers_stone: 'Achieve perfect transmutation (+50% income for 30 days).',
+            guild_monopoly: 'Control the local market (+25% base income).',
+            elixir_of_life: 'Brew a legendary elixir (massive one-time profit event).'
         }
     },
-    'tech_startup': {
-        name: 'Tech Startup',
-        description: 'Develop apps and software for high profits',
+    'arcane_academy': {
+        name: 'Arcane Academy',
+        description: 'Train mages and sell enchanted items for high profits.',
         baseCost: 100000,
-        dailyIncome: [100, 1500], // very volatile
+        dailyIncome: [100, 1500],
         maxLevel: 10,
-        employeeCost: 300, // expensive developers
-        maxEmployees: 15,
+        apprenticeCost: 300,
+        maxApprentices: 15,
         upgradeCostMultiplier: 2.0,
-        categories: ['innovation', 'marketing', 'user_base', 'funding'],
+        categories: ['spell_research', 'enchantment', 'student_tuition', 'reputation'],
         specialBonuses: {
-            ipo: 'Go public (1000x daily income for 7 days, then +100% forever)',
-            viral_app: 'Create viral app (+200% income for 14 days)',
-            government_contract: 'Secure government deal (+75% income, very stable)'
+            archmage_tower: 'Construct a tower of power (1000x daily income for 7 days, then +100% forever).',
+            forbidden_knowledge: 'Discover a powerful new spell (+200% income for 14 days).',
+            royal_charter: 'Become the official magic supplier for the kingdom (+75% income, very stable).'
         }
     },
-    'real_estate': {
-        name: 'Real Estate Agency',
-        description: 'Earn commissions from property sales',
+    'mercenary_guild': {
+        name: 'Mercenary Guild',
+        description: 'Earn coin by taking on dangerous contracts.',
         baseCost: 75000,
-        dailyIncome: [300, 600], // stable income
+        dailyIncome: [300, 600],
         maxLevel: 10,
-        employeeCost: 200,
-        maxEmployees: 12,
+        apprenticeCost: 200,
+        maxApprentices: 12,
         upgradeCostMultiplier: 1.3,
-        categories: ['market_knowledge', 'network', 'reputation', 'listings'],
+        categories: ['contract_negotiation', 'guild_reputation', 'weaponry', 'network'],
         specialBonuses: {
-            luxury_specialist: 'Specialize in luxury properties (+100% income)',
-            market_insider: 'Get insider info (predict market trends)',
-            property_flip: 'Buy and flip properties (massive profit events)'
+            dragonslayers: 'Specialize in slaying dragons (+100% income).',
+            spymaster: 'Gain access to secret contracts (predict market trends).',
+            war_for_hire: 'Participate in a major war (massive profit events).'
         }
     },
-    'car_dealership': {
-        name: 'Car Dealership',
-        description: 'Sell cars to players and NPCs',
+    'beast_masters_guild': {
+        name: 'Beast Masters Guild',
+        description: 'Tame and sell exotic mounts.',
         baseCost: 200000,
         dailyIncome: [400, 1000],
         maxLevel: 10,
-        employeeCost: 250,
-        maxEmployees: 10,
+        apprenticeCost: 250,
+        maxApprentices: 10,
         upgradeCostMultiplier: 1.4,
-        categories: ['inventory', 'sales_team', 'service_center', 'reputation'],
+        categories: ['taming', 'breeding', 'stables', 'reputation'],
         specialBonuses: {
-            exotic_cars: 'Sell hypercars (+150% profit margins)',
-            racing_team: 'Sponsor racing team (marketing boost)',
-            trade_ins: 'Accept player car trade-ins (extra revenue stream)'
+            legendary_beasts: 'Tame and sell legendary creatures (+150% profit margins).',
+            arena_champions: 'Sponsor a champion in the arena (marketing boost).',
+            trade_routes: 'Establish trade routes with other kingdoms (extra revenue stream).'
         }
     },
-    'security_company': {
-        name: 'Security Company',
-        description: 'Provide protection services to players',
+    'royal_guard': {
+        name: 'Royal Guard',
+        description: 'Provide elite protection services to nobles.',
         baseCost: 150000,
         dailyIncome: [250, 700],
         maxLevel: 10,
-        employeeCost: 280,
-        maxEmployees: 25,
+        apprenticeCost: 280,
+        maxApprentices: 25,
         upgradeCostMultiplier: 1.6,
-        categories: ['equipment', 'training', 'contracts', 'reputation'],
+        categories: ['equipment', 'training', 'royal_contracts', 'reputation'],
         specialBonuses: {
-            government_contract: 'Protect government buildings (+200% income)',
-            private_military: 'Become PMC (can participate in heists)',
-            insurance_partner: 'Partner with insurance companies (+50% steady income)'
+            protect_the_king: 'Become the personal guard of the king (+200% income).',
+            artifact_retrieval: 'Can participate in dungeon raids.',
+            noble_favor: 'Gain favor with the noble houses (+50% steady income).'
         }
     },
-    'casino': {
-        name: 'Private Casino',
-        description: 'Ultimate high-risk, high-reward business',
+    'shadow_syndicate': {
+        name: 'Shadow Syndicate',
+        description: 'A dark fantasy-themed high-risk, high-reward business.',
         baseCost: 500000,
-        dailyIncome: [0, 3000], // very volatile
+        dailyIncome: [0, 3000],
         maxLevel: 10,
-        employeeCost: 400,
-        maxEmployees: 30,
+        apprenticeCost: 400,
+        maxApprentices: 30,
         upgradeCostMultiplier: 1.8,
-        categories: ['games', 'security', 'vip_services', 'entertainment'],
+        categories: ['information_network', 'underworld_contacts', 'security', 'influence'],
         specialBonuses: {
-            high_roller_suite: 'Attract whales (+300% income spikes)',
-            tournament_host: 'Host poker tournaments (huge profit events)',
-            money_laundering: 'Illegal but profitable (+100% income, +50% heat)'
+            assassins_guild: 'Attract powerful clients (+300% income spikes).',
+            thieves_guild: 'Host heists and split the loot (huge profit events).',
+            dark_rituals: 'Perform forbidden rituals for immense power (+100% income, +50% heat).'
         }
     }
 };
 
-const HEIST_TARGETS = {
-    'central_bank': {
-        name: 'Central Bank',
+const RAID_TARGETS = {
+    'ancient_dragon_hoard': {
+        name: 'Ancient Dragon Hoard',
         difficulty: 5,
         requiredMembers: 4,
         minHeatLevel: 80,
         payout: [2000000, 5000000],
         successChance: 15,
         planningTime: 72, // hours
-        requiredRoles: ['mastermind', 'hacker', 'safecracker', 'driver', 'muscle', 'lookout'],
-        equipment: ['thermal_lance', 'emp_device', 'getaway_cars', 'explosives', 'hacking_tools'],
-        description: 'The ultimate heist - Fort Knox level security'
+        requiredRoles: ['warlord', 'arcanist', 'berserker', 'vanguard', 'sentinel', 'scout'],
+        equipment: ['dragonfire_torch', 'arcane_disruptor', 'escape_mounts', 'alchemical_charges', 'scrying_orbs'],
+        description: 'The ultimate raid - a dragons lair filled with treasure.'
     },
-    'casino_vault': {
-        name: 'Casino Vault',
+    'elven_treasury': {
+        name: 'Elven Treasury',
         difficulty: 4,
         requiredMembers: 4,
         minHeatLevel: 60,
         payout: [800000, 2000000],
         successChance: 25,
         planningTime: 48,
-        requiredRoles: ['mastermind', 'hacker', 'safecracker', 'driver', 'muscle'],
-        equipment: ['keycard_cloner', 'getaway_cars', 'masks', 'weapons'],
-        description: 'Ocean\'s Eleven style casino heist'
+        requiredRoles: ['warlord', 'arcanist', 'scout', 'vanguard', 'sentinel'],
+        equipment: ['glyph_replicator', 'escape_mounts', 'illusory_cloaks', 'enchanted_weaponry'],
+        description: 'An elegant heist to liberate elven riches.'
     },
-    'mansion_safe': {
-        name: 'Billionaire Mansion',
+    'lich_phylactery': {
+        name: 'Lich Phylactery',
         difficulty: 3,
         requiredMembers: 4,
         minHeatLevel: 40,
         payout: [300000, 800000],
         successChance: 40,
         planningTime: 24,
-        requiredRoles: ['mastermind', 'hacker', 'driver', 'muscle'],
-        equipment: ['lock_picks', 'getaway_cars', 'masks'],
-        description: 'Rob a wealthy player\'s mansion'
+        requiredRoles: ['warlord', 'arcanist', 'vanguard', 'sentinel'],
+        equipment: ['masterwork_lockpicks', 'escape_mounts', 'illusory_cloaks'],
+        description: 'Steal the life force of a powerful lich.'
     },
-    'jewelry_store': {
-        name: 'Diamond Exchange',
+    'dwarven_gem_mine': {
+        name: 'Dwarven Gem Mine',
         difficulty: 2,
         requiredMembers: 3,
         minHeatLevel: 20,
         payout: [100000, 400000],
         successChance: 60,
         planningTime: 12,
-        requiredRoles: ['mastermind', 'driver', 'muscle'],
-        equipment: ['glass_cutter', 'getaway_cars', 'masks'],
-        description: 'Quick smash and grab operation'
+        requiredRoles: ['warlord', 'vanguard', 'berserker'],
+        equipment: ['crystal_shatterer', 'escape_mounts', 'illusory_cloaks'],
+        description: 'A quick raid on a wealthy gem mine.'
     },
-    'armored_truck': {
-        name: 'Armored Vehicle',
+    'kings_caravan': {
+        name: 'King Caravan',
         difficulty: 1,
         requiredMembers: 3,
         minHeatLevel: 0,
         payout: [50000, 150000],
         successChance: 75,
         planningTime: 6,
-        requiredRoles: ['mastermind', 'driver', 'muscle'],
-        equipment: ['weapons', 'getaway_cars'],
-        description: 'Intercept money transport'
+        requiredRoles: ['warlord', 'vanguard', 'scout'],
+        equipment: ['enchanted_weaponry', 'escape_mounts'],
+        description: 'Intercept a royal caravan carrying treasures.'
     }
 };
 
-const HEIST_EQUIPMENT = {
-    'thermal_lance': { name: 'Thermal Lance', cost: 50000, description: 'Cuts through vault doors' },
-    'emp_device': { name: 'EMP Device', cost: 75000, description: 'Disables electronic security' },
-    'hacking_tools': { name: 'Hacking Equipment', cost: 25000, description: 'Bypass computer systems' },
-    'explosives': { name: 'C4 Explosives', cost: 40000, description: 'Blast through obstacles' },
-    'getaway_cars': { name: 'Getaway Vehicles', cost: 30000, description: 'Fast escape vehicles' },
-    'keycard_cloner': { name: 'Keycard Cloner', cost: 15000, description: 'Copy access cards' },
-    'lock_picks': { name: 'Lock Pick Set', cost: 5000, description: 'Silent entry tools' },
-    'glass_cutter': { name: 'Glass Cutter', cost: 3000, description: 'Cut display cases' },
-    'masks': { name: 'Disguise Masks', cost: 2000, description: 'Hide identities' },
-    'weapons': { name: 'Weapons Cache', cost: 20000, description: 'Intimidation and protection' }
+const RAID_EQUIPMENT = {
+    'dragonfire_torch': { name: 'Dragonfire Torch', cost: 50000, description: 'Cuts through enchanted vault doors.' },
+    'arcane_disruptor': { name: 'Arcane Disruptor', cost: 75000, description: 'Disables magical wards and traps.' },
+    'scrying_orbs': { name: 'Scrying Orbs', cost: 25000, description: 'Bypass magical surveillance.' },
+    'alchemical_charges': { name: 'Alchemical Charges', cost: 40000, description: 'Blast through fortified walls.' },
+    'escape_mounts': { name: 'Escape Mounts', cost: 30000, description: 'Swift mounts for a quick getaway.' },
+    'glyph_replicator': { name: 'Glyph Replicator', cost: 15000, description: 'Copy magical keys and runes.' },
+    'masterwork_lockpicks': { name: 'Masterwork Lockpicks', cost: 5000, description: 'Tools for silent entry.' },
+    'crystal_shatterer': { name: 'Crystal Shatterer', cost: 3000, description: 'Shatters protective crystals.' },
+    'illusory_cloaks': { name: 'Illusory Cloaks', cost: 2000, description: 'Conceal identities with magic.' },
+    'enchanted_weaponry': { name: 'Enchanted Weaponry', cost: 20000, description: 'For intimidation and protection.' }
 };
 
-module.exports = { BUSINESS_TYPES, HEIST_TARGETS, HEIST_EQUIPMENT };
+module.exports = { GUILD_TYPES, RAID_TARGETS, RAID_EQUIPMENT };
