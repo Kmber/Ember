@@ -232,7 +232,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 An Empty Coin Purse\n## YOU CANNOT GIFT WHAT YOU DO NOT HAVE\n\n> Your coin purse does not hold enough Embers for this gift!`)
+                        .setContent(`# 💸 An Empty Ember Sachel\n## YOU CANNOT GIFT WHAT YOU DO NOT HAVE\n\n> Your Ember Sachel does not hold enough Embers for this gift!`)
                 );
 
                 components.push(insufficientContainer);
@@ -244,7 +244,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **A TALE OF TWO PURSES**\n\n**Your Coin Purse:** \`${donorProfile.embers.toLocaleString()} Embers\`\n**Intended Gift:** \`${amount.toLocaleString()} Embers\`\n**The Difference:** \`${(amount - donorProfile.embers).toLocaleString()} Embers\``)
+                        .setContent(`## 💰 **A TALE OF TWO PURSES**\n\n**Your Ember Sachel:** \`${donorProfile.embers.toLocaleString()} Embers\`\n**Intended Gift:** \`${amount.toLocaleString()} Embers\`\n**The Difference:** \`${(amount - donorProfile.embers).toLocaleString()} Embers\``)
                 );
 
                 components.push(balanceContainer);
@@ -327,12 +327,12 @@ module.exports = {
 
                 balancesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**${message.author.username}** (The Giver)\n> **New Coin Purse:** \`${donorProfile.embers.toLocaleString()} Embers\`\n> **Arcane Power Gained:** \`+${Math.min(50, Math.floor(amount / 1000))}\``)
+                        .setContent(`**${message.author.username}** (The Giver)\n> **New Ember Sachel:** \`${donorProfile.embers.toLocaleString()} Embers\`\n> **Arcane Power Gained:** \`+${Math.min(50, Math.floor(amount / 1000))}\``)
                 );
 
                 balancesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**${target.username}** (The Receiver)\n> **New Coin Purse:** \`${recipientProfile.embers.toLocaleString()} Embers\`\n> **Arcane Power Gained:** \`+5\``)
+                        .setContent(`**${target.username}** (The Receiver)\n> **New Ember Sachel:** \`${recipientProfile.embers.toLocaleString()} Embers\`\n> **Arcane Power Gained:** \`+5\``)
                 );
 
                 components.push(balancesContainer);

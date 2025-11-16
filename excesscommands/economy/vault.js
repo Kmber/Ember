@@ -81,7 +81,7 @@ module.exports = {
                 profile.embers -= amount;
                 profile.guild_coffers += amount;
 
-                profile.deeds.push({
+                profile.transactions.push({
                     type: 'expense',
                     amount: amount,
                     description: 'Deposited Embers into the guild coffer.',
@@ -104,7 +104,7 @@ module.exports = {
                 profile.guild_coffers -= amount;
                 profile.embers += amount;
 
-                profile.deeds.push({
+                profile.transactions.push({
                     type: 'income',
                     amount: amount,
                     description: 'Withdrew Embers from the guild coffer.',
@@ -114,7 +114,7 @@ module.exports = {
                 const components = [];
                 const withdrawSuccessContainer = new ContainerBuilder().setAccentColor(0xFF9800);
                 withdrawSuccessContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent(`# ✅ Withdrawal Successful!\n## EMBERS TRANSFERRED TO COIN PURSE\n\n> Successfully withdrew **\`${amount.toLocaleString()} Embers\`**.`)
+                    new TextDisplayBuilder().setContent(`# ✅ Withdrawal Successful!\n## EMBERS TRANSFERRED TO Ember Sachel\n\n> Successfully withdrew **\`${amount.toLocaleString()} Embers\`**.`)
                 );
                 components.push(withdrawSuccessContainer);
                 await message.reply({ components, flags: MessageFlags.IsComponentsV2 });

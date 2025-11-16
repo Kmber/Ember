@@ -7,6 +7,8 @@ const MONSTERS = {
         health: 25,
         damage: 5,
         agility: 80,
+        stamina: 100,
+        wilderness: 1,
         baseValue: 50,
         rarity: 'common',
         requiredDungeonDepth: 1,
@@ -24,6 +26,8 @@ const MONSTERS = {
         health: 60,
         damage: 15,
         agility: 70,
+        stamina: 100,
+        wilderness: 1,
         baseValue: 150,
         rarity: 'common',
         requiredDungeonDepth: 1,
@@ -41,6 +45,8 @@ const MONSTERS = {
         health: 120,
         damage: 35,
         agility: 50,
+        stamina: 100,
+        wilderness: 2,
         baseValue: 300,
         rarity: 'uncommon',
         requiredDungeonDepth: 2,
@@ -59,6 +65,8 @@ const MONSTERS = {
         health: 250,
         damage: 60,
         agility: 40,
+        stamina: 100,
+        wilderness: 3,
         baseValue: 800,
         rarity: 'rare',
         requiredDungeonDepth: 3,
@@ -77,6 +85,8 @@ const MONSTERS = {
         health: 180,
         damage: 85,
         agility: 90,
+        stamina: 100,
+        wilderness: 4,
         baseValue: 1200,
         rarity: 'rare',
         requiredDungeonDepth: 4,
@@ -95,6 +105,8 @@ const MONSTERS = {
         health: 400,
         damage: 120,
         agility: 35,
+        stamina: 100,
+        wilderness: 5,
         baseValue: 2500,
         rarity: 'epic',
         requiredDungeonDepth: 6,
@@ -114,6 +126,8 @@ const MONSTERS = {
         health: 320,
         damage: 150,
         agility: 85,
+        stamina: 100,
+        wilderness: 6,
         baseValue: 5000,
         rarity: 'legendary',
         requiredDungeonDepth: 7,
@@ -133,6 +147,8 @@ const MONSTERS = {
         health: 1000,
         damage: 300,
         agility: 60,
+        stamina: 100,
+        wilderness: 10,
         baseValue: 50000,
         rarity: 'mythic',
         requiredDungeonDepth: 10,
@@ -577,6 +593,13 @@ const TREASURE_CHESTS = {
     }
 };
 
+const HUNTING_MOUNTS = CONVEYANCES;
+const HUNTING_FAMILIARS = ALLIES;
+const HUNTING_LAIRS = TROVES;
+const PROVISION_TYPES = ESSENCE_TYPES;
+const ENCHANTMENT_TYPES = CHARGE_TYPES;
+const SUPPLY_TYPES = REINFORCEMENT_KITS;
+
 module.exports = {
     MONSTERS,
     CONVEYANCES,
@@ -586,5 +609,11 @@ module.exports = {
     TREASURE_CHESTS,
     ESSENCE_TYPES,
     CHARGE_TYPES,
-    REINFORCEMENT_KITS
+    REINFORCEMENT_KITS,
+    HUNTING_MOUNTS,
+    HUNTING_FAMILIARS,
+    HUNTING_LAIRS,
+    PROVISION_TYPES,
+    ENCHANTMENT_TYPES,
+    SUPPLY_TYPES
 };

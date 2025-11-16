@@ -311,7 +311,7 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Your New Coin Purse:** \`${pillagerProfile.embers.toLocaleString()} Embers\`\n**💸 Victim's Remaining:** \`${victimProfile.embers.toLocaleString()} Embers\`\n**📈 Your Level:** \`${pillagerProfile.level || 1}\`\n**🏆 Successful Pillages:** \`${pillagerProfile.successfulPillages}\``)
+                        .setContent(`**💳 Your New Ember Sachel:** \`${pillagerProfile.embers.toLocaleString()} Embers\`\n**💸 Victim's Remaining:** \`${victimProfile.embers.toLocaleString()} Embers\`\n**📈 Your Level:** \`${pillagerProfile.level || 1}\`\n**🏆 Successful Pillages:** \`${pillagerProfile.successfulPillages}\``)
                 );
 
                 components.push(detailsContainer);
@@ -351,7 +351,7 @@ module.exports = {
 
                     lossDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💸 **LOSS DETAILS**\n\n**💰 Amount Lost:** \`${stolenAmount.toLocaleString()} Embers\`\n**🛡️ Your Warding Level:** \`${victimWarding}%\`\n**💳 Remaining Coin Purse:** \`${victimProfile.embers.toLocaleString()} Embers\`\n**🏰 Server:** \`${message.guild.name}\`\n\n**💡 Warding Tip:** Attune familiars and acquire strongholds to increase your protection against future pillages!`)
+                            .setContent(`## 💸 **LOSS DETAILS**\n\n**💰 Amount Lost:** \`${stolenAmount.toLocaleString()} Embers\`\n**🛡️ Your Warding Level:** \`${victimWarding}%\`\n**💳 Remaining Ember Sachel:** \`${victimProfile.embers.toLocaleString()} Embers\`\n**🏰 Server:** \`${message.guild.name}\`\n\n**💡 Warding Tip:** Attune familiars and acquire strongholds to increase your protection against future pillages!`)
                     );
 
                     victimComponents.push(lossDetailsContainer);
@@ -412,7 +412,7 @@ module.exports = {
 
                 penaltyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Remaining Coin Purse:** \`${pillagerProfile.embers.toLocaleString()} Embers\`\n**🎯 Total Pillage Attempts:** \`${pillagerProfile.pillageAttempts}\`\n**⏰ Cooldown Applied:** \`30 minutes\` before next attempt`)
+                        .setContent(`**💳 Remaining Ember Sachel:** \`${pillagerProfile.embers.toLocaleString()} Embers\`\n**🎯 Total Pillage Attempts:** \`${pillagerProfile.pillageAttempts}\`\n**⏰ Cooldown Applied:** \`30 minutes\` before next attempt`)
                 );
 
                 components.push(penaltyContainer);

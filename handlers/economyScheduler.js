@@ -43,7 +43,7 @@ module.exports = (client) => {
             let successfulRobberies = 0;
             
             for (const profile of allProfiles) {
-                if (profile.familyVault < 5000) continue; // Not worth robbing
+                if (profile.followers_strongbox < 5000) continue; // Not worth robbing
                 
                 const securityLevel = EconomyManager.calculateSecurityLevel(profile);
                 const baseRobberyChance = 25; // Base 25% chance
@@ -67,7 +67,7 @@ module.exports = (client) => {
         const user = await client.users.fetch(profile.userId).catch(() => null);
         if (!user) return;
         
-        const vaultAmount = profile.familyVault;
+        const vaultAmount = profile.followers_strongbox;
         const baseStealPercentage = 0.6; // 60% base
         const securityReduction = (securityLevel / 100) * 0.3; // Up to 30% reduction
         const stealPercentage = Math.max(0.2, baseStealPercentage - securityReduction);
@@ -76,7 +76,7 @@ module.exports = (client) => {
         const remainingAmount = vaultAmount - stolenAmount;
         
         // Update profile
-        profile.familyVault = remainingAmount;
+        profile.followers_strongbox = remainingAmount;
         profile.lastRobbed = new Date();
         profile.robberyAttempts += 1;
         
@@ -101,7 +101,7 @@ module.exports = (client) => {
         // Send detailed notification
         const embed = new EmbedBuilder()
             .setTitle('🚨 ROBBERY ALERT!')
-            .setDescription('Your family vault was broken into during the night!')
+            .setDescription('Your followers strongbox was broken into during the night!')
             .addFields(
                 { name: '💸 Amount Stolen', value: `$${stolenAmount.toLocaleString()}`, inline: true },
                 { name: '🏦 Remaining in Vault', value: `$${remainingAmount.toLocaleString()}`, inline: true },
@@ -256,19 +256,19 @@ module.exports = (client) => {
                 }
             },
             {
-                name: 'Family Bonus',
+                name: 'Followers Bonus',
                 type: 'positive',
-                condition: () => profile.familyMembers.length > 0,
+                condition: () => profile.followers.length > 0,
                 action: () => {
-                    const member = profile.familyMembers[Math.floor(Math.random() * profile.familyMembers.length)];
+                    const follower = profile.followers[Math.floor(Math.random() * profile.followers.length)];
                     const bonus = Math.floor(Math.random() * 1500) + 500;
-                    
+
                     profile.wallet += bonus;
-                    member.bond = Math.min(100, member.bond + 5);
-                    
+                    follower.loyalty = Math.min(100, follower.loyalty + 5);
+
                     return {
-                        title: '👨‍👩‍👧‍👦 Family Success!',
-                        description: `${member.name} got a bonus at work and shared ${bonus} with the family!`,
+                        title: '👥 Followers Success!',
+                        description: `${follower.name} got a bonus at work and shared ${bonus} with the retinue!`,
                         color: '#E91E63'
                     };
                 }

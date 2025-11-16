@@ -16,11 +16,11 @@ module.exports = {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             const now = new Date();
-            const activeTitles = profile.purchasedRoles.filter(role => 
+            const activeTitles = (profile.purchasedRoles || []).filter(role =>
                 !role.expiryDate || new Date(role.expiryDate) > now
             );
-            
-            const expiredTitles = profile.purchasedRoles.filter(role => 
+
+            const expiredTitles = (profile.purchasedRoles || []).filter(role =>
                 role.expiryDate && new Date(role.expiryDate) <= now
             );
             
@@ -94,7 +94,7 @@ module.exports = {
                         `> **📜 Quest Multiplier:** \`${role.benefits.workMultiplier}x\` bonus\n` +
                         `> **⚔️ Conquest Bonus:** \`+${role.benefits.racingBonus} Souls\` per win\n` +
                         `> **🛡️ Warding Bonus:** \`+${role.benefits.robberyProtection}%\` protection\n` +
-                        `> **👥 Retinue Bonus:** \`+${role.benefits.familyBonus}\` multiplier\n` +
+                        `> **👥 Retinue Bonus:** \`+${role.benefits.followersBonus}\` multiplier\n` +
                         `> **💰 Price:** \`${role.price?.toLocaleString() || 'Unknown'} Souls\`\n` +
                         `> **📅 Bestowed:** \`${purchaseDate}\``;
 
@@ -121,8 +121,8 @@ module.exports = {
                     sum + role.benefits.racingBonus, 0);
                 const totalWardingBonus = activeTitles.reduce((sum, role) => 
                     sum + role.benefits.robberyProtection, 0);
-                const totalRetinueBonus = activeTitles.reduce((sum, role) => 
-                    sum + role.benefits.familyBonus, 0);
+                const totalRetinueBonus = activeTitles.reduce((sum, role) =>
+                    sum + role.benefits.followersBonus, 0);
 
                 benefitsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()

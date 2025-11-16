@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'withdraw',
     aliases: ['with', 'retrieve'],
-    description: 'Retrieve Embers from the Royal Treasury to your coin purse.',
+    description: 'Retrieve Embers from the Royal Treasury to your Ember Sachel.',
     usage: '<amount | all | max>',
     async execute(message, args) {
         try {
@@ -107,7 +107,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 👑 **TREASURY BREAKDOWN**\n\n**Treasury Balance:** \`${profile.royal_treasury.toLocaleString()} Embers\`\n**Attempted Withdrawal:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.royal_treasury).toLocaleString()} Embers\`\n**Coin Purse Balance:** \`${profile.embers.toLocaleString()} Embers\``)
+                        .setContent(`## 👑 **TREASURY BREAKDOWN**\n\n**Treasury Balance:** \`${profile.royal_treasury.toLocaleString()} Embers\`\n**Attempted Withdrawal:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.royal_treasury).toLocaleString()} Embers\`\n**Ember Sachel Balance:** \`${profile.embers.toLocaleString()} Embers\``)
                 );
 
                 balanceContainer.addTextDisplayComponents(
@@ -125,7 +125,7 @@ module.exports = {
 
             const newCoinPurse = profile.embers + amount;
             const newRoyalTreasury = profile.royal_treasury - amount;
-            const totalWealth = newCoinPurse + newRoyalTreasury + profile.family_strongbox;
+            const totalWealth = newCoinPurse + newRoyalTreasury + profile.followers_strongbox;
 
             await EconomyManager.updateEmbers(userId, guildId, amount);
             await EconomyManager.updateRoyalTreasury(userId, guildId, -amount);
@@ -145,7 +145,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ✅ Withdrawal Successful!\n## EMBERS TRANSFERRED TO COIN PURSE\n\n> You have successfully retrieved **\`${amount.toLocaleString()} Embers\`** from the Royal Treasury to your coin purse!\n> Your Embers are now ready for use.`)
+                    .setContent(`# ✅ Withdrawal Successful!\n## EMBERS TRANSFERRED TO Ember Sachel\n\n> You have successfully retrieved **\`${amount.toLocaleString()} Embers\`** from the Royal Treasury to your Ember Sachel!\n> Your Embers are now ready for use.`)
             );
 
             components.push(headerContainer);
@@ -179,12 +179,12 @@ module.exports = {
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💳 Coin Purse Balance:** \`${newCoinPurse.toLocaleString()} Embers\`\n**👑 Royal Treasury Balance:** \`${newRoyalTreasury.toLocaleString()} Embers\`\n**🏰 Family Strongbox:** \`${profile.family_strongbox.toLocaleString()} Embers\``)
+                    .setContent(`**💳 Ember Sachel Balance:** \`${newCoinPurse.toLocaleString()} Embers\`\n**👑 Royal Treasury Balance:** \`${newRoyalTreasury.toLocaleString()} Embers\`\n**🏰 Followers Strongbox:** \`${profile.followers_strongbox.toLocaleString()} Embers\``)
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Total Net Worth:** \`${totalWealth.toLocaleString()} Embers\`\n**📈 Liquid Embers:** \`${newCoinPurse.toLocaleString()} Embers\` (Available for use)\n**🛡️ Secured Embers:** \`${(newRoyalTreasury + profile.family_strongbox).toLocaleString()} Embers\``)
+                    .setContent(`**💎 Total Net Worth:** \`${totalWealth.toLocaleString()} Embers\`\n**📈 Liquid Embers:** \`${newCoinPurse.toLocaleString()} Embers\` (Available for use)\n**🛡️ Secured Embers:** \`${(newRoyalTreasury + profile.followers_strongbox).toLocaleString()} Embers\``)
             );
 
             components.push(balancesContainer);
@@ -196,7 +196,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **WEALTH MANAGEMENT TIPS**\n\n**💳 Coin Purse Embers:** Ready for the market, mystic gambling, and tributes\n**👑 Treasury Embers:** Safer from pillaging, may gain the crown's favor\n**🔄 Quick Banking:** Use \`!deposit <amount>\` to secure Embers again\n**📊 Monitoring:** Check \`!balance\` for a complete chronicle of your wealth\n\n> Keep some Embers in the treasury for security and some in your coin purse for convenience!`)
+                    .setContent(`## 💡 **WEALTH MANAGEMENT TIPS**\n\n**💳 Ember Sachel Embers:** Ready for the market, mystic gambling, and tributes\n**👑 Treasury Embers:** Safer from pillaging, may gain the crown's favor\n**🔄 Quick Banking:** Use \`!deposit <amount>\` to secure Embers again\n**📊 Monitoring:** Check \`!balance\` for a complete chronicle of your wealth\n\n> Keep some Embers in the treasury for security and some in your Ember Sachel for convenience!`)
             );
 
             components.push(tipsContainer);

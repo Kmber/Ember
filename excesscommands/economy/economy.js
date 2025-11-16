@@ -1,10 +1,11 @@
-const { 
+const {
     TextDisplayBuilder,
     ContainerBuilder,
     SeparatorBuilder,
     SeparatorSpacingSize,
     MessageFlags
 } = require('discord.js');
+const ServerConfig = require('../../models/serverConfig/schema');
 
 module.exports = {
     name: 'economy',
@@ -12,6 +13,9 @@ module.exports = {
     description: 'Complete guide to the advanced economy system with v2 components',
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || '!';
+
             let currentPage = 0;
             const totalPages = 9;
 
@@ -42,7 +46,7 @@ module.exports = {
 
                         basicContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`!balance\`** - Check finances & active effects\n**\`!daily\`** - Daily rewards with streak bonuses\n**\`!weekly\`** - Weekly mega rewards\n**\`!work\`** - Earn money (1 hour cooldown)\n**\`!beg\`** - Emergency money (10 min cooldown)`)
+                                .setContent(`**\`${prefix}balance\`** - Check finances & active effects\n**\`${prefix}beg\`** - Emergency money (10 min cooldown)\n**\`${prefix}work\`** - Earn money (1 hour cooldown)\n**\`${prefix}withdraw\`** - Take money from bank\n**\`${prefix}myroles\`** - View your roles and permissions`)
                         );
 
                         components.push(basicContainer);
@@ -59,7 +63,7 @@ module.exports = {
 
                         bankingContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`!deposit\`** - Store money safely in bank\n**\`!withdraw\`** - Take money from bank\n**\`!vault\`** - Family vault deposit/withdraw\n**\`!gamble\`** - Risk money for big wins\n**\`!rob\`** - Rob other players (risky!)`)
+                                .setContent(`**\`${prefix}deposit\`** - Store money safely in bank\n**\`${prefix}withdraw\`** - Take money from bank\n**\`${prefix}vault\`** - Followers vault deposit/withdraw\n**\`${prefix}gamble\`** - Risk money for big wins\n**\`${prefix}rob\`** - Rob other players (risky!)`)
                         );
 
                         components.push(bankingContainer);
@@ -71,12 +75,12 @@ module.exports = {
 
                         propertyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🏠 **PROPERTY SYSTEM** (3 Commands)')
+                                .setContent('## 🏠 **STRONGHOLD SYSTEM** (3 Commands)')
                         );
 
                         propertyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`!buyhouse\`** - Purchase properties for family\n**\`!myhome\`** - View your property & family\n**\`!addfamily\`** - Add family members to property`)
+                                .setContent(`**\`${prefix}buystronghold\`** - Purchase strongholds for followers\n**\`${prefix}mystronghold\`** - View your stronghold & followers\n**\`${prefix}recruitfollower\`** - Recruit followers to stronghold`)
                         );
 
                         components.push(propertyContainer);
@@ -93,7 +97,7 @@ module.exports = {
 
                         vehicleContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`!buycar\`** - Purchase vehicles for racing\n**\`!garage\`** - Manage your car collection\n**\`!race\`** - Race cars for money prizes`)
+                                .setContent(`**\`${prefix}buycar\`** - Purchase vehicles for racing\n**\`${prefix}garage\`** - Manage your car collection\n**\`${prefix}race\`** - Race cars for money prizes`)
                         );
 
                         components.push(vehicleContainer);
@@ -105,7 +109,7 @@ module.exports = {
 
                         advancedContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 🚀 **ADVANCED SYSTEMS PREVIEW**\n\n**👨‍👩‍👧‍👦 Family System** - Build relationships for passive income\n**🐕 Pet System** - Security and companionship\n**🏢 Business Empire** - Passive income generation\n**🎯 Heist System** - Team-based criminal operations\n**🛒 Premium Features** - VIP roles and power-ups\n**📊 Information** - Statistics and leaderboards\n\n> Navigate through all 9 pages to master every aspect of the economy!`)
+                                .setContent(`## 🚀 **ADVANCED SYSTEMS PREVIEW**\n\n**👨‍👩‍👧‍👦 Followers System** - Build relationships for passive income\n**🐕 Pet System** - Security and companionship\n**🏢 Business Empire** - Passive income generation\n**🎯 Heist System** - Team-based criminal operations\n**🛒 Premium Features** - VIP roles and power-ups\n**📊 Information** - Statistics and leaderboards\n\n> Navigate through all 9 pages to master every aspect of the economy!`)
                         );
 
                         components.push(advancedContainer);
@@ -134,7 +138,7 @@ module.exports = {
 
                         incomeContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**Daily Rewards:** \`$500-2,000+\` (streak bonuses)\n**Work Earnings:** \`$200-800\` base + family bonus\n**Business Profits:** \`$500-15,000+\` daily passive income\n**Heist Payouts:** \`$50,000-5,000,000\` (high risk/reward)\n**Gambling Wins:** 45-75% chance with luck boosts\n**Racing Victories:** Depends on car quality\n**Family Contributions:** Passive income from members`)
+                                .setContent(`**Daily Rewards:** \`$500-2,000+\` (streak bonuses)\n**Work Earnings:** \`$200-800\` base + followers bonus\n**Business Profits:** \`$500-15,000+\` daily passive income\n**Heist Payouts:** \`$50,000-5,000,000\` (high risk/reward)\n**Gambling Wins:** 45-75% chance with luck boosts\n**Racing Victories:** Depends on car quality\n**Followers Contributions:** Passive income from followers`)
                         );
 
                         components.push(incomeContainer);
@@ -151,7 +155,7 @@ module.exports = {
 
                         expensesContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**Property Bills:** Monthly rent + utilities\n**Business Expenses:** Employee wages + maintenance\n**Heist Equipment:** \`$5,000-75,000\` per heist\n**Pet Care:** Food, grooming, medical care\n**Car Maintenance:** Repairs, fuel, upgrades\n**Shop Purchases:** Power-ups and boosts\n**Jail Fines:** Penalties for failed heists`)
+                                .setContent(`**Stronghold Bills:** Monthly rent + utilities\n**Business Expenses:** Employee wages + maintenance\n**Heist Equipment:** \`$5,000-75,000\` per heist\n**Pet Care:** Food, grooming, medical care\n**Car Maintenance:** Repairs, fuel, upgrades\n**Shop Purchases:** Power-ups and boosts\n**Jail Fines:** Penalties for failed heists`)
                         );
 
                         components.push(expensesContainer);
@@ -163,7 +167,7 @@ module.exports = {
 
                         strategyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 💡 **ADVANCED MONEY STRATEGY**\n\n**🏦 Family Vault:** 50% (protected from robberies)\n**💼 Business Investments:** 30% (passive income)\n**💳 Wallet:** 15% (for daily activities & heists)\n**🏛️ Bank:** 5% (emergency safety fund)\n\n**Why This Works:**\n> • Businesses generate passive income 24/7\n> • Vault protection from robberies\n> • Wallet for opportunities and heist funding`)
+                                .setContent(`## 💡 **ADVANCED MONEY STRATEGY**\n\n**🏦 Followers Vault:** 50% (protected from robberies)\n**💼 Business Investments:** 30% (passive income)\n**💳 Wallet:** 15% (for daily activities & heists)\n**🏛️ Bank:** 5% (emergency safety fund)\n\n**Why This Works:**\n> • Businesses generate passive income 24/7\n> • Vault protection from robberies\n> • Wallet for opportunities and heist funding`)
                         );
 
                         components.push(strategyContainer);
@@ -175,7 +179,7 @@ module.exports = {
 
                         propertyHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 🏠 PROPERTY SYSTEM - YOUR FOUNDATION\n## PROPERTIES ARE EVERYTHING - YOUR SUCCESS DEPENDS ON THIS\n\n> **Page 3 of 9** | Master property investment\n> Your property determines family capacity, vault size, and security level`)
+                                .setContent(`# 🏠 STRONGHOLD SYSTEM - YOUR FOUNDATION\n## STRONGHOLDS ARE EVERYTHING - YOUR SUCCESS DEPENDS ON THIS\n\n> **Page 3 of 9** | Master stronghold investment\n> Your stronghold determines followers capacity, vault size, and security level`)
                         );
 
                         components.push(propertyHeader);
@@ -192,7 +196,7 @@ module.exports = {
 
                         starterContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**STUDIO APARTMENT** - \`$50,000\`\n> • Family Slots: 1 member\n> • Vault Capacity: $10,000\n> • Security Level: 1\n> • Garage: None\n> • Monthly Cost: $950\n\n**2BR APARTMENT** - \`$120,000\`\n> • Family Slots: 3 members\n> • Vault Capacity: $25,000\n> • Security Level: 2\n> • Garage: 1 car\n> • Monthly Cost: $1,750`)
+                                .setContent(`**STUDIO APARTMENT** - \`$50,000\`\n> • Followers Slots: 1 follower\n> • Vault Capacity: $10,000\n> • Security Level: 1\n> • Garage: None\n> • Monthly Cost: $950\n\n**2BR APARTMENT** - \`$120,000\`\n> • Followers Slots: 3 followers\n> • Vault Capacity: $25,000\n> • Security Level: 2\n> • Garage: 1 car\n> • Monthly Cost: $1,750`)
                         );
 
                         components.push(starterContainer);
@@ -209,7 +213,7 @@ module.exports = {
 
                         midTierContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**FAMILY HOUSE** - \`$300,000\`\n> • Family Slots: 5 members\n> • Vault Capacity: $75,000\n> • Security Level: 4\n> • Garage: 2 cars\n> • Monthly Cost: $2,900\n\n**LUXURY MANSION** - \`$800,000\`\n> • Family Slots: 8 members\n> • Vault Capacity: $200,000\n> • Security Level: 7\n> • Garage: 5 cars\n> • Monthly Cost: $5,800`)
+                                .setContent(`**FOLLOWERS HOUSE** - \`$300,000\`\n> • Followers Slots: 5 followers\n> • Vault Capacity: $75,000\n> • Security Level: 4\n> • Garage: 2 cars\n> • Monthly Cost: $2,900\n\n**LUXURY MANSION** - \`$800,000\`\n> • Followers Slots: 8 followers\n> • Vault Capacity: $200,000\n> • Security Level: 7\n> • Garage: 5 cars\n> • Monthly Cost: $5,800`)
                         );
 
                         components.push(midTierContainer);
@@ -221,7 +225,7 @@ module.exports = {
 
                         eliteContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 🏰 **ELITE PROPERTY**\n\n**PRIVATE ESTATE** - \`$2,000,000\`\n> • Family Slots: 12 members\n> • Vault Capacity: $500,000\n> • Security Level: 10\n> • Garage: 10 cars\n> • Monthly Cost: $11,500\n\n**🎯 End Game Goal:** Estate with 12 family members + multiple businesses earning $50,000+ daily!`)
+                                .setContent(`## 🏰 **ELITE STRONGHOLD**\n\n**PRIVATE ESTATE** - \`$2,000,000\`\n> • Followers Slots: 12 followers\n> • Vault Capacity: $500,000\n> • Security Level: 10\n> • Garage: 10 cars\n> • Monthly Cost: $11,500\n\n**🎯 End Game Goal:** Estate with 12 followers + multiple businesses earning $50,000+ daily!`)
                         );
 
                         components.push(eliteContainer);
@@ -233,7 +237,7 @@ module.exports = {
 
                         familyHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 👨‍👩‍👧‍👦 FAMILY & 🛡️ SECURITY\n## YOUR PASSIVE INCOME ENGINE + VAULT PROTECTION\n\n> **Page 4 of 9** | Build your empire and protect it\n> Family members generate automatic work income and pets provide security`)
+                                .setContent(`# 👨‍👩‍👧‍👦 FOLLOWERS & 🛡️ SECURITY\n## YOUR PASSIVE INCOME ENGINE + VAULT PROTECTION\n\n> **Page 4 of 9** | Build your empire and protect it\n> Followers generate automatic work income and pets provide security`)
                         );
 
                         components.push(familyHeader);
@@ -245,12 +249,12 @@ module.exports = {
 
                         hierarchyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 👥 **FAMILY MEMBER HIERARCHY**')
+                                .setContent('## 👥 **FOLLOWERS HIERARCHY**')
                         );
 
                         hierarchyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🥇 SPOUSE** (Priority #1)\n> • Salary Range: $300-800 per work\n> • Professions: Teacher, Engineer, Manager\n> • Best ROI and affects other family bonds\n\n**🥈 PARENT** (Priority #2)\n> • Salary Range: $400-900 per work\n> • Professions: Consultant, Business Owner\n> • Stable high income\n\n**🥉 SIBLING** (Fill remaining slots)\n> • Salary Range: $250-600 per work\n> • Professions: Artist, Mechanic, Chef\n\n**🏅 CHILD** (Last resort)\n> • Salary Range: $50-200 per work\n> • Professions: Student, Intern\n> • Lowest income but fills capacity`)
+                                .setContent(`**🥇 SPOUSE** (Priority #1)\n> • Salary Range: $300-800 per work\n> • Professions: Teacher, Engineer, Manager\n> • Best ROI and affects other followers bonds\n\n**🥈 PARENT** (Priority #2)\n> • Salary Range: $400-900 per work\n> • Professions: Consultant, Business Owner\n> • Stable high income\n\n**🥉 SIBLING** (Fill remaining slots)\n> • Salary Range: $250-600 per work\n> • Professions: Artist, Mechanic, Chef\n\n**🏅 CHILD** (Last resort)\n> • Salary Range: $50-200 per work\n> • Professions: Student, Intern\n> • Lowest income but fills capacity`)
                         );
 
                         components.push(hierarchyContainer);
@@ -262,7 +266,7 @@ module.exports = {
 
                         bondContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## ❤️ **FAMILY BOND MECHANICS**\n\n**Bond Levels & Income Impact:**\n> • **0-25% Bond:** 0.25x income (25% efficiency)\n> • **26-50% Bond:** 0.50x income (50% efficiency)\n> • **51-75% Bond:** 0.75x income (75% efficiency)\n> • **76-90% Bond:** 0.90x income (90% efficiency)\n> • **91-100% Bond:** 1.00x income (100% efficiency)\n\n**Improving Bonds:**\n> • Family trips: +5-15% bond per trip\n> • Family vacation item: +15% to ALL members\n> • Bonds decay 1-2% weekly without attention`)
+                                .setContent(`## ❤️ **FOLLOWERS BOND MECHANICS**\n\n**Bond Levels & Income Impact:**\n> • **0-25% Bond:** 0.25x income (25% efficiency)\n> • **26-50% Bond:** 0.50x income (50% efficiency)\n> • **51-75% Bond:** 0.75x income (75% efficiency)\n> • **76-90% Bond:** 0.90x income (90% efficiency)\n> • **91-100% Bond:** 1.00x income (100% efficiency)\n\n**Improving Bonds:**\n> • Followers trips: +5-15% bond per trip\n> • Followers vacation item: +15% to ALL followers\n> • Bonds decay 1-2% weekly without attention`)
                         );
 
                         components.push(bondContainer);
@@ -303,7 +307,7 @@ module.exports = {
 
                         boostersContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 💼 **INCOME BOOSTERS**\n\n**Lucky Charm** - \`$10,000\`\n> • Effect: +50% work income for 7 days\n> • Stacks with family bonuses\n> • Example: $2,000 work becomes $3,000\n\n**Family Vacation Package** - \`$3,000\`\n> • Effect: +15% bond to ALL family members\n> • Instant effect, no cooldown\n> • Cheaper than taking multiple trips\n> • Best when bonds are below 80%`)
+                                .setContent(`## 💼 **INCOME BOOSTERS**\n\n**Lucky Charm** - \`$10,000\`\n> • Effect: +50% work income for 7 days\n> • Stacks with followers bonuses\n> • Example: $2,000 work becomes $3,000\n\n**Followers Vacation Package** - \`$3,000\`\n> • Effect: +15% bond to ALL followers\n> • Instant effect, no cooldown\n> • Cheaper than taking multiple trips\n> • Best when bonds are below 80%`)
                         );
 
                         components.push(boostersContainer);
@@ -373,7 +377,7 @@ module.exports = {
 
                         businessTypesContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**RESTAURANT CHAIN** - \`$50,000\`\n> • Daily Income: $200-800 per level\n> • Max Level: 10 • Employees: 20\n> • Stable income, family discounts\n\n**TECH STARTUP** - \`$100,000\`\n> • Daily Income: $100-1,500 per level (volatile)\n> • Max Level: 10 • Employees: 15\n> • High risk/reward, IPO potential\n\n**REAL ESTATE AGENCY** - \`$75,000\`\n> • Daily Income: $300-600 per level\n> • Max Level: 10 • Employees: 12\n> • Steady income, market insider bonuses`)
+                                .setContent(`**RESTAURANT CHAIN** - \`$50,000\`\n> • Daily Income: $200-800 per level\n> • Max Level: 10 • Employees: 20\n> • Stable income, followers discounts\n\n**TECH STARTUP** - \`$100,000\`\n> • Daily Income: $100-1,500 per level (volatile)\n> • Max Level: 10 • Employees: 15\n> • High risk/reward, IPO potential\n\n**REAL ESTATE AGENCY** - \`$75,000\`\n> • Daily Income: $300-600 per level\n> • Max Level: 10 • Employees: 12\n> • Steady income, market insider bonuses`)
                         );
 
                         components.push(businessTypesContainer);
@@ -455,7 +459,7 @@ module.exports = {
 
                         earlyGameContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**Week 1: Foundation**\n1. Claim daily rewards religiously (build streaks)\n2. Work every hour possible\n3. Save $50,000 for Studio Apartment + Restaurant\n4. Immediately add Spouse (highest income)\n5. Buy House Cat for basic security ($500)\n\n**Week 2-3: Business Scaling**\n6. Upgrade restaurant to level 3-4\n7. Hire 5-10 employees for restaurant\n8. Save for 2BR Apartment upgrade\n9. Add Parent as 2nd family member\n10. Collect business profits daily`)
+                                .setContent(`**Week 1: Foundation**\n1. Claim daily rewards religiously (build streaks)\n2. Work every hour possible\n3. Save $50,000 for Studio Apartment + Restaurant\n4. Immediately recruit Spouse (highest income)\n5. Buy House Cat for basic security ($500)\n\n**Week 2-3: Business Scaling**\n6. Upgrade restaurant to level 3-4\n7. Hire 5-10 employees for restaurant\n8. Save for 2BR Apartment upgrade\n9. Recruit Parent as 2nd follower\n10. Collect business profits daily`)
                         );
 
                         components.push(earlyGameContainer);
@@ -467,7 +471,7 @@ module.exports = {
 
                         midGameContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 💎 **MID GAME TACTICS** (Levels 10-25)\n\n**Month 2: Empire Expansion**\n1. Own Restaurant + Tech Startup businesses\n2. Save $300,000 for Family House\n3. Fill all 5 family member slots\n4. Take trips to boost bonds to 80%+\n5. Plan first armored truck heist (easy money)\n\n**Income Targets Per Week:**\n> • Business profits: $20,000-40,000\n> • Work + family: $15,000-25,000\n> • Heist profits: $50,000-200,000\n> • **Total: $85,000-265,000 weekly income**`)
+                                .setContent(`## 💎 **MID GAME TACTICS** (Levels 10-25)\n\n**Month 2: Empire Expansion**\n1. Own Restaurant + Tech Startup businesses\n2. Save $300,000 for Followers House\n3. Fill all 5 follower slots\n4. Take trips to boost bonds to 80%+\n5. Plan first armored truck heist (easy money)\n\n**Income Targets Per Week:**\n> • Business profits: $20,000-40,000\n> • Work + followers: $15,000-25,000\n> • Heist profits: $50,000-200,000\n> • **Total: $85,000-265,000 weekly income**`)
                         );
 
                         components.push(midGameContainer);
@@ -479,7 +483,7 @@ module.exports = {
 
                         commandmentsContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## ⚠️ **THE 12 COMMANDMENTS OF SUCCESS**\n\n1. **NEVER** attempt heists without full equipment\n2. **ALWAYS** check team members' heist skills\n3. **NEVER** plan heists during high heat periods\n4. **ALWAYS** collect business profits daily\n5. **NEVER** gamble without luck boosts\n6. **ALWAYS** care for pets every 2-3 days\n7. **NEVER** keep more than 25% wealth in wallet\n8. **ALWAYS** upgrade businesses before buying new ones\n9. **NEVER** race with cars below 70% durability\n10. **ALWAYS** recruit experienced heist members\n11. **NEVER** attempt Central Bank with <80 heist skill\n12. **ALWAYS** diversify income: business + family + heists`)
+                                .setContent(`## ⚠️ **THE 12 COMMANDMENTS OF SUCCESS**\n\n1. **NEVER** attempt heists without full equipment\n2. **ALWAYS** check team members' heist skills\n3. **NEVER** plan heists during high heat periods\n4. **ALWAYS** collect business profits daily\n5. **NEVER** gamble without luck boosts\n6. **ALWAYS** care for pets every 2-3 days\n7. **NEVER** keep more than 25% wealth in wallet\n8. **ALWAYS** upgrade businesses before buying new ones\n9. **NEVER** race with cars below 70% durability\n10. **ALWAYS** recruit experienced heist members\n11. **NEVER** attempt Central Bank with <80 heist skill\n12. **ALWAYS** diversify income: business + followers + heists`)
                         );
 
                         components.push(commandmentsContainer);

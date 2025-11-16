@@ -15,10 +15,10 @@ class EconomyManager {
                         embers: 1000,
                         royal_treasury: 0,
                         treasury_limit: 10000,
-                        // Family System
-                        family_strongbox: 0,
-                        familyMembers: [],
-                        familyBond: 0,
+                        // Followers System
+                        followers_strongbox: 0,
+                        followers: [],
+                        followersBond: 0,
                         // Mount System
                         mounts: [],
                         activeMount: null,
@@ -28,6 +28,9 @@ class EconomyManager {
                         // Stronghold System
                         strongholds: [],
                         primaryStronghold: null,
+                        // Beast System
+                        beasts: [],
+                        activeBeast: null,
                         // Guild System
                         guilds: [],
                         maxGuilds: 1,
@@ -81,7 +84,7 @@ class EconomyManager {
                         // Hunting Fields
                         conveyances: [],
                         activeConveyance: null,
-                        huntingWeapons: [],
+                        weapons: [],
                         activeWeapon: null,
                         allies: [],
                         activeAllies: [],
@@ -97,7 +100,21 @@ class EconomyManager {
                     setDefaultsOnInsert: true
                 }
             );
-            
+
+            // Initialize missing fields for existing profiles
+            let needsSave = false;
+            if (!profile.beasts) {
+                profile.beasts = [];
+                needsSave = true;
+            }
+            if (profile.activeBeast === undefined) {
+                profile.activeBeast = null;
+                needsSave = true;
+            }
+            if (needsSave) {
+                await profile.save();
+            }
+
             return profile;
             
         } catch (error) {
@@ -127,10 +144,10 @@ class EconomyManager {
         return profile;
     }
 
-    // Family strongbox operations
-    static async updateFamilyStrongbox(userId, guildId, amount) {
+    // Followers strongbox operations
+    static async updateFollowersStrongbox(userId, guildId, amount) {
         const profile = await this.getProfile(userId, guildId);
-        profile.family_strongbox = Math.max(0, profile.family_strongbox + amount);
+        profile.followers_strongbox = Math.max(0, profile.followers_strongbox + amount);
         await profile.save();
         return profile;
     }
@@ -200,7 +217,7 @@ class EconomyManager {
             }
         });
 
-        return Math.min(100, totalWarding);
+        return Math.min(100, Math.floor(totalWarding));
     }
 
     // Calculate guild income
@@ -229,7 +246,7 @@ class EconomyManager {
     }
 
     // Grant experience and skill for guild activities
-    static async giveGuildExperience(profile, action, amount = 0) {
+    static async giveBusinessExperience(profile, action, amount = 0) {
         let expGain = 0;
         let skillGain = 0;
         
@@ -436,9 +453,9 @@ class EconomyManager {
         let multiplier = 1.0;
 
         const hasStronghold = profile.strongholds.length > 0;
-        if (hasStronghold && profile.familyMembers.length > 0) {
-            const familyBonus = (profile.familyBond / 100) * 0.5;
-            multiplier += familyBonus;
+        if (hasStronghold && profile.followers.length > 0) {
+            const followersBonus = (profile.followersBond / 100) * 0.5;
+            multiplier += followersBonus;
         }
 
         profile.acquiredTitles.forEach(title => {
@@ -494,6 +511,13 @@ class EconomyManager {
         });
 
         return Math.floor(baseLimit);
+    }
+
+    // Calculate follower income
+    static calculateFollowerIncome(profile) {
+        return profile.followers.reduce((sum, follower) => {
+            return sum + (follower.tribute * follower.questEfficiency * (follower.loyalty / 100));
+        }, 0);
     }
 
     // Add active effect

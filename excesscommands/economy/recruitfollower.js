@@ -201,7 +201,7 @@ module.exports = {
                 const existingFollower = profile.followers.find(f => f.name.toLowerCase() === name.toLowerCase());
                 suggestionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **NAME SUGGESTIONS**\n\n**Existing Follower:** **${existingFollower.name}** (${existingFollower.role})\n\n**Try Different Names:**\n> \`!recruitfollower ${type} ${name}2\`\n> \`!recruitfollower ${type} ${name.split(' ')[0]} ${name.split(' ')[1] || 'the a\`}\n> \`!recruitfollower ${type} [Choose a different name]\`\n\n**💡 Tip:** Use titles or epithets to make each follower unique!`)
+                        .setContent(`## 💡 **NAME SUGGESTIONS**\n\n**Existing Follower:** **${existingFollower.name}** (${existingFollower.role})\n\n**Try Different Names:**\n> \`!recruitfollower ${type} ${name}2\`\n> \`!recruitfollower ${type} ${name.split(' ')[0]} ${name.split(' ')[1] || 'the Great'}\`\n> \`!recruitfollower ${type} [Choose a different name]\`\n\n**💡 Tip:** Use titles or epithets to make each follower unique!`)
                 );
 
                 components.push(suggestionContainer);

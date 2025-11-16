@@ -17,8 +17,20 @@ module.exports = {
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-            
-            
+
+            // Auto-set active conveyance and weapon if not set or invalid
+            if (!profile.activeConveyance || !profile.conveyances.find(v => v.conveyanceId === profile.activeConveyance)) {
+                if (profile.conveyances.length > 0) {
+                    profile.activeConveyance = profile.conveyances[0].conveyanceId;
+                }
+            }
+            if (!profile.activeWeapon || !profile.weapons.find(w => w.weaponId === profile.activeWeapon)) {
+                if (profile.weapons.length > 0) {
+                    profile.activeWeapon = profile.weapons[0].weaponId;
+                }
+            }
+            await profile.save();
+
             const cooldownCheck = EconomyManager.checkCooldown(profile, 'hunt');
             if (cooldownCheck.onCooldown) {
                 const { minutes, seconds } = cooldownCheck.timeLeft;
@@ -38,7 +50,7 @@ module.exports = {
             }
 
          
-            if (profile.huntingMounts.length === 0 || profile.huntingWeapons.length === 0) {
+            if (profile.conveyances.length === 0 || profile.weapons.length === 0) {
                 const components = [];
 
                 const noEquipmentContainer = new ContainerBuilder()
@@ -69,7 +81,7 @@ module.exports = {
             }
 
             
-            if (profile.huntingProfile.currentHealth < 20) {
+            if (profile.currentHealth < 20) {
                 const components = [];
 
                 const injuredContainer = new ContainerBuilder()
@@ -77,10 +89,10 @@ module.exports = {
 
                 injuredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🩸 Too Wounded to Continue\n## MEDICAL ATTENTION NEEDED\n\n> Your vitality is too low (${profile.huntingProfile.currentHealth}/100)!\n> **Minimum Required:** 20 HP`)
+                        .setContent(`# 🩸 Too Wounded to Continue\n## MEDICAL ATTENTION NEEDED\n\n> Your vitality is too low (${profile.currentHealth}/100)!\n> **Minimum Required:** 20 HP`)
                 );
 
-                const healingCost = Math.floor((100 - profile.huntingProfile.currentHealth) * 50);
+                const healingCost = Math.floor((100 - profile.currentHealth) * 50);
                 
                 injuredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
@@ -109,7 +121,7 @@ module.exports = {
                 
              
                 huntResult.loot.forEach(item => {
-                    profile.huntingInventory.push(item);
+                    profile.loot.push(item);
                 });
                 
             } else {
@@ -120,7 +132,7 @@ module.exports = {
             profile.huntingStats.totalDamageDealt += huntResult.damageDealt;
             profile.huntingStats.totalDamageTaken += huntResult.damageTaken;
             profile.huntingProfile.hunterExperience += huntResult.experience;
-            profile.huntingStats.huntingSkill = Math.min(100, profile.huntingStats.huntingSkill + huntResult.skillGain);
+            profile.huntingStats.monsterHuntingSkill = Math.min(100, profile.huntingStats.monsterHuntingSkill + huntResult.skillGain);
 
         
             const totalCosts = Object.values(huntResult.costs).reduce((sum, cost) => sum + cost, 0);
@@ -149,7 +161,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🎯 Monster Slain!\n## ${huntResult.beast.name.toUpperCase()} VANQUISHED\n\n> You have slain a **${huntResult.beast.name}** (Tier ${huntResult.beast.tier})!`)
+                        .setContent(`# 🎯 Monster Slain!\n## ${huntResult.monster.name.toUpperCase()} VANQUISHED\n\n> You have slain a **${huntResult.monster.name}** (Tier ${huntResult.monster.tier})!`)
                 );
 
                 components.push(headerContainer);
@@ -166,12 +178,12 @@ module.exports = {
 
                 combatContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💥 Damage Dealt:** ${huntResult.damageDealt}\n**🩸 Damage Taken:** ${huntResult.damageTaken}\n**❤️ Health Remaining:** ${profile.huntingProfile.currentHealth}/100`)
+                        .setContent(`**💥 Damage Dealt:** ${huntResult.damageDealt}\n**🩸 Damage Taken:** ${huntResult.damageTaken}\n**❤️ Health Remaining:** ${profile.currentHealth}/100`)
                 );
 
                 combatContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**⭐ Experience Gained:** +${huntResult.experience} XP\n**📈 Skill Gained:** +${huntResult.skillGain}%\n**🎯 Hunting Skill:** ${profile.huntingStats.huntingSkill}%`)
+                        .setContent(`**⭐ Experience Gained:** +${huntResult.experience} XP\n**📈 Skill Gained:** +${huntResult.skillGain}%\n**🎯 Hunting Skill:** ${profile.huntingStats.monsterHuntingSkill}%`)
                 );
 
                 components.push(combatContainer);
@@ -214,7 +226,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💥 The Beast Escaped!\n## ${huntResult.beast.name.toUpperCase()} FLED\n\n> The **${huntResult.beast.name}** proved too formidable and escaped!`)
+                        .setContent(`# 💥 The Beast Escaped!\n## ${huntResult.monster.name.toUpperCase()} FLED\n\n> The **${huntResult.monster.name}** proved too formidable and escaped!`)
                 );
 
                 components.push(headerContainer);
@@ -230,7 +242,7 @@ module.exports = {
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💥 Damage Dealt:** ${huntResult.damageDealt}\n**🩸 Damage Taken:** ${huntResult.damageTaken}\n**❤️ Health Remaining:** ${profile.huntingProfile.currentHealth}/100`)
+                        .setContent(`**💥 Damage Dealt:** ${huntResult.damageDealt}\n**🩸 Damage Taken:** ${huntResult.damageTaken}\n**❤️ Health Remaining:** ${profile.currentHealth}/100`)
                 );
 
                 failureContainer.addTextDisplayComponents(
@@ -242,7 +254,7 @@ module.exports = {
             }
 
          
-            if (huntResult.companionInjuries.length > 0) {
+            if (huntResult.allyInjuries.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const injuryContainer = new ContainerBuilder()
@@ -253,7 +265,7 @@ module.exports = {
                         .setContent(`## 🩹 **FAMILIAR INJURIES**`)
                 );
 
-                const injuryText = huntResult.companionInjuries.map(injury =>
+                const injuryText = huntResult.allyInjuries.map(injury =>
                     `**${injury.name}** - Injured!\n> **Healing Cost:** ${injury.healingCost.toLocaleString()} Embers`
                 ).join('\n\n');
 
@@ -307,7 +319,7 @@ module.exports = {
 
         } catch (error) {
             console.error('Error in slay command:', error);
-            
+
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 

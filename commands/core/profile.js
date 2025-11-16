@@ -188,9 +188,11 @@ module.exports = {
             .setDescription('List all your added platforms')),
 
     async execute(interaction) {
-        await interaction.deferReply();
-        
-        const subcommand = interaction.options.getSubcommand();
+        if (interaction.deferReply) {
+            await interaction.deferReply();
+        }
+
+        const subcommand = interaction.options?.getSubcommand?.() || null;
         
         switch (subcommand) {
             case 'view':

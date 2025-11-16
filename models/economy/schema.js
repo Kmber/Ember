@@ -171,31 +171,36 @@ const mountSchema = new mongoose.Schema({
 const familiarSchema = new mongoose.Schema({
     familiarId: String,
     name: String,
-    type: { type: String, enum: ['shadow', 'demon', 'construct', 'stonekin', 'undead'] },
-    breed: String,
-    securityLevel: { type: Number, min: 1, max: 100 },
-    happiness: { type: Number, min: 0, max: 100, default: 50 },
+    type: { type: String, enum: ['wisp', 'arcane', 'elemental', 'fey', 'shadow', 'celestial'] },
+    species: String,
+    wardingLevel: { type: Number, min: 1, max: 100 },
+    bond: { type: Number, min: 0, max: 100, default: 50 },
     health: { type: Number, min: 0, max: 100, default: 100 },
-    hunger: { type: Number, min: 0, max: 100, default: 50 },
-    cleanliness: { type: Number, min: 0, max: 100, default: 50 },
-    lastNourished: Date,
-    lastAttuned: Date,
-    lastBonded: Date,
-    purchasePrice: Number,
-    dateSummoned: { type: Date, default: Date.now }
+    maxHealth: { type: Number, min: 1, max: 100, default: 100 },
+    mana: { type: Number, min: 0, max: 100, default: 50 },
+    essence: { type: Number, min: 0, max: 100, default: 50 },
+    attunementPrice: Number,
+    lastFed: Date,
+    lastGroomed: Date,
+    lastPlayed: Date,
+    dateAttuned: { type: Date, default: Date.now }
 });
 
-const familyMemberSchema = new mongoose.Schema({
-    memberId: String,
+// Family Member Schema removed - replaced by Follower Schema
+
+// Follower Schema
+const followerSchema = new mongoose.Schema({
+    followerId: String,
     name: String,
-    relationship: { type: String, enum: ['spouse', 'child', 'parent', 'sibling', 'grandparent'] },
+    role: { type: String, enum: ['squire', 'apprentice', 'acolyte', 'minion'] },
     age: Number,
-    profession: String,
-    salary: Number,
-    bond: { type: Number, min: 0, max: 100, default: 50 },
-    workEfficiency: { type: Number, min: 0.5, max: 2.0, default: 1.0 },
-    lastTrip: Date,
-    totalTrips: { type: Number, default: 0 }
+    class: String,
+    tribute: Number,
+    loyalty: { type: Number, min: 0, max: 100, default: 50 },
+    questEfficiency: { type: Number, min: 0.5, max: 2.0, default: 1.0 },
+    totalQuests: { type: Number, default: 0 },
+    dateJoined: { type: Date, default: Date.now },
+    lastQuest: Date
 });
 
 // Stronghold Schema
@@ -208,7 +213,7 @@ const strongholdSchema = new mongoose.Schema({
     monthlyRent: Number,
     utilities: Number,
     securityLevel: { type: Number, min: 1, max: 10, default: 1 },
-    maxFamilyMembers: Number,
+    maxFollowers: Number,
     hasStable: { type: Boolean, default: false },
     stableCapacity: { type: Number, default: 0 },
     treasuryCapacity: { type: Number, default: 0 },
@@ -229,6 +234,22 @@ const titleSchema = new mongoose.Schema({
     },
     datePurchased: { type: Date, default: Date.now },
     expiryDate: Date
+});
+
+// Beast Schema
+const beastSchema = new mongoose.Schema({
+    beastId: String,
+    name: String,
+    type: { type: String, enum: ['ground', 'predator', 'flying', 'dragonkin', 'dragon'] },
+    prowess: { type: Number, min: 1, max: 100 },
+    ferocity: { type: Number, min: 1, max: 100 },
+    cunning: { type: Number, min: 1, max: 100 },
+    purchasePrice: Number,
+    currentValue: Number,
+    vitality: { type: Number, min: 0, max: 100, default: 100 },
+    arenaWins: { type: Number, default: 0 },
+    arenaLosses: { type: Number, default: 0 },
+    dateAcquired: { type: Date, default: Date.now }
 });
 
 // Active effects system
@@ -253,10 +274,10 @@ const economySchema = new mongoose.Schema({
     royal_treasury: { type: Number, default: 0, min: 0 },
     treasury_limit: { type: Number, default: 10000 },
     
-    // Family System
-    family_strongbox: { type: Number, default: 0, min: 0 },
-    familyMembers: [familyMemberSchema],
-    familyBond: { type: Number, min: 0, max: 100, default: 0 },
+    // Followers System (replaces Family System)
+    followers_strongbox: { type: Number, default: 0, min: 0 },
+    followers: [followerSchema],
+    followersBond: { type: Number, min: 0, max: 100, default: 0 },
     
     // Mount System
     mounts: [mountSchema],
@@ -269,7 +290,11 @@ const economySchema = new mongoose.Schema({
     // Stronghold System
     strongholds: [strongholdSchema],
     primaryStronghold: String,
-    
+
+    // Beast System
+    beasts: [beastSchema],
+    activeBeast: String,
+
     // Guild System
     guilds: [guildSchema],
     maxGuilds: { type: Number, default: 1 },

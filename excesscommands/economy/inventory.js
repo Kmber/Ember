@@ -17,7 +17,7 @@ module.exports = {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            if (profile.inventory.length === 0) {
+            if (!profile.inventory || profile.inventory.length === 0) {
                 const components = [];
                 const emptyContainer = new ContainerBuilder().setAccentColor(0xF39C12);
                 emptyContainer.addTextDisplayComponents(
@@ -79,8 +79,8 @@ module.exports = {
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const statsContainer = new ContainerBuilder().setAccentColor(0x2ECC71);
-            const totalItems = profile.inventory.length;
-            const totalValue = profile.inventory.reduce((sum, item) => sum + (item.currentValue * item.quantity), 0);
+            const totalItems = profile.inventory ? profile.inventory.length : 0;
+            const totalValue = profile.inventory ? profile.inventory.reduce((sum, item) => sum + (item.currentValue * item.quantity), 0) : 0;
             const storageUsed = HuntingManager.calculateInventoryWeight(profile); // Assumes this function is updated or generic enough
             const storageCapacity = HuntingManager.calculateStorageCapacity(profile); // Assumes this function is updated
 
@@ -92,9 +92,11 @@ module.exports = {
             );
 
             const rarityCount = {};
-            profile.inventory.forEach(item => {
-                rarityCount[item.rarity] = (rarityCount[item.rarity] || 0) + 1;
-            });
+            if (profile.inventory) {
+                profile.inventory.forEach(item => {
+                    rarityCount[item.rarity] = (rarityCount[item.rarity] || 0) + 1;
+                });
+            }
 
             const rarityText = Object.entries(rarityCount)
                 .map(([rarity, count]) => `**${rarity.charAt(0).toUpperCase() + rarity.slice(1)}:** ${count}`)

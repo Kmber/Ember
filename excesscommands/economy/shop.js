@@ -48,7 +48,7 @@ module.exports = {
 
                 const headerContainer = new ContainerBuilder().setAccentColor(0x9C27B0);
                 headerContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent(`# 🏰 Arcane Emporium\n## MYSTICAL ITEMS & ARTIFACTS\n\n> Welcome to the Arcane Emporium! Acquire powerful items to aid your journey.\n> Your coin purse: **${profile.embers.toLocaleString()} Embers**`)
+                    new TextDisplayBuilder().setContent(`# 🏰 Arcane Emporium\n## MYSTICAL ITEMS & ARTIFACTS\n\n> Welcome to the Arcane Emporium! Acquire powerful items to aid your journey.\n> Your Ember Sachel: **${profile.embers.toLocaleString()} Embers**`)
                 );
                 components.push(headerContainer);
 
@@ -105,7 +105,7 @@ module.exports = {
                     components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
                     const priceContainer = new ContainerBuilder().setAccentColor(0xF39C12);
                     priceContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Artifact:** \`${item.name}\`\n**Price:** ${item.price.toLocaleString()} Embers\n**Your Coin Purse:** ${profile.embers.toLocaleString()} Embers\n**Shortfall:** ${(item.price - profile.embers).toLocaleString()} Embers\n\n> Undertake quests, complete daily tasks, or sell treasures to earn more Embers!`)
+                        new TextDisplayBuilder().setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Artifact:** \`${item.name}\`\n**Price:** ${item.price.toLocaleString()} Embers\n**Your Ember Sachel:** ${profile.embers.toLocaleString()} Embers\n**Shortfall:** ${(item.price - profile.embers).toLocaleString()} Embers\n\n> Undertake quests, complete daily tasks, or sell treasures to earn more Embers!`)
                     );
                     components.push(priceContainer);
                     return message.reply({ components: components, flags: MessageFlags.IsComponentsV2 });

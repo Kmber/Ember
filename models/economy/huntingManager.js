@@ -144,7 +144,7 @@ class HuntingManager {
         };
 
         const conveyance = profile.conveyances.find(v => v.conveyanceId === profile.activeConveyance);
-        const weapon = profile.huntingWeapons.find(w => w.weaponId === profile.activeWeapon);
+        const weapon = profile.weapons.find(w => w.weaponId === profile.activeWeapon);
         const allies = profile.allies.filter(c => 
             profile.activeAllies.includes(c.allyId) && c.health > 0
         );
@@ -160,7 +160,7 @@ class HuntingManager {
             throw new Error('Weapon needs ammunition! Use !huntshop ammo to buy ammo.');
         }
 
-        const monster = this.generateRandomMonster(conveyance.dungeonDepth, profile.huntingSkill);
+        const monster = this.generateRandomMonster(conveyance.dungeonDepth, profile.huntingStats.monsterHuntingSkill);
         results.monster = monster;
 
         const fuelNeeded = this.calculateFuelConsumption(conveyance, monster, conveyance.dungeonDepth);
@@ -250,11 +250,11 @@ class HuntingManager {
 
         if (monsterHealth <= 0) {
             results.success = true;
-            results.loot = this.generateLoot(monster, profile.huntingSkill);
+            results.loot = this.generateLoot(monster, profile.huntingStats.monsterHuntingSkill);
             results.experience = Math.floor(50 + (monster.tier * 25));
             results.skillGain = Math.floor(1 + (monster.tier * 0.5));
             
-            const lootBoxChance = 10 + (profile.huntingSkill * 0.2);
+            const lootBoxChance = 10 + (profile.huntingStats.monsterHuntingSkill * 0.2);
             if (Math.random() * 100 < lootBoxChance) {
                 const lootBox = this.generateLootBox();
                 results.loot.push(lootBox);
@@ -266,7 +266,7 @@ class HuntingManager {
             results.experience = 10;
         }
 
-        profile.currentHealth = Math.max(0, hunterHealth);
+        profile.currentHealth = isNaN(hunterHealth) ? 0 : Math.max(0, hunterHealth);
         
         if (conveyance.durability < 50) {
             const repairCost = Math.floor((100 - conveyance.durability) * 50);
@@ -448,7 +448,7 @@ class HuntingManager {
 
     // Upgrade weapon
     static async upgradeWeapon(profile, weaponId) {
-        const weapon = profile.huntingWeapons.find(w => w.weaponId === weaponId);
+        const weapon = profile.weapons.find(w => w.weaponId === weaponId);
         if (!weapon) {
             throw new Error('Weapon not found!');
         }
@@ -585,7 +585,7 @@ class HuntingManager {
 
     // Reload weapon
     static async reloadWeapon(profile, weaponId, ammoType, quantity) {
-        const weapon = profile.huntingWeapons.find(w => w.weaponId === weaponId);
+        const weapon = profile.weapons.find(w => w.weaponId === weaponId);
         if (!weapon) {
             throw new Error('Weapon not found!');
         }

@@ -5,7 +5,7 @@ const {
     SeparatorSpacingSize,
     MessageFlags
 } = require('discord.js');
-const { EconomyManager, Heist } = require('../../models/economy/economy');
+const { EconomyManager, Raid } = require('../../models/economy/economy');
 const { RAID_TARGETS } = require('../../models/economy/constants/businessData');
 
 module.exports = {
@@ -19,10 +19,10 @@ module.exports = {
             const action = args[0]?.toLowerCase();
             
             if (!action || action === 'status') {
-                const activeRaids = await Heist.find({
-                    heistId: { $in: profile.activeHeists },
+                const activeRaids = await Raid.find({
+                    raidId: { $in: profile.activeRaids || [] },
                     guildId: message.guild.id,
-                    status: { $in: ['planning', 'recruiting', 'ready'] }
+                    status: { $in: ['recruiting', 'ready'] }
                 });
                 
                 const components = [];
@@ -75,12 +75,12 @@ module.exports = {
                     );
                     raidContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🎭 Your Role:** \`${memberRole}\`\n**👥 Warband:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**💰 Your Share:** \`${individualPayout.toLocaleString()} Embers\`\n**🎯 Target Type:** \`${raid.targetType}\`\n**🆔 Raid ID:** \`${raid.heistId}\``)
+                            .setContent(`**🎭 Your Role:** \`${memberRole}\`\n**👥 Warband:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**💰 Your Share:** \`${individualPayout.toLocaleString()} Embers\`\n**🎯 Target Type:** \`${raid.targetType}\`\n**🆔 Raid ID:** \`${raid.raidId}\``)
                     );
                     if (raid.status === 'ready') {
                          raidContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🚨 Status:** \`READY TO EXECUTE!\`\n**⚡ Action:** Use \`!executeraid ${raid.heistId}\` to begin!`)
+                                .setContent(`**🚨 Status:** \`READY TO EXECUTE!\`\n**⚡ Action:** Use \`!executeraid ${raid.raidId}\` to begin!`)
                         );
                     }
                     components.push(raidContainer);
@@ -90,7 +90,7 @@ module.exports = {
             }
             
             if (action === 'history') {
-                const completedRaids = await Heist.find({
+                const completedRaids = await Raid.find({
                     guildId: message.guild.id,
                     'members.userId': message.author.id,
                     status: { $in: ['completed', 'failed'] }
@@ -140,7 +140,7 @@ module.exports = {
             
             if (action === 'leaderboard') {
                 const topRaiders = await EconomyManager.Economy.find({ guildId: message.guild.id })
-                    .sort({ completedHeists: -1 })
+                    .sort({ completedRaids: -1 })
                     .limit(10);
                     
                 if (topRaiders.length === 0) {
@@ -170,14 +170,14 @@ module.exports = {
                     const user = message.guild.members.cache.get(raider.userId);
                     const username = user ? user.displayName : 'An Unknown Warlord';
                     const medal = ['🥇', '🥈', '🥉'][index];
-                    const successRate = raider.completedHeists > 0 ? 
-                        Math.floor((raider.completedHeists / (raider.completedHeists + raider.failedHeists)) * 100) : 0;
+                    const successRate = raider.completedRaids > 0 ?
+                        Math.floor((raider.completedRaids / (raider.completedRaids + raider.failedRaids)) * 100) : 0;
 
                     const raiderContainer = new ContainerBuilder()
                         .setAccentColor(0xFFC107);
                     raiderContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`${medal} **${username}**\n> **Raids:** \`${raider.completedHeists}\` • **Success:** \`${successRate}%\`\n> **Skill:** \`${raider.heistSkill}%\` • **Infamy:** \`${raider.heatLevel}%\``)
+                            .setContent(`${medal} **${username}**\n> **Raids:** \`${raider.completedRaids}\` • **Success:** \`${successRate}%\`\n> **Skill:** \`${raider.raidingSkill}%\` • **Infamy:** \`${raider.notoriety}%\``)
                     );
                     components.push(raiderContainer);
                 });
@@ -191,7 +191,7 @@ module.exports = {
                         const actualRank = 4 + index;
                         const user = message.guild.members.cache.get(raider.userId);
                         const username = user ? user.displayName : 'An Unknown Raider';
-                        return `**${actualRank}.** ${username} - Raids: \`${raider.completedHeists}\``;
+                        return `**${actualRank}.** ${username} - Raids: \`${raider.completedRaids}\``;
                     }).join('\n');
 
                     rankingContainer.addTextDisplayComponents(

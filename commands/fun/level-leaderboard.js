@@ -35,7 +35,17 @@ module.exports = {
                 .setRequired(false)),
 
     async execute(interaction) {
-        await interaction.deferReply();
+        if (interaction.deferReply) {
+            try {
+                await interaction.deferReply();
+            } catch (error) {
+                console.error('Defer reply error:', error);
+                return await interaction.reply({
+                    content: 'An error occurred while processing your request.',
+                    ephemeral: true
+                });
+            }
+        }
 
         try {
             const type = interaction.options.getString('type') || 'xp';

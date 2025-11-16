@@ -139,7 +139,7 @@ module.exports = {
 
                 resultsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **BATTLE SPOILS**\n\n**🏆 Base Prize:** \`${winnings.toLocaleString()} Embers\`\n**👑 Title Bonus:** \`${titleBonus.toLocaleString()} Embers\`\n**💎 Total Winnings:** \`${totalWinnings.toLocaleString()} Embers\`\n**💳 New Coin Purse:** \`${profile.embers.toLocaleString()} Embers\``)
+                        .setContent(`## 💰 **BATTLE SPOILS**\n\n**🏆 Base Prize:** \`${winnings.toLocaleString()} Embers\`\n**👑 Title Bonus:** \`${titleBonus.toLocaleString()} Embers\`\n**💎 Total Winnings:** \`${totalWinnings.toLocaleString()} Embers\`\n**💳 New Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\``)
                 );
                 
                 resultsContainer.addTextDisplayComponents(
@@ -190,7 +190,7 @@ module.exports = {
 
                 lossDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💸 **BATTLE CONSEQUENCES**\n\n**💰 Recovery Costs:** \`${loss.toLocaleString()} Embers\`\n**💳 Remaining Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**💔 Durability Loss:** \`-${durabilityLoss}%\`\n**🐎 Mount Condition:** \`${mount.durability}%\``)
+                        .setContent(`## 💸 **BATTLE CONSEQUENCES**\n\n**💰 Recovery Costs:** \`${loss.toLocaleString()} Embers\`\n**💳 Remaining Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\`\n**💔 Durability Loss:** \`-${durabilityLoss}%\`\n**🐎 Mount Condition:** \`${mount.durability}%\``)
                 );
 
                 lossDetailsContainer.addTextDisplayComponents(

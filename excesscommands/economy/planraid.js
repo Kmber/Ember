@@ -5,7 +5,7 @@ const {
     SeparatorSpacingSize,
     MessageFlags
 } = require('discord.js');
-const { EconomyManager, Heist } = require('../../models/economy/economy');
+const { EconomyManager, Raid } = require('../../models/economy/economy');
 const { RAID_TARGETS, RAID_EQUIPMENT } = require('../../models/economy/constants/businessData');
 
 module.exports = {
@@ -57,38 +57,58 @@ module.exports = {
             const targetData = RAID_TARGETS[targetType];
             
             if (!targetData) {
-                return message.reply({ content: 'Invalid target specified.', flags: MessageFlags.IsComponentsV2 });
+                const components = [];
+                const errorContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
+                errorContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('## ❌ **INVALID TARGET**\n\n> The specified target does not exist.'));
+                components.push(errorContainer);
+                return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
             
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             if (profile.shackledUntil && profile.shackledUntil > new Date()) {
-                return message.reply({ content: 'You cannot plan a raid while you are shackled.', flags: MessageFlags.IsComponentsV2 });
+                const components = [];
+                const shackledContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
+                shackledContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('## ⛓️ **SHACKLED**\n\n> You cannot plan a raid while you are shackled.'));
+                components.push(shackledContainer);
+                return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
-            
+
             if (profile.heatLevel < targetData.minHeatLevel) {
-                return message.reply({ content: `Your infamy is too low to attempt this raid. You need at least ${targetData.minHeatLevel}% infamy.`, flags: MessageFlags.IsComponentsV2 });
+                const components = [];
+                const infamyContainer = new ContainerBuilder().setAccentColor(0xF39C12);
+                infamyContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`## 🔥 **INSUFFICIENT INFAMY**\n\n> Your infamy is too low to attempt this raid. You need at least \`${targetData.minHeatLevel}%\` infamy.`));
+                components.push(infamyContainer);
+                return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
-            
-            const existingRaid = await Heist.findOne({
+
+            const existingRaid = await Raid.findOne({
                 plannerUserId: message.author.id,
                 guildId: message.guild.id,
-                status: { $in: ['planning', 'recruiting', 'ready'] }
+                status: { $in: ['recruiting', 'ready'] }
             });
-            
+
             if (existingRaid) {
-                return message.reply({ content: 'You are already planning a raid.', flags: MessageFlags.IsComponentsV2 });
+                const components = [];
+                const existingContainer = new ContainerBuilder().setAccentColor(0xF39C12);
+                existingContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('## ⚔️ **ALREADY PLANNING**\n\n> You are already planning a raid.'));
+                components.push(existingContainer);
+                return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
-            
+
             const equipmentCost = targetData.equipment.reduce((sum, item) => sum + RAID_EQUIPMENT[item].cost, 0);
-            
+
             if (profile.embers < equipmentCost) {
-                return message.reply({ content: `You cannot afford the equipment for this raid. You need ${equipmentCost.toLocaleString()} Embers.`, flags: MessageFlags.IsComponentsV2 });
+                const components = [];
+                const fundsContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
+                fundsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`## 💰 **INSUFFICIENT FUNDS**\n\n> You cannot afford the equipment for this raid. You need \`${equipmentCost.toLocaleString()} Embers\`.`));
+                components.push(fundsContainer);
+                return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
             
             const raidId = `raid_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            const raid = new Heist({
-                heistId: raidId,
+            const raid = new Raid({
+                raidId: raidId,
                 guildId: message.guild.id,
                 plannerUserId: message.author.id,
                 targetType,
@@ -114,7 +134,8 @@ module.exports = {
             await raid.save();
             
             profile.embers -= equipmentCost;
-            profile.activeHeists.push(raidId);
+            profile.activeRaids = profile.activeRaids || [];
+            profile.activeRaids.push(raidId);
             profile.transactions.push({
                 type: 'expense',
                 amount: equipmentCost,

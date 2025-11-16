@@ -52,8 +52,8 @@ module.exports = {
 
                     for (let i = 0; i < strongholds.length; i += 3) {
                         const strongholdGroup = strongholds.slice(i, i + 3);
-                        const strongholdText = strongholdGroup.map(([id, prop]) => 
-                            `**\`${id}\`** - ${prop.name}\n> **Price:** \`${prop.price.toLocaleString()} Embers\`\n> **Followers:** ${prop.maxFollowers} • **Warding:** ${prop.wardingLevel} • **Treasury:** ${prop.treasuryCapacity.toLocaleString()} Embers\n> **Bestiary:** ${prop.hasBestiary ? `${prop.bestiaryCapacity} beasts` : 'None'} • **Upkeep:** ${prop.upkeep.toLocaleString()} Embers`
+                        const strongholdText = strongholdGroup.map(([id, prop]) =>
+                            `**\`${id}\`** - ${prop.name}\n> **Price:** \`${prop.price.toLocaleString()} Embers\`\n> **Followers:** ${prop.maxFollowers} • **Warding:** ${prop.wardingLevel} • **Treasury:** ${(prop.treasuryCapacity || 0).toLocaleString()} Embers\n> **Bestiary:** ${prop.hasBestiary ? `${prop.bestiaryCapacity} beasts` : 'None'} • **Upkeep:** ${prop.upkeep.toLocaleString()} Embers`
                         ).join('\n\n');
 
                         categoryContainer.addTextDisplayComponents(
@@ -145,7 +145,7 @@ module.exports = {
 
                 priceBreakdownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Stronghold:** \`${strongholdData.name}\`\n**Price:** \`${strongholdData.price.toLocaleString()} Embers\`\n**Your Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**Shortage:** \`${(strongholdData.price - profile.embers).toLocaleString()} Embers\`\n\n**💡 Tip:** Undertake quests, manage guilds, or engage in arena battles to amass wealth for a stronghold!`)
+                        .setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Stronghold:** \`${strongholdData.name}\`\n**Price:** \`${strongholdData.price.toLocaleString()} Embers\`\n**Your Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\`\n**Shortage:** \`${(strongholdData.price - profile.embers).toLocaleString()} Embers\`\n\n**💡 Tip:** Undertake quests, manage guilds, or engage in arena battles to amass wealth for a stronghold!`)
                 );
 
                 components.push(priceBreakdownContainer);
@@ -169,7 +169,7 @@ module.exports = {
                 hasBestiary: strongholdData.hasBestiary,
                 bestiaryCapacity: strongholdData.bestiaryCapacity,
                 treasuryCapacity: strongholdData.treasuryCapacity,
-                condition: 'fortified',
+                condition: 'excellent',
                 dateAcquired: new Date()
             });
 
@@ -211,7 +211,7 @@ module.exports = {
 
             specsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏰 Stronghold Name:** \`${strongholdData.name}\`\n**🏷️ Stronghold Type:** \`${strongholdData.type}\`\n**👨‍👩‍👧‍👦 Follower Capacity:** \`${strongholdData.maxFollowers} followers\`\n**🛡️ Warding Level:** \`${strongholdData.wardingLevel}/10\`\n**🏦 Treasury Capacity:** \`${strongholdData.treasuryCapacity.toLocaleString()} Embers\``)
+                    .setContent(`**🏰 Stronghold Name:** \`${strongholdData.name}\`\n**🏷️ Stronghold Type:** \`${strongholdData.type}\`\n**👨‍👩‍👧‍👦 Follower Capacity:** \`${strongholdData.maxFollowers} followers\`\n**🛡️ Warding Level:** \`${strongholdData.wardingLevel}/10\`\n**🏦 Treasury Capacity:** \`${(strongholdData.treasuryCapacity || 0).toLocaleString()} Embers\``)
             );
 
             specsContainer.addTextDisplayComponents(
@@ -233,7 +233,7 @@ module.exports = {
 
             const unlockedFeatures = [];
             if (strongholdData.maxFollowers > 0) unlockedFeatures.push(`**👨‍👩‍👧‍👦 House Followers:** Accommodate up to ${strongholdData.maxFollowers} loyal followers`);
-            if (strongholdData.treasuryCapacity > 0) unlockedFeatures.push(`**🏦 Treasury:** Secure your riches with a capacity of ${strongholdData.treasuryCapacity.toLocaleString()} Embers`);
+            if (strongholdData.treasuryCapacity > 0) unlockedFeatures.push(`**🏦 Treasury:** Secure your riches with a capacity of ${(strongholdData.treasuryCapacity || 0).toLocaleString()} Embers`);
             if (strongholdData.hasBestiary) unlockedFeatures.push(`**🐾 Bestiary:** Tame and house up to ${strongholdData.bestiaryCapacity} beasts`);
             if (strongholdData.wardingLevel > 0) unlockedFeatures.push(`**🛡️ Enhanced Warding:** Level ${strongholdData.wardingLevel} protection against pillaging`);
             if (!profile.strongholds.find(s => s.strongholdId !== strongholdId)) unlockedFeatures.push(`**🐕 Familiar Attunement:** Attune with up to ${Math.floor(strongholdData.maxFollowers / 2)} familiars`);
@@ -252,7 +252,7 @@ module.exports = {
 
             financialContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💰 **FINANCIAL SUMMARY**\n\n**Acquisition Price:** \`${strongholdData.price.toLocaleString()} Embers\`\n**Remaining Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**Total Strongholds:** \`${profile.strongholds.length}\`\n**Stronghold Investment:** \`${profile.strongholds.reduce((sum, s) => sum + s.purchasePrice, 0).toLocaleString()} Embers\`\n**Ledger Updated:** Acquisition recorded in your transaction history`)
+                    .setContent(`## 💰 **FINANCIAL SUMMARY**\n\n**Acquisition Price:** \`${strongholdData.price.toLocaleString()} Embers\`\n**Remaining Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\`\n**Total Strongholds:** \`${profile.strongholds.length}\`\n**Stronghold Investment:** \`${profile.strongholds.reduce((sum, s) => sum + s.purchasePrice, 0).toLocaleString()} Embers\`\n**Ledger Updated:** Acquisition recorded in your transaction history`)
             );
 
             components.push(financialContainer);

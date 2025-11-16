@@ -72,7 +72,7 @@ module.exports = {
                 return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
 
-            const luckMultiplier = EconomyManager.getGamblingLuck(profile);
+            const luckMultiplier = EconomyManager.getMysticGamblingLuck(profile);
             const baseLuckBonus = (luckMultiplier - 1) * 10;
             const winChance = Math.min(75, 45 + baseLuckBonus);
             const won = Math.random() * 100 < winChance;
@@ -97,7 +97,7 @@ module.exports = {
                 
                 let winType = '';
                 if (multiplier >= 4) winType = '🎉 **A LEGENDARY HAUL!** 🎉';
-                else if (multiplier >= 3) winType = '⭐ **A KING'S RANSOM!** ⭐';
+                else if (multiplier >= 3) winType = '⭐ **A KING\'S RANSOM!** ⭐';
                 else if (multiplier >= 2.5) winType = '🎰 **A FORTUNE FAVORS YOU!** 🎰';
                 
                 profile.transactions.push({

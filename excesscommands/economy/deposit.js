@@ -46,7 +46,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **HOW TO SECURE YOUR EMBERS**\n\n**\`!deposit 1000\`** - Secure a specific amount.\n**\`!deposit all\`** - Secure all Embers from your coin purse.\n**\`!deposit max\`** - Secure the maximum possible amount.\n\n**Your Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**Available Treasury Space:** \`${(royalTreasuryLimit - profile.royal_treasury).toLocaleString()} Embers\``)
+                        .setContent(`## 💡 **HOW TO SECURE YOUR EMBERS**\n\n**\`!deposit 1000\`** - Secure a specific amount.\n**\`!deposit all\`** - Secure all Embers from your Ember Sachel.\n**\`!deposit max\`** - Secure the maximum possible amount.\n\n**Your Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\`\n**Available Treasury Space:** \`${(royalTreasuryLimit - profile.royal_treasury).toLocaleString()} Embers\``)
                 );
 
                 components.push(usageContainer);
@@ -65,7 +65,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 A Pauper's Purse\n## YOUR COIN PURSE LACKS THE REQUIRED EMBERS\n\n> You do not possess enough Embers for this deposit!`)
+                        .setContent(`# 💸 A Pauper's Purse\n## YOUR Ember Sachel LACKS THE REQUIRED EMBERS\n\n> You do not possess enough Embers for this deposit!`)
                 );
 
                 components.push(insufficientContainer);
@@ -77,7 +77,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **A SCRIBE'S RECKONING**\n\n**Your Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**Intended Deposit:** \`${amount.toLocaleString()} Embers\`\n**The Shortfall:** \`${(amount - profile.embers).toLocaleString()} Embers\`\n\n**💡 A Sage's Advice:** Try \`!deposit all\` to secure all the Embers you currently possess!`)
+                        .setContent(`## 💰 **A SCRIBE'S RECKONING**\n\n**Your Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\`\n**Intended Deposit:** \`${amount.toLocaleString()} Embers\`\n**The Shortfall:** \`${(amount - profile.embers).toLocaleString()} Embers\`\n\n**💡 A Sage's Advice:** Try \`!deposit all\` to secure all the Embers you currently possess!`)
                 );
 
                 components.push(balanceContainer);
@@ -177,12 +177,12 @@ module.exports = {
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**Your Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**Your Royal Treasury:** \`${profile.royal_treasury.toLocaleString()} Embers\`\n**Treasury Limit:** \`${royalTreasuryLimit.toLocaleString()} Embers\``)
+                    .setContent(`**Your Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\`\n**Your Royal Treasury:** \`${profile.royal_treasury.toLocaleString()} Embers\`\n**Treasury Limit:** \`${royalTreasuryLimit.toLocaleString()} Embers\``)
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**Treasury Fullness:** \`${((profile.royal_treasury / royalTreasuryLimit) * 100).toFixed(1)}%\`\n**Remaining Space:** \`${(royalTreasuryLimit - profile.royal_treasury).toLocaleString()} Embers\`\n**Total Worth:** \`${(profile.embers + profile.royal_treasury + profile.family_strongbox).toLocaleString()} Embers\``)
+                    .setContent(`**Treasury Fullness:** \`${((profile.royal_treasury / royalTreasuryLimit) * 100).toFixed(1)}%\`\n**Remaining Space:** \`${(royalTreasuryLimit - profile.royal_treasury).toLocaleString()} Embers\`\n**Total Worth:** \`${(profile.embers + profile.royal_treasury + profile.followers_strongbox).toLocaleString()} Embers\``)
             );
 
             components.push(balancesContainer);

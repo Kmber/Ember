@@ -16,6 +16,7 @@ module.exports = {
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            profile.souls = Number(profile.souls) || 0;
 
             if (profile.guilds.length === 0) {
                 const components = [];
@@ -73,7 +74,7 @@ module.exports = {
 
                 statsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💀 Total Daily Tribute:** \`${totalDailyTribute.toLocaleString()} Souls\`\n**🏰 Dominion Value:** \`${totalAssetValue.toLocaleString()} Souls\`\n**📈 Leadership Skill:** \`${profile.leadershipSkill}%\``)
+                        .setContent(`**💀 Total Daily Tribute:** \`${totalDailyTribute.toLocaleString()} Souls\`\n**🏰 Dominion Value:** \`${totalAssetValue.toLocaleString()} Souls\`\n**📈 Leadership Skill:** \`${profile.guildManagementSkill || 0}%\``)
                 );
 
                 statsContainer.addTextDisplayComponents(
@@ -103,7 +104,7 @@ module.exports = {
                     const guildText = `**${i + 1}. ${guild.name}** (Level ${guild.level})\n` +
                         `> **Type:** \`${guildType?.name || guild.type}\`\n` +
                         `> **💀 Daily Tribute:** \`${income.profit.toLocaleString()} Souls\` (Revenue: ${income.revenue.toLocaleString()})\n` +
-                        `> **👥 Apprentices:** \`${guild.apprentices}/${guildType.maxEmployees}\` (Upkeep: ${income.expenses.toLocaleString()} Souls)\n` +
+                        `> **👥 Apprentices:** \`${guild.apprentices}/${guildType.maxApprentices}\` (Upkeep: ${income.expenses.toLocaleString()} Souls)\n` +
                         `> **⭐ Renown:** \`${guild.reputation}%\` • **🎯 Efficiency:** \`${Math.floor(guild.efficiency * 100)}%\`\n` +
                         `> **⏰ Collection:** \`${hoursUntilCollection > 0 ? `${hoursUntilCollection}h remaining` : 'Ready!'}\``;
 
@@ -337,16 +338,16 @@ module.exports = {
                 const guild = profile.guilds[guildIndex];
                 const guildType = GUILD_TYPES[guild.type];
 
-                if (guild.apprentices + recruitAmount > guildType.maxEmployees) {
+                if (guild.apprentices + recruitAmount > guildType.maxApprentices) {
                     const components = [];
-                    const maxApprenticesContainer = new ContainerBuilder().setAccentColor(0xF39C12).addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 👥 Apprentice Limit Reached\n## RECRUITMENT BLOCKED\n\n> **${guild.name}** can only have ${guildType.maxEmployees} apprentices!\n> Current: ${guild.apprentices}/${guildType.maxEmployees}\n> Requested: +${recruitAmount}`));
+                    const maxApprenticesContainer = new ContainerBuilder().setAccentColor(0xF39C12).addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 👥 Apprentice Limit Reached\n## RECRUITMENT BLOCKED\n\n> **${guild.name}** can only have ${guildType.maxApprentices} apprentices!\n> Current: ${guild.apprentices}/${guildType.maxApprentices}\n> Requested: +${recruitAmount}`));
                     components.push(maxApprenticesContainer);
                     return message.reply({ components: components, flags: MessageFlags.IsComponentsV2 });
                 }
 
                 const baseRecruitCost = 1000 + (guild.level * 200);
-                const recruitCost = recruitAmount * baseRecruitCost;
-                
+                const recruitCost = Number(recruitAmount * baseRecruitCost);
+
                 if (profile.souls < recruitCost) {
                     const components = [];
                     const insufficientContainer = new ContainerBuilder().setAccentColor(0xE74C3C).addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 💸 Insufficient Souls\n## RECRUITMENT BLOCKED\n\n> You need \`${recruitCost.toLocaleString()} Souls\` to recruit ${recruitAmount} apprentices!\n> Current soul balance: \`${profile.souls.toLocaleString()}\`\n> Cost per apprentice: \`${baseRecruitCost.toLocaleString()} Souls\``));
@@ -355,10 +356,11 @@ module.exports = {
                 }
 
                 const oldIncome = await EconomyManager.calculateGuildIncome(guild);
-                
+
                 profile.souls -= recruitCost;
+                profile.souls = Number(profile.souls) || 0;
                 guild.apprentices += recruitAmount;
-                
+
                 const newIncome = await EconomyManager.calculateGuildIncome(guild);
                 const profitIncrease = newIncome.profit - oldIncome.profit;
 
@@ -370,7 +372,7 @@ module.exports = {
                 components.push(headerContainer);
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                const detailsContainer = new ContainerBuilder().setAccentColor(0x7B1FA2).addTextDisplayComponents(new TextDisplayBuilder().setContent('## 📜 **RECRUITMENT BENEFITS**')).addTextDisplayComponents(new TextDisplayBuilder().setContent(`**💰 Recruitment Cost:** \`${recruitCost.toLocaleString()} Souls\`\n**👥 Total Apprentices:** \`${guild.apprentices}/${guildType.maxEmployees}\`\n**💸 Daily Apprentice Upkeep:** \`${newIncome.expenses.toLocaleString()} Souls\`\n**📈 Daily Tribute Increase:** \`${profitIncrease.toLocaleString()} Souls\``)).addTextDisplayComponents(new TextDisplayBuilder().setContent(`**💎 New Daily Tribute:** \`${newIncome.profit.toLocaleString()} Souls\`\n**⭐ Influence Gained:** \`+${rewards.expGain} XP\`\n**📊 Leadership Gained:** \`+${rewards.skillGain}%\`\n**💳 Remaining Souls:** \`${profile.souls.toLocaleString()} Souls\``));
+                const detailsContainer = new ContainerBuilder().setAccentColor(0x7B1FA2).addTextDisplayComponents(new TextDisplayBuilder().setContent('## 📜 **RECRUITMENT BENEFITS**')).addTextDisplayComponents(new TextDisplayBuilder().setContent(`**💰 Recruitment Cost:** \`${recruitCost.toLocaleString()} Souls\`\n**👥 Total Apprentices:** \`${guild.apprentices}/${guildType.maxApprentices}\`\n**💸 Daily Apprentice Upkeep:** \`${newIncome.expenses.toLocaleString()} Souls\`\n**📈 Daily Tribute Increase:** \`${profitIncrease.toLocaleString()} Souls\``)).addTextDisplayComponents(new TextDisplayBuilder().setContent(`**💎 New Daily Tribute:** \`${newIncome.profit.toLocaleString()} Souls\`\n**⭐ Influence Gained:** \`+${rewards.expGain} XP\`\n**📊 Leadership Gained:** \`+${rewards.skillGain}%\`\n**💳 Remaining Souls:** \`${Number(profile.souls).toLocaleString()} Souls\``));
                 components.push(detailsContainer);
 
                 return message.reply({ components: components, flags: MessageFlags.IsComponentsV2 });

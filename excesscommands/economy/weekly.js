@@ -35,16 +35,16 @@ module.exports = {
             }
 
             const baseTithe = 2000;
-            const levelBonus = profile.level * 150;
-            const followerBonus = Math.floor((profile.followerLoyalty / 100) * 1200);
-            
+            const levelBonus = (profile.level || 0) * 150;
+            const followerBonus = Math.floor(((profile.followerLoyalty || 0) / 100) * 1200);
+
             let totalTithe = baseTithe + levelBonus + followerBonus;
             
-            await EconomyManager.updateWallet(userId, guildId, totalTithe);
+            await EconomyManager.updateEmbers(userId, guildId, totalTithe);
             profile.cooldowns.weeklytithe = now;
             profile.experience += 120;
             
-            profile.deeds.push({
+            profile.transactions.push({
                 type: 'income',
                 amount: totalTithe,
                 description: 'Weekly tithe from the kingdom',

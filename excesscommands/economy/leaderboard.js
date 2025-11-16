@@ -102,7 +102,7 @@ module.exports = {
                         break;
                     case 'allegiance': valueText = `${profile.followerLoyalty}% loyalty (${profile.followers.length} followers)`; break;
                 }
-                podiumContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`${medal} **${username}**\n> ${valueText}`)));
+                podiumContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`${medal} **${username}**\n> ${valueText}`));
             });
             components.push(podiumContainer);
 

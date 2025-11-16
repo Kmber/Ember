@@ -6,7 +6,7 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { GUILD_TYPES } = require('../../models/economy/constants/guildData');
+const { GUILDS } = require('../../models/economy/constants/guildData');
 
 module.exports = {
     name: 'foundguild',
@@ -23,7 +23,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏰 Available Guild Types\\n## FORGE YOUR DOMINION\\n\\n> Choose from various guild types, each with unique influence and requirements`)
+                        .setContent(`# 🏰 Available Guild Types\n## FORGE YOUR DOMINION\n\n> Choose from various guild types, each with unique influence and requirements`)
                 );
 
                 components.push(headerContainer);
@@ -37,10 +37,10 @@ module.exports = {
                         .setContent('## 📜 **GUILD CATEGORIES**')
                 );
 
-                const guildEntries = Object.entries(GUILD_TYPES);
+                const guildEntries = Object.entries(GUILDS);
                 const businessText = guildEntries.map(([id, guild]) =>
-                    `**\\`${id}\\`** - ${guild.name}\\n> **Cost:** \\`${guild.baseCost.toLocaleString()} Embers\\`\\n> **Description:** ${guild.description}\\n> **Daily Income:** \\`${guild.dailyIncome[0]}-${guild.dailyIncome[1]} Embers\\``
-                ).join('\\n\\n');
+                    `**\`${id}\`** - ${guild.name}\n> **Cost:** \`${guild.baseCost.toLocaleString()} Embers\`\n> **Description:** ${guild.description}\n> **Daily Income:** \`${guild.dailyIncome[0]}-${guild.dailyIncome[1]} Embers\``
+                ).join('\n\n');
 
                 guildContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
@@ -55,7 +55,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚀 **HOW TO FOUND A GUILD**\\n\\n**Command:** \\`!foundguild <type>\\`\\n**Example:** \\`!foundguild assassins_guild\\`\\n\\n**💡 Tips:**\\n> • Each guild type has different influence potential\\n> • Higher cost guilds usually have better returns\\n> • You can upgrade and recruit apprentices later`)
+                        .setContent(`## 🚀 **HOW TO FOUND A GUILD**\n\n**Command:** \`!foundguild <type>\`\n**Example:** \`!foundguild assassins_guild\`\n\n**💡 Tips:**\n> • Each guild type has different influence potential\n> • Higher cost guilds usually have better returns\n> • You can upgrade and recruit apprentices later`)
                 );
 
                 components.push(instructionsContainer);
@@ -67,7 +67,7 @@ module.exports = {
             }
 
             const guildType = args[0].toLowerCase();
-            const guildData = GUILD_TYPES[guildType];
+            const guildData = GUILDS[guildType];
 
             if (!guildData) {
                 const components = [];
@@ -75,7 +75,7 @@ module.exports = {
                     .setAccentColor(0xE74C3C);
                 errorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Guild Type\\n## GUILD NOT FOUND\\n\\n> **\\`${guildType}\\`** is not a valid guild type!\\n> Use \\`!foundguild\\` to see all available options.`)
+                        .setContent(`# ❌ Invalid Guild Type\n## GUILD NOT FOUND\n\n> **\`${guildType}\`** is not a valid guild type!\n> Use \`!foundguild\` to see all available options.`)
                 );
                 components.push(errorContainer);
                 return message.reply({
@@ -92,7 +92,7 @@ module.exports = {
                     .setAccentColor(0xF39C12);
                 limitContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏰 Guild Limit Reached\\n## MAXIMUM CAPACITY\\n\\n> You can only lead **${profile.maxGuilds}** guilds!\\n> Current guilds: **${profile.guilds.length}/${profile.maxGuilds}**\\n\\n**💡 Tip:** Enhance your leadership skill to increase capacity.`)
+                        .setContent(`# 🏰 Guild Limit Reached\n## MAXIMUM CAPACITY\n\n> You can only lead **${profile.maxGuilds}** guilds!\n> Current guilds: **${profile.guilds.length}/${profile.maxGuilds}**\n\n**💡 Tip:** Enhance your leadership skill to increase capacity.`)
                 );
                 components.push(limitContainer);
                 return message.reply({
@@ -107,7 +107,7 @@ module.exports = {
                     .setAccentColor(0xE67E22);
                 duplicateContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Guild Already Founded\\n## DUPLICATE GUILD TYPE\\n\\n> You already lead a **${guildData.name}**!\\n> Each lord can only lead one guild of each type.`)
+                        .setContent(`# 🚫 Guild Already Founded\n## DUPLICATE GUILD TYPE\n\n> You already lead a **${guildData.name}**!\n> Each lord can only lead one guild of each type.`)
                 );
                 components.push(duplicateContainer);
                 return message.reply({
@@ -122,7 +122,7 @@ module.exports = {
                     .setAccentColor(0xE74C3C);
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(\`# 💸 Insufficient Embers\\n## CANNOT AFFORD GUILD\\n\\n> You need **\\\`${guildData.baseCost.toLocaleString()} Embers\\\`** to found **${guildData.name}**!\\n> Current Embers: **\\\`${profile.embers.toLocaleString()}\\\`**\\n> Shortage: **\\\`${(guildData.baseCost - profile.embers).toLocaleString()} Embers\\\`**\`)
+                        .setContent(`# 💸 Insufficient Embers\n## CANNOT AFFORD GUILD\n\n> You need **\`${guildData.baseCost.toLocaleString()} Embers\`** to found **${guildData.name}**!\n> Current Embers: **\`${profile.embers.toLocaleString()}\`**\n> Shortage: **\`${(guildData.baseCost - profile.embers).toLocaleString()} Embers\`**`)
                 );
                 components.push(insufficientContainer);
                 return message.reply({
@@ -132,7 +132,7 @@ module.exports = {
             }
 
             const guild = {
-                guildId: \`\${guildType}_\${Date.now()}\`,
+                guildId: `${guildType}_${Date.now()}`,
                 name: guildData.name,
                 type: guildType,
                 level: 1,
@@ -155,7 +155,7 @@ module.exports = {
             profile.transactions.push({
                 type: 'expense',
                 amount: guildData.baseCost,
-                description: \`Founded guild: \${guildData.name}\`,
+                description: `Founded guild: ${guildData.name}`,
                 category: 'guild'
             });
 
@@ -167,7 +167,7 @@ module.exports = {
                 .setAccentColor(0x4CAF50);
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(\`# 🏰 Guild Founded Successfully!\\n## WELCOME TO LEADERSHIP\\n\\n> Congratulations! You\\'ve successfully founded **\${guildData.name}** for \\\`\${guildData.baseCost.toLocaleString()} Embers\\\`!\`)
+                    .setContent(`# 🏰 Guild Founded Successfully!\n## WELCOME TO LEADERSHIP\n\n> Congratulations! You've successfully founded **${guildData.name}** for \`${guildData.baseCost.toLocaleString()} Embers\`!`)
             );
             components.push(headerContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -180,11 +180,11 @@ module.exports = {
             );
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(\`**🏰 Guild Name:** \\\`\${guildData.name}\\\`\\n**📊 Starting Level:** \\\`1\\\`\\n**👥 Apprentices:** \\\`0\\\`\\n**⭐ Reputation:** \\\`50%\\\`\\n**🎯 Efficiency:** \\\`100%\\\`\`)
+                    .setContent(`**🏰 Guild Name:** \`${guildData.name}\`\n**📊 Starting Level:** \`1\`\n**👥 Apprentices:** \`0\`\n**⭐ Reputation:** \`50%\`\n**🎯 Efficiency:** \`100%\``)
             );
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(\`**💰 Daily Income Range:** \\\`\${guildData.dailyIncome[0].toLocaleString()}-\${guildData.dailyIncome[1].toLocaleString()} Embers\\\`\\n**📈 Next Upgrade Cost:** \\\`\${guild.upgradeCost.toLocaleString()} Embers\\\`\\n**💳 Remaining Embers:** \\\`\${profile.embers.toLocaleString()}\\\`\`)
+                    .setContent(`**💰 Daily Income Range:** \`${guildData.dailyIncome[0].toLocaleString()}-${guildData.dailyIncome[1].toLocaleString()} Embers\`\n**📈 Next Upgrade Cost:** \`${guild.upgradeCost.toLocaleString()} Embers\`\n**💳 Remaining Embers:** \`${profile.embers.toLocaleString()}\``)
             );
             components.push(detailsContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -197,7 +197,7 @@ module.exports = {
             );
             progressContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(\`**🎯 Leadership Skill Gained:** \\\`+5%\\\` (Now \${profile.leadershipSkill}%)\\n**🏰 Total Guilds:** \\\`\${profile.guilds.length}/\${profile.maxGuilds}\\\`\\n**📜 Guild Portfolio:** Growing strong!\`)
+                    .setContent(`**🎯 Leadership Skill Gained:** \`+5%\` (Now ${profile.leadershipSkill}%)\n**🏰 Total Guilds:** \`${profile.guilds.length}/${profile.maxGuilds}\`\n**📜 Guild Portfolio:** Growing strong!`)
             );
             components.push(progressContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -206,7 +206,7 @@ module.exports = {
                 .setAccentColor(0x9B59B6);
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(\`## 💡 **MANAGEMENT TIPS**\\n\\n**\\\`!guild\\\`** - View your guild empire\\n**\\\`!guild collect\\\`** - Collect daily tributes (24h cooldown)\\n**\\\`!guild upgrade <#>\\\`** - Upgrade for higher income\\n**\\\`!guild recruit <#> [amount]\\\`** - Recruit apprentices to boost profits\\n\\n> Your guild will start generating income immediately!\`)
+                    .setContent(`## 💡 **MANAGEMENT TIPS**\n\n**\`!guild\`** - View your guild empire\n**\`!guild collect\`** - Collect daily tributes (24h cooldown)\n**\`!guild upgrade <#>\`** - Upgrade for higher income\n**\`!guild recruit <#> [amount]\`** - Recruit apprentices to boost profits\n\n> Your guild will start generating income immediately!`)
             );
             components.push(tipsContainer);
 
@@ -222,7 +222,7 @@ module.exports = {
                 .setAccentColor(0xE74C3C);
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **GUILD FOUNDING ERROR**\\n\\nSomething went wrong while founding your guild. Please try again in a moment.')
+                    .setContent('## ❌ **GUILD FOUNDING ERROR**\n\nSomething went wrong while founding your guild. Please try again in a moment.')
             );
             return message.reply({
                 components: [errorContainer],

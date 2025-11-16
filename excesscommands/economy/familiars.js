@@ -76,19 +76,22 @@ module.exports = {
 
                 group.forEach((familiar, index) => {
                     const actualIndex = groupIndex * 3 + index + 1;
-                    const overallCondition = (familiar.bond + familiar.health + familiar.mana) / 3;
+                    const bond = familiar.bond || 50;
+                    const health = familiar.health || 100;
+                    const mana = familiar.mana || 50;
+                    const overallCondition = (bond + health + mana) / 3;
                     const conditionEmoji = overallCondition > 80 ? '🟢 Excellent' : overallCondition > 50 ? '🟡 Good' : '🔴 Needs Care';
-                    const efficiency = ((familiar.bond + familiar.health + familiar.mana) / 300 * 100).toFixed(0);
-                    
-                    const daysSinceAttunement = familiar.dateAttuned ? 
+                    const efficiency = ((bond + health + mana) / 300 * 100).toFixed(0);
+
+                    const daysSinceAttunement = familiar.dateAttuned ?
                         Math.floor((new Date() - new Date(familiar.dateAttuned)) / (1000 * 60 * 60 * 24)) : 'Unknown';
-                    
-                    const familiarText = `**${actualIndex}. ${familiar.name}** (${familiar.species})\n` +
-                        `> **🛡️ Warding Level:** \`${familiar.wardingLevel}/100\`\n` +
+
+                    const familiarText = `**${actualIndex}. ${familiar.name}** (${familiar.species || 'Unknown'})\n` +
+                        `> **🛡️ Warding Level:** \`${familiar.wardingLevel || 0}/100\`\n` +
                         `> **📈 Current Efficiency:** \`${efficiency}%\`\n` +
                         `> **🌟 Overall Condition:** ${conditionEmoji}\n` +
-                        `> **❤️ Bond:** \`${familiar.bond}%\` • **🏥 Health:** \`${familiar.health}%\` • **💧 Mana:** \`${familiar.mana}%\`\n` +
-                        `> **✨ Essence Level:** \`${familiar.essence}%\`\n` +
+                        `> **❤️ Bond:** \`${bond}%\` • **🏥 Health:** \`${health}%\` • **💧 Mana:** \`${mana}%\`\n` +
+                        `> **✨ Essence Level:** \`${familiar.essence || 50}%\`\n` +
                         `> **📅 Days Owned:** \`${daysSinceAttunement}\``;
 
                     familiarContainer.addTextDisplayComponents(
@@ -115,21 +118,31 @@ module.exports = {
             );
 
             const totalWarding = profile.familiars.reduce((sum, familiar) => {
-                const efficiency = (familiar.bond + familiar.health + familiar.mana) / 300;
-                return sum + (familiar.wardingLevel * efficiency);
+                const bond = familiar.bond || 50;
+                const health = familiar.health || 100;
+                const mana = familiar.mana || 50;
+                const efficiency = (bond + health + mana) / 300;
+                return sum + ((familiar.wardingLevel || 0) * efficiency);
             }, 0);
 
             const averageCondition = profile.familiars.reduce((sum, familiar) => {
-                return sum + ((familiar.bond + familiar.health + familiar.mana) / 3);
+                const bond = familiar.bond || 50;
+                const health = familiar.health || 100;
+                const mana = familiar.mana || 50;
+                return sum + ((bond + health + mana) / 3);
             }, 0) / profile.familiars.length;
 
-            const averageBond = profile.familiars.reduce((sum, familiar) => sum + familiar.bond, 0) / profile.familiars.length;
-            const averageHealth = profile.familiars.reduce((sum, familiar) => sum + familiar.health, 0) / profile.familiars.length;
-            const averageMana = profile.familiars.reduce((sum, familiar) => sum + familiar.mana, 0) / profile.familiars.length;
+            const averageBond = profile.familiars.reduce((sum, familiar) => (familiar.bond || 50), 0) / profile.familiars.length;
+            const averageHealth = profile.familiars.reduce((sum, familiar) => (familiar.health || 100), 0) / profile.familiars.length;
+            const averageMana = profile.familiars.reduce((sum, familiar) => (familiar.mana || 50), 0) / profile.familiars.length;
 
-            const familiarsNeedingCare = profile.familiars.filter(familiar => 
-                familiar.bond < 70 || familiar.health < 70 || familiar.mana < 70 || familiar.essence < 30
-            ).length;
+            const familiarsNeedingCare = profile.familiars.filter(familiar => {
+                const bond = familiar.bond || 50;
+                const health = familiar.health || 100;
+                const mana = familiar.mana || 50;
+                const essence = familiar.essence || 50;
+                return bond < 70 || health < 70 || mana < 70 || essence < 30;
+            }).length;
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
@@ -176,8 +189,8 @@ module.exports = {
                         .setContent('## 🛡️ **WARDING CONTRIBUTION**')
                 );
 
-                const maxPossibleWarding = profile.familiars.reduce((sum, familiar) => sum + familiar.wardingLevel, 0);
-                const wardingEfficiency = ((totalWarding / maxPossibleWarding) * 100).toFixed(1);
+                const maxPossibleWarding = profile.familiars.reduce((sum, familiar) => sum + (familiar.wardingLevel || 0), 0);
+                const wardingEfficiency = maxPossibleWarding > 0 ? ((totalWarding / maxPossibleWarding) * 100).toFixed(1) : '0.0';
 
                 wardingContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()

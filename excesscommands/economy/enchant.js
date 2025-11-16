@@ -67,7 +67,7 @@ module.exports = {
 
             if (equipmentType === 'weapon') {
            
-                if (isNaN(equipmentNumber) || equipmentNumber < 1 || equipmentNumber > profile.huntingWeapons.length) {
+                if (isNaN(equipmentNumber) || equipmentNumber < 1 || equipmentNumber > profile.weapons.length) {
                     const components = [];
 
                     const errorContainer = new ContainerBuilder()
@@ -75,7 +75,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Weapon Number\n## WEAPON NOT FOUND\n\n> Invalid weapon number! You have ${profile.huntingWeapons.length} weapons.\n> Use \`!hunting\` to see your weapons with numbers.`)
+                            .setContent(`# ❌ Invalid Weapon Number\n## WEAPON NOT FOUND\n\n> Invalid weapon number! You have ${profile.weapons.length} weapons.\n> Use \`!hunting\` to see your weapons with numbers.`)
                     );
 
                     components.push(errorContainer);
@@ -86,7 +86,7 @@ module.exports = {
                     });
                 }
 
-                const weapon = profile.huntingWeapons[equipmentNumber - 1];
+                const weapon = profile.weapons[equipmentNumber - 1];
                 
                 try {
                     const result = await HuntingManager.upgradeWeapon(profile, weapon.weaponId);
@@ -167,7 +167,7 @@ module.exports = {
 
             if (equipmentType === 'mount') {
               
-                if (isNaN(equipmentNumber) || equipmentNumber < 1 || equipmentNumber > profile.huntingMounts.length) {
+                if (isNaN(equipmentNumber) || equipmentNumber < 1 || equipmentNumber > profile.conveyances.length) {
                     const components = [];
 
                     const errorContainer = new ContainerBuilder()
@@ -175,7 +175,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Mount Number\n## MOUNT NOT FOUND\n\n> Invalid mount number! You have ${profile.huntingMounts.length} mounts.\n> Use \`!hunting\` to see your mounts with numbers.`)
+                            .setContent(`# ❌ Invalid Mount Number\n## MOUNT NOT FOUND\n\n> Invalid mount number! You have ${profile.conveyances.length} mounts.\n> Use \`!hunting\` to see your mounts with numbers.`)
                     );
 
                     components.push(errorContainer);
@@ -186,10 +186,10 @@ module.exports = {
                     });
                 }
 
-                const mount = profile.huntingMounts[equipmentNumber - 1];
+                const mount = profile.conveyances[equipmentNumber - 1];
                 
                 try {
-                    const result = await HuntingManager.upgradeMount(profile, mount.mountId);
+                    const result = await HuntingManager.upgradeConveyance(profile, mount.conveyanceId);
                     await profile.save();
 
                     const components = [];

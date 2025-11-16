@@ -50,11 +50,11 @@ module.exports = {
             const questMultiplier = EconomyManager.calculateQuestMultiplier(profile);
             
             let followerEarnings = 0;
-            const hasStronghold = profile.strongholds.length > 0;
-            
-            if (hasStronghold && profile.followers.length > 0) {
-                profile.followers.forEach(follower => {
-                    const followerContribution = follower.salary * follower.questEfficiency * (follower.loyalty / 100);
+            const hasStronghold = (profile.strongholds || []).length > 0;
+
+            if (hasStronghold && (profile.followers || []).length > 0) {
+                (profile.followers || []).forEach(follower => {
+                    const followerContribution = follower.tribute * follower.questEfficiency * (follower.loyalty / 100);
                     followerEarnings += followerContribution;
                 });
             }
@@ -111,7 +111,7 @@ module.exports = {
 
             earningsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📈 Quest Multiplier:** \`${questMultiplier.toFixed(2)}x\`\n**⭐ Experience Gained:** \`+10 XP\`\n**💳 New Coin Purse:** \`${profile.embers.toLocaleString()} Embers\``)
+                    .setContent(`**📈 Quest Multiplier:** \`${questMultiplier.toFixed(2)}x\`\n**⭐ Experience Gained:** \`+10 XP\`\n**💳 New Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\``)
             );
 
             components.push(earningsContainer);
@@ -144,7 +144,7 @@ module.exports = {
 
             components.push(progressContainer);
 
-            if (profile.followers.length > 0) {
+            if ((profile.followers || []).length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const followerContainer = new ContainerBuilder()
@@ -157,7 +157,7 @@ module.exports = {
                     );
 
                     const followerDetails = profile.followers.slice(0, 3).map(follower => {
-                        const followerContribution = follower.salary * follower.questEfficiency * (follower.loyalty / 100);
+                        const followerContribution = follower.tribute * follower.questEfficiency * (follower.loyalty / 100);
                         return `**${follower.name}** (${follower.role})\n> **Contribution:** \`${Math.floor(followerContribution).toLocaleString()} Embers\` • **Loyalty:** \`${follower.loyalty}%\``;
                     }).join('\n\n');
 
@@ -182,7 +182,7 @@ module.exports = {
                 components.push(followerContainer);
             }
 
-            const activeQuestEffects = profile.activeEffects.filter(e => e.type === 'quest_boost');
+            const activeQuestEffects = (profile.activeEffects || []).filter(e => e.type === 'quest_boost');
             if (activeQuestEffects.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -232,7 +232,7 @@ module.exports = {
         } catch (error) {
             console.error('Error in quest command:', error);
 
-            const errorContainer = a.ContainerBuilder()
+            const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(

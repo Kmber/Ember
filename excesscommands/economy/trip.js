@@ -28,7 +28,7 @@ module.exports = {
                 return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
             
-            if (profile.followers.length === 0) {
+            if (!profile.followers || profile.followers.length === 0) {
                 const components = [];
                 const noFollowersContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
                 noFollowersContainer.addTextDisplayComponents(
@@ -55,7 +55,7 @@ module.exports = {
                 const components = [];
                 const insufficientContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
                 insufficientContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent(`# 💰 Insufficient Embers\n## CANNOT FUND THE PILGRIMAGE\n\n> You need **\`${pilgrimageCost.toLocaleString()} Embers\`** for the offering!\n> **Coin Purse:** \`${profile.embers.toLocaleString()}\``)
+                    new TextDisplayBuilder().setContent(`# 💰 Insufficient Embers\n## CANNOT FUND THE PILGRIMAGE\n\n> You need **\`${pilgrimageCost.toLocaleString()} Embers\`** for the offering!\n> **Ember Sachel:** \`${profile.embers.toLocaleString()}\``)
                 );
                 components.push(insufficientContainer);
                 return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
@@ -76,7 +76,7 @@ module.exports = {
             const avgLoyalty = profile.followers.reduce((sum, f) => sum + f.loyalty, 0) / profile.followers.length;
             profile.followerLoyalty = Math.floor(avgLoyalty);
 
-            profile.deeds.push({
+            profile.transactions.push({
                 type: 'expense',
                 amount: pilgrimageCost,
                 description: 'An offering for a sacred pilgrimage.',

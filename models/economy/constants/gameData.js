@@ -6,7 +6,10 @@ const MOUNTS = {
         capacity: 10,
         stamina: 100,
         wildernessDepth: 3,
-        durability: 100
+        durability: 100,
+        prowess: 40,
+        ferocity: 35,
+        cunning: 30
     },
     'shadow_panther': {
         name: 'Shadow Panther',
@@ -15,7 +18,10 @@ const MOUNTS = {
         capacity: 15,
         stamina: 120,
         wildernessDepth: 5,
-        durability: 100
+        durability: 100,
+        prowess: 55,
+        ferocity: 60,
+        cunning: 45
     },
     'gryphon': {
         name: 'Gryphon',
@@ -24,7 +30,10 @@ const MOUNTS = {
         capacity: 20,
         stamina: 150,
         wildernessDepth: 7,
-        durability: 100
+        durability: 100,
+        prowess: 70,
+        ferocity: 65,
+        cunning: 60
     },
     'drake': {
         name: 'Drake',
@@ -33,7 +42,10 @@ const MOUNTS = {
         capacity: 30,
         stamina: 200,
         wildernessDepth: 9,
-        durability: 100
+        durability: 100,
+        prowess: 80,
+        ferocity: 75,
+        cunning: 70
     },
     'wyvern': {
         name: 'Wyvern',
@@ -42,7 +54,10 @@ const MOUNTS = {
         capacity: 50,
         stamina: 250,
         wildernessDepth: 10,
-        durability: 100
+        durability: 100,
+        prowess: 85,
+        ferocity: 90,
+        cunning: 75
     }
 };
 
@@ -90,50 +105,71 @@ const WEAPONS = {
 };
 
 const STRONGHOLDS = {
-    'studio_apartment': {
-        name: 'Studio Apartment',
+    'outpost': {
+        name: 'Frontier Outpost',
+        type: 'outpost',
         price: 50000,
-        monthlyCost: 950,
-        familyCapacity: 1,
-        vaultCapacity: 10000,
-        securityLevel: 1,
-        garageSize: 0
+        maxFollowers: 5,
+        wardingLevel: 2,
+        treasuryCapacity: 10000,
+        hasBestiary: false,
+        bestiaryCapacity: 0,
+        upkeep: 500
     },
-    'two_bedroom_apartment': {
-        name: '2BR Apartment',
+    'watchtower': {
+        name: 'Watchtower',
+        type: 'tower',
         price: 120000,
-        monthlyCost: 1750,
-        familyCapacity: 3,
-        vaultCapacity: 25000,
-        securityLevel: 2,
-        garageSize: 1
+        maxFollowers: 8,
+        wardingLevel: 4,
+        treasuryCapacity: 25000,
+        hasBestiary: false,
+        bestiaryCapacity: 0,
+        upkeep: 1200
     },
-    'family_house': {
-        name: 'Family House',
+    'fortress': {
+        name: 'Stone Fortress',
+        type: 'fortress',
         price: 300000,
-        monthlyCost: 2900,
-        familyCapacity: 5,
-        vaultCapacity: 75000,
-        securityLevel: 4,
-        garageSize: 2
+        maxFollowers: 15,
+        wardingLevel: 6,
+        treasuryCapacity: 75000,
+        hasBestiary: true,
+        bestiaryCapacity: 3,
+        upkeep: 3000
     },
-    'luxury_mansion': {
-        name: 'Luxury Mansion',
+    'citadel': {
+        name: 'Iron Citadel',
+        type: 'citadel',
         price: 800000,
-        monthlyCost: 5800,
-        familyCapacity: 8,
-        vaultCapacity: 200000,
-        securityLevel: 7,
-        garageSize: 5
+        maxFollowers: 25,
+        wardingLevel: 8,
+        treasuryCapacity: 200000,
+        hasBestiary: true,
+        bestiaryCapacity: 5,
+        upkeep: 8000
     },
-    'private_estate': {
-        name: 'Private Estate',
+    'castle': {
+        name: 'Royal Castle',
+        type: 'castle',
         price: 2000000,
-        monthlyCost: 11500,
-        familyCapacity: 12,
-        vaultCapacity: 500000,
-        securityLevel: 10,
-        garageSize: 10
+        maxFollowers: 40,
+        wardingLevel: 10,
+        treasuryCapacity: 500000,
+        hasBestiary: true,
+        bestiaryCapacity: 10,
+        upkeep: 20000
+    },
+    'palace': {
+        name: 'Arcane Palace',
+        type: 'palace',
+        price: 5000000,
+        maxFollowers: 60,
+        wardingLevel: 12,
+        treasuryCapacity: 1000000,
+        hasBestiary: true,
+        bestiaryCapacity: 20,
+        upkeep: 50000
     }
 };
 
@@ -206,11 +242,11 @@ const SHOP_ITEMS = {
             stackable: true
         }
     },
-    'family_vacation': {
-        name: 'Family Vacation Package',
+    'followers_vacation': {
+        name: 'Followers Vacation Package',
         price: 3000,
-        description: 'Increases all family member bonds by 15%',
-        category: 'family',
+        description: 'Increases all followers bonds by 15%',
+        category: 'followers',
         cooldown: 0
     },
     'car_insurance': {
@@ -278,15 +314,184 @@ const SHOP_ITEMS = {
 };
 
 const FAMILIARS = {
+    // WISP COMPANIONS
     'shadow_wisp': {
         name: 'Shadow Wisp',
+        species: 'Shadow Wisp',
         type: 'wisp',
         tier: 1,
+        wardingLevel: 15,
         maxHealth: 50,
         skill: 20,
         specialAbility: 'scouting',
         price: 1000,
         description: 'A mysterious wisp that can scout ahead.'
+    },
+    'flame_wisp': {
+        name: 'Flame Wisp',
+        species: 'Flame Wisp',
+        type: 'wisp',
+        tier: 1,
+        wardingLevel: 18,
+        maxHealth: 45,
+        skill: 25,
+        specialAbility: 'fire_warding',
+        price: 1200,
+        description: 'A fiery wisp that wards against flame-based threats.'
+    },
+    'frost_wisp': {
+        name: 'Frost Wisp',
+        species: 'Frost Wisp',
+        type: 'wisp',
+        tier: 1,
+        wardingLevel: 16,
+        maxHealth: 48,
+        skill: 22,
+        specialAbility: 'ice_warding',
+        price: 1100,
+        description: 'An icy wisp that protects against cold intrusions.'
+    },
+
+    // ARCANE COMPANIONS
+    'arcane_sprite': {
+        name: 'Arcane Sprite',
+        species: 'Arcane Sprite',
+        type: 'arcane',
+        tier: 2,
+        wardingLevel: 25,
+        maxHealth: 60,
+        skill: 35,
+        specialAbility: 'magic_detection',
+        price: 2500,
+        description: 'A magical sprite that detects arcane intrusions.'
+    },
+    'rune_imp': {
+        name: 'Rune Imp',
+        species: 'Rune Imp',
+        type: 'arcane',
+        tier: 2,
+        wardingLevel: 28,
+        maxHealth: 55,
+        skill: 40,
+        specialAbility: 'rune_enhancement',
+        price: 2800,
+        description: 'An imp that enhances protective runes.'
+    },
+
+    // ELEMENTAL COMPANIONS
+    'earth_elemental': {
+        name: 'Earth Elemental',
+        species: 'Earth Elemental',
+        type: 'elemental',
+        tier: 3,
+        wardingLevel: 35,
+        maxHealth: 80,
+        skill: 45,
+        specialAbility: 'earth_barrier',
+        price: 5000,
+        description: 'A sturdy elemental that creates earth barriers.'
+    },
+    'water_spirit': {
+        name: 'Water Spirit',
+        species: 'Water Spirit',
+        type: 'elemental',
+        tier: 3,
+        wardingLevel: 32,
+        maxHealth: 70,
+        skill: 42,
+        specialAbility: 'healing_aura',
+        price: 4800,
+        description: 'A gentle spirit that provides healing wards.'
+    },
+    'wind_sylph': {
+        name: 'Wind Sylph',
+        species: 'Wind Sylph',
+        type: 'elemental',
+        tier: 3,
+        wardingLevel: 30,
+        maxHealth: 65,
+        skill: 38,
+        specialAbility: 'speed_boost',
+        price: 4500,
+        description: 'A swift sylph that enhances movement wards.'
+    },
+
+    // FEY COMPANIONS
+    'forest_pixie': {
+        name: 'Forest Pixie',
+        species: 'Forest Pixie',
+        type: 'fey',
+        tier: 2,
+        wardingLevel: 22,
+        maxHealth: 55,
+        skill: 30,
+        specialAbility: 'nature_warding',
+        price: 2000,
+        description: 'A pixie that wards against natural threats.'
+    },
+    'mystic_faerie': {
+        name: 'Mystic Faerie',
+        species: 'Mystic Faerie',
+        type: 'fey',
+        tier: 3,
+        wardingLevel: 38,
+        maxHealth: 75,
+        skill: 50,
+        specialAbility: 'illusion_warding',
+        price: 6000,
+        description: 'A powerful faerie that creates illusionary wards.'
+    },
+
+    // SHADOW COMPANIONS
+    'void_stalker': {
+        name: 'Void Stalker',
+        species: 'Void Stalker',
+        type: 'shadow',
+        tier: 4,
+        wardingLevel: 50,
+        maxHealth: 90,
+        skill: 60,
+        specialAbility: 'void_detection',
+        price: 10000,
+        description: 'A terrifying stalker that detects void intrusions.'
+    },
+    'nightmare_hound': {
+        name: 'Nightmare Hound',
+        species: 'Nightmare Hound',
+        type: 'shadow',
+        tier: 4,
+        wardingLevel: 48,
+        maxHealth: 85,
+        skill: 55,
+        specialAbility: 'fear_warding',
+        price: 9500,
+        description: 'A hound that wards against fear-based attacks.'
+    },
+
+    // CELESTIAL COMPANIONS
+    'star_seraph': {
+        name: 'Star Seraph',
+        species: 'Star Seraph',
+        type: 'celestial',
+        tier: 5,
+        wardingLevel: 65,
+        maxHealth: 100,
+        skill: 70,
+        specialAbility: 'divine_protection',
+        price: 25000,
+        description: 'A celestial being that provides divine protection.'
+    },
+    'moon_guardian': {
+        name: 'Moon Guardian',
+        species: 'Moon Guardian',
+        type: 'celestial',
+        tier: 5,
+        wardingLevel: 62,
+        maxHealth: 95,
+        skill: 68,
+        specialAbility: 'lunar_warding',
+        price: 23000,
+        description: 'A guardian that wields lunar protective magic.'
     }
 };
 

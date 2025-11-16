@@ -15,7 +15,7 @@ module.exports = {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            const totalWealth = profile.embers + profile.royal_treasury + profile.family_strongbox;
+            const totalWealth = profile.embers + profile.royal_treasury + profile.followers_strongbox;
             const wardingLevel = EconomyManager.calculateWardingLevel(profile);
             const treasuryCapacity = EconomyManager.getTreasuryCapacity(profile);
             const royalTreasuryLimit = EconomyManager.getRoyalTreasuryLimit(profile);
@@ -28,7 +28,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 📜 ${message.author.username}\'s Chronicle of Wealth\\n## A TALLY OF YOUR WORLDLY POSSESSIONS\\n\\n> Your current standing in the realm and accounting of your riches.`)
+                    .setContent(`# 📜 ${message.author.username}\'s Chronicle of Wealth\n## A TALLY OF YOUR WORLDLY POSSESSIONS\n\n> Your current standing in the realm and accounting of your riches.`)
             );
 
             components.push(headerContainer);
@@ -46,12 +46,12 @@ module.exports = {
 
             hoardContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Coin Purse:** \\`${profile.embers.toLocaleString()} Embers\\\`\\n**👑 Royal Treasury:** \\`${profile.royal_treasury.toLocaleString()} Embers\\\`\\n**📈 Treasury Limit:** \\`${royalTreasuryLimit.toLocaleString()} Embers\\``)
+                    .setContent(`**💰 Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\`\n**👑 Royal Treasury:** \`${profile.royal_treasury.toLocaleString()} Embers\`\n**📈 Treasury Limit:** \`${royalTreasuryLimit.toLocaleString()} Embers\``)
             );
 
             hoardContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏰 Family Strongbox:** \\`${profile.family_strongbox.toLocaleString()} Embers\\\`\\n**📦 Treasury Capacity:** \\`${treasuryCapacity.toLocaleString()} Embers\\\`\\n**🛡️ Warding Level:** \\`${wardingLevel}%\\``)
+                    .setContent(`**🏰 Followers Strongbox:** \`${profile.followers_strongbox.toLocaleString()} Embers\`\n**📦 Treasury Capacity:** \`${treasuryCapacity.toLocaleString()} Embers\`\n**🛡️ Warding Level:** \`${wardingLevel}%\``)
             );
 
             components.push(hoardContainer);
@@ -69,12 +69,12 @@ module.exports = {
 
             realmStandingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Total Net Worth:** \\`${totalWealth.toLocaleString()} Embers\\\`\\n**🌟 Character Level:** \\`${profile.level}\\\`\\n**✨ Arcane Power:** \\`${profile.experience.toLocaleString()} XP\\``)
+                    .setContent(`**💎 Total Net Worth:** \`${totalWealth.toLocaleString()} Embers\`\n**🌟 Character Level:** \`${profile.level}\`\n**✨ Arcane Power:** \`${profile.experience.toLocaleString()} XP\``)
             );
 
             realmStandingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👨‍👩‍👧‍👦 Family Loyalty:** \\`${profile.familyBond}%\\\`\\n**🏆 Renown:** \\`${profile.reputation}\\``)
+                    .setContent(`**👥 Followers Loyalty:** \`${profile.followersBond}%\`\n**🏆 Renown:** \`${profile.reputation}\``)
             );
 
             components.push(realmStandingContainer);
@@ -94,8 +94,8 @@ module.exports = {
                 let effectsText = profile.activeEffects.map(effect => {
                     const timeLeft = Math.ceil((effect.expiryTime - new Date()) / (60 * 60 * 1000));
                     const stackText = effect.stacks > 1 ? ` (x${effect.stacks})` : '';
-                    return `**\\\`${effect.name}\\\`**${stackText} • ${effect.description || 'An active enchantment'}\\n\\n> **Duration:** \\`${timeLeft}h remaining\\``;
-                }).join('\\n\\n');
+                    return `**\`${effect.name}\`**${stackText} • ${effect.description || 'An active enchantment'}\n\n> **Duration:** \`${timeLeft}h remaining\``;
+                }).join('\n\n');
 
                 effectsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
@@ -112,7 +112,7 @@ module.exports = {
 
             footerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📅 **SCRIBE'S NOTES**\\n\\n**Last Scribed:** \\`${new Date().toLocaleString()}\\`\\n**Chronicle Began:** \\`${new Date(profile.createdAt).toLocaleDateString()}\\``)
+                    .setContent(`## 📅 **SCRIBE'S NOTES**\n\n**Last Scribed:** \`${new Date().toLocaleString()}\`\n**Chronicle Began:** \`${new Date(profile.createdAt).toLocaleDateString()}\``)
             );
 
             components.push(footerContainer);
@@ -132,7 +132,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **SCROLLING ERROR**\\n\\nUnable to read your chronicle of wealth. Please try again in a moment.')
+                    .setContent('## ❌ **SCROLLING ERROR**\n\nUnable to read your chronicle of wealth. Please try again in a moment.')
             );
 
             return message.reply({

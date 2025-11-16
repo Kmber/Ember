@@ -32,11 +32,11 @@ module.exports = {
                 const provisionType = args[2].toLowerCase();
                 const quantity = parseInt(args[3]) || 1;
 
-                if (isNaN(mountIndex) || mountIndex < 0 || mountIndex >= profile.huntingMounts.length) {
+                if (isNaN(mountIndex) || mountIndex < 0 || mountIndex >= profile.conveyances.length) {
                     return this.sendError(message, 'Invalid mount number! Use `!hunter` to see your mounts.');
                 }
 
-                const mount = profile.huntingMounts[mountIndex];
+                const mount = profile.conveyances[mountIndex];
                 
                 try {
                     const result = await HuntingManager.resupplyMount(profile, mount.mountId, provisionType, quantity);
@@ -70,11 +70,11 @@ module.exports = {
                 const enchantmentType = args[2].toLowerCase();
                 const quantity = parseInt(args[3]) || 1;
 
-                if (isNaN(weaponIndex) || weaponIndex < 0 || weaponIndex >= profile.huntingWeapons.length) {
+                if (isNaN(weaponIndex) || weaponIndex < 0 || weaponIndex >= profile.weapons.length) {
                     return this.sendError(message, 'Invalid weapon number! Use `!hunter` to see your arsenal.');
                 }
 
-                const weapon = profile.huntingWeapons[weaponIndex];
+                const weapon = profile.weapons[weaponIndex];
                 
                 try {
                     const result = await HuntingManager.enchantWeapon(profile, weapon.weaponId, enchantmentType, quantity);
@@ -147,7 +147,104 @@ module.exports = {
                 if (profile.embers < price) {
                     return this.sendInsufficientFunds(message, item.name, price, profile.embers);
                 }
-                // Logic for purchasing items and consumables will go here...
+
+                // Logic for purchasing items and consumables
+                try {
+                    if (category === 'mount') {
+                        if (profile.conveyances.length >= 3) {
+                            return this.sendError(message, 'You can only have up to 3 mounts! Sell one first.');
+                        }
+                        const mountId = `${itemId}_${Date.now()}`;
+                        profile.conveyances.push({
+                            ...item,
+                            mountId: mountId,
+                            currentDurability: item.maxDurability,
+                            currentFuel: item.fuelCapacity,
+                            staminaCapacity: item.fuelCapacity,
+                            wildernessDepth: item.dungeonDepth
+                        });
+                        if (!profile.activeConveyance) {
+                            profile.activeConveyance = mountId;
+                        }
+                    } else if (category === 'weapon') {
+                        if (profile.weapons.length >= 5) {
+                            return this.sendError(message, 'You can only have up to 5 weapons! Sell one first.');
+                        }
+                        const weaponId = `${itemId}_${Date.now()}`;
+                        profile.weapons.push({
+                            ...item,
+                            weaponId: weaponId,
+                            currentDurability: item.maxDurability,
+                            currentAmmo: item.ammoCapacity,
+                            level: 1,
+                            powerCapacity: 100
+                        });
+                        if (!profile.activeWeapon) {
+                            profile.activeWeapon = weaponId;
+                        }
+                    } else if (category === 'familiar') {
+                        if (profile.familiars.length >= 4) {
+                            return this.sendError(message, 'You can only have up to 4 familiars! Sell one first.');
+                        }
+                        profile.familiars.push({
+                            ...item,
+                            familiarId: `${itemId}_${Date.now()}`,
+                            currentHealth: item.maxHealth,
+                            damageBonus: item.skill / 10
+                        });
+                    } else if (category === 'lair') {
+                        if (profile.lairs && profile.lairs.length >= 1) {
+                            return this.sendError(message, 'You can only have 1 lair! Sell it first.');
+                        }
+                        profile.lairs = [{
+                            ...item,
+                            lairId: `${itemId}_${Date.now()}`,
+                            currentCapacity: item.capacity
+                        }];
+                    } else if (category === 'provision') {
+                        // Add provisions to inventory or use immediately
+                        if (!profile.provisions) profile.provisions = {};
+                        profile.provisions[itemId] = (profile.provisions[itemId] || 0) + quantity;
+                    } else if (category === 'enchantment') {
+                        // Add enchantments to inventory
+                        if (!profile.enchantments) profile.enchantments = {};
+                        profile.enchantments[itemId] = (profile.enchantments[itemId] || 0) + quantity;
+                    } else if (category === 'supply') {
+                        // Add supplies to inventory
+                        if (!profile.supplies) profile.supplies = {};
+                        profile.supplies[itemId] = (profile.supplies[itemId] || 0) + quantity;
+                    }
+
+                    profile.embers -= price;
+                    profile.transactions.push({
+                        type: 'expense',
+                        amount: price,
+                        description: `Purchased ${quantity}x ${item.name}`,
+                        category: 'hunting'
+                    });
+
+                    await profile.save();
+
+                    const components = [];
+                    const successContainer = new ContainerBuilder()
+                        .setAccentColor(0x4CAF50);
+
+                    successContainer.addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(`# 🛒 Purchase Successful!\n## ${item.name.toUpperCase()}\n\n> Successfully purchased ${quantity}x ${item.name}!`)
+                    );
+
+                    successContainer.addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(`**💰 Cost:** ${price.toLocaleString()} Embers\n**🪙 Remaining Embers:** ${profile.embers.toLocaleString()}`)
+                    );
+
+                    components.push(successContainer);
+                    return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
+
+                } catch (error) {
+                    return this.sendError(message, `Failed to purchase item: ${error.message}`);
+                }
             }
 
             // Main shop overview
@@ -196,7 +293,7 @@ module.exports = {
 
                 playerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **YOUR COIN PURSE**\n\n**Current Embers:** ${profile.embers.toLocaleString()}\n**💡 How to Buy:** \`!huntershop buy <item_id> [quantity]\``)
+                        .setContent(`## 💰 **YOUR Ember Sachel**\n\n**Current Embers:** ${profile.embers.toLocaleString()}\n**💡 How to Buy:** \`!huntershop buy <item_id> [quantity]\``)
                 );
 
                 components.push(playerContainer);
@@ -217,7 +314,91 @@ module.exports = {
     },
 
     displayCategory(components, category, profile) {
-        // This function will be filled with logic to display items in a category
+        const headerContainer = new ContainerBuilder()
+            .setAccentColor(0xFF9800);
+
+        let categoryTitle = '';
+        let categoryEmoji = '';
+        let items = {};
+
+        switch (category) {
+            case 'mounts':
+                categoryTitle = 'MOUNTS & BEASTS';
+                categoryEmoji = '🐎';
+                items = HUNTING_MOUNTS;
+                break;
+            case 'weapons':
+                categoryTitle = 'WEAPONS & ARMS';
+                categoryEmoji = '🗡️';
+                items = HUNTING_WEAPONS;
+                break;
+            case 'familiars':
+                categoryTitle = 'FAMILIARS & CREATURES';
+                categoryEmoji = '🐾';
+                items = HUNTING_FAMILIARS;
+                break;
+            case 'lairs':
+                categoryTitle = 'LAIRS & HIDEOUTS';
+                categoryEmoji = '🏰';
+                items = HUNTING_LAIRS;
+                break;
+            case 'provisions':
+                categoryTitle = 'PROVISIONS';
+                categoryEmoji = '🥕';
+                items = PROVISION_TYPES;
+                break;
+            case 'enchantments':
+                categoryTitle = 'ENCHANTMENTS';
+                categoryEmoji = '✨';
+                items = ENCHANTMENT_TYPES;
+                break;
+            case 'supplies':
+                categoryTitle = 'SUPPLIES';
+                categoryEmoji = '🛠️';
+                items = SUPPLY_TYPES;
+                break;
+            default:
+                return;
+        }
+
+        headerContainer.addTextDisplayComponents(
+            new TextDisplayBuilder()
+                .setContent(`# ${categoryEmoji} ${categoryTitle}\n## AVAILABLE ITEMS\n\n> Browse and purchase items for your hunting adventures.`)
+        );
+
+        components.push(headerContainer);
+        components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+
+        const itemsContainer = new ContainerBuilder()
+            .setAccentColor(0xFFC107);
+
+        itemsContainer.addTextDisplayComponents(
+            new TextDisplayBuilder()
+                .setContent(`## 📦 **AVAILABLE ITEMS**`)
+        );
+
+        let itemList = '';
+        for (const [itemId, itemData] of Object.entries(items)) {
+            const price = itemData.price ? `${itemData.price.toLocaleString()} Embers` : 'Varies';
+            itemList += `**${itemData.name}** (\`${itemId}\`) - ${price}\n> ${itemData.description}\n\n`;
+        }
+
+        itemsContainer.addTextDisplayComponents(
+            new TextDisplayBuilder()
+                .setContent(itemList)
+        );
+
+        components.push(itemsContainer);
+
+        const helpContainer = new ContainerBuilder()
+            .setAccentColor(0x3498DB);
+
+        helpContainer.addTextDisplayComponents(
+            new TextDisplayBuilder()
+                .setContent(`## 💡 **HOW TO PURCHASE**\n\n**Command:** \`!huntershop buy <item_id> [quantity]\`\n**Example:** \`!huntershop buy elven_longbow\`\n\n**Your Embers:** ${profile.embers.toLocaleString()}`)
+        );
+
+        components.push(helpContainer);
     },
 
     sendError(message, errorText) {

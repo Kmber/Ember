@@ -15,7 +15,7 @@ module.exports = {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            if (profile.followers.length === 0) {
+            if (!profile.followers || profile.followers.length === 0) {
                 const components = [];
 
                 const noFollowerContainer = new ContainerBuilder()

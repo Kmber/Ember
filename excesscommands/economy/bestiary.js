@@ -14,8 +14,8 @@ module.exports = {
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-            
-            if (profile.beasts.length === 0) {
+
+            if (!profile.beasts || profile.beasts.length === 0) {
                 const components = [];
 
                 const noBeastContainer = new ContainerBuilder()

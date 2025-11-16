@@ -5,7 +5,7 @@ const {
     SeparatorSpacingSize,
     MessageFlags
 } = require('discord.js');
-const { EconomyManager, Heist } = require('../../models/economy/economy');
+const { EconomyManager, Raid } = require('../../models/economy/economy');
 const { RAID_TARGETS } = require('../../models/economy/constants/businessData');
 
 module.exports = {
@@ -55,7 +55,7 @@ module.exports = {
                 return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
             
-            const raid = await Heist.findOne({ heistId: raidId, guildId: message.guild.id });
+            const raid = await Raid.findOne({ raidId: raidId, guildId: message.guild.id });
             if (!raid) {
                 const components = [];
                 const notFoundContainer = new ContainerBuilder()
@@ -161,7 +161,8 @@ module.exports = {
             
             await raid.save();
             
-            profile.activeHeists.push(raidId);
+            profile.activeRaids = profile.activeRaids || [];
+            profile.activeRaids.push(raidId);
             await profile.save();
             
             const components = [];

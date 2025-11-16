@@ -114,7 +114,7 @@ module.exports = {
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**✨ Arcane Power Gained:** \`+5 XP\`\n**💳 New Coin Purse Balance:** \`${profile.embers.toLocaleString()} Embers\`\n**📊 Ledger Updated:** Daily blessing recorded`)
+                    .setContent(`**✨ Arcane Power Gained:** \`+5 XP\`\n**💳 New Ember Sachel Balance:** \`${profile.embers.toLocaleString()} Embers\`\n**📊 Ledger Updated:** Daily blessing recorded`)
             );
 
             components.push(breakdownContainer);

@@ -138,7 +138,7 @@ module.exports = {
                 });
             }
 
-            if (profile.wallet < familiarData.price) {
+            if (profile.embers < familiarData.price) {
                 const components = [];
 
                 const insufficientContainer = new ContainerBuilder()
@@ -158,7 +158,7 @@ module.exports = {
 
                 priceBreakdownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **ATTUNEMENT COSTS**\n\n**Familiar:** \`${familiarData.name} (${familiarData.species})\`\n**Attunement Cost:** \`${familiarData.price.toLocaleString()} Embers\`\n**Your Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Shortage:** \`${(familiarData.price - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Earning Tips:** Complete quests, dailies, or manage your dominion to save for your new companion!`)
+                        .setContent(`## 💰 **ATTUNEMENT COSTS**\n\n**Familiar:** \`${familiarData.name} (${familiarData.species})\`\n**Attunement Cost:** \`${familiarData.price.toLocaleString()} Embers\`\n**Your Embers:** \`${profile.embers.toLocaleString()} Embers\`\n**Shortage:** \`${(familiarData.price - profile.embers).toLocaleString()} Embers\`\n\n**💡 Earning Tips:** Complete quests, dailies, or manage your dominion to save for your new companion!`)
                 );
 
                 components.push(priceBreakdownContainer);
@@ -169,7 +169,7 @@ module.exports = {
                 });
             }
 
-            profile.wallet -= familiarData.price;
+            profile.embers -= familiarData.price;
             profile.familiars.push({
                 familiarId: `${familiarId}_${Date.now()}`,
                 name: familiarName,
@@ -178,6 +178,7 @@ module.exports = {
                 wardingLevel: familiarData.wardingLevel,
                 bond: 50,
                 health: 100,
+                maxHealth: familiarData.maxHealth,
                 mana: 50,
                 essence: 50,
                 attunementPrice: familiarData.price,
@@ -267,7 +268,7 @@ module.exports = {
 
             financialContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💰 **ATTUNEMENT SUMMARY**\n\n**Attunement Cost:** \`${familiarData.price.toLocaleString()} Embers\`\n**Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Total Familiars:** \`${profile.familiars.length}/${profile.maxFamiliars}\`\n**Transaction Logged:** Attunement recorded in your transaction history\n\n> Your investment in companionship and power is complete!`)
+                    .setContent(`## 💰 **ATTUNEMENT SUMMARY**\n\n**Attunement Cost:** \`${familiarData.price.toLocaleString()} Embers\`\n**Remaining Embers:** \`${profile.embers.toLocaleString()} Embers\`\n**Total Familiars:** \`${profile.familiars.length}/${profile.maxFamiliars}\`\n**Transaction Logged:** Attunement recorded in your transaction history\n\n> Your investment in companionship and power is complete!`)
             );
 
             components.push(financialContainer);

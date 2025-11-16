@@ -83,11 +83,11 @@ module.exports = {
             }
 
             const updatedProfile = await EconomyManager.updateEmbers(userId, guildId, earnings);
-            profile.cooldowns.beg = now;
-            
+            updatedProfile.cooldowns.beg = now;
+
             if (earnings > 0) {
-                profile.experience += 5; 
-                profile.transactions.push({
+                updatedProfile.experience += 5;
+                updatedProfile.transactions.push({
                     type: 'income',
                     amount: earnings,
                     description: 'Alms from pleading',
@@ -95,7 +95,7 @@ module.exports = {
                 });
             }
 
-            await profile.save();
+            await updatedProfile.save();
 
             const components = [];
 
@@ -121,14 +121,14 @@ module.exports = {
 
                 resultsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🔥 Embers Gained:** \`${earnings.toLocaleString()} Embers\`\n**💰 Coin Purse:** \`${updatedProfile.embers.toLocaleString()} Embers\`\n**✨ Arcane Power Gained:** \`+5 XP\`\n**📈 Current Level:** \`${profile.level}\``)
+                        .setContent(`**🔥 Embers Gained:** \`${earnings.toLocaleString()} Embers\`\n**💰 Ember Sachel:** \`${updatedProfile.embers.toLocaleString()} Embers\`\n**✨ Arcane Power Gained:** \`+5 XP\`\n**📈 Current Level:** \`${updatedProfile.level}\``)
                 );
 
-                const levelBonus = Math.floor(profile.level * 2);
+                const levelBonus = Math.floor(updatedProfile.level * 2);
                 if (levelBonus > 0) {
                     resultsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🌟 Level Bonus:** \`+${levelBonus} Embers\` (Level ${profile.level} bonus)\n**🪙 Base Alms:** \`${earnings - levelBonus} Embers\``)
+                            .setContent(`**🌟 Level Bonus:** \`+${levelBonus} Embers\` (Level ${updatedProfile.level} bonus)\n**🪙 Base Alms:** \`${earnings - levelBonus} Embers\``)
                     );
                 }
 
@@ -144,7 +144,7 @@ module.exports = {
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🔥 Embers Gained:** \`0 Embers\`\n**💰 Coin Purse:** \`${profile.embers.toLocaleString()} Embers\`\n**💡 A Pauper\'s Wisdom:** \`Patience may yet be rewarded. Try again in 10 minutes.\`\n**🎲 Fate may smile upon you next time.**`)
+                        .setContent(`**🔥 Embers Gained:** \`0 Embers\`\n**💰 Ember Sachel:** \`${profile.embers.toLocaleString()} Embers\`\n**💡 A Pauper\'s Wisdom:** \`Patience may yet be rewarded. Try again in 10 minutes.\`\n**🎲 Fate may smile upon you next time.**`)
                 );
 
                 components.push(failureContainer);

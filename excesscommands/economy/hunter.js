@@ -36,21 +36,21 @@ module.exports = {
                     .setContent(`## 📊 **HUNTING STATISTICS**`)
             );
 
-            const hunterLevel = Math.floor(profile.huntingProfile.hunterExperience / 1000);
+            const hunterLevel = Math.floor((profile.huntingProfile?.hunterExperience || 0) / 1000);
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🎯 Hunter Level:** ${hunterLevel}\n**⭐ Experience:** ${profile.huntingProfile.hunterExperience.toLocaleString()} XP\n**🩸 Health:** ${profile.huntingProfile.currentHealth}/100`)
+                    .setContent(`**🎯 Hunter Level:** ${hunterLevel}\n**⭐ Experience:** ${(profile.huntingProfile?.hunterExperience || 0).toLocaleString()} XP\n**🩸 Health:** ${(profile.currentHealth || 100)}/100`)
             );
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**⚔️ Hunts:** ${profile.huntingStats.totalHunts} | **✅ Successful:** ${profile.huntingStats.successfulHunts} | **❌ Failed:** ${profile.huntingStats.failedHunts}`)
+                    .setContent(`**⚔️ Hunts:** ${(profile.huntingStats?.totalHunts || 0)} | **✅ Successful:** ${(profile.huntingStats?.successfulHunts || 0)} | **❌ Failed:** ${(profile.huntingStats?.failedHunts || 0)}`)
             );
-            
+
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💥 Damage Dealt:** ${profile.huntingStats.totalDamageDealt.toLocaleString()}\n**🩸 Damage Taken:** ${profile.huntingStats.totalDamageTaken.toLocaleString()}\n**🐾 Beasts Slain:** ${profile.huntingStats.beastsSlain}`)
+                    .setContent(`**💥 Damage Dealt:** ${(profile.huntingStats?.totalDamageDealt || 0).toLocaleString()}\n**🩸 Damage Taken:** ${(profile.huntingStats?.totalDamageTaken || 0).toLocaleString()}\n**🐾 Beasts Slain:** ${(profile.huntingStats?.monstersSlain || 0)}`)
             );
 
             components.push(statsContainer);
@@ -62,14 +62,14 @@ module.exports = {
 
             weaponsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🗡️ **WEAPON ARSENAL** (${profile.huntingWeapons.length}/5)`)
+                    .setContent(`## 🗡️ **WEAPON ARSENAL** (${profile.weapons.length}/5)`)
             );
 
-            if (profile.huntingWeapons.length > 0) {
-                profile.huntingWeapons.forEach((weapon, index) => {
-                    const weaponText = `**${index + 1}. ${weapon.name}** (Lvl ${weapon.level})\n` +
+            if (profile.weapons.length > 0) {
+                profile.weapons.forEach((weapon, index) => {
+                    const weaponText = `**${index + 1}. ${weapon.name}** (Lvl ${weapon.upgradeLevel || 0})\n` +
                         `> **💥 Damage:** ${weapon.damage} | **🎯 Accuracy:** ${weapon.accuracy}% | **🔥 Crit:** ${weapon.criticalChance}%\n` +
-                        `> **💰 Value:** ${weapon.currentValue.toLocaleString()} Embers`;
+                        `> **💰 Value:** ${(weapon.price || 0).toLocaleString()} Embers`;
                     weaponsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(weaponText));
                 });
             } else {
@@ -85,14 +85,14 @@ module.exports = {
 
             mountsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🐎 **MOUNTS & BEASTS** (${profile.huntingMounts.length}/3)`)
+                    .setContent(`## 🐎 **MOUNTS** (${profile.conveyances.length}/3)`)
             );
 
-            if (profile.huntingMounts.length > 0) {
-                profile.huntingMounts.forEach((mount, index) => {
+            if (profile.conveyances.length > 0) {
+                profile.conveyances.forEach((mount, index) => {
                     const mountText = `**${index + 1}. ${mount.name}** (Tier ${mount.tier})\n` +
-                        `> **📦 Capacity:** ${mount.capacity} | **💨 Stamina:** ${mount.staminaCapacity} | **🌲 Wilderness:** ${mount.wildernessDepth}/10\n` +
-                        `> **💰 Value:** ${mount.currentValue.toLocaleString()} Embers`;
+                        `> **📦 Capacity:** ${mount.capacity} | **💨 Stamina:** ${mount.fuelCapacity} | **🌲 Wilderness:** ${mount.dungeonDepth}/10\n` +
+                        `> **💰 Value:** ${(mount.price || 0).toLocaleString()} Embers`;
                     mountsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(mountText));
                 });
             } else {
@@ -102,24 +102,50 @@ module.exports = {
             components.push(mountsContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
+            // Beasts
+            const beastsContainer = new ContainerBuilder()
+                .setAccentColor(0x8BC34A);
+
+            beastsContainer.addTextDisplayComponents(
+                new TextDisplayBuilder()
+                    .setContent(`## 🐾 **BEASTS** (${profile.beasts.length})`)
+            );
+
+            if (profile.beasts.length > 0) {
+                profile.beasts.slice(0, 3).forEach((beast, index) => {
+                    const beastText = `**${index + 1}. ${beast.name}**\n` +
+                        `> **⚡ Prowess:** ${beast.prowess} | **🚀 Ferocity:** ${beast.ferocity} | **🎯 Cunning:** ${beast.cunning}\n` +
+                        `> **❤️ Vitality:** ${beast.vitality}% | **🏆 Wins:** ${beast.arenaWins}`;
+                    beastsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(beastText));
+                });
+                if (profile.beasts.length > 3) {
+                    beastsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(`> ...and ${profile.beasts.length - 3} more beasts`));
+                }
+            } else {
+                beastsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('> You have no tamed beasts. Use `!tamebeast` to tame your first beast.'));
+            }
+
+            components.push(beastsContainer);
+            components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+
             // Familiars
             const familiarsContainer = new ContainerBuilder()
                 .setAccentColor(0x9C27B0);
 
             familiarsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🐾 **FAMILIARS** (${profile.huntingCompanions.length}/4)`)
+                    .setContent(`## 🐾 **FAMILIARS** (${profile.familiars.length}/4)`)
             );
 
-            if (profile.huntingCompanions.length > 0) {
-                profile.huntingCompanions.forEach((familiar, index) => {
+            if (profile.familiars.length > 0) {
+                profile.familiars.forEach((familiar, index) => {
                     const familiarText = `**${index + 1}. ${familiar.name}** (${familiar.species})\n` +
-                        `> **❤️ Health:** ${familiar.currentHealth}/${familiar.maxHealth} | **💥 Damage Bonus:** ${familiar.damageBonus}%\n` +
-                        `> **💰 Value:** ${familiar.currentValue.toLocaleString()} Embers`;
+                        `> **❤️ Health:** ${familiar.health}/${familiar.maxHealth} | **💥 Damage Bonus:** ${familiar.wardingLevel}%\n` +
+                        `> **💰 Value:** ${(familiar.attunementPrice || 0).toLocaleString()} Embers`;
                     familiarsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent(familiarText));
                 });
             } else {
-                familiarsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('> You have no familiars. Visit the `!bestiary` to bond with one.'));
+                familiarsContainer.addTextDisplayComponents(new TextDisplayBuilder().setContent('> You have no familiars. Use `!attunefamiliar` to summon your first familiar.'));
             }
             
             components.push(familiarsContainer);

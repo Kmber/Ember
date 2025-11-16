@@ -21,7 +21,7 @@ module.exports = {
                 const components = [];
                 const helpContainer = new ContainerBuilder().setAccentColor(0x3498DB);
                 helpContainer.addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent(`#  intercambio de Botín\n## CÓMO INTERCAMBIAR OBJETOS\n\n> \`!barter <item_id>\` - Intercambia un objeto\n> \`!barter all <type>\` - Intercambia todos los objetos de un tipo (e.g., \`relics\`, \`essences\`, \`hides\`)`)
+                    new TextDisplayBuilder().setContent(`# 💰 Spoils Exchange\n## HOW TO EXCHANGE ITEMS\n\n> \`!barter <item_id>\` - Exchange an item\n> \`!barter all <type>\` - Exchange all items of a type (e.g., \`relics\`, \`essences\`, \`hides\`)`)
                 );
                 components.push(helpContainer);
                 return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
