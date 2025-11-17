@@ -259,6 +259,7 @@ class SlayingManager {
             if (Math.random() * 100 < chestChance) {
                 const chest = this.generateChest();
                 results.loot.push(chest);
+                profile.slayingStats.chestsFound = (profile.slayingStats.chestsFound || 0) + 1;
             }
         } else {
             results.success = false;
@@ -431,7 +432,7 @@ class SlayingManager {
 
         if (totalCost > 0) {
             if (profile.wallet < totalCost) {
-                throw new Error(`Not enough money to heal allies! Need $${totalCost.toLocaleString()}`);
+                throw new Error(`Not enough money to heal allies! Need ${totalCost.toLocaleString()} Embers`);
             }
 
             profile.wallet -= totalCost;
@@ -461,7 +462,7 @@ class SlayingManager {
         const upgradeCost = Math.floor(weapon.purchasePrice * 0.3 * (weapon.upgradeLevel + 1));
         
         if (profile.wallet < upgradeCost) {
-            throw new Error(`Not enough money! Upgrade costs $${upgradeCost.toLocaleString()}`);
+            throw new Error(`Not enough money! Upgrade costs ${upgradeCost.toLocaleString()} Embers`);
         }
 
         // Store old stats
@@ -513,7 +514,7 @@ class SlayingManager {
         const upgradeCost = Math.floor(mount.purchasePrice * 0.4 * mount.tier);
         
         if (profile.wallet < upgradeCost) {
-            throw new Error(`Not enough money! Upgrade costs $${upgradeCost.toLocaleString()}`);
+            throw new Error(`Not enough money! Upgrade costs ${upgradeCost.toLocaleString()} Embers`);
         }
 
         const oldCapacity = mount.capacity;
@@ -560,7 +561,7 @@ class SlayingManager {
 
         const totalCost = potion.price * quantity;
         if (profile.wallet < totalCost) {
-            throw new Error(`Not enough money! Need $${totalCost.toLocaleString()}`);
+            throw new Error(`Not enough money! Need ${totalCost.toLocaleString()} Embers`);
         }
 
         const staminaToAdd = potion.staminaValue * quantity;
@@ -602,7 +603,7 @@ class SlayingManager {
 
         const totalCost = oil.price * quantity;
         if (profile.wallet < totalCost) {
-            throw new Error(`Not enough money! Need $${totalCost.toLocaleString()}`);
+            throw new Error(`Not enough money! Need ${totalCost.toLocaleString()} Embers`);
         }
 
         const manaToAdd = oil.manaValue * quantity;

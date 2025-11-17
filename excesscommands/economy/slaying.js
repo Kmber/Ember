@@ -70,7 +70,7 @@ module.exports = {
 
             historyContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💀 Monsters Slain:** ${profile.slayingStats.monstersSlain}\n**💰 Total Earnings:** $${profile.slayingStats.totalEarnings.toLocaleString()}\n**📦 Chests Found:** ${profile.slayingStats.chestsFound}`)
+                    .setContent(`**💀 Monsters Slain:** ${profile.slayingStats.monstersSlain}\n**💰 Total Earnings:** ${profile.slayingStats.totalEarnings.toLocaleString()} Embers\n**📦 Chests Found:** ${profile.slayingStats.chestsFound}`)
             );
 
             components.push(historyContainer);
@@ -126,7 +126,7 @@ module.exports = {
                 
                 storageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 Inventory Value:** $${totalInventoryValue.toLocaleString()}\n**💡 Command:** \`!inventory\` to view items\n**💡 Command:** \`!sell\` to sell items`)
+                        .setContent(`**💎 Inventory Value:** ${totalInventoryValue.toLocaleString()} Embers\n**💡 Command:** \`!inventory\` to view items\n**💡 Command:** \`!sell\` to sell items`)
                 );
 
                 components.push(storageContainer);

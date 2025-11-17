@@ -52,7 +52,7 @@ module.exports = {
 
                     successContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**✨ Oil Applied:** ${result.oilApplied} units\n**🗡️ New Enchantment Level:** ${result.newEnchantmentLevel}/${weapon.enchantmentCapacity}\n**💰 Cost:** $${result.cost.toLocaleString()}\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}`)
+                            .setContent(`**✨ Oil Applied:** ${result.oilApplied} units\n**🗡️ New Enchantment Level:** ${result.newEnchantmentLevel}/${weapon.enchantmentCapacity}\n**💰 Cost:** ${result.cost.toLocaleString()} Embers\n**💳 Remaining Balance:** ${profile.wallet.toLocaleString()} Embers`)
                     );
 
                     components.push(successContainer);
@@ -169,7 +169,7 @@ module.exports = {
 
                 successContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Total Cost:** $${price.toLocaleString()}\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}\n**📦 Added to Inventory:** Use \`!inventory\` to see your new item!`)
+                        .setContent(`**💰 Total Cost:** ${price.toLocaleString()} Embers\n**💳 Remaining Balance:** ${profile.wallet.toLocaleString()} Embers\n**📦 Added to Inventory:** Use \`!inventory\` to see your new item!`)
                 );
 
                 if (category === 'oil') {
@@ -228,7 +228,7 @@ module.exports = {
 
                 playerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **YOUR COIN**\n\n**Current Balance:** $${profile.wallet.toLocaleString()}\n**💡 How to Buy:** \`!slayershop buy <item_id> [quantity]\``)
+                        .setContent(`## 💰 **YOUR COIN**\n\n**Current Balance:** ${profile.wallet.toLocaleString()} Embers\n**💡 How to Buy:** \`!slayershop buy <item_id> [quantity]\``)
                 );
 
                 components.push(playerContainer);
@@ -330,7 +330,7 @@ module.exports = {
 
             let specs = '';
             if (category === 'potions') {
-                specs = `**✨ Effect:** ${item.effect}\n**⏳ Duration:** ${item.duration} quests\n**💰 Cost per Potion:** $${item.price}`;
+                specs = `**✨ Effect:** ${item.effect}\n**⏳ Duration:** ${item.duration} quests\n**💰 Cost per Potion:** ${item.price} Embers`;
             } else if (category === 'oils') {
                 const compatibleText = item.compatibleWeapons.join(', ');
                 specs = `**⚔️ Compatible:** ${compatibleText}\n**💥 Damage Bonus:** +${Math.floor((item.damage - 1) * 100)}%\n**🎯 Accuracy Bonus:** +${Math.floor((item.accuracy - 1) * 100)}%`;
@@ -347,7 +347,7 @@ module.exports = {
 
             itemContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Price:** $${item.price.toLocaleString()} ${canAfford ? '✅' : '❌'}\n**📖 Description:** ${item.description}\n**💡 Buy:** \`!slayershop buy ${itemId} [quantity]\``)
+                    .setContent(`**💰 Price:** ${item.price.toLocaleString()} Embers ${canAfford ? '✅' : '❌'}\n**📖 Description:** ${item.description}\n**💡 Buy:** \`!slayershop buy ${itemId} [quantity]\``)
             );
 
             components.push(itemContainer);
@@ -365,7 +365,7 @@ module.exports = {
 
             moreContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`*... and ${Object.keys(items).length - 4} more ${categoryName.toLowerCase()} available*\n\n**💰 Your Coin:** $${profile.wallet.toLocaleString()}`)
+                    .setContent(`*... and ${Object.keys(items).length - 4} more ${categoryName.toLowerCase()} available*\n\n**💰 Your Coin:** ${profile.wallet.toLocaleString()} Embers`)
             );
 
             components.push(moreContainer);
@@ -393,12 +393,12 @@ module.exports = {
 
         insufficientContainer.addTextDisplayComponents(
             new TextDisplayBuilder()
-                .setContent(`# 💸 Insufficient Coin\n## CANNOT PURCHASE\n\n> You need $${price.toLocaleString()} to acquire **${itemName}**!`)
+                .setContent(`# 💸 Insufficient Coin\n## CANNOT PURCHASE\n\n> You need ${price.toLocaleString()} Embers to acquire **${itemName}**!`)
         );
 
         insufficientContainer.addTextDisplayComponents(
             new TextDisplayBuilder()
-                .setContent(`**💰 Current Coin:** $${currentBalance.toLocaleString()}\n**💰 Required:** $${price.toLocaleString()}\n**💰 Shortage:** $${(price - currentBalance).toLocaleString()}`)
+                .setContent(`**💰 Current Coin:** ${currentBalance.toLocaleString()} Embers\n**💰 Required:** ${price.toLocaleString()} Embers\n**💰 Shortage:** ${(price - currentBalance).toLocaleString()} Embers`)
         );
 
         return message.reply({

@@ -115,7 +115,7 @@ module.exports = {
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📦 Total Items:** ${totalItems}\n**💰 Total Value:** $${totalValue.toLocaleString()}\n**⚖️ Storage:** ${storageUsed}/${storageCapacity} capacity`)
+                    .setContent(`**📦 Total Items:** ${totalItems}\n**💰 Total Value:** ${totalValue.toLocaleString()} Embers\n**⚖️ Storage:** ${storageUsed}/${storageCapacity} capacity`)
             );
 
             const rarityCount = {};
@@ -175,9 +175,9 @@ module.exports = {
                         const typeIcon = typeEmoji[item.type] || '📦';
                         
                         itemText += `${emoji} **${item.name}** ${typeIcon}\n`;
-                        itemText += `> **Value:** $${(item.currentValue * item.quantity).toLocaleString()}`;
+                        itemText += `> **Value:** ${(item.currentValue * item.quantity).toLocaleString()} Embers`;
                         if (item.quantity > 1) {
-                            itemText += ` (${item.quantity}x $${item.currentValue.toLocaleString()})`;
+                            itemText += ` (${item.quantity}x ${item.currentValue.toLocaleString()} Embers)`;
                         }
                         itemText += `\n> **ID:** \`${item.itemId.slice(-8)}\`\n`;
                         
@@ -218,7 +218,7 @@ module.exports = {
             );
 
             footerContainer.addTextDisplayComponents(
-                new TextDisplayDisplayBuilder()
+                new TextDisplayBuilder()
                     .setContent(`**Filters:** \`all\`, \`rare\`, \`common\`, \`chest\`, \`flesh\`, \`hide\`, \`trophies\`, \`essence\`, \`relics\`, \`artifacts\``)
             );
 

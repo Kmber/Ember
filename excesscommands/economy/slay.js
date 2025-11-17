@@ -57,7 +57,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **GET STARTED**\n\n**Command:** \`!slayershop\`\n**Buy:** Mounts, weapons, and allies\n**Starting Budget:** You have $${profile.wallet.toLocaleString()} available`)
+                        .setContent(`## 🛒 **GET STARTED**\n\n**Command:** \`!slayershop\`\n**Buy:** Mounts, weapons, and allies\n**Starting Budget:** You have ${profile.wallet.toLocaleString()} Embers available`)
                 );
 
                 components.push(helpContainer);
@@ -84,7 +84,7 @@ module.exports = {
                 
                 injuredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏥 Healing Cost:** $${healingCost.toLocaleString()}\n**💡 Command:** \`!heal self\``)
+                        .setContent(`**🏥 Healing Cost:** ${healingCost.toLocaleString()} Embers\n**💡 Command:** \`!heal self\``)
                 );
 
                 components.push(injuredContainer);
@@ -189,7 +189,7 @@ module.exports = {
                     );
 
                     const lootText = slayResult.loot.slice(0, 5).map(item => 
-                        `**${item.name}** (${item.rarity})\n> **Value:** $${item.currentValue.toLocaleString()} • **Type:** ${item.type}`
+                        `**${item.name}** (${item.rarity})\n> **Value:** ${item.currentValue.toLocaleString()} Embers • **Type:** ${item.type}`
                     ).join('\n\n');
 
                     lootContainer.addTextDisplayComponents(
@@ -235,7 +235,7 @@ module.exports = {
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏥 Healing Costs:** $${slayResult.costs.healing.toLocaleString()}\n**⭐ Experience:** +${slayResult.experience} XP (participation)\n**💡 Tip:** Upgrade your gear or bring more allies!`)
+                        .setContent(`**🏥 Healing Costs:** ${slayResult.costs.healing.toLocaleString()} Embers\n**⭐ Experience:** +${slayResult.experience} XP (participation)\n**💡 Tip:** Upgrade your gear or bring more allies!`)
                 );
 
                 components.push(failureContainer);
@@ -254,7 +254,7 @@ module.exports = {
                 );
 
                 const injuryText = slayResult.allyInjuries.map(injury =>
-                    `**${injury.name}** - Wounded!\n> **Healing Cost:** $${injury.healingCost.toLocaleString()}`
+                    `**${injury.name}** - Wounded!\n> **Healing Cost:** ${injury.healingCost.toLocaleString()} Embers`
                 ).join('\n\n');
 
                 injuryContainer.addTextDisplayComponents(
@@ -284,7 +284,7 @@ module.exports = {
 
                 const costBreakdown = Object.entries(slayResult.costs)
                     .filter(([key, value]) => value > 0)
-                    .map(([key, value]) => `**${key.replace('_', ' ').toUpperCase()}:** $${value.toLocaleString()}`)
+                    .map(([key, value]) => `**${key.replace('_', ' ').toUpperCase()}:** ${value.toLocaleString()} Embers`)
                     .join('\n');
 
                 costsContainer.addTextDisplayComponents(
@@ -294,7 +294,7 @@ module.exports = {
 
                 costsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Total Cost:** $${totalCosts.toLocaleString()}\n**💰 Remaining Balance:** $${profile.wallet.toLocaleString()}`)
+                        .setContent(`**💳 Total Cost:** ${totalCosts.toLocaleString()} Embers\n**💰 Remaining Balance:** ${profile.wallet.toLocaleString()} Embers`)
                 );
 
                 components.push(costsContainer);
