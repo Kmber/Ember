@@ -6,18 +6,18 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { HuntingManager } = require('../../models/economy/huntingManager');
+const { SlayingManager } = require('../../models/economy/slayingManager');
 
 module.exports = {
-    name: 'inventory',
-    aliases: ['inv', 'huntinv', 'loot'],
-    description: 'View your hunting inventory and loot',
-    usage: '!inventory [filter] [page]',
+    name: 'slayininventory',
+    aliases: ['sinv', 'slayinv', 'sloot'],
+    description: 'View your slaying inventory and loot',
+    usage: '!slayininventory [filter] [page]',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            if (profile.huntingInventory.length === 0) {
+            if (profile.slayingInventory.length === 0) {
                 const components = [];
 
                 const emptyContainer = new ContainerBuilder()
@@ -25,12 +25,12 @@ module.exports = {
 
                 emptyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 📦 Empty Inventory\n## NO HUNTING LOOT\n\n> Your hunting inventory is empty!\n> Go on expeditions to collect valuable loot.`)
+                        .setContent(`# 📦 Empty Inventory\n## NO SLAYING LOOT\n\n> Your slaying inventory is empty!\n> Go on expeditions to collect valuable loot.`)
                 );
 
                 emptyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 How to Get Loot:**\n\`!hunt\` - Go hunting\n\`!huntshop\` - Buy supplies`)
+                        .setContent(`**💡 How to Get Loot:**\n\`!slay\` - Go slaying\n\`!slayershop\` - Buy supplies`)
                 );
 
                 components.push(emptyContainer);
@@ -46,34 +46,31 @@ module.exports = {
             const itemsPerPage = 8;
 
             
-            let filteredItems = profile.huntingInventory;
+            let filteredItems = profile.slayingInventory;
             
             if (filter !== 'all') {
-                filteredItems = profile.huntingInventory.filter(item => {
+                filteredItems = profile.slayingInventory.filter(item => {
                     switch(filter) {
                         case 'rare':
                             return ['rare', 'epic', 'legendary', 'mythic'].includes(item.rarity);
                         case 'common':
                             return ['common', 'uncommon'].includes(item.rarity);
-                        case 'lootbox':
-                        case 'lootboxes':
-                            return item.type === 'loot_box';
-                        case 'meat':
-                            return item.type === 'meat';
-                        case 'pelt':
-                        case 'pelts':
-                            return item.type === 'pelt';
+                        case 'chest':
+                            return item.type === 'chest';
+                        case 'flesh':
+                            return item.type === 'flesh';
+                        case 'hide':
+                            return item.type === 'hide';
                         case 'trophy':
                         case 'trophies':
                             return item.type === 'trophy';
-                        case 'materials':
-                            return item.type === 'rare_material';
-                        case 'artifacts':
+                        case 'rare_essence':
+                        case 'essence':
+                            return item.type === 'rare_essence';
+                        case 'relic':
+                            return item.type === 'relic';
+                        case 'artifact':
                             return item.type === 'artifact';
-                        case 'fuel':
-                            return item.type === 'fuel';
-                        case 'ammo':
-                            return item.type === 'ammo';
                         default:
                             return item.type === filter || item.rarity === filter;
                     }
@@ -96,7 +93,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🎒 ${message.author.username}'s Hunting Inventory\n## LOOT COLLECTION\n\n> Showing ${filter === 'all' ? 'all items' : filter} (Page ${page}/${totalPages})`)
+                    .setContent(`# 🎒 ${message.author.username}'s Slaying Inventory\n## LOOT COLLECTION\n\n> Showing ${filter === 'all' ? 'all items' : filter} (Page ${page}/${totalPages})`)
             );
 
             components.push(headerContainer);
@@ -106,10 +103,10 @@ module.exports = {
             const statsContainer = new ContainerBuilder()
                 .setAccentColor(0x2ECC71);
 
-            const totalItems = profile.huntingInventory.length;
-            const totalValue = profile.huntingInventory.reduce((sum, item) => sum + (item.currentValue * item.quantity), 0);
-            const storageUsed = HuntingManager.calculateInventoryWeight(profile);
-            const storageCapacity = HuntingManager.calculateStorageCapacity(profile);
+            const totalItems = profile.slayingInventory.length;
+            const totalValue = profile.slayingInventory.reduce((sum, item) => sum + (item.currentValue * item.quantity), 0);
+            const storageUsed = SlayingManager.calculateInventoryWeight(profile);
+            const storageCapacity = SlayingManager.calculateStorageCapacity(profile);
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
@@ -122,7 +119,7 @@ module.exports = {
             );
 
             const rarityCount = {};
-            profile.huntingInventory.forEach(item => {
+            profile.slayingInventory.forEach(item => {
                 rarityCount[item.rarity] = (rarityCount[item.rarity] || 0) + 1;
             });
 
@@ -165,14 +162,13 @@ module.exports = {
                         };
 
                         const typeEmoji = {
-                            'meat': '🥩',
-                            'pelt': '🦌',
+                            'flesh': '🥩',
+                            'hide': '🦌',
                             'trophy': '🏆',
-                            'rare_material': '💎',
+                            'rare_essence': '💎',
+                            'relic': '🏺',
                             'artifact': '⚱️',
-                            'loot_box': '📦',
-                            'fuel': '⛽',
-                            'ammo': '🔫'
+                            'chest': '📦'
                         };
 
                         const emoji = rarityEmoji[item.rarity] || '⚪';
@@ -210,10 +206,10 @@ module.exports = {
                     .setContent(`## 📋 **QUICK COMMANDS**`)
             );
 
-            let commandText = `**\`!sell <item_id>\`** - Sell specific item\n**\`!sell all <type>\`** - Sell all of type\n**\`!lootbox <item_id>\`** - Open loot box`;
+            let commandText = `**\`!sell <item_id>\`** - Sell specific item\n**\`!sell all <type>\`** - Sell all of type\n**\`!openchest <item_id>\`** - Open a chest`;
             
             if (totalPages > 1) {
-                commandText += `\n\n**Navigation:** Page ${page}/${totalPages}\n\`!inventory ${filter} ${page + 1}\` - Next page`;
+                commandText += `\n\n**Navigation:** Page ${page}/${totalPages}\n\`!sinv ${filter} ${page + 1}\` - Next page`;
             }
 
             footerContainer.addTextDisplayComponents(
@@ -222,8 +218,8 @@ module.exports = {
             );
 
             footerContainer.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent(`**Filters:** \`all\`, \`rare\`, \`common\`, \`lootboxes\`, \`meat\`, \`pelts\`, \`trophies\`, \`materials\`, \`artifacts\``)
+                new TextDisplayDisplayBuilder()
+                    .setContent(`**Filters:** \`all\`, \`rare\`, \`common\`, \`chest\`, \`flesh\`, \`hide\`, \`trophies\`, \`essence\`, \`relics\`, \`artifacts\``)
             );
 
             components.push(footerContainer);
