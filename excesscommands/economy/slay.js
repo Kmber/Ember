@@ -6,20 +6,20 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { HuntingManager } = require('../../models/economy/huntingManager');
+const { SlayingManager } = require('../../models/economy/slayingManager');
 
 module.exports = {
-    name: 'hunt',
-    aliases: ['expedition', 'safari'],
-    description: 'Go on a hunting expedition in the wild jungle',
-    usage: '!hunt',
+    name: 'slay',
+    aliases: ['quest', 'journey'],
+    description: 'Go on a slaying quest in the haunted lands',
+    usage: '!slay',
     cooldown: 300, 
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             
-            const cooldownCheck = EconomyManager.checkCooldown(profile, 'hunt');
+            const cooldownCheck = EconomyManager.checkCooldown(profile, 'slay');
             if (cooldownCheck.onCooldown) {
                 const { minutes, seconds } = cooldownCheck.timeLeft;
                 
@@ -28,7 +28,7 @@ module.exports = {
 
                 cooldownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⏰ Expedition Cooldown\n## RECOVERY TIME\n\n> You need to rest between hunting expeditions!\n> **Time Remaining:** ${minutes}m ${seconds}s`)
+                        .setContent(`# ⏰ Slaying Cooldown\n## RECOVERY TIME\n\n> You need to rest between slaying quests!\n> **Time Remaining:** ${minutes}m ${seconds}s`)
                 );
 
                 return message.reply({
@@ -38,7 +38,7 @@ module.exports = {
             }
 
          
-            if (profile.huntingVehicles.length === 0 || profile.huntingWeapons.length === 0) {
+            if (profile.slayingMounts.length === 0 || profile.slayingWeapons.length === 0) {
                 const components = [];
 
                 const noEquipmentContainer = new ContainerBuilder()
@@ -46,7 +46,7 @@ module.exports = {
 
                 noEquipmentContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Missing Equipment\n## EXPEDITION CANCELLED\n\n> You need both a vehicle and weapon to go hunting!`)
+                        .setContent(`# 🚫 Missing Gear\n## QUEST CANCELLED\n\n> You need both a mount and weapon to go slaying!`)
                 );
 
                 components.push(noEquipmentContainer);
@@ -57,7 +57,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **GET STARTED**\n\n**Command:** \`!huntshop\`\n**Buy:** Vehicles, weapons, and companions\n**Starting Budget:** You have $${profile.wallet.toLocaleString()} available`)
+                        .setContent(`## 🛒 **GET STARTED**\n\n**Command:** \`!slayershop\`\n**Buy:** Mounts, weapons, and allies\n**Starting Budget:** You have $${profile.wallet.toLocaleString()} available`)
                 );
 
                 components.push(helpContainer);
@@ -69,7 +69,7 @@ module.exports = {
             }
 
             
-            if (profile.huntingProfile.currentHealth < 20) {
+            if (profile.slayingProfile.currentHealth < 20) {
                 const components = [];
 
                 const injuredContainer = new ContainerBuilder()
@@ -77,10 +77,10 @@ module.exports = {
 
                 injuredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🩸 Too Injured to Hunt\n## MEDICAL ATTENTION NEEDED\n\n> Your health is too low (${profile.huntingProfile.currentHealth}/100)!\n> **Minimum Required:** 20 HP`)
+                        .setContent(`# 🩸 Too Wounded to Slay\n## REQUIRES HEALING\n\n> Your health is too low (${profile.slayingProfile.currentHealth}/100)!\n> **Minimum Required:** 20 HP`)
                 );
 
-                const healingCost = Math.floor((100 - profile.huntingProfile.currentHealth) * 50);
+                const healingCost = Math.floor((100 - profile.slayingProfile.currentHealth) * 50);
                 
                 injuredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
@@ -96,60 +96,60 @@ module.exports = {
             }
 
          
-            const huntResult = await HuntingManager.executeHunt(profile);
+            const slayResult = await SlayingManager.executeSlay(profile);
             
      
-            profile.huntingStats.totalHunts += 1;
-            profile.huntingProfile.expeditionCount += 1;
-            profile.huntingProfile.lastHunt = new Date();
+            profile.slayingStats.totalSlays += 1;
+            profile.slayingProfile.questCount += 1;
+            profile.slayingProfile.lastSlay = new Date();
             
-            if (huntResult.success) {
-                profile.huntingStats.successfulHunts += 1;
-                profile.huntingStats.animalsKilled += 1;
+            if (slayResult.success) {
+                profile.slayingStats.successfulSlays += 1;
+                profile.slayingStats.monstersSlain += 1;
                 
              
-                huntResult.loot.forEach(item => {
-                    profile.huntingInventory.push(item);
+                slayResult.loot.forEach(item => {
+                    profile.slayingInventory.push(item);
                 });
                 
             } else {
-                profile.huntingStats.failedHunts += 1;
+                profile.slayingStats.failedSlays += 1;
             }
 
           
-            profile.huntingStats.totalDamageDealt += huntResult.damageDealt;
-            profile.huntingStats.totalDamageTaken += huntResult.damageTaken;
-            profile.huntingProfile.hunterExperience += huntResult.experience;
-            profile.huntingStats.huntingSkill = Math.min(100, profile.huntingStats.huntingSkill + huntResult.skillGain);
+            profile.slayingStats.totalDamageDealt += slayResult.damageDealt;
+            profile.slayingStats.totalDamageTaken += slayResult.damageTaken;
+            profile.slayingProfile.slayerExperience += slayResult.experience;
+            profile.slayingStats.slayingSkill = Math.min(100, profile.slayingStats.slayingSkill + slayResult.skillGain);
 
         
-            const totalCosts = Object.values(huntResult.costs).reduce((sum, cost) => sum + cost, 0);
+            const totalCosts = Object.values(slayResult.costs).reduce((sum, cost) => sum + cost, 0);
             if (totalCosts > 0) {
                 profile.wallet = Math.max(0, profile.wallet - totalCosts);
                 
                 profile.transactions.push({
                     type: 'expense',
                     amount: totalCosts,
-                    description: 'Hunting expedition costs',
-                    category: 'hunting'
+                    description: 'Slaying quest costs',
+                    category: 'slaying'
                 });
             }
 
           
-            profile.cooldowns.hunt = new Date();
+            profile.cooldowns.slay = new Date();
             await profile.save();
 
        
             const components = [];
 
-            if (huntResult.success) {
+            if (slayResult.success) {
               
                 const headerContainer = new ContainerBuilder()
                     .setAccentColor(0x4CAF50);
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🎯 Successful Hunt!\n## ${huntResult.animal.name.toUpperCase()} DEFEATED\n\n> You successfully hunted a **${huntResult.animal.name}** (Tier ${huntResult.animal.tier})!`)
+                        .setContent(`# 🎯 Victorious Slaying!\n## ${slayResult.monster.name.toUpperCase()} SLAIN\n\n> You successfully slew a **${slayResult.monster.name}** (Tier ${slayResult.monster.tier})!`)
                 );
 
                 components.push(headerContainer);
@@ -161,23 +161,23 @@ module.exports = {
 
                 combatContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚔️ **COMBAT REPORT**`)
+                        .setContent(`## ⚔️ **BATTLE REPORT**`)
                 );
 
                 combatContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💥 Damage Dealt:** ${huntResult.damageDealt}\n**🩸 Damage Taken:** ${huntResult.damageTaken}\n**❤️ Health Remaining:** ${profile.huntingProfile.currentHealth}/100`)
+                        .setContent(`**💥 Damage Dealt:** ${slayResult.damageDealt}\n**🩸 Damage Taken:** ${slayResult.damageTaken}\n**❤️ Health Remaining:** ${profile.slayingProfile.currentHealth}/100`)
                 );
 
                 combatContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**⭐ Experience Gained:** +${huntResult.experience} XP\n**📈 Skill Gained:** +${huntResult.skillGain}%\n**🎯 Hunting Skill:** ${profile.huntingStats.huntingSkill}%`)
+                        .setContent(`**⭐ Experience Earned:** +${slayResult.experience} XP\n**📈 Skill Gained:** +${slayResult.skillGain}%\n**🎯 Slaying Skill:** ${profile.slayingStats.slayingSkill}%`)
                 );
 
                 components.push(combatContainer);
 
               
-                if (huntResult.loot.length > 0) {
+                if (slayResult.loot.length > 0) {
                     components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                     const lootContainer = new ContainerBuilder()
@@ -185,10 +185,10 @@ module.exports = {
 
                     lootContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💎 **LOOT COLLECTED**`)
+                            .setContent(`## 💎 **TREASURE ACQUIRED**`)
                     );
 
-                    const lootText = huntResult.loot.slice(0, 5).map(item => 
+                    const lootText = slayResult.loot.slice(0, 5).map(item => 
                         `**${item.name}** (${item.rarity})\n> **Value:** $${item.currentValue.toLocaleString()} • **Type:** ${item.type}`
                     ).join('\n\n');
 
@@ -197,10 +197,10 @@ module.exports = {
                             .setContent(lootText)
                     );
 
-                    if (huntResult.loot.length > 5) {
+                    if (slayResult.loot.length > 5) {
                         lootContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`*...and ${huntResult.loot.length - 5} more items*`)
+                                .setContent(`*...and ${slayResult.loot.length - 5} more items*`)
                         );
                     }
 
@@ -214,7 +214,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💥 Hunt Failed!\n## ${huntResult.animal.name.toUpperCase()} ESCAPED\n\n> The **${huntResult.animal.name}** proved too powerful and escaped!`)
+                        .setContent(`# 💥 Slaying Failed!\n## ${slayResult.monster.name.toUpperCase()} FLED\n\n> The **${slayResult.monster.name}** was too formidable and fled!`)
                 );
 
                 components.push(headerContainer);
@@ -225,24 +225,24 @@ module.exports = {
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚑 **CASUALTIES**`)
+                        .setContent(`## 🚑 **WOUNDS**`)
                 );
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💥 Damage Dealt:** ${huntResult.damageDealt}\n**🩸 Damage Taken:** ${huntResult.damageTaken}\n**❤️ Health Remaining:** ${profile.huntingProfile.currentHealth}/100`)
+                        .setContent(`**💥 Damage Dealt:** ${slayResult.damageDealt}\n**🩸 Damage Taken:** ${slayResult.damageTaken}\n**❤️ Health Remaining:** ${profile.slayingProfile.currentHealth}/100`)
                 );
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏥 Medical Costs:** $${huntResult.costs.healing.toLocaleString()}\n**⭐ Experience:** +${huntResult.experience} XP (participation)\n**💡 Tip:** Upgrade your equipment or bring more companions!`)
+                        .setContent(`**🏥 Healing Costs:** $${slayResult.costs.healing.toLocaleString()}\n**⭐ Experience:** +${slayResult.experience} XP (participation)\n**💡 Tip:** Upgrade your gear or bring more allies!`)
                 );
 
                 components.push(failureContainer);
             }
 
          
-            if (huntResult.companionInjuries.length > 0) {
+            if (slayResult.allyInjuries.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const injuryContainer = new ContainerBuilder()
@@ -250,11 +250,11 @@ module.exports = {
 
                 injuryContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🩹 **COMPANION INJURIES**`)
+                        .setContent(`## 🩹 **ALLY WOUNDS**`)
                 );
 
-                const injuryText = huntResult.companionInjuries.map(injury =>
-                    `**${injury.name}** - Injured!\n> **Healing Cost:** $${injury.healingCost.toLocaleString()}`
+                const injuryText = slayResult.allyInjuries.map(injury =>
+                    `**${injury.name}** - Wounded!\n> **Healing Cost:** $${injury.healingCost.toLocaleString()}`
                 ).join('\n\n');
 
                 injuryContainer.addTextDisplayComponents(
@@ -264,7 +264,7 @@ module.exports = {
 
                 injuryContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Command:** \`!heal companions\` to restore them`)
+                        .setContent(`**💡 Command:** \`!heal allies\` to restore them`)
                 );
 
                 components.push(injuryContainer);
@@ -279,10 +279,10 @@ module.exports = {
 
                 costsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💸 **EXPEDITION COSTS**`)
+                        .setContent(`## 💸 **QUEST EXPENSES**`)
                 );
 
-                const costBreakdown = Object.entries(huntResult.costs)
+                const costBreakdown = Object.entries(slayResult.costs)
                     .filter(([key, value]) => value > 0)
                     .map(([key, value]) => `**${key.replace('_', ' ').toUpperCase()}:** $${value.toLocaleString()}`)
                     .join('\n');
@@ -306,14 +306,14 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in hunt command:', error);
+            console.error('Error in slay command:', error);
             
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## ❌ **HUNTING ERROR**\n\n${error.message || 'Something went wrong during your hunting expedition.'}`)
+                    .setContent(`## ❌ **SLAYING ERROR**\n\n${error.message || 'Something went wrong during your slaying quest.'}`)
             );
 
             return message.reply({

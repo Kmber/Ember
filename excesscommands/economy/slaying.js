@@ -6,12 +6,12 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { HuntingManager } = require('../../models/economy/huntingManager');
+const { SlayingManager } = require('../../models/economy/slayingManager');
 module.exports = {
-    name: 'hunting',
-    aliases: ['hunter', 'huntstats'],
-    description: 'View your complete hunting profile and statistics',
-    usage: '!hunting',
+    name: 'slaying',
+    aliases: ['slayer', 'slaystats'],
+    description: 'View your complete slaying profile and statistics',
+    usage: '!slaying',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
@@ -23,7 +23,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🦁 ${message.author.username}'s Hunting Profile\n## WILDERNESS EXPLORER\n\n> Your complete hunting expedition overview`)
+                    .setContent(`# 💀 ${message.author.username}'s Slaying Profile\n## MONSTER SLAYER\n\n> Your complete slaying quest overview`)
             );
 
             components.push(headerContainer);
@@ -35,20 +35,20 @@ module.exports = {
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🎯 **HUNTER STATISTICS**`)
+                    .setContent(`## 🎯 **SLAYER STATISTICS**`)
             );
 
-            const successRate = profile.huntingStats.totalHunts > 0 ? 
-                Math.floor((profile.huntingStats.successfulHunts / profile.huntingStats.totalHunts) * 100) : 0;
+            const successRate = profile.slayingStats.totalSlays > 0 ? 
+                Math.floor((profile.slayingStats.successfulSlays / profile.slayingStats.totalSlays) * 100) : 0;
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏹 Hunter Level:** ${profile.huntingProfile.hunterLevel}\n**⭐ Experience:** ${profile.huntingProfile.hunterExperience.toLocaleString()} XP\n**❤️ Health:** ${profile.huntingProfile.currentHealth}/100`)
+                    .setContent(`**🏹 Slayer Level:** ${profile.slayingProfile.slayerLevel}\n**⭐ Experience:** ${profile.slayingProfile.slayerExperience.toLocaleString()} XP\n**❤️ Health:** ${profile.slayingProfile.currentHealth}/100`)
             );
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🎯 Hunting Skill:** ${profile.huntingStats.huntingSkill}%\n**🛡️ Survival Skill:** ${profile.huntingStats.survivalSkill}%\n**⭐ Success Rate:** ${successRate}%`)
+                    .setContent(`**🎯 Slaying Skill:** ${profile.slayingStats.slayingSkill}%\n**🛡️ Survival Skill:** ${profile.slayingStats.survivalSkill}%\n**⭐ Success Rate:** ${successRate}%`)
             );
 
             components.push(statsContainer);
@@ -60,17 +60,17 @@ module.exports = {
 
             historyContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📊 **EXPEDITION HISTORY**`)
+                    .setContent(`## 📊 **QUEST HISTORY**`)
             );
 
             historyContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🎯 Total Expeditions:** ${profile.huntingStats.totalHunts}\n**✅ Successful:** ${profile.huntingStats.successfulHunts}\n**❌ Failed:** ${profile.huntingStats.failedHunts}`)
+                    .setContent(`**🎯 Total Quests:** ${profile.slayingStats.totalSlays}\n**✅ Successful:** ${profile.slayingStats.successfulSlays}\n**❌ Failed:** ${profile.slayingStats.failedSlays}`)
             );
 
             historyContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🦌 Animals Killed:** ${profile.huntingStats.animalsKilled}\n**💰 Total Earnings:** $${profile.huntingStats.totalEarnings.toLocaleString()}\n**📦 Loot Boxes Found:** ${profile.huntingStats.lootBoxesFound}`)
+                    .setContent(`**💀 Monsters Slain:** ${profile.slayingStats.monstersSlain}\n**💰 Total Earnings:** $${profile.slayingStats.totalEarnings.toLocaleString()}\n**📦 Chests Found:** ${profile.slayingStats.chestsFound}`)
             );
 
             components.push(historyContainer);
@@ -83,30 +83,30 @@ module.exports = {
 
             equipmentContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🎒 **EQUIPMENT OVERVIEW**`)
+                    .setContent(`## 🎒 **GEAR OVERVIEW**`)
             );
 
-            const activeVehicle = profile.huntingVehicles.find(v => v.vehicleId === profile.activeVehicle);
-            const activeWeapon = profile.huntingWeapons.find(w => w.weaponId === profile.activeWeapon);
-            const activeCompanionCount = profile.activeCompanions.length;
+            const activeMount = profile.slayingMounts.find(v => v.mountId === profile.activeMount);
+            const activeWeapon = profile.slayingWeapons.find(w => w.weaponId === profile.activeWeapon);
+            const activeAllyCount = profile.activeAllies.length;
 
             equipmentContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🚗 Active Vehicle:** ${activeVehicle ? activeVehicle.name : 'None'}\n**🔫 Active Weapon:** ${activeWeapon ? activeWeapon.name : 'None'}\n**👥 Active Companions:** ${activeCompanionCount}/${profile.maxCompanions}`)
+                    .setContent(`**🐎 Active Mount:** ${activeMount ? activeMount.name : 'None'}\n**⚔️ Active Weapon:** ${activeWeapon ? activeWeapon.name : 'None'}\n**👥 Active Allies:** ${activeAllyCount}/${profile.maxAllies}`)
             );
 
             equipmentContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🚗 Total Vehicles:** ${profile.huntingVehicles.length}\n**🔫 Total Weapons:** ${profile.huntingWeapons.length}\n**👥 Total Companions:** ${profile.huntingCompanions.length}`)
+                    .setContent(`**🐎 Total Mounts:** ${profile.slayingMounts.length}\n**⚔️ Total Weapons:** ${profile.slayingWeapons.length}\n**👥 Total Allies:** ${profile.slayingAllies.length}`)
             );
 
             components.push(equipmentContainer);
 
           
-            const storageUsed = HuntingManager.calculateInventoryWeight(profile);
-            const storageCapacity = HuntingManager.calculateStorageCapacity(profile);
+            const storageUsed = SlayingManager.calculateInventoryWeight(profile);
+            const storageCapacity = SlayingManager.calculateStorageCapacity(profile);
 
-            if (profile.huntingWarehouses.length > 0 || profile.huntingInventory.length > 0) {
+            if (profile.slayingVaults.length > 0 || profile.slayingInventory.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const storageContainer = new ContainerBuilder()
@@ -114,15 +114,15 @@ module.exports = {
 
                 storageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏭 **STORAGE & INVENTORY**`)
+                        .setContent(`## 🏰 **TROPHIES & LOOT**`)
                 );
 
                 storageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**📦 Inventory Items:** ${profile.huntingInventory.length}\n**⚖️ Storage Used:** ${storageUsed}/${storageCapacity} capacity\n**🏭 Warehouses:** ${profile.huntingWarehouses.length}`)
+                        .setContent(`**📦 Inventory Items:** ${profile.slayingInventory.length}\n**⚖️ Storage Used:** ${storageUsed}/${storageCapacity} capacity\n**🏰 Vaults:** ${profile.slayingVaults.length}`)
                 );
 
-                const totalInventoryValue = profile.huntingInventory.reduce((sum, item) => sum + (item.currentValue * item.quantity), 0);
+                const totalInventoryValue = profile.slayingInventory.reduce((sum, item) => sum + (item.currentValue * item.quantity), 0);
                 
                 storageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
@@ -140,7 +140,7 @@ module.exports = {
 
             commandsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📋 **QUICK COMMANDS**\n\n**\`!hunt\`** - Go hunting\n**\`!huntshop\`** - Buy equipment\n**\`!inventory\`** - View loot\n**\`!upgrade\`** - Upgrade weapons\n**\`!heal\`** - Heal injuries`)
+                    .setContent(`## 📋 **QUICK COMMANDS**\n\n**\`!slay\`** - Go slaying\n**\`!slayershop\`** - Buy gear\n**\`!inventory\`** - View loot\n**\`!upgrade\`** - Upgrade weapons\n**\`!heal\`** - Heal wounds`)
             );
 
             components.push(commandsContainer);
@@ -151,14 +151,14 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in hunting command:', error);
+            console.error('Error in slaying command:', error);
             
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## ❌ **PROFILE ERROR**\n\nCouldn't load your hunting profile. Please try again.`)
+                    .setContent(`## ❌ **PROFILE ERROR**\n\nCouldn't load your slaying profile. Please try again.`)
             );
 
             return message.reply({

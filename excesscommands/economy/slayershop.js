@@ -6,78 +6,39 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { HuntingManager } = require('../../models/economy/huntingManager');
+const { SlayingManager } = require('../../models/economy/slayingManager');
 const { 
-    HUNTING_VEHICLES, 
-    HUNTING_WEAPONS, 
-    HUNTING_COMPANIONS, 
-    HUNTING_WAREHOUSES,
-    FUEL_TYPES,
-    AMMO_TYPES,
-    MAINTENANCE_SUPPLIES
-} = require('../../models/economy/constants/huntingData');
+    SLAYING_MOUNTS, 
+    SLAYING_WEAPONS, 
+    SLAYING_ALLIES, 
+    SLAYING_VAULTS,
+    POTION_TYPES,
+    WEAPON_OILS,
+    ENCHANTMENT_SUPPLIES
+} = require('../../models/economy/constants/slayingData');
 
 module.exports = {
-    name: 'huntshop',
-    aliases: ['huntstore', 'buyequipment'],
-    description: 'Buy hunting vehicles, weapons, companions, warehouses, fuel, and ammo',
-    usage: '!huntshop [category] [item] OR !huntshop buy [item_id] [quantity] OR !huntshop refuel/reload',
+    name: 'slayershop',
+    aliases: ['slaystore', 'buygear'],
+    description: 'Buy slaying mounts, weapons, allies, vaults, potions, and oils',
+    usage: '!slayershop [category] [item] OR !slayershop buy [item_id] [quantity] OR !slayershop enchant/fortify',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-     
-            if (args[0] === 'refuel' && args[1] && args[2]) {
-                const vehicleIndex = parseInt(args[1]) - 1;
-                const fuelType = args[2].toLowerCase();
-                const quantity = parseInt(args[3]) || 1;
-
-                if (isNaN(vehicleIndex) || vehicleIndex < 0 || vehicleIndex >= profile.huntingVehicles.length) {
-                    return this.sendError(message, 'Invalid vehicle number! Use `!hunting` to see your vehicles.');
-                }
-
-                const vehicle = profile.huntingVehicles[vehicleIndex];
-                
-                try {
-                    const result = await HuntingManager.refuelVehicle(profile, vehicle.vehicleId, fuelType, quantity);
-                    await profile.save();
-
-                    const components = [];
-                    const successContainer = new ContainerBuilder()
-                        .setAccentColor(0x4CAF50);
-
-                    successContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder()
-                            .setContent(`# ⛽ Vehicle Refueled!\n## ${vehicle.name.toUpperCase()}\n\n> Successfully added ${result.fuelAdded} fuel units!`)
-                    );
-
-                    successContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder()
-                            .setContent(`**⛽ Fuel Added:** ${result.fuelAdded} units\n**🔋 New Fuel Level:** ${result.newFuelLevel}/${vehicle.fuelCapacity}\n**💰 Cost:** $${result.cost.toLocaleString()}\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}`)
-                    );
-
-                    components.push(successContainer);
-                    return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
-
-                } catch (error) {
-                    return this.sendError(message, error.message);
-                }
-            }
-
-    
-            if (args[0] === 'reload' && args[1] && args[2]) {
+            if (args[0] === 'enchant' && args[1] && args[2]) {
                 const weaponIndex = parseInt(args[1]) - 1;
-                const ammoType = args[2].toLowerCase();
+                const oilType = args[2].toLowerCase();
                 const quantity = parseInt(args[3]) || 1;
 
-                if (isNaN(weaponIndex) || weaponIndex < 0 || weaponIndex >= profile.huntingWeapons.length) {
-                    return this.sendError(message, 'Invalid weapon number! Use `!hunting` to see your weapons.');
+                if (isNaN(weaponIndex) || weaponIndex < 0 || weaponIndex >= profile.slayingWeapons.length) {
+                    return this.sendError(message, 'Invalid weapon number! Use `!slaying` to see your weapons.');
                 }
 
-                const weapon = profile.huntingWeapons[weaponIndex];
+                const weapon = profile.slayingWeapons[weaponIndex];
                 
                 try {
-                    const result = await HuntingManager.reloadWeapon(profile, weapon.weaponId, ammoType, quantity);
+                    const result = await SlayingManager.enchantWeapon(profile, weapon.weaponId, oilType, quantity);
                     await profile.save();
 
                     const components = [];
@@ -86,12 +47,12 @@ module.exports = {
 
                     successContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 🔫 Weapon Reloaded!\n## ${weapon.name.toUpperCase()}\n\n> Successfully added ${result.ammoAdded} rounds!`)
+                            .setContent(`# ✨ Weapon Enchanted!\n## ${weapon.name.toUpperCase()}\n\n> Successfully applied ${result.oilApplied} of oil!`)
                     );
 
                     successContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🔫 Ammo Added:** ${result.ammoAdded} rounds\n**📊 New Ammo Level:** ${result.newAmmoLevel}/${weapon.ammoCapacity}\n**💰 Cost:** $${result.cost.toLocaleString()}\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}`)
+                            .setContent(`**✨ Oil Applied:** ${result.oilApplied} units\n**🗡️ New Enchantment Level:** ${result.newEnchantmentLevel}/${weapon.enchantmentCapacity}\n**💰 Cost:** $${result.cost.toLocaleString()}\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}`)
                     );
 
                     components.push(successContainer);
@@ -102,7 +63,6 @@ module.exports = {
                 }
             }
 
-          
             if (args[0] === 'buy' && args[1]) {
                 const itemId = args[1].toLowerCase();
                 const quantity = parseInt(args[2]) || 1;
@@ -110,51 +70,48 @@ module.exports = {
                 let category = '';
                 let price = 0;
 
-            
-                if (HUNTING_VEHICLES[itemId]) {
-                    item = HUNTING_VEHICLES[itemId];
-                    category = 'vehicle';
+                if (SLAYING_MOUNTS[itemId]) {
+                    item = SLAYING_MOUNTS[itemId];
+                    category = 'mount';
                     price = item.price;
-                } else if (HUNTING_WEAPONS[itemId]) {
-                    item = HUNTING_WEAPONS[itemId];
+                } else if (SLAYING_WEAPONS[itemId]) {
+                    item = SLAYING_WEAPONS[itemId];
                     category = 'weapon';
                     price = item.price;
-                } else if (HUNTING_COMPANIONS[itemId]) {
-                    item = HUNTING_COMPANIONS[itemId];
-                    category = 'companion';
+                } else if (SLAYING_ALLIES[itemId]) {
+                    item = SLAYING_ALLIES[itemId];
+                    category = 'ally';
                     price = item.price;
-                } else if (HUNTING_WAREHOUSES[itemId]) {
-                    item = HUNTING_WAREHOUSES[itemId];
-                    category = 'warehouse';
+                } else if (SLAYING_VAULTS[itemId]) {
+                    item = SLAYING_VAULTS[itemId];
+                    category = 'vault';
                     price = item.price;
-                } else if (FUEL_TYPES[itemId]) {
-                    item = FUEL_TYPES[itemId];
-                    category = 'fuel';
+                } else if (POTION_TYPES[itemId]) {
+                    item = POTION_TYPES[itemId];
+                    category = 'potion';
                     price = item.price * quantity;
-                } else if (AMMO_TYPES[itemId]) {
-                    item = AMMO_TYPES[itemId];
-                    category = 'ammo';
+                } else if (WEAPON_OILS[itemId]) {
+                    item = WEAPON_OILS[itemId];
+                    category = 'oil';
                     price = item.price * quantity;
-                } else if (MAINTENANCE_SUPPLIES[itemId]) {
-                    item = MAINTENANCE_SUPPLIES[itemId];
-                    category = 'maintenance';
+                } else if (ENCHANTMENT_SUPPLIES[itemId]) {
+                    item = ENCHANTMENT_SUPPLIES[itemId];
+                    category = 'enchantment';
                     price = item.price * quantity;
                 }
 
                 if (!item) {
-                    return this.sendError(message, `Item \`${itemId}\` not found! Use \`!huntshop\` to browse available items.`);
+                    return this.sendError(message, `Item \`${itemId}\` not found! Use \`!slayershop\` to browse available items.`);
                 }
 
-            
                 if (profile.wallet < price) {
                     return this.sendInsufficientFunds(message, item.name, price, profile.wallet);
                 }
 
-                if (category === 'fuel' || category === 'ammo' || category === 'maintenance') {
+                if (category === 'potion' || category === 'oil' || category === 'enchantment') {
                     profile.wallet -= price;
                     
-                  
-                    profile.huntingInventory.push({
+                    profile.slayingInventory.push({
                         itemId: `${itemId}_${Date.now()}`,
                         name: `${item.name} (x${quantity})`,
                         type: category,
@@ -163,7 +120,7 @@ module.exports = {
                         currentValue: price,
                         weight: quantity,
                         quantity: quantity,
-                        huntDate: new Date(),
+                        slayDate: new Date(),
                         description: item.description,
                         consumableData: {
                             itemType: itemId,
@@ -175,12 +132,11 @@ module.exports = {
                         type: 'expense',
                         amount: price,
                         description: `Purchased ${quantity}x ${item.name}`,
-                        category: 'hunting'
+                        category: 'slaying'
                     });
 
                     await profile.save();
 
-                   
                     const components = [];
                     const successContainer = new ContainerBuilder()
                         .setAccentColor(0x4CAF50);
@@ -195,15 +151,10 @@ module.exports = {
                             .setContent(`**💰 Total Cost:** $${price.toLocaleString()}\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}\n**📦 Added to Inventory:** Use \`!inventory\` to see your consumables`)
                     );
 
-                    if (category === 'fuel') {
+                    if (category === 'oil') {
                         successContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**💡 How to Use:** \`!huntshop refuel <vehicle#> ${itemId} <amount>\``)
-                        );
-                    } else if (category === 'ammo') {
-                        successContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`**💡 How to Use:** \`!huntshop reload <weapon#> ${itemId} <amount>\``)
+                                .setContent(`**💡 How to Use:** \`!slayershop enchant <weapon#> ${itemId} <amount>\``)
                         );
                     }
 
@@ -213,7 +164,6 @@ module.exports = {
 
             }
 
-          
             const category = args[0]?.toLowerCase() || 'overview';
             const components = [];
 
@@ -223,7 +173,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🛒 Complete Hunting Outfitters\n## WILDERNESS SUPPLY DEPOT\n\n> Everything you need for successful hunting expeditions!`)
+                        .setContent(`# ⚔️ The Slayer\'s Emporium\n## DARK FANTASY ARMORY\n\n> Everything you need for your monster-slaying quests!`)
                 );
 
                 components.push(headerContainer);
@@ -239,17 +189,17 @@ module.exports = {
 
                 categoriesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🚗 Vehicles** - \`!huntshop vehicles\`\n**🔫 Weapons** - \`!huntshop weapons\`\n**👥 Companions** - \`!huntshop companions\`\n**🏭 Warehouses** - \`!huntshop warehouses\``)
+                        .setContent(`**🐎 Mounts** - \`!slayershop mounts\`\n**⚔️ Weapons** - \`!slayershop weapons\`\n**👥 Allies** - \`!slayershop allies\`\n**🏰 Vaults** - \`!slayershop vaults\``)
                 );
 
                 categoriesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**⛽ Fuel** - \`!huntshop fuel\`\n**🔫 Ammunition** - \`!huntshop ammo\`\n**🔧 Maintenance** - \`!huntshop maintenance\``)
+                        .setContent(`**🧪 Potions** - \`!slayershop potions\`\n**✨ Weapon Oils** - \`!slayershop oils\`\n**📜 Enchantments** - \`!slayershop enchantments\``)
                 );
 
                 categoriesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Quick Actions:**\n\`!huntshop refuel <vehicle#> <fuel_type> [amount]\`\n\`!huntshop reload <weapon#> <ammo_type> [amount]\``)
+                        .setContent(`**💡 Quick Actions:**\n\`!slayershop enchant <weapon#> <oil_type> [amount]\``)
                 );
 
                 components.push(categoriesContainer);
@@ -259,13 +209,12 @@ module.exports = {
 
                 playerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **YOUR BUDGET**\n\n**Current Balance:** $${profile.wallet.toLocaleString()}\n**💡 How to Buy:** \`!huntshop buy <item_id> [quantity]\``)
+                        .setContent(`## 💰 **YOUR COIN**\n\n**Current Balance:** $${profile.wallet.toLocaleString()}\n**💡 How to Buy:** \`!slayershop buy <item_id> [quantity]\``)
                 );
 
                 components.push(playerContainer);
 
             } else {
-               
                 this.displayCategory(components, category, profile);
             }
 
@@ -275,8 +224,8 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in huntshop command:', error);
-            return this.sendError(message, `Couldn't process your request: ${error.message}`);
+            console.error('Error in slayershop command:', error);
+            return this.sendError(message, `Couldn\'t process your request: ${error.message}`);
         }
     },
 
@@ -287,47 +236,46 @@ module.exports = {
         let accentColor = 0x3498DB;
 
         switch(category) {
-            case 'vehicles':
-                items = HUNTING_VEHICLES;
-                categoryName = 'Vehicles';
-                categoryIcon = '🚗';
+            case 'mounts':
+                items = SLAYING_MOUNTS;
+                categoryName = 'Mounts';
+                categoryIcon = '🐎';
                 accentColor = 0x3498DB;
                 break;
             case 'weapons':
-                items = HUNTING_WEAPONS;
+                items = SLAYING_WEAPONS;
                 categoryName = 'Weapons';
-                categoryIcon = '🔫';
+                categoryIcon = '⚔️';
                 accentColor = 0xE74C3C;
                 break;
-            case 'companions':
-                items = HUNTING_COMPANIONS;
-                categoryName = 'Companions';
+            case 'allies':
+                items = SLAYING_ALLIES;
+                categoryName = 'Allies';
                 categoryIcon = '👥';
                 accentColor = 0x9B59B6;
                 break;
-            case 'warehouses':
-                items = HUNTING_WAREHOUSES;
-                categoryName = 'Warehouses';
-                categoryIcon = '🏭';
+            case 'vaults':
+                items = SLAYING_VAULTS;
+                categoryName = 'Vaults';
+                categoryIcon = '🏰';
                 accentColor = 0xFF9800;
                 break;
-         
-            case 'fuel':
-                items = FUEL_TYPES;
-                categoryName = 'Fuel';
-                categoryIcon = '⛽';
+            case 'potions':
+                items = POTION_TYPES;
+                categoryName = 'Potions';
+                categoryIcon = '🧪';
                 accentColor = 0x2ECC71;
                 break;
-            case 'ammo':
-                items = AMMO_TYPES;
-                categoryName = 'Ammunition';
-                categoryIcon = '🔫';
+            case 'oils':
+                items = WEAPON_OILS;
+                categoryName = 'Weapon Oils';
+                categoryIcon = '✨';
                 accentColor = 0xFF5722;
                 break;
-            case 'maintenance':
-                items = MAINTENANCE_SUPPLIES;
-                categoryName = 'Maintenance';
-                categoryIcon = '🔧';
+            case 'enchantments':
+                items = ENCHANTMENT_SUPPLIES;
+                categoryName = 'Enchantments';
+                categoryIcon = '📜';
                 accentColor = 0x607D8B;
                 break;
             default:
@@ -359,15 +307,14 @@ module.exports = {
             );
 
             let specs = '';
-            if (category === 'fuel') {
-                specs = `**⚡ Efficiency:** ${Math.floor((2.0 - item.efficiency) * 100)}% fuel savings\n**⛽ Fuel Value:** ${item.fuelValue} units per purchase\n**💰 Cost per Unit:** $${item.price}`;
-            } else if (category === 'ammo') {
+            if (category === 'potions') {
+                specs = `**✨ Effect:** ${item.effect}\n**⏳ Duration:** ${item.duration} quests\n**💰 Cost per Potion:** $${item.price}`;
+            } else if (category === 'oils') {
                 const compatibleText = item.compatibleWeapons.join(', ');
-                specs = `**🔫 Compatible:** ${compatibleText}\n**💥 Damage Bonus:** +${Math.floor((item.damage - 1) * 100)}%\n**🎯 Accuracy Bonus:** +${Math.floor((item.accuracy - 1) * 100)}%`;
-            } else if (category === 'maintenance') {
-                specs = `**🔧 Repair Amount:** ${item.repairAmount || 'N/A'}\n**🔄 Uses:** ${item.uses || 1}\n**⏰ Duration:** ${item.duration || 'Instant'} hunts`;
+                specs = `**⚔️ Compatible:** ${compatibleText}\n**💥 Damage Bonus:** +${Math.floor((item.damage - 1) * 100)}%\n**🎯 Accuracy Bonus:** +${Math.floor((item.accuracy - 1) * 100)}%`;
+            } else if (category === 'enchantments') {
+                specs = `**📜 Enchantment:** ${item.enchantmentType || 'N/A'}\n**🔄 Uses:** ${item.uses || 1}\n**⏰ Duration:** ${item.duration || 'Instant'} quests`;
             }
-         
 
             if (specs) {
                 itemContainer.addTextDisplayComponents(
@@ -378,7 +325,7 @@ module.exports = {
 
             itemContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Price:** $${item.price.toLocaleString()} ${canAfford ? '✅' : '❌'}\n**📖 Description:** ${item.description}\n**💡 Buy:** \`!huntshop buy ${itemId} [quantity]\``)
+                    .setContent(`**💰 Price:** $${item.price.toLocaleString()} ${canAfford ? '✅' : '❌'}\n**📖 Description:** ${item.description}\n**💡 Buy:** \`!slayershop buy ${itemId} [quantity]\``)
             );
 
             components.push(itemContainer);
@@ -396,7 +343,7 @@ module.exports = {
 
             moreContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`*... and ${Object.keys(items).length - 4} more ${categoryName.toLowerCase()} available*\n\n**💰 Your Budget:** $${profile.wallet.toLocaleString()}`)
+                    .setContent(`*... and ${Object.keys(items).length - 4} more ${categoryName.toLowerCase()} available*\n\n**💰 Your Coin:** $${profile.wallet.toLocaleString()}`)
             );
 
             components.push(moreContainer);
@@ -409,7 +356,7 @@ module.exports = {
 
         errorContainer.addTextDisplayComponents(
             new TextDisplayBuilder()
-                .setContent(`# ❌ Error\n## OPERATION FAILED\n\n> ${errorText}`)
+                .setContent(`# ❌ Error\n## TASK FAILED\n\n> ${errorText}`)
         );
 
         return message.reply({
@@ -424,12 +371,12 @@ module.exports = {
 
         insufficientContainer.addTextDisplayComponents(
             new TextDisplayBuilder()
-                .setContent(`# 💸 Insufficient Funds\n## CANNOT PURCHASE\n\n> You need $${price.toLocaleString()} to buy **${itemName}**!`)
+                .setContent(`# 💸 Insufficient Coin\n## CANNOT PURCHASE\n\n> You need $${price.toLocaleString()} to acquire **${itemName}**!`)
         );
 
         insufficientContainer.addTextDisplayComponents(
             new TextDisplayBuilder()
-                .setContent(`**💰 Current Balance:** $${currentBalance.toLocaleString()}\n**💰 Required:** $${price.toLocaleString()}\n**💰 Shortage:** $${(price - currentBalance).toLocaleString()}`)
+                .setContent(`**💰 Current Coin:** $${currentBalance.toLocaleString()}\n**💰 Required:** $${price.toLocaleString()}\n**💰 Shortage:** $${(price - currentBalance).toLocaleString()}`)
         );
 
         return message.reply({
