@@ -108,9 +108,9 @@ module.exports = {
                     return this.sendInsufficientFunds(message, item.name, price, profile.wallet);
                 }
 
+                profile.wallet -= price;
+
                 if (category === 'potion' || category === 'oil' || category === 'enchantment') {
-                    profile.wallet -= price;
-                    
                     profile.slayingInventory.push({
                         itemId: `${itemId}_${Date.now()}`,
                         name: `${item.name} (x${quantity})`,
@@ -127,41 +127,60 @@ module.exports = {
                             usesRemaining: quantity
                         }
                     });
+                } else {
+                    // Handle non-consumable items
+                    const newItem = {
+                        ...item,
+                        itemId: `${itemId}_${Date.now()}`
+                    };
 
-                    profile.transactions.push({
-                        type: 'expense',
-                        amount: price,
-                        description: `Purchased ${quantity}x ${item.name}`,
-                        category: 'slaying'
-                    });
-
-                    await profile.save();
-
-                    const components = [];
-                    const successContainer = new ContainerBuilder()
-                        .setAccentColor(0x4CAF50);
-
-                    successContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder()
-                            .setContent(`# ✅ Purchase Successful!\n## ${item.name.toUpperCase()}\n\n> Purchased ${quantity}x **${item.name}**!`)
-                    );
-
-                    successContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder()
-                            .setContent(`**💰 Total Cost:** $${price.toLocaleString()}\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}\n**📦 Added to Inventory:** Use \`!inventory\` to see your consumables`)
-                    );
-
-                    if (category === 'oil') {
-                        successContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`**💡 How to Use:** \`!slayershop enchant <weapon#> ${itemId} <amount>\``)
-                        );
+                    switch (category) {
+                        case 'mount':
+                            profile.slayingMounts.push(newItem);
+                            break;
+                        case 'weapon':
+                            profile.slayingWeapons.push(newItem);
+                            break;
+                        case 'ally':
+                            profile.slayingAllies.push(newItem);
+                            break;
+                        case 'vault':
+                            profile.slayingVaults.push(newItem);
+                            break;
                     }
-
-                    components.push(successContainer);
-                    return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
                 }
 
+                profile.transactions.push({
+                    type: 'expense',
+                    amount: price,
+                    description: `Purchased ${quantity}x ${item.name}`,
+                    category: 'slaying'
+                });
+
+                await profile.save();
+
+                const components = [];
+                const successContainer = new ContainerBuilder().setAccentColor(0x4CAF50);
+
+                successContainer.addTextDisplayComponents(
+                    new TextDisplayBuilder()
+                        .setContent(`# ✅ Purchase Successful!\n## ${item.name.toUpperCase()}\n\n> Purchased ${quantity}x **${item.name}**!`)
+                );
+
+                successContainer.addTextDisplayComponents(
+                    new TextDisplayBuilder()
+                        .setContent(`**💰 Total Cost:** $${price.toLocaleString()}\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}\n**📦 Added to Inventory:** Use \`!inventory\` to see your new item!`)
+                );
+
+                if (category === 'oil') {
+                    successContainer.addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(`**💡 How to Use:** \`!slayershop enchant <weapon#> ${itemId} <amount>\``)
+                    );
+                }
+
+                components.push(successContainer);
+                return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
 
             const category = args[0]?.toLowerCase() || 'overview';
@@ -216,6 +235,9 @@ module.exports = {
 
             } else {
                 this.displayCategory(components, category, profile);
+                if (components.length === 0) {
+                    return this.sendError(message, `Invalid category: \`${category}\`. Use \`!slayershop\` to see available categories.`);
+                }
             }
 
             return message.reply({
