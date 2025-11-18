@@ -175,7 +175,7 @@ const raidCollectionSchema = new mongoose.Schema({
 const transactionSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['income', 'expense', 'transfer', 'investment', 'trade', 'racing', 'robbery', 'family_work', 'gambling', 'shop', 'raid'],
+        enum: ['income', 'expense', 'transfer', 'investment', 'trade', 'racing', 'robbery', 'follower_tithe', 'gambling', 'shop', 'raid'],
         required: true
     },
     amount: { type: Number, required: true },
@@ -224,20 +224,20 @@ const petSchema = new mongoose.Schema({
     dateAdopted: { type: Date, default: Date.now }
 });
 
-const familyMemberSchema = new mongoose.Schema({
-    memberId: String,
+const followerSchema = new mongoose.Schema({
+    followerId: String,
     name: String,
-    relationship: {
+    role: {
         type: String,
-        enum: ['spouse', 'child', 'parent', 'sibling', 'grandparent']
+        enum: ['cultist', 'acolyte', 'zealot', 'neophyte']
     },
     age: Number,
     profession: String,
     salary: Number,
-    bond: { type: Number, min: 0, max: 100, default: 50 },
+    allegiance: { type: Number, min: 0, max: 100, default: 50 },
     workEfficiency: { type: Number, min: 0.5, max: 2.0, default: 1.0 },
-    lastTrip: Date,
-    totalTrips: { type: Number, default: 0 }
+    lastRitual: Date,
+    totalRituals: { type: Number, default: 0 }
 });
 
 const citadelSchema = new mongoose.Schema({
@@ -251,7 +251,7 @@ const citadelSchema = new mongoose.Schema({
     currentValue: Number,
     monthlyUpkeep: Number,
     securityLevel: { type: Number, min: 1, max: 10, default: 1 },
-    maxFamilyMembers: Number,
+    maxFollowers: Number,
     garrisonCapacity: { type: Number, default: 0 },
     vaultCapacity: { type: Number, default: 0 },
     condition: {
@@ -270,7 +270,7 @@ const roleSchema = new mongoose.Schema({
         workMultiplier: { type: Number, default: 1.0 },
         racingBonus: { type: Number, default: 0 },
         robberyProtection: { type: Number, default: 0 },
-        familyBonus: { type: Number, default: 0 }
+        followerAllegianceBonus: { type: Number, default: 0 }
     },
     datePurchased: { type: Date, default: Date.now },
     expiryDate: Date
@@ -301,10 +301,10 @@ const economySchema = new mongoose.Schema({
     bank: { type: Number, default: 0, min: 0 },
     bankLimit: { type: Number, default: 10000 },
     
-    // Family System
-    familyVault: { type: Number, default: 0, min: 0 },
-    familyMembers: [familyMemberSchema],
-    familyBond: { type: Number, min: 0, max: 100, default: 0 },
+    // Followers System
+    followerTithe: { type: Number, default: 0, min: 0 },
+    followers: [followerSchema],
+    followerAllegiance: { type: Number, min: 0, max: 100, default: 0 },
     
     // Vehicle System
     cars: [carSchema],
@@ -404,7 +404,7 @@ const economySchema = new mongoose.Schema({
         weekly: Date,
         work: Date,
         race: Date,
-        trip: Date,
+        ritual: Date,
         petCare: Date,
         robbery: Date,
         beg: Date,

@@ -9,12 +9,11 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'work',
-    description: 'Work to earn money (affected by family bonds and active effects) with v2 components',
+    description: 'Work to earn money (affected by follower allegiance and active effects) with v2 components',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-          
             const cooldownCheck = EconomyManager.checkCooldown(profile, 'work');
             if (cooldownCheck.onCooldown) {
                 const { hours, minutes } = cooldownCheck.timeLeft;
@@ -51,25 +50,23 @@ module.exports = {
             const baseEarnings = Math.floor(Math.random() * 500) + 200;
             const workMultiplier = EconomyManager.calculateWorkMultiplier(profile);
             
-          
-            let familyEarnings = 0;
-            const hasCitadel = profile.properties.length > 0;
+            let followerEarnings = 0;
+            const hasCitadel = profile.citadels.length > 0;
             
-            if (hasCitadel && profile.familyMembers.length > 0) {
-                profile.familyMembers.forEach(member => {
-                    const memberEarnings = member.salary * member.workEfficiency * (member.bond / 100);
-                    familyEarnings += memberEarnings;
+            if (hasCitadel && profile.followers.length > 0) {
+                profile.followers.forEach(member => {
+                    const memberEarnings = member.salary * member.workEfficiency * (member.allegiance / 100);
+                    followerEarnings += memberEarnings;
                 });
             }
             
             const personalEarnings = Math.floor(baseEarnings * workMultiplier);
-            const totalEarnings = personalEarnings + Math.floor(familyEarnings);
+            const totalEarnings = personalEarnings + Math.floor(followerEarnings);
             
             profile.wallet += totalEarnings;
             profile.experience += 10;
             profile.cooldowns.work = new Date();
             
-         
             const requiredXP = profile.level * 100;
             let leveledUp = false;
             if (profile.experience >= requiredXP) {
@@ -78,7 +75,6 @@ module.exports = {
                 leveledUp = true;
             }
             
-         
             profile.transactions.push({
                 type: 'income',
                 amount: totalEarnings,
@@ -88,10 +84,8 @@ module.exports = {
             
             await profile.save();
 
-         
             const components = [];
 
-        
             const headerContainer = new ContainerBuilder()
                 .setAccentColor(0x4CAF50);
 
@@ -104,7 +98,6 @@ module.exports = {
 
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-           
             const earningsContainer = new ContainerBuilder()
                 .setAccentColor(0x27AE60);
 
@@ -113,9 +106,15 @@ module.exports = {
                     .setContent('## 💰 **EARNINGS BREAKDOWN**')
             );
 
+            let earningsContent = `**💼 Personal Earnings:** \`$${personalEarnings.toLocaleString()}\``;
+            if (followerEarnings > 0) {
+                earningsContent += `\n**👥 Follower Contribution:** \`$${Math.floor(followerEarnings).toLocaleString()}\``;
+            }
+            earningsContent += `\n**💎 Total Earnings:** \`$${totalEarnings.toLocaleString()}\``;
+
             earningsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💼 Personal Earnings:** \`$${personalEarnings.toLocaleString()}\`\n**👨‍👩‍👧‍👦 Family Contribution:** \`$${Math.floor(familyEarnings).toLocaleString()}\`\n**💎 Total Earnings:** \`$${totalEarnings.toLocaleString()}\``)
+                    .setContent(earningsContent)
             );
 
             earningsContainer.addTextDisplayComponents(
@@ -125,7 +124,6 @@ module.exports = {
 
             components.push(earningsContainer);
 
-          
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const progressContainer = new ContainerBuilder()
@@ -155,46 +153,44 @@ module.exports = {
 
             components.push(progressContainer);
 
-          
-            if (profile.familyMembers.length > 0) {
+            if (profile.followers.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                const familyContainer = new ContainerBuilder()
+                const followerContainer = new ContainerBuilder()
                     .setAccentColor(hasCitadel ? 0x9B59B6 : 0xF39C12);
 
                 if (hasCitadel) {
-                    familyContainer.addTextDisplayComponents(
+                    followerContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent('## 👨‍👩‍👧‍👦 **FAMILY WORKFORCE**')
+                            .setContent('## 👥 **FOLLOWER WORKFORCE**')
                     );
 
-                    const familyDetails = profile.familyMembers.slice(0, 3).map(member => {
-                        const memberEarnings = member.salary * member.workEfficiency * (member.bond / 100);
-                        return `**${member.name}** (${member.relationship})\n> **Contribution:** \`$${Math.floor(memberEarnings).toLocaleString()}\` • **Bond:** \`${member.bond}%\``;
+                    const followerDetails = profile.followers.slice(0, 3).map(member => {
+                        const memberEarnings = member.salary * member.workEfficiency * (member.allegiance / 100);
+                        return `**${member.name}** (${member.relationship})\n> **Contribution:** \`$${Math.floor(memberEarnings).toLocaleString()}\` • **Allegiance:** \`${member.allegiance}%\``;
                     }).join('\n\n');
 
-                    familyContainer.addTextDisplayComponents(
+                    followerContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(familyDetails)
+                            .setContent(followerDetails)
                     );
 
-                    if (profile.familyMembers.length > 3) {
-                        familyContainer.addTextDisplayComponents(
+                    if (profile.followers.length > 3) {
+                        followerContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`*...and ${profile.familyMembers.length - 3} more family members contributed!*`)
+                                .setContent(`*...and ${profile.followers.length - 3} more followers contributed!*`)
                         );
                     }
                 } else {
-                    familyContainer.addTextDisplayComponents(
+                    followerContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏰 **FAMILY NEEDS A CITADEL**\n\n> Your **${profile.familyMembers.length}** family members want to help with work earnings, but they need a citadel first!\n\n**💡 Solution:** Acquire a citadel (\`!acquirecitadel\`) to unlock family workforce contributions and boost your income significantly!`)
+                            .setContent(`## 🏰 **FOLLOWERS NEED A CITADEL**\n\n> Your **${profile.followers.length}** followers want to help with work earnings, but they need a citadel first!\n\n**💡 Solution:** Acquire a citadel (\`!acquirecitadel\`) to unlock follower workforce contributions and boost your income significantly!`)
                     );
                 }
 
-                components.push(familyContainer);
+                components.push(followerContainer);
             }
 
-          
             const activeWorkEffects = profile.activeEffects.filter(e => e.type === 'work_boost');
             if (activeWorkEffects.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -225,7 +221,6 @@ module.exports = {
                 components.push(effectsContainer);
             }
 
-           
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const nextWorkContainer = new ContainerBuilder()
@@ -233,7 +228,7 @@ module.exports = {
 
             nextWorkContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📅 **NEXT WORK SHIFT**\n\n**Next Work Available:** \`${new Date(Date.now() + 3600000).toLocaleDateString()} at ${new Date(Date.now() + 3600000).toLocaleTimeString()}\`\n**Cooldown Duration:** \`1 hour\`\n**Current Time:** \`${new Date().toLocaleString()}\`\n\n> Keep working regularly to build wealth and level up your character!`)
+                    .setContent(`## 📅 **NEXT WORK SHIFT**\n\n**Next Work Available:** \`${new Date(Date.now() + 3600000).toLocaleTimeString()}\`\n**Cooldown Duration:** \`1 hour\``)
             );
 
             components.push(nextWorkContainer);
@@ -246,7 +241,6 @@ module.exports = {
         } catch (error) {
             console.error('Error in work command:', error);
 
-        
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 

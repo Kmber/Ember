@@ -193,7 +193,7 @@ module.exports = {
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📈 Bank Usage:** \`${((newBank / bankLimit) * 100).toFixed(1)}%\`\n**💾 Remaining Space:** \`$${(bankLimit - newBank).toLocaleString()}\`\n**💎 Total Net Worth:** \`$${(newWallet + newBank + profile.familyVault).toLocaleString()}\``)
+                    .setContent(`**📈 Bank Usage:** \`${((newBank / bankLimit) * 100).toFixed(1)}%\`\n**💾 Remaining Space:** \`$${(bankLimit - newBank).toLocaleString()}\`\n**💎 Total Net Worth:** \`$${(newWallet + newBank + profile.followerTithe).toLocaleString()}\``)
             );
 
             components.push(balancesContainer);
@@ -206,7 +206,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **BANKING BENEFITS**\n\n**🛡️ Security:** Money in bank is safer from robberies\n**📈 Interest:** Bank money may earn passive income\n**🏠 Requirements:** Some purchases require banked funds\n**👨‍👩‍👧‍👦 Family:** Separate from family vault for organization\n\n> Use \`!withdraw <amount>\` to take money out when needed!`)
+                    .setContent(`## 💡 **BANKING BENEFITS**\n\n**🛡️ Security:** Money in bank is safer from robberies\n**📈 Interest:** Bank money may earn passive income\n**🏠 Requirements:** Some purchases require banked funds\n**👥 Followers:** Separate from follower tithe for organization\n\n> Use \`!withdraw <amount>\` to take money out when needed!`)
             );
 
             components.push(tipsContainer);

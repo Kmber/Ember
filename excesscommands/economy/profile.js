@@ -17,7 +17,7 @@ module.exports = {
             const targetUser = message.mentions.users.first() || message.author;
             const profile = await EconomyManager.getProfile(targetUser.id, message.guild.id);
             
-            const totalWealth = profile.wallet + profile.bank + profile.familyVault;
+            const totalWealth = profile.wallet + profile.bank + profile.followerTithe;
             const securityLevel = EconomyManager.calculateSecurityLevel(profile);
             const workMultiplier = EconomyManager.calculateWorkMultiplier(profile);
             const carValue = profile.cars.reduce((sum, car) => sum + car.currentValue, 0);
@@ -52,7 +52,7 @@ module.exports = {
 
             financialContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💵 Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 Bank:** \`$${profile.bank.toLocaleString()}\`\n**🏠 Family Vault:** \`$${profile.familyVault.toLocaleString()}\`\n**💎 Total Wealth:** \`$${totalWealth.toLocaleString()}\``)
+                    .setContent(`**💵 Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 Bank:** \`$${profile.bank.toLocaleString()}\`\n**💰 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**💎 Total Wealth:** \`$${totalWealth.toLocaleString()}\``)
             );
 
             financialContainer.addTextDisplayComponents(
@@ -81,7 +81,7 @@ module.exports = {
 
             assetsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👨‍👩‍👧‍👦 Family Members:** \`${profile.familyMembers.length}\`\n**💝 Family Bond:** \`${profile.familyBond}%\`\n**🐕 Pets:** \`${profile.pets.length}/${profile.maxPets}\`\n**🛡️ Security Level:** \`${securityLevel}%\``)
+                    .setContent(`**👥 Followers:** \`${profile.followers.length}\`\n**🤝 Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**🐕 Pets:** \`${profile.pets.length}/${profile.maxPets}\`\n**🛡️ Security Level:** \`${securityLevel}%\``)
             );
 
             components.push(assetsContainer);

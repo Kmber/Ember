@@ -50,7 +50,7 @@ module.exports = {
 
                 timeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 While You Wait:**\n> • Work regularly for consistent income\n> • Build family bonds for bigger bonuses\n> • Level up to increase weekly rewards\n> • The longer wait makes it more valuable!`)
+                        .setContent(`**💡 While You Wait:**\n> • Work regularly for consistent income\n> • Build follower allegiance for bigger bonuses\n> • Level up to increase weekly rewards\n> • The longer wait makes it more valuable!`)
                 );
 
                 components.push(timeContainer);
@@ -64,10 +64,10 @@ module.exports = {
          
             const baseReward = 2500;
             const levelBonus = profile.level * 100;
-            const familyBonus = Math.floor((profile.familyBond / 100) * 1000);
+            const followerBonus = Math.floor((profile.followerAllegiance / 100) * 1000);
             const workMultiplier = EconomyManager.calculateWorkMultiplier(profile);
             
-            let totalReward = Math.floor((baseReward + levelBonus + familyBonus) * workMultiplier);
+            let totalReward = Math.floor((baseReward + levelBonus + followerBonus) * workMultiplier);
             
         
             let roleBonus = 0;
@@ -121,7 +121,7 @@ module.exports = {
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Base Weekly Reward:** \`$${baseReward.toLocaleString()}\`\n**⭐ Level Bonus:** \`$${levelBonus.toLocaleString()}\` (Level ${profile.level})\n**👨‍👩‍👧‍👦 Family Bonus:** \`$${familyBonus.toLocaleString()}\` (${profile.familyBond}% bond)`)
+                    .setContent(`**💎 Base Weekly Reward:** \`$${baseReward.toLocaleString()}\`\n**⭐ Level Bonus:** \`$${levelBonus.toLocaleString()}\` (Level ${profile.level})\n**👥 Follower Bonus:** \`$${followerBonus.toLocaleString()}\` (${profile.followerAllegiance}% allegiance)`)
             );
 
             breakdownContainer.addTextDisplayComponents(
@@ -144,13 +144,13 @@ module.exports = {
 
             progressContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🎯 Experience Gained:** \`+100 XP\`\n**🏆 Current Level:** \`${profile.level}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**📊 Total Net Worth:** \`$${(profile.wallet + profile.bank + profile.familyVault).toLocaleString()}\``)
+                    .setContent(`**🎯 Experience Gained:** \`+100 XP\`\n**🏆 Current Level:** \`${profile.level}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**📊 Total Net Worth:** \`$${(profile.wallet + profile.bank + profile.followerTithe).toLocaleString()}\``)
             );
 
           
             const multiplierSources = [];
-            if (profile.familyMembers.length > 0 && profile.properties.length > 0) {
-                multiplierSources.push(`Family Support (+${((profile.familyBond / 100) * 0.5 * 100).toFixed(1)}%)`);
+            if (profile.followers.length > 0 && profile.properties.length > 0) {
+                multiplierSources.push(`Follower Allegiance (+${((profile.followerAllegiance / 100) * 0.5 * 100).toFixed(1)}%)`);
             }
             if (profile.purchasedRoles.length > 0) {
                 multiplierSources.push(`Active Roles (${profile.purchasedRoles.filter(r => !r.expiryDate || r.expiryDate > now).length})`);
@@ -159,35 +159,35 @@ module.exports = {
             if (multiplierSources.length > 0) {
                 progressContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**⚡ Bonus Sources:** ${multiplierSources.join(', ')}\n\n> Your investments in family and roles are paying dividends!`)
+                        .setContent(`**⚡ Bonus Sources:** ${multiplierSources.join(', ')}\n\n> Your investments in followers and roles are paying dividends!`)
                 );
             }
 
             components.push(progressContainer);
 
           
-            if (profile.familyMembers.length > 0) {
+            if (profile.followers.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                const familyContainer = new ContainerBuilder()
+                const followerContainer = new ContainerBuilder()
                     .setAccentColor(0x9B59B6);
 
-                familyContainer.addTextDisplayComponents(
+                followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 👨‍👩‍👧‍👦 **FAMILY CONTRIBUTION**')
+                        .setContent('## 👥 **FOLLOWER CONTRIBUTION**')
                 );
 
-                familyContainer.addTextDisplayComponents(
+                followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Family Members:** \`${profile.familyMembers.length}\`\n**Average Family Bond:** \`${profile.familyBond}%\`\n**Family Bonus Applied:** \`$${familyBonus.toLocaleString()}\`\n**Bond Impact:** \`${((profile.familyBond / 100) * 100).toFixed(1)}% of maximum bonus\``)
+                        .setContent(`**Followers:** \`${profile.followers.length}\`\n**Average Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**Follower Bonus Applied:** \`$${followerBonus.toLocaleString()}\`\n**Allegiance Impact:** \`${((profile.followerAllegiance / 100) * 100).toFixed(1)}% of maximum bonus\``)
                 );
 
-                familyContainer.addTextDisplayComponents(
+                followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Tip:** Take your family on trips to increase bonds and boost weekly rewards!\n\n> Strong family relationships lead to better financial support.`)
+                        .setContent(`**💡 Tip:** Interact with your followers to increase allegiance and boost weekly rewards!\n\n> Strong follower relationships lead to better financial support.`)
                 );
 
-                components.push(familyContainer);
+                components.push(followerContainer);
             }
 
          
@@ -198,7 +198,7 @@ module.exports = {
 
             scheduleContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📅 **NEXT WEEKLY REWARD**\n\n**Next Claim Date:** \`${new Date(now.getTime() + cooldown).toLocaleDateString()}\`\n**Next Claim Time:** \`${new Date(now.getTime() + cooldown).toLocaleTimeString()}\`\n**Reset Schedule:** \`Every 7 days\`\n**Current Time:** \`${now.toLocaleString()}\`\n\n> Keep building your level, family bonds, and role collection for even bigger rewards next week!`)
+                    .setContent(`## 📅 **NEXT WEEKLY REWARD**\n\n**Next Claim Date:** \`${new Date(now.getTime() + cooldown).toLocaleDateString()}\`\n**Next Claim Time:** \`${new Date(now.getTime() + cooldown).toLocaleTimeString()}\`\n**Reset Schedule:** \`Every 7 days\`\n**Current Time:** \`${now.toLocaleString()}\`\n\n> Keep building your level, follower allegiance, and role collection for even bigger rewards next week!`)
             );
 
             components.push(scheduleContainer);

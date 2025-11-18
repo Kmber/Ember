@@ -7,34 +7,34 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 
-const FAMILY_TEMPLATES = {
-    spouse: {
-        relationships: ['spouse'],
-        professions: ['Teacher', 'Nurse', 'Engineer', 'Designer', 'Manager'],
-        salaryRange: [300, 800]
+const FOLLOWER_TEMPLATES = {
+    cultist: {
+        relationships: ['cultist'],
+        professions: ['Scribe', 'Acolyte', 'Zealot', 'Neophyte', 'Initiate'],
+        salaryRange: [100, 300]
     },
-    child: {
-        relationships: ['child'],
-        professions: ['Student (Part-time)', 'Intern', 'Babysitter'],
-        salaryRange: [50, 200]
+    acolyte: {
+        relationships: ['acolyte'],
+        professions: ['Ritualist', 'Summoner', 'Diviner'],
+        salaryRange: [200, 500]
     },
-    parent: {
-        relationships: ['parent'],
-        professions: ['Retired Teacher', 'Consultant', 'Small Business Owner'],
-        salaryRange: [400, 900]
+    zealot: {
+        relationships: ['zealot'],
+        professions: ['Inquisitor', 'Executioner', 'Crusader'],
+        salaryRange: [300, 700]
     },
-    sibling: {
-        relationships: ['sibling'],
-        professions: ['Artist', 'Mechanic', 'Chef', 'Programmer'],
-        salaryRange: [250, 600]
+    neophyte: {
+        relationships: ['neophyte'],
+        professions: ['Scout', 'Spy', 'Thief', 'Assassin'],
+        salaryRange: [150, 400]
     }
 };
 
 module.exports = {
-    name: 'addfamily',
-    aliases: ['family-add'],
-    description: 'Add a family member to your household with v2 components',
-    usage: '!addfamily <type> <name>',
+    name: 'addfollower',
+    aliases: ['follower-add'],
+    description: 'Recruit a follower to your congregation with v2 components',
+    usage: '!addfollower <type> <name>',
     async execute(message, args) {
         try {
             if (args.length < 2) {
@@ -45,7 +45,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 👨‍👩‍👧‍👦 Add Family Member\n## MISSING REQUIRED INFORMATION\n\n> Please specify the family member type and their name!\n> **Usage:** \`!addfamily <type> <name>\``)
+                        .setContent(`# ⛪ Recruit Follower\n## MISSING REQUIRED INFORMATION\n\n> Please specify the follower type and their name!\n> **Usage:** \`!addfollower <type> <name>\``)
                 );
 
                 components.push(usageContainer);
@@ -55,7 +55,7 @@ module.exports = {
                 const typesContainer = new ContainerBuilder()
                     .setAccentColor(0x3498DB);
 
-                const typesList = Object.entries(FAMILY_TEMPLATES).map(([type, template]) => {
+                const typesList = Object.entries(FOLLOWER_TEMPLATES).map(([type, template]) => {
                     const professions = template.professions.slice(0, 2).join(', ');
                     const salaryRange = `$${template.salaryRange[0]}-${template.salaryRange[1]}`;
                     return `**\`${type}\`** - ${professions} (${salaryRange})`;
@@ -63,7 +63,7 @@ module.exports = {
 
                 typesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 👥 **AVAILABLE FAMILY TYPES**\n\n${typesList}\n\n**Examples:**\n> \`!addfamily spouse Emma\`\n> \`!addfamily child Alex\`\n> \`!addfamily parent Robert\``)
+                        .setContent(`## 👥 **AVAILABLE FOLLOWER TYPES**\n\n${typesList}\n\n**Examples:**\n> \`!addfollower cultist Elara\`\n> \`!addfollower acolyte Kael\`\n> \`!addfollower zealot Morwen\``)
                 );
 
                 components.push(typesContainer);
@@ -77,7 +77,7 @@ module.exports = {
             const type = args[0].toLowerCase();
             const name = args.slice(1).join(' ');
             
-            if (!FAMILY_TEMPLATES[type]) {
+            if (!FOLLOWER_TEMPLATES[type]) {
                 const components = [];
 
                 const invalidTypeContainer = new ContainerBuilder()
@@ -85,7 +85,7 @@ module.exports = {
 
                 invalidTypeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Family Type\n## UNRECOGNIZED RELATIONSHIP\n\n> **\`${type}\`** is not a valid family member type!\n> Choose from the available family relationships below.`)
+                        .setContent(`# ❌ Invalid Follower Type\n## UNRECOGNIZED ROLE\n\n> **\`${type}\`** is not a valid follower type!\n> Choose from the available roles below.`)
                 );
 
                 components.push(invalidTypeContainer);
@@ -97,7 +97,7 @@ module.exports = {
 
                 validTypesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 👥 **VALID FAMILY TYPES**\n\n**👫 \`spouse\`** - Life partner, married companion\n**👶 \`child\`** - Son, daughter, adopted child\n**👴 \`parent\`** - Mother, father, guardian\n**👪 \`sibling\`** - Brother, sister, adopted sibling\n\n**💡 Try:** \`!addfamily spouse ${name}\``)
+                        .setContent(`## 👥 **VALID FOLLOWER TYPES**\n\n**🙏 \`cultist\`** - Devoted follower of the dark arts\n**🔮 \`acolyte\`** - Student of forbidden knowledge\n**⚔️ \`zealot\`** - Fervent warrior for the cause\n**💀 \`neophyte\`** - New recruit, eager to prove their worth\n\n**💡 Try:** \`!addfollower cultist ${name}\``)
                 );
 
                 components.push(validTypesContainer);
@@ -118,7 +118,7 @@ module.exports = {
 
                 noCitadelContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏰 Citadel Required for Family\n## NO HOME FOR FAMILY MEMBERS\n\n> You need to own a citadel before adding family members!\n> Family members need a safe and comfortable place to live.`)
+                        .setContent(`# 🏰 Citadel Required for Followers\n## NO SANCTUM FOR YOUR CONGREGATION\n\n> You need to own a Citadel before recruiting followers!\n> Followers need a dark and suitable place to dwell.`)
                 );
 
                 components.push(noCitadelContainer);
@@ -130,7 +130,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET A HOME FOR YOUR FAMILY**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available citadels\n**Step 2:** Acquire a citadel with family capacity\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Return here to add **${name}** as your ${type}!\n\n**💡 Family Benefits:**\n> • Family members contribute to work income\n> • Build relationships through trips and activities\n> • Enhanced household security and companionship\n> • Larger families = more earning potential`)
+                        .setContent(`## 🏘️ **ESTABLISH A CITADEL FOR YOUR FOLLOWERS**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available Citadels\n**Step 2:** Acquire a Citadel with follower capacity\n**Step 3:** Set it as your primary sanctum\n**Step 4:** Return here to recruit **${name}** as your ${type}!\n\n**💡 Follower Benefits:**\n> • Followers contribute to work income\n> • Build allegiance through dark rituals and activities\n> • Enhanced security and influence\n> • Larger congregations = more power`)
                 );
 
                 components.push(solutionContainer);
@@ -150,7 +150,7 @@ module.exports = {
             
             const activeCitadel = primaryCitadel;
             
-            if (profile.familyMembers.length >= activeCitadel.maxFamilyMembers) {
+            if (profile.followers.length >= activeCitadel.maxFollowers) {
                 const components = [];
 
                 const capacityContainer = new ContainerBuilder()
@@ -158,7 +158,7 @@ module.exports = {
 
                 capacityContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏰 Family Capacity Limit Reached\n## MAXIMUM HOUSEHOLD SIZE\n\n> Your **${activeCitadel.name}** can only house **${activeCitadel.maxFamilyMembers}** family members!\n> You currently have **${profile.familyMembers.length}** family members living there.`)
+                        .setContent(`# 🏰 Follower Capacity Limit Reached\n## MAXIMUM CONGREGATION SIZE\n\n> Your **${activeCitadel.name}** can only house **${activeCitadel.maxFollowers}** followers!\n> You currently have **${profile.followers.length}** followers dwelling there.`)
                 );
 
                 components.push(capacityContainer);
@@ -170,7 +170,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **EXPAND YOUR FAMILY HOME**\n\n**Current Family:** ${profile.familyMembers.map(m => m.name).join(', ')}\n\n**💡 Solutions:**\n> • Upgrade to a larger citadel with more family capacity (\`!acquirecitadel\`)\n> • Acquire an additional citadel for extended family\n> • Consider which family relationships are most important\n\n**🎯 Goal:** Find a citadel that can house **${profile.familyMembers.length + 1}+** family members`)
+                        .setContent(`## 🏘️ **EXPAND YOUR CITADEL**\n\n**Current Congregation:** ${profile.followers.map(m => m.name).join(', ')}\n\n**💡 Solutions:**\n> • Upgrade to a larger Citadel with more follower capacity (\`!acquirecitadel\`)\n> • Acquire an additional Citadel for your expanding congregation\n> • Consider which followers are most loyal\n\n**🎯 Goal:** Find a Citadel that can house **${profile.followers.length + 1}+** followers`)
                 );
 
                 components.push(solutionContainer);
@@ -181,7 +181,7 @@ module.exports = {
                 });
             }
             
-            if (profile.familyMembers.some(member => member.name.toLowerCase() === name.toLowerCase())) {
+            if (profile.followers.some(member => member.name.toLowerCase() === name.toLowerCase())) {
                 const components = [];
 
                 const duplicateNameContainer = new ContainerBuilder()
@@ -189,7 +189,7 @@ module.exports = {
 
                 duplicateNameContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 👥 Duplicate Family Name\n## NAME ALREADY IN USE\n\n> You already have a family member named **${name}**!\n> Each family member needs a unique name for identification.`)
+                        .setContent(`# 👥 Duplicate Follower Name\n## NAME ALREADY IN USE\n\n> You already have a follower named **${name}**!\n> Each follower needs a unique name for identification.`)
                 );
 
                 components.push(duplicateNameContainer);
@@ -199,10 +199,10 @@ module.exports = {
                 const suggestionContainer = new ContainerBuilder()
                     .setAccentColor(0x9B59B6);
 
-                const existingMember = profile.familyMembers.find(m => m.name.toLowerCase() === name.toLowerCase());
+                const existingMember = profile.followers.find(m => m.name.toLowerCase() === name.toLowerCase());
                 suggestionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **NAME SUGGESTIONS**\n\n**Existing Member:** **${existingMember.name}** (${existingMember.relationship})\n\n**Try Different Names:**\n> \`!addfamily ${type} ${name}2\`\n> \`!addfamily ${type} ${name.split(' ')[0]} ${name.split(' ')[1] || 'Jr'}\`\n> \`!addfamily ${type} [Choose a different name]\`\n\n**💡 Tip:** Use nicknames or middle names to make each family member unique!`)
+                        .setContent(`## 💡 **NAME SUGGESTIONS**\n\n**Existing Follower:** **${existingMember.name}** (${existingMember.relationship})\n\n**Try Different Names:**\n> \`!addfollower ${type} ${name}2\`\n> \`!addfollower ${type} ${name.split(' ')[0]} ${name.split(' ')[1] || 'the Devout'}\`\n> \`!addfollower ${type} [Choose a different name]\`\n\n**💡 Tip:** Use titles or epithets to make each follower unique!`)
                 );
 
                 components.push(suggestionContainer);
@@ -213,34 +213,32 @@ module.exports = {
                 });
             }
             
-            const template = FAMILY_TEMPLATES[type];
+            const template = FOLLOWER_TEMPLATES[type];
             const profession = template.professions[Math.floor(Math.random() * template.professions.length)];
             const salary = Math.floor(Math.random() * (template.salaryRange[1] - template.salaryRange[0] + 1)) + template.salaryRange[0];
-            const age = type === 'child' ? Math.floor(Math.random() * 15) + 5 : 
-                       type === 'parent' ? Math.floor(Math.random() * 20) + 45 :
-                       Math.floor(Math.random() * 30) + 20;
+            const age = Math.floor(Math.random() * 20) + 18;
             
-            const familyMember = {
+            const follower = {
                 memberId: `${type}_${Date.now()}`,
                 name,
                 relationship: type,
                 age,
                 profession,
                 salary,
-                bond: 50,
+                allegiance: 50,
                 workEfficiency: 1.0,
-                totalTrips: 0,
+                totalRituals: 0,
                 dateAdded: new Date(),
-                lastTrip: null
+                lastRitual: null
             };
             
-            profile.familyMembers.push(familyMember);
+            profile.followers.push(follower);
           
-            const avgBond = profile.familyMembers.reduce((sum, m) => sum + m.bond, 0) / profile.familyMembers.length;
-            profile.familyBond = Math.floor(avgBond);
+            const avgAllegiance = profile.followers.reduce((sum, m) => sum + m.allegiance, 0) / profile.followers.length;
+            profile.followerAllegiance = Math.floor(avgAllegiance);
             
          
-            profile.maxPets = Math.min(10, Math.floor(activeCitadel.maxFamilyMembers / 2) + 1);
+            profile.maxPets = Math.min(10, Math.floor(activeCitadel.maxFollowers / 2) + 1);
             
             await profile.save();
             
@@ -253,7 +251,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 👨‍👩‍👧‍👦 Family Member Added!\n## WELCOME TO THE FAMILY\n\n> **${name}** has officially joined your household as your ${type}!\n> Your family is growing stronger and your citadel feels more complete.`)
+                    .setContent(`# ⛪ Follower Recruited!\n## WELCOME TO THE CONGREGATION\n\n> **${name}** has officially joined your congregation as your ${type}!\n> Your congregation is growing stronger and your Citadel feels more complete.`)
             );
 
             components.push(successContainer);
@@ -266,17 +264,17 @@ module.exports = {
 
             profileContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 👤 **NEW FAMILY MEMBER PROFILE**')
+                    .setContent('## 👤 **NEW FOLLOWER PROFILE**')
             );
 
             profileContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👤 Name:** \`${name}\`\n**💞 Relationship:** \`${type}\`\n**🎂 Age:** \`${age} years old\`\n**💼 Profession:** \`${profession}\`\n**💰 Work Salary:** \`$${salary} per work session\``)
+                    .setContent(`**👤 Name:** \`${name}\`\n**📜 Role:** \`${type}\`\n**🎂 Age:** \`${age} years old\`\n**💼 Profession:** \`${profession}\`\n**💰 Work Tithe:** \`$${salary} per work session\``)
             );
 
             profileContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**❤️ Initial Bond:** \`50%\` (room for growth!)\n**📈 Work Efficiency:** \`100%\` (optimal performance)\n**🚗 Total Trips:** \`0\` (ready for adventures!)\n**📅 Joined Family:** \`${new Date().toLocaleDateString()}\``)
+                    .setContent(`**🖤 Initial Allegiance:** \`50%\` (room for growth!)\n**📈 Work Efficiency:** \`100%\` (optimal performance)\n**💀 Total Rituals:** \`0\` (ready for indoctrination!)\n**📅 Joined Congregation:** \`${new Date().toLocaleDateString()}\``)
             );
 
             components.push(profileContainer);
@@ -289,21 +287,21 @@ module.exports = {
 
             householdContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🏠 **UPDATED HOUSEHOLD STATUS**')
+                    .setContent('## 🏠 **UPDATED CONGREGATION STATUS**')
             );
 
-            const totalFamilyIncome = profile.familyMembers.reduce((sum, member) => {
-                return sum + (member.salary * member.workEfficiency * (member.bond / 100));
+            const totalFollowerIncome = profile.followers.reduce((sum, member) => {
+                return sum + (member.salary * member.workEfficiency * (member.allegiance / 100));
             }, 0);
 
             householdContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👥 Total Family Members:** \`${profile.familyMembers.length}/${activeCitadel.maxFamilyMembers}\`\n**❤️ Average Family Bond:** \`${profile.familyBond}%\`\n**💰 Combined Family Income:** \`$${Math.floor(totalFamilyIncome)}/work\`\n**🏰 Citadel:** \`${activeCitadel.name}\``)
+                    .setContent(`**👥 Total Followers:** \`${profile.followers.length}/${activeCitadel.maxFollowers}\`\n**🖤 Average Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**💰 Combined Follower Tithe:** \`$${Math.floor(totalFollowerIncome)}/work\`\n**🏰 Citadel:** \`${activeCitadel.name}\``)
             );
 
             householdContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🐕 Pet Capacity:** \`${profile.maxPets}\` (updated based on family size)\n**🎯 Family Goal:** Build bonds through trips and activities\n**📈 Work Bonus:** Family contributes to your earnings automatically`)
+                    .setContent(`**🐕 Pet Capacity:** \`${profile.maxPets}\` (updated based on congregation size)\n**🎯 Congregation Goal:** Build allegiance through dark rituals\n**📈 Work Bonus:** Followers contribute to your earnings automatically`)
             );
 
             components.push(householdContainer);
@@ -316,17 +314,17 @@ module.exports = {
 
             bondingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 💝 **FAMILY BONDING GUIDE**')
+                    .setContent('## 🖤 **FOLLOWER ALLEGIANCE GUIDE**')
             );
 
             bondingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🚗 Take Family Trips:** Use \`!trip\` to build stronger relationships\n**❤️ Build Bonds:** Higher bonds = better work efficiency and income\n**👨‍👩‍👧‍👦 Expand Family:** Add more members if you have space\n**🏰 Upgrade Citadel:** Larger citadels house bigger families\n**🎯 Long-term Goal:** Reach 100% bond with all family members`)
+                    .setContent(`**💀 Perform Dark Rituals:** Use \`!ritual\` to build stronger allegiance\n**❤️ Build Allegiance:** Higher allegiance = better work efficiency and income\n**⛪ Expand Congregation:** Recruit more followers if you have space\n**🏰 Upgrade Citadel:** Larger Citadels house bigger congregations\n**🎯 Long-term Goal:** Reach 100% allegiance with all followers`)
             );
 
             bondingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💡 **${name}** is ready to:**\n> • Contribute to your work earnings automatically\n> • Join family trips to build stronger bonds\n> • Help increase your household's overall happiness\n> • Provide companionship and emotional support\n\n> Welcome to your growing family empire!`)
+                    .setContent(`**💡 **${name}** is ready to:**\n> • Contribute to your work earnings automatically\n> • Join dark rituals to build stronger allegiance\n> • Help increase your congregation's overall influence\n> • Provide unwavering devotion and servitude\n\n> Welcome to your growing dark empire!`)
             );
 
             components.push(bondingContainer);
@@ -337,7 +335,7 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in addfamily command:', error);
+            console.error('Error in addfollower command:', error);
 
          
             const errorContainer = new ContainerBuilder()
@@ -345,7 +343,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **FAMILY ADDITION ERROR**\n\nSomething went wrong while adding your family member. Please try again in a moment.')
+                    .setContent('## ❌ **FOLLOWER RECRUITMENT ERROR**\n\nSomething went wrong while recruiting your follower. Please try again in a moment.')
             );
 
             return message.reply({

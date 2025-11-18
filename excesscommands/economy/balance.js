@@ -15,7 +15,7 @@ module.exports = {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            const totalWealth = profile.wallet + profile.bank + profile.familyVault;
+            const totalWealth = profile.wallet + profile.bank + profile.followerTithe;
             const securityLevel = EconomyManager.calculateSecurityLevel(profile);
             const vaultCapacity = EconomyManager.getVaultCapacity(profile);
             const bankLimit = EconomyManager.getBankLimit(profile);
@@ -52,7 +52,7 @@ module.exports = {
 
             cashContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏠 Family Vault:** \`$${profile.familyVault.toLocaleString()}\`\n**📦 Vault Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**🛡️ Security Level:** \`${securityLevel}%\``)
+                    .setContent(`**👥 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📦 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**🛡️ Security Level:** \`${securityLevel}%\``)
             );
 
             components.push(cashContainer);
@@ -76,7 +76,7 @@ module.exports = {
 
             wealthContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👨‍👩‍👧‍👦 Family Bond:** \`${profile.familyBond}%\`\n**🏆 Reputation:** \`${profile.reputation}\``)
+                    .setContent(`**👥 Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**🏆 Reputation:** \`${profile.reputation}\``)
             );
 
             components.push(wealthContainer);

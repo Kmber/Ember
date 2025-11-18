@@ -125,7 +125,7 @@ module.exports = {
 
             const newWallet = profile.wallet + amount;
             const newBank = profile.bank - amount;
-            const totalWealth = newWallet + newBank + profile.familyVault;
+            const totalWealth = newWallet + newBank + profile.followerTithe;
 
         
             await EconomyManager.updateWallet(userId, guildId, amount);
@@ -185,12 +185,12 @@ module.exports = {
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💳 Wallet Balance:** \`$${newWallet.toLocaleString()}\`\n**🏦 Bank Balance:** \`$${newBank.toLocaleString()}\`\n**🏠 Family Vault:** \`$${profile.familyVault.toLocaleString()}\``)
+                    .setContent(`**💳 Wallet Balance:** \`$${newWallet.toLocaleString()}\`\n**🏦 Bank Balance:** \`$${newBank.toLocaleString()}\`\n**👥 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\``)
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Total Net Worth:** \`$${totalWealth.toLocaleString()}\`\n**📈 Liquid Assets:** \`$${newWallet.toLocaleString()}\` (Available for spending)\n**🛡️ Secured Assets:** \`$${(newBank + profile.familyVault).toLocaleString()}\``)
+                    .setContent(`**💎 Total Net Worth:** \`$${totalWealth.toLocaleString()}\`\n**📈 Liquid Assets:** \`$${newWallet.toLocaleString()}\` (Available for spending)\n**🛡️ Secured Assets:** \`$${(newBank + profile.followerTithe).toLocaleString()}\``)
             );
 
             components.push(balancesContainer);

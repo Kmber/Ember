@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'mycitadel',
-    aliases: ['citadel-info', 'mycitadel'],
+    aliases: ['citadel-info'],
     description: 'View your current citadel and follower status.',
     async execute(message) {
         try {
@@ -23,7 +23,7 @@ module.exports = {
 
                 noCitadelContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('# 🏰 No Citadel Acquired\n## START YOUR CONQUEST\n\n> You don\'t own any citadels yet! Citadel ownership is essential for building your kingdom.\n> Citadels provide follower housing, secure storage, and garrison space for your units.')
+                        .setContent('# 🏰 No Citadel Acquired\n## START YOUR CONQUEST\n\n> You don\'t own any citadels yet! Citadel ownership is essential for building your kingdom.\n> Citadels provide follower housing, secure storage, and garage space for your cars.')
                 );
 
                 components.push(noCitadelContainer);
@@ -35,7 +35,7 @@ module.exports = {
 
                 startContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET YOUR FIRST CITADEL**\n\n**Step 1:** Use \\`!acquirecitadel\\` to browse available citadels\n**Step 2:** Choose a citadel that fits your budget and needs\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Start building your household with followers and beasts!\n\n**💡 Citadel Benefits:**\n> • House followers for work bonuses\n> • Secure vault storage\n> • Garrison space for unit collection\n> • Enhanced security against raids\n> • Investment appreciation over time`)
+                        .setContent(`## 🏘️ **GET YOUR FIRST CITADEL**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available citadels\n**Step 2:** Choose a citadel that fits your budget and needs\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Start building your congregation with followers and pets!\n\n**💡 Citadel Benefits:**\n> • House followers for work bonuses\n> • Secure tithe storage\n> • Garage space for car collection\n> • Enhanced security against raids\n> • Investment appreciation over time`)
                 );
 
                 components.push(startContainer);
@@ -49,7 +49,6 @@ module.exports = {
             const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel) || profile.citadels[0];
             const securityLevel = EconomyManager.calculateSecurityLevel(profile);
             const vaultCapacity = EconomyManager.getVaultCapacity(profile);
-            const monthlyCost = primaryCitadel.monthlyUpkeep;
 
             const components = [];
 
@@ -87,12 +86,12 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏰 Citadel:** \\`${primaryCitadel.name}\\`\n**🏷️ Type:** \\`${primaryCitadel.type}\\`\n**🛡️ Base Security:** \\`Level ${primaryCitadel.securityLevel}\\`\n**💰 Current Value:** \\`$${primaryCitadel.currentValue.toLocaleString()}\\`\n**💸 Acquisition Price:** \\`$${primaryCitadel.purchasePrice.toLocaleString()}\\``)
+                    .setContent(`**🏰 Citadel:** \`${primaryCitadel.name}\`\n**🏷️ Type:** \`${primaryCitadel.type}\`\n**🛡️ Base Security:** \`Level ${primaryCitadel.securityLevel}\`\n**💰 Current Value:** \`$${primaryCitadel.currentValue.toLocaleString()}\`\n**💸 Acquisition Price:** \`$${primaryCitadel.purchasePrice.toLocaleString()}\``)
             );
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Monthly Upkeep:** \\`$${primaryCitadel.monthlyUpkeep.toLocaleString()}\\`\n**📅 Acquired Since:** \\`${new Date(primaryCitadel.dateAcquired).toLocaleDateString()}\\` (${ownershipDays} days)\n**📈 Value Appreciation:** \\`$${(primaryCitadel.currentValue - primaryCitadel.purchasePrice).toLocaleString()}\\``)
+                    .setContent(`**💰 Monthly Upkeep:** \`$${primaryCitadel.monthlyUpkeep.toLocaleString()}\`\n**📅 Acquired Since:** \`${new Date(primaryCitadel.dateAcquired).toLocaleDateString()}\` (${ownershipDays} days)\n**📈 Value Appreciation:** \`$${(primaryCitadel.currentValue - primaryCitadel.purchasePrice).toLocaleString()}\``)
             );
 
             components.push(detailsContainer);
@@ -100,43 +99,47 @@ module.exports = {
        
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-            const familyContainer = new ContainerBuilder()
+            const followerContainer = new ContainerBuilder()
                 .setAccentColor(0x9B59B6);
 
-            familyContainer.addTextDisplayComponents(
+            followerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 👨‍👩‍👧‍👦 **HOUSEHOLD FOLLOWERS**')
+                    .setContent('## ⛪ **CONGREGATION**')
             );
 
-            if (profile.familyMembers.length > 0) {
-                familyContainer.addTextDisplayComponents(
+            if (profile.followers.length > 0) {
+                const totalFollowerIncome = profile.followers.reduce((sum, member) => {
+                    return sum + (member.salary * member.workEfficiency * (member.allegiance / 100));
+                }, 0);
+
+                followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Follower Count:** \\`${profile.familyMembers.length}/${primaryCitadel.maxFamilyMembers} followers\\`\n**Average Loyalty:** \\`${profile.familyBond}%\\`\n**Follower Work Income:** \\`$${EconomyManager.calculateFamilyIncome(profile).toLocaleString()}/work\\``)
+                        .setContent(`**Follower Count:** \`${profile.followers.length}/${primaryCitadel.maxFollowers} followers\`\n**Average Allegiance:** \`${profile.followerAllegiance}%\`\n**Follower Work Tithe:** \`$${Math.floor(totalFollowerIncome).toLocaleString()}/work\``)
                 );
 
-                const familyList = profile.familyMembers.slice(0, 5).map(member => 
-                    `**${member.name}** (${member.relationship})\n> **Profession:** \\`${member.profession}\\` • **Loyalty:** \\`${member.bond}%\\` • **Stipend:** \\`$${member.salary}/work\\``
+                const followerList = profile.followers.slice(0, 5).map(member => 
+                    `**${member.name}** (${member.relationship})\n> **Profession:** \`${member.profession}\` • **Allegiance:** \`${member.allegiance}%\` • **Follower Tithe:** \`$${member.salary}/work\``
                 ).join('\n\n');
 
-                familyContainer.addTextDisplayComponents(
+                followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(familyList)
+                        .setContent(followerList)
                 );
 
-                if (profile.familyMembers.length > 5) {
-                    familyContainer.addTextDisplayComponents(
+                if (profile.followers.length > 5) {
+                    followerContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`*...and ${profile.familyMembers.length - 5} more followers residing here*`)
+                            .setContent(`*...and ${profile.followers.length - 5} more followers residing here*`)
                     );
                 }
             } else {
-                familyContainer.addTextDisplayComponents(
+                followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏰 Empty Citadel:** Your citadel is ready for followers!\n**Capacity:** \\`0/${primaryCitadel.maxFamilyMembers} followers\\`\n\n**💡 Recruit Followers:** Use follower management commands to add loyal subjects\n**🎯 Benefits:** Followers provide work bonuses and loyalty\n**❤️ Relationships:** Build loyalty through quests and activities`)
+                        .setContent(`**🏰 Empty Citadel:** Your citadel is ready for followers!\n**Capacity:** \`0/${primaryCitadel.maxFollowers} followers\`\n\n**💡 Recruit Followers:** Use \`!addfollower\` to add loyal subjects\n**🎯 Benefits:** Followers provide work bonuses and allegiance\n**❤️ Relationships:** Build allegiance through rituals and activities`)
                 );
             }
 
-            components.push(familyContainer);
+            components.push(followerContainer);
 
        
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -146,20 +149,20 @@ module.exports = {
 
             garageContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🚗 **GARRISON**')
+                    .setContent('## 🚗 **GARAGE**')
             );
 
             if (primaryCitadel.garrisonCapacity > 0) {
                 garageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Garrison Capacity:** \\`${profile.cars.length}/${primaryCitadel.garrisonCapacity} units\\`\n**Total Fleet Value:** \\`$${profile.cars.reduce((sum, car) => sum + (car.currentValue || car.purchasePrice), 0).toLocaleString()}\\``)
+                        .setContent(`**Garage Capacity:** \`${profile.cars.length}/${primaryCitadel.garrisonCapacity} cars\`\n**Total Fleet Value:** \`$${profile.cars.reduce((sum, car) => sum + (car.currentValue || car.purchasePrice), 0).toLocaleString()}\``)
                 );
 
                 if (profile.cars.length > 0) {
                     const carList = profile.cars.slice(0, 4).map(car => {
                         const activeIndicator = car.carId === profile.activeCar ? '🚗 **ACTIVE**' : '🅿️ Stationed';
                         const condition = car.durability > 80 ? '🟢' : car.durability > 50 ? '🟡' : '🔴';
-                        return `**${car.name}** ${activeIndicator}\n> **Condition:** ${condition} \\`${car.durability}%\\` • **Value:** \\`$${(car.currentValue || car.purchasePrice).toLocaleString()}\\``;
+                        return `**${car.name}** ${activeIndicator}\n> **Condition:** ${condition} \`${car.durability}%\` • **Value:** \`$${(car.currentValue || car.purchasePrice).toLocaleString()}\``;
                     }).join('\n\n');
 
                     garageContainer.addTextDisplayComponents(
@@ -170,19 +173,19 @@ module.exports = {
                     if (profile.cars.length > 4) {
                         garageContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`*...and ${profile.cars.length - 4} more units in your garrison*`)
+                                .setContent(`*...and ${profile.cars.length - 4} more cars in your garage*`)
                         );
                     }
                 } else {
                     garageContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🏢 Empty Garrison:** Your garrison is ready for units!\n\n**💡 Get Started:** Use \\`!buyunit\\` to acquire your first unit\n**🎯 Benefits:** Units enable quests and expeditions`)
+                            .setContent(`**🏢 Empty Garage:** Your garage is ready for cars!\n\n**💡 Get Started:** Use \`!buycar\` to acquire your first car\n**🎯 Benefits:** Cars enable racing and other activities`)
                     );
                 }
             } else {
                 garageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🚫 No Garrison Available**\n\n**🏠 Citadel Limitation:** This citadel doesn\'t include garrison space\n**💡 Upgrade Option:** Consider moving to a citadel with garrison facilities\n**🚗 Unit Storage:** You\'ll need garrison space to house units safely`)
+                        .setContent(`**🚫 No Garage Available**\n\n**🏠 Citadel Limitation:** This citadel doesn\'t include garage space\n**💡 Upgrade Option:** Consider moving to a citadel with garage facilities\n**🚗 Car Storage:** You\'ll need garage space to house cars safely`)
                 );
             }
 
@@ -199,15 +202,17 @@ module.exports = {
                     .setContent('## 🛡️ **SECURITY & STORAGE**')
             );
 
-            const vaultUsage = ((profile.familyVault / vaultCapacity) * 100).toFixed(1);
+            const vaultUsage = ((profile.followerTithe / vaultCapacity) * 100).toFixed(1);
+            const petSecurityBonus = profile.pets.reduce((total, pet) => total + pet.securityLevel, 0);
+
             securityContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🔒 Total Security Level:** \\`${securityLevel}%\\`\n**🏰 Citadel Base Security:** \\`${primaryCitadel.securityLevel}\\`\n**🐕 Beast Security Bonus:** \\`+${securityLevel - primaryCitadel.securityLevel}\\`\n**🛡️ Raid Protection:** Enhanced based on total security`)
+                    .setContent(`**🔒 Total Security Level:** \`${securityLevel}%\`\n**🏰 Citadel Base Security:** \`${primaryCitadel.securityLevel * 10}%\`\n**🐾 Pet Security Bonus:** \`+${petSecurityBonus}%\`\n**🛡️ Raid Protection:** Enhanced based on total security`)
             );
 
             securityContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏦 Vault Balance:** \\`$${profile.familyVault.toLocaleString()}\\`\n**📊 Vault Capacity:** \\`$${vaultCapacity.toLocaleString()}\\`\n**💾 Storage Used:** \\`${vaultUsage}%\\`\n**🔐 Vault Security:** Protected by citadel and beast security`)
+                    .setContent(`**💰 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📊 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**💾 Storage Used:** \`${vaultUsage}%\`\n**🔐 Tithe Security:** Protected by citadel and pet security`)
             );
 
             components.push(securityContainer);
@@ -221,19 +226,19 @@ module.exports = {
 
                 petContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 🐕 **TAMED BEASTS**')
+                        .setContent('## 🐾 **PETS**')
                 );
 
                 petContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Beast Capacity:** \\`${profile.pets.length}/${profile.maxPets} beasts\\`\n**Security Contribution:** \\`+${securityLevel - primaryCitadel.securityLevel}\\` from beasts\n**Beast Care Status:** ${profile.pets.filter(p => (p.happiness + p.health + p.cleanliness) / 3 > 70).length} well-cared beasts`)
+                        .setContent(`**Pet Capacity:** \`${profile.pets.length}/${profile.maxPets} pets\`\n**Security Contribution:** \`+${petSecurityBonus}%\` from pets\n**Pet Care Status:** ${profile.pets.filter(p => (p.happiness + p.health + p.cleanliness) / 3 > 70).length} well-cared pets`)
                 );
 
                 if (profile.pets.length > 0) {
                     const petList = profile.pets.slice(0, 3).map(pet => {
                         const condition = ((pet.happiness + pet.health + pet.cleanliness) / 3);
                         const conditionIcon = condition > 80 ? '🟢' : condition > 50 ? '🟡' : '🔴';
-                        return `**${pet.name}** (${pet.breed}) ${conditionIcon}\n> **Security:** \\`${pet.securityLevel}\\` • **Condition:** \\`${condition.toFixed(0)}%\\``;
+                        return `**${pet.name}** (${pet.breed}) ${conditionIcon}\n> **Security:** \`${pet.securityLevel}%\` • **Condition:** \`${condition.toFixed(0)}%\``;
                     }).join('\n\n');
 
                     petContainer.addTextDisplayComponents(
@@ -244,13 +249,13 @@ module.exports = {
                     if (profile.pets.length > 3) {
                         petContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`*...and ${profile.pets.length - 3} more tamed beasts*`)
+                                .setContent(`*...and ${profile.pets.length - 3} more pets*`)
                         );
                     }
                 } else {
                     petContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🐾 No Beasts Yet:** Your citadel can house up to ${profile.maxPets} beasts\n\n**💡 Tame Today:** Use \\`!tamebeast\\` to add loyal companions\n**🛡️ Security Boost:** Beasts enhance your citadel protection`)
+                            .setContent(`**🐾 No Pets Yet:** Your citadel can house up to ${profile.maxPets} pets\n\n**💡 Adopt Today:** Use \`!buypet\` to add loyal companions\n**🛡️ Security Boost:** Pets enhance your citadel protection`)
                     );
                 }
 
@@ -265,7 +270,7 @@ module.exports = {
 
             managementContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**🏦 Vault Management:** Use \\`!vault\\` to manage your secure savings\n**👨‍👩‍👧‍👦 Follower Growth:** Recruit more followers if space allows\n**🚗 Unit Collection:** Expand your garrison with more units for quests\n**🐕 Beast Taming:** Tame beasts to increase security and companionship\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
+                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`!tithe\` to manage your secure savings\n**⛪ Follower Growth:** Recruit more followers if space allows\n**🚗 Car Collection:** Expand your garage with more cars for racing\n**🐾 Pet Adoption:** Adopt pets to increase security and companionship\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
             );
 
             components.push(managementContainer);

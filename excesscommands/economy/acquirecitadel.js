@@ -56,7 +56,7 @@ module.exports = {
                     for (let i = 0; i < citadels.length; i += 3) {
                         const citadelGroup = citadels.slice(i, i + 3);
                         const citadelText = citadelGroup.map(([id, citadel]) => 
-                            `**\\`${id}\\`** - ${citadel.name}\n> **Price:** \\`$${citadel.price.toLocaleString()}\\`\n> **Followers:** ${citadel.maxFamilyMembers} • **Security:** ${citadel.securityLevel} • **Vault:** $${citadel.vaultCapacity.toLocaleString()}\n> **Garrison:** ${citadel.garrisonCapacity > 0 ? `${citadel.garrisonCapacity} units` : 'None'} • **Upkeep:** $${citadel.monthlyUpkeep.toLocaleString()}`
+                            `**\\`${id}\\`** - ${citadel.name}\n> **Price:** \\`$${citadel.price.toLocaleString()}\\`\n> **Followers:** ${citadel.maxFollowers} • **Security:** ${citadel.securityLevel} • **Vault:** $${citadel.vaultCapacity.toLocaleString()}\n> **Garrison:** ${citadel.garrisonCapacity > 0 ? `${citadel.garrisonCapacity} cars` : 'None'} • **Upkeep:** $${citadel.monthlyUpkeep.toLocaleString()}`
                         ).join('\n\n');
 
                         categoryContainer.addTextDisplayComponents(
@@ -75,7 +75,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **HOW TO ACQUIRE**\n\n**Command:** \\`!acquirecitadel <citadel_id>\\`\n**Example:** \\`!acquirecitadel outpost\\`\n\n**💡 Benefits:**\n> • House your followers securely\n> • Unlock vault storage\n> • Enable garrison for multiple units\n> • Increase security against raids\n> • First citadel becomes your primary stronghold`)
+                        .setContent(`## 🛒 **HOW TO ACQUIRE**\n\n**Command:** \\`!acquirecitadel <citadel_id>\\`\n**Example:** \\`!acquirecitadel outpost\\`\n\n**💡 Benefits:**\n> • House your followers securely\n> • Unlock vault storage\n> • Enable garrison for multiple cars\n> • Increase security against raids\n> • First citadel becomes your primary stronghold`)
                 );
 
                 components.push(instructionsContainer);
@@ -171,7 +171,7 @@ module.exports = {
                 currentValue: citadelData.price,
                 monthlyUpkeep: citadelData.monthlyUpkeep,
                 securityLevel: citadelData.securityLevel,
-                maxFamilyMembers: citadelData.maxFamilyMembers,
+                maxFollowers: citadelData.maxFollowers,
                 garrisonCapacity: citadelData.garrisonCapacity,
                 vaultCapacity: citadelData.vaultCapacity,
                 condition: 'pristine',
@@ -181,7 +181,7 @@ module.exports = {
         
             if (!profile.primaryCitadel) {
                 profile.primaryCitadel = citadelId;
-                profile.maxPets = Math.floor(citadelData.maxFamilyMembers / 2);
+                profile.maxPets = Math.floor(citadelData.maxFollowers / 2);
             }
 
          
@@ -221,12 +221,12 @@ module.exports = {
 
             specsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏰 Citadel Name:** \\`${citadelData.name}\\`\n**🏷️ Citadel Type:** \\`${citadelData.type}\\`\n**👨‍👩‍👧‍👦 Follower Capacity:** \\`${citadelData.maxFamilyMembers} followers\\`\n**🛡️ Security Level:** \\`${citadelData.securityLevel}/10\\`\n**🏦 Vault Capacity:** \\`$${citadelData.vaultCapacity.toLocaleString()}\\``)
+                    .setContent(`**🏰 Citadel Name:** \\`${citadelData.name}\\`\n**🏷️ Citadel Type:** \\`${citadelData.type}\\`\n**👨‍👩‍👧‍👦 Follower Capacity:** \\`${citadelData.maxFollowers} followers\\`\n**🛡️ Security Level:** \\`${citadelData.securityLevel}/10\\`\n**🏦 Vault Capacity:** \\`$${citadelData.vaultCapacity.toLocaleString()}\\``)
             );
 
             specsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🚗 Garrison:** ${citadelData.garrisonCapacity > 0 ? `\\`${citadelData.garrisonCapacity} units\\`` : '\\`None\\`'}\n**💰 Monthly Upkeep:** \\`$${citadelData.monthlyUpkeep.toLocaleString()}\\`\n**📅 Acquisition Date:** \\`${new Date().toLocaleDateString()}\\``)
+                    .setContent(`**🚗 Garrison:** ${citadelData.garrisonCapacity > 0 ? `\\`${citadelData.garrisonCapacity} cars\\`` : '\\`None\\`'}\n**💰 Monthly Upkeep:** \\`$${citadelData.monthlyUpkeep.toLocaleString()}\\`\n**📅 Acquisition Date:** \\`${new Date().toLocaleDateString()}\\``)
             );
 
             components.push(specsContainer);
@@ -243,11 +243,11 @@ module.exports = {
             );
 
             const unlockedFeatures = [];
-            if (citadelData.maxFamilyMembers > 0) unlockedFeatures.push(`**👨‍👩‍👧‍👦 Follower Housing:** Accommodate up to ${citadelData.maxFamilyMembers} followers`);
+            if (citadelData.maxFollowers > 0) unlockedFeatures.push(`**👨‍👩‍👧‍👦 Follower Housing:** Accommodate up to ${citadelData.maxFollowers} followers`);
             if (citadelData.vaultCapacity > 0) unlockedFeatures.push(`**🏦 Vault:** Secure storage for $${citadelData.vaultCapacity.toLocaleString()}`);
-            if (citadelData.garrisonCapacity > 0) unlockedFeatures.push(`**🚗 Garrison:** House up to ${citadelData.garrisonCapacity} units safely`);
+            if (citadelData.garrisonCapacity > 0) unlockedFeatures.push(`**🚗 Garrison:** House up to ${citadelData.garrisonCapacity} cars safely`);
             if (citadelData.securityLevel > 0) unlockedFeatures.push(`**🛡️ Enhanced Security:** Level ${citadelData.securityLevel} protection against raids`);
-            if (!profile.citadels.find(c => c.propertyId !== citadelId)) unlockedFeatures.push(`**🐕 Beast Taming:** Tame up to ${Math.floor(citadelData.maxFamilyMembers / 2)} beasts`);
+            if (!profile.citadels.find(c => c.propertyId !== citadelId)) unlockedFeatures.push(`**🐾 Pet Ownership:** Own up to ${Math.floor(citadelData.maxFollowers / 2)} pets`);
 
             featuresContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
@@ -276,7 +276,7 @@ module.exports = {
 
             nextStepsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit money in your vault for security\n**🚗 Garrison Units:** Store multiple units in your garrison\n**🐕 Tame Beasts:** Tame beasts for companionship and security\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
+                    .setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit money in your vault for security\n**🚗 Garrison Cars:** Store multiple cars in your garrison\n**🐾 Adopt Pets:** Adopt pets for companionship and security\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
             );
 
             components.push(nextStepsContainer);
@@ -320,11 +320,11 @@ function getCitadelTypeColor(type) {
 
 function getCitadelTypeEmoji(type) {
     const emojis = {
-        'outpost': '🏰',
+        'outpost': '🏕️',
         'fortress': '🏰',
-        'sanctuary': '🏰',
-        'castle': '🏰',
-        'palace': '🏰'
+        'sanctuary': '🏛️',
+        'castle': '👑',
+        'palace': '🌟'
     };
     return emojis[type] || '🏰';
 }

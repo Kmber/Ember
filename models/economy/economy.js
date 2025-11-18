@@ -15,10 +15,10 @@ class EconomyManager {
                         wallet: 1000,
                         bank: 0,
                         bankLimit: 10000,
-                        // Family System defaults
-                        familyVault: 0,
-                        familyMembers: [],
-                        familyBond: 0,
+                        // Followers System defaults
+                        followerTithe: 0,
+                        followers: [],
+                        followerAllegiance: 0,
                         // Vehicle System defaults
                         cars: [],
                         activeCar: null,
@@ -65,7 +65,7 @@ class EconomyManager {
                             weekly: null,
                             work: null,
                             race: null,
-                            trip: null,
+                            ritual: null,
                             petCare: null,
                             robbery: null,
                             beg: null,
@@ -117,10 +117,10 @@ class EconomyManager {
         return profile;
     }
 
-    // Family vault operations
-    static async updateFamilyVault(userId, guildId, amount) {
+    // Follower tithe operations
+    static async updateFollowerTithe(userId, guildId, amount) {
         const profile = await this.getProfile(userId, guildId);
-        profile.familyVault = Math.max(0, profile.familyVault + amount);
+        profile.followerTithe = Math.max(0, profile.followerTithe + amount);
         await profile.save();
         return profile;
     }
@@ -132,7 +132,7 @@ class EconomyManager {
             weekly: 7 * 24 * 60 * 60 * 1000, // 7 days
             work: 60 * 60 * 1000, // 1 hour
             race: 5 * 60 * 1000, // 5 minutes
-            trip: 24 * 60 * 60 * 1000, // 24 hours
+            ritual: 24 * 60 * 60 * 1000, // 24 hours
             petCare: 30 * 60 * 1000, // 30 minutes
             robbery: 30 * 60 * 1000, // 30 minutes
             beg: 10 * 60 * 1000, // 10 minutes
@@ -439,15 +439,15 @@ static async collectBusinessIncome(userId, guildId) {
         return { success, raid, memberProfiles };
     }
 
-    // Calculate work multiplier (FIXED: Requires citadel for family bonus)
+    // Calculate work multiplier (FIXED: Requires citadel for follower bonus)
     static calculateWorkMultiplier(profile) {
         let multiplier = 1.0;
 
-        // Family bond bonus ONLY if they have a citadel
+        // Follower allegiance bonus ONLY if they have a citadel
         const hasCitadel = profile.citadels.length > 0;
-        if (hasCitadel && profile.familyMembers.length > 0) {
-            const familyBonus = (profile.familyBond / 100) * 0.5;
-            multiplier += familyBonus;
+        if (hasCitadel && profile.followers.length > 0) {
+            const followerBonus = (profile.followerAllegiance / 100) * 0.5;
+            multiplier += followerBonus;
         }
 
         // Role bonuses

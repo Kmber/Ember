@@ -1,38 +1,32 @@
+
 const cron = require('node-cron');
 const { EmbedBuilder } = require('discord.js');
 const { Economy, EconomyManager } = require('../models/economy/economy');
 const EconomyUtils = require('../utils/economyUtils');
 
 module.exports = (client) => {
-    //console.log('🏦 Economy event system loaded!');
-    
     // Nightly robbery system (2 AM daily)
     cron.schedule('0 2 * * *', async () => {
-        //console.log('🌙 Running nightly robbery checks...');
         await handleNightlyRobberies(client);
     });
     
     // Pet stat decay (every 6 hours)
     cron.schedule('0 */6 * * *', async () => {
-       //console.log('🐕 Running pet stat decay...');
         await EconomyUtils.decayPetStats();
     });
     
     // Monthly bills (1st of each month at midnight)
     cron.schedule('0 0 1 * *', async () => {
-        //console.log('💰 Processing monthly bills...');
         await EconomyUtils.handleMonthlyBills();
     });
     
     // Role expiry check (daily at 1 AM)
     cron.schedule('0 1 * * *', async () => {
-        //console.log('👑 Checking role expiries...');
         await handleRoleExpiries(client);
     });
     
     // Random events (every 4 hours)
     cron.schedule('0 */4 * * *', async () => {
-        //console.log('🎲 Triggering random events...');
         await handleRandomEvents(client);
     });
     
@@ -43,7 +37,7 @@ module.exports = (client) => {
             let successfulRobberies = 0;
             
             for (const profile of allProfiles) {
-                if (profile.familyVault < 5000) continue; // Not worth robbing
+                if (profile.followerTithe < 5000) continue; // Not worth robbing
                 
                 const securityLevel = EconomyManager.calculateSecurityLevel(profile);
                 const baseRobberyChance = 25; // Base 25% chance
@@ -67,7 +61,7 @@ module.exports = (client) => {
         const user = await client.users.fetch(profile.userId).catch(() => null);
         if (!user) return;
         
-        const vaultAmount = profile.familyVault;
+        const vaultAmount = profile.followerTithe;
         const baseStealPercentage = 0.6; // 60% base
         const securityReduction = (securityLevel / 100) * 0.3; // Up to 30% reduction
         const stealPercentage = Math.max(0.2, baseStealPercentage - securityReduction);
@@ -75,12 +69,10 @@ module.exports = (client) => {
         const stolenAmount = Math.floor(vaultAmount * stealPercentage);
         const remainingAmount = vaultAmount - stolenAmount;
         
-        // Update profile
-        profile.familyVault = remainingAmount;
+        profile.followerTithe = remainingAmount;
         profile.lastRobbed = new Date();
         profile.robberyAttempts += 1;
         
-        // Add transaction record
         profile.transactions.push({
             type: 'expense',
             amount: -stolenAmount,
@@ -88,7 +80,6 @@ module.exports = (client) => {
             category: 'robbery'
         });
         
-        // Damage pets if they tried to defend
         profile.pets.forEach(pet => {
             if (pet.health > 80 && pet.happiness > 70) {
                 pet.health = Math.max(50, pet.health - Math.floor(Math.random() * 20));
@@ -98,16 +89,13 @@ module.exports = (client) => {
         
         await profile.save();
         
-        // Send detailed notification
         const embed = new EmbedBuilder()
             .setTitle('🚨 ROBBERY ALERT!')
-            .setDescription('Your family vault was broken into during the night!')
+            .setDescription('Your follower tithe chest was broken into during the night!')
             .addFields(
                 { name: '💸 Amount Stolen', value: `$${stolenAmount.toLocaleString()}`, inline: true },
-                { name: '🏦 Remaining in Vault', value: `$${remainingAmount.toLocaleString()}`, inline: true },
-                { name: '🛡️ Your Security Level', value: `${securityLevel}%`, inline: true },
-                { name: '📊 Theft Percentage', value: `${(stealPercentage * 100).toFixed(1)}%`, inline: true },
-                { name: '🐕 Pet Status', value: profile.pets.length > 0 ? 'Pets were injured defending!' : 'No pets to defend', inline: true }
+                { name: '🏦 Remaining in Tithe Chest', value: `$${remainingAmount.toLocaleString()}`, inline: true },
+                { name: '🛡️ Your Security Level', value: `${securityLevel}%`, inline: true }
             )
             .setColor('#FF0000')
             .setFooter({ text: '💡 Tip: Improve security with better pets, properties, and roles!' })
@@ -138,7 +126,6 @@ module.exports = (client) => {
                 
                 const expiredRoleNames = expiredRoles.map(role => role.roleName);
                 
-                // Try to remove Discord roles
                 try {
                     const guild = client.guilds.cache.get(profile.guildId);
                     if (guild) {
@@ -158,7 +145,6 @@ module.exports = (client) => {
                     console.log('Could not remove Discord roles:', error.message);
                 }
                 
-                // Send notification
                 const embed = new EmbedBuilder()
                     .setTitle('👑 Premium Roles Expired')
                     .setDescription(`The following premium roles have expired:\n**${expiredRoleNames.join(', ')}**`)
@@ -256,19 +242,19 @@ module.exports = (client) => {
                 }
             },
             {
-                name: 'Family Bonus',
+                name: 'Follower Blessing',
                 type: 'positive',
-                condition: () => profile.familyMembers.length > 0,
+                condition: () => profile.followers.length > 0,
                 action: () => {
-                    const member = profile.familyMembers[Math.floor(Math.random() * profile.familyMembers.length)];
+                    const follower = profile.followers[Math.floor(Math.random() * profile.followers.length)];
                     const bonus = Math.floor(Math.random() * 1500) + 500;
                     
                     profile.wallet += bonus;
-                    member.bond = Math.min(100, member.bond + 5);
+                    follower.allegiance = Math.min(100, follower.allegiance + 5);
                     
                     return {
-                        title: '👨‍👩‍👧‍👦 Family Success!',
-                        description: `${member.name} got a bonus at work and shared ${bonus} with the family!`,
+                        title: '🙏 Follower Blessing!',
+                        description: `${follower.name} had a divine revelation and shared their newfound wealth of ${bonus} gold with the cult!`,
                         color: '#E91E63'
                     };
                 }
@@ -321,7 +307,6 @@ module.exports = (client) => {
             }
         ];
         
-        // Filter events based on conditions
         const availableEvents = events.filter(event => 
             !event.condition || event.condition()
         );
@@ -331,16 +316,14 @@ module.exports = (client) => {
         const randomEvent = availableEvents[Math.floor(Math.random() * availableEvents.length)];
         const result = randomEvent.action();
         
-        // Add transaction record for financial events
         if (randomEvent.type === 'positive' || randomEvent.type === 'negative') {
-            const amount = randomEvent.type === 'positive' ? 
-                (result.description.match(/\$(\d+)/) ? parseInt(result.description.match(/\$(\d+)/)[1]) : 0) :
-                -(result.description.match(/\$(\d+)/) ? parseInt(result.description.match(/\$(\d+)/)[1]) : 0);
-                
+            const amountMatch = result.description.match(/\$?(\d{1,3}(,\d{3})*(\.\d{2})?)/);
+            const amount = amountMatch ? parseFloat(amountMatch[1].replace(/,/g, '')) : 0;
+
             if (amount !== 0) {
                 profile.transactions.push({
-                    type: amount > 0 ? 'income' : 'expense',
-                    amount: Math.abs(amount),
+                    type: randomEvent.type === 'positive' ? 'income' : 'expense',
+                    amount: amount,
                     description: `Random Event: ${randomEvent.name}`,
                     category: 'random_event'
                 });
@@ -363,6 +346,3 @@ module.exports = (client) => {
         }
     }
 };
-
-
-

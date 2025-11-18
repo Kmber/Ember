@@ -52,15 +52,15 @@ class EconomyUtils {
          
             if (profile.wallet >= totalBills) {
                 profile.wallet -= totalBills;
-            } else if (profile.wallet + profile.familyVault >= totalBills) {
+            } else if (profile.wallet + profile.followerTithe >= totalBills) {
                 const remaining = totalBills - profile.wallet;
                 profile.wallet = 0;
-                profile.familyVault -= remaining;
+                profile.followerTithe -= remaining;
             } else {
               
-                const unpaid = totalBills - profile.wallet - profile.familyVault;
+                const unpaid = totalBills - profile.wallet - profile.followerTithe;
                 profile.wallet = 0;
-                profile.familyVault = 0;
+                profile.followerTithe = 0;
                 
             }
             

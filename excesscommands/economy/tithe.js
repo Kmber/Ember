@@ -8,10 +8,10 @@ const {
 const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
-    name: 'vault',
-    aliases: ['fvault'],
-    description: 'Manage your family vault with v2 components',
-    usage: '!vault <deposit/withdraw> <amount>',
+    name: 'tithe',
+    aliases: ['t'],
+    description: 'Manage your follower tithe with v2 components',
+    usage: '!tithe <deposit/withdraw> <amount>',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
@@ -25,7 +25,7 @@ module.exports = {
 
                 noCitadelContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏰 Citadel Required for Vault\n## SECURE STORAGE NEEDS A CITADEL\n\n> You need to own a citadel to have a family vault!\n> A vault requires a secure location to store your family's wealth.`)
+                        .setContent(`# 🏰 Citadel Required for Tithe\n## SECURE STORAGE NEEDS A CITADEL\n\n> You need to own a citadel to collect a tithe!\n> A tithe requires a secure location to store your followers' contributions.`)
                 );
 
                 components.push(noCitadelContainer);
@@ -37,7 +37,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET STARTED WITH A CITADEL**\n\n**💡 Solutions:**\n> • Acquire a citadel through the citadel market (\`!acquirecitadel\`)\n> • Set it as your primary stronghold\n> • Unlock family vault storage capacity\n> • Enjoy secure wealth storage for your family\n\n**Benefits of Family Vault:**\n> • Enhanced security from robberies\n> • Separate from personal banking\n> • Family-focused wealth management`)
+                        .setContent(`## 🏘️ **GET STARTED WITH A CITADEL**\n\n**💡 Solutions:**\n> • Acquire a citadel through the citadel market (\`!acquirecitadel\`)\n> • Set it as your primary stronghold\n> • Unlock tithe storage capacity\n> • Enjoy secure wealth storage\n\n**Benefits of Follower Tithe:**\n> • Enhanced security from robberies\n> • Separate from personal banking\n> • Follower-focused wealth management`)
                 );
 
                 components.push(solutionContainer);
@@ -62,7 +62,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏦 Family Vault Management\n## SECURE WEALTH STORAGE CENTER\n\n> Your family's secure financial storage facility\n> Protected by advanced security systems and citadel-based encryption`)
+                        .setContent(`# 🏦 Follower Tithe Management\n## SECURE WEALTH STORAGE CENTER\n\n> Your followers' secure financial storage facility\n> Protected by advanced security systems and citadel-based encryption`)
                 );
 
                 components.push(headerContainer);
@@ -75,12 +75,12 @@ module.exports = {
 
                 statusContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 💰 **VAULT STATUS**')
+                        .setContent('## 💰 **TITHE STATUS**')
                 );
 
                 statusContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Current Balance:** \`$${profile.familyVault.toLocaleString()}\`\n**📊 Vault Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**📈 Usage:** \`${((profile.familyVault / vaultCapacity) * 100).toFixed(1)}%\`\n**💾 Available Space:** \`$${(vaultCapacity - profile.familyVault).toLocaleString()}\``)
+                        .setContent(`**💰 Current Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📊 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**📈 Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\`\n**💾 Available Space:** \`$${(vaultCapacity - profile.followerTithe).toLocaleString()}\``)
                 );
 
                 statusContainer.addTextDisplayComponents(
@@ -98,7 +98,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📋 **VAULT OPERATIONS**\n\n**\`!vault deposit <amount>\`** - Store money securely\n**\`!vault withdraw <amount>\`** - Retrieve stored funds\n**\`!vault deposit all\`** - Deposit all available wallet funds\n**\`!vault withdraw all\`** - Withdraw all vault funds\n\n**💡 Tip:** Keep emergency funds in vault for maximum security!`)
+                        .setContent(`## 📋 **TITHE OPERATIONS**\n\n**\`!tithe deposit <amount>\`** - Store money securely\n**\`!tithe withdraw <amount>\`** - Retrieve stored funds\n**\`!tithe deposit all\`** - Deposit all available wallet funds\n**\`!tithe withdraw all\`** - Withdraw all tithe funds\n\n**💡 Tip:** Keep emergency funds in the tithe for maximum security!`)
                 );
 
                 components.push(instructionsContainer);
@@ -120,7 +120,7 @@ module.exports = {
 
                 invalidActionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Vault Operation\n## UNKNOWN COMMAND\n\n> **\`${action}\`** is not a valid vault operation!\n> Use **\`deposit\`** or **\`withdraw\`** only.`)
+                        .setContent(`# ❌ Invalid Tithe Operation\n## UNKNOWN COMMAND\n\n> **\`${action}\`** is not a valid tithe operation!\n> Use **\`deposit\`** or **\`withdraw\`** only.`)
                 );
 
                 components.push(invalidActionContainer);
@@ -132,7 +132,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **CORRECT USAGE**\n\n**\`!vault deposit <amount>\`** - Store money in vault\n**\`!vault withdraw <amount>\`** - Take money from vault\n\n**Examples:**\n> \`!vault deposit 5000\`\n> \`!vault withdraw 2000\`\n> \`!vault deposit all\``)
+                        .setContent(`## 💡 **CORRECT USAGE**\n\n**\`!tithe deposit <amount>\`** - Store money in tithe\n**\`!tithe withdraw <amount>\`** - Take money from tithe\n\n**Examples:**\n> \`!tithe deposit 5000\`\n> \`!tithe withdraw 2000\`\n> \`!tithe deposit all\``)
                 );
 
                 components.push(usageContainer);
@@ -146,9 +146,9 @@ module.exports = {
           
             if (args[1] === 'all' || args[1] === 'max') {
                 if (action === 'deposit') {
-                    amount = Math.min(profile.wallet, vaultCapacity - profile.familyVault);
+                    amount = Math.min(profile.wallet, vaultCapacity - profile.followerTithe);
                 } else {
-                    amount = profile.familyVault;
+                    amount = profile.followerTithe;
                 }
             } else {
                 amount = parseInt(args[1]);
@@ -174,7 +174,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **CURRENT BALANCES**\n\n**💳 Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 Family Vault:** \`$${profile.familyVault.toLocaleString()}\`\n**📊 Vault Capacity:** \`$${vaultCapacity.toLocaleString()}\``)
+                        .setContent(`## 💰 **CURRENT BALANCES**\n\n**💳 Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📊 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\``)
                 );
 
                 components.push(balanceContainer);
@@ -206,7 +206,7 @@ module.exports = {
 
                     walletBreakdownContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💳 **WALLET ANALYSIS**\n\n**Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.wallet).toLocaleString()}\`\n\n**💡 Suggestion:** Try \`!vault deposit all\` to deposit everything you have!`)
+                            .setContent(`## 💳 **WALLET ANALYSIS**\n\n**Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.wallet).toLocaleString()}\`\n\n**💡 Suggestion:** Try \`!tithe deposit all\` to deposit everything you have!`)
                     );
 
                     components.push(walletBreakdownContainer);
@@ -217,8 +217,8 @@ module.exports = {
                     });
                 }
                 
-                if (profile.familyVault + amount > vaultCapacity) {
-                    const maxDeposit = vaultCapacity - profile.familyVault;
+                if (profile.followerTithe + amount > vaultCapacity) {
+                    const maxDeposit = vaultCapacity - profile.followerTithe;
                     const components = [];
 
                     const capacityContainer = new ContainerBuilder()
@@ -226,7 +226,7 @@ module.exports = {
 
                     capacityContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 📊 Vault Capacity Exceeded\n## MAXIMUM STORAGE LIMIT REACHED\n\n> Your family vault doesn't have enough space for this deposit!`)
+                            .setContent(`# 📊 Tithe Capacity Exceeded\n## MAXIMUM STORAGE LIMIT REACHED\n\n> Your tithe storage doesn't have enough space for this deposit!`)
                     );
 
                     components.push(capacityContainer);
@@ -238,12 +238,12 @@ module.exports = {
 
                     capacityDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏦 **VAULT CAPACITY ANALYSIS**\n\n**Current Vault Balance:** \`$${profile.familyVault.toLocaleString()}\`\n**Maximum Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**Available Space:** \`$${maxDeposit.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\``)
+                            .setContent(`## 🏦 **TITHE CAPACITY ANALYSIS**\n\n**Current Tithe Balance:** \`$${profile.followerTithe.toLocaleString()}\`\n**Maximum Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**Available Space:** \`$${maxDeposit.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\``)
                     );
 
                     capacityDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**💡 Solutions:**\n> • Try \`!vault deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your citadel for more vault capacity\n> • Use \`!vault deposit max\` for automatic maximum deposit`)
+                            .setContent(`**💡 Solutions:**\n> • Try \`!tithe deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your citadel for more tithe capacity\n> • Use \`!tithe deposit max\` for automatic maximum deposit`)
                     );
 
                     components.push(capacityDetailsContainer);
@@ -256,7 +256,7 @@ module.exports = {
                 
              
                 profile.wallet -= amount;
-                profile.familyVault += amount;
+                profile.followerTithe += amount;
                 
                 const components = [];
 
@@ -265,7 +265,7 @@ module.exports = {
 
                 successContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏦 Vault Deposit Successful!\n## FUNDS SECURELY STORED\n\n> Successfully deposited **\`$${amount.toLocaleString()}\`** into your family vault!\n> Your family's wealth is now safely protected.`)
+                        .setContent(`# 🏦 Tithe Deposit Successful!\n## FUNDS SECURELY STORED\n\n> Successfully deposited **\`$${amount.toLocaleString()}\`** into your follower tithe!\n> Your followers' contributions are now safely protected.`)
                 );
 
                 components.push(successContainer);
@@ -277,7 +277,7 @@ module.exports = {
 
                 transactionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **TRANSACTION SUMMARY**\n\n**💰 Deposited Amount:** \`$${amount.toLocaleString()}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 New Vault Balance:** \`$${profile.familyVault.toLocaleString()}\`\n**📈 Vault Usage:** \`${((profile.familyVault / vaultCapacity) * 100).toFixed(1)}%\``)
+                        .setContent(`## 📊 **TRANSACTION SUMMARY**\n\n**💰 Deposited Amount:** \`$${amount.toLocaleString()}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 New Tithe Balance:** \`$${profile.followerTithe.toLocaleString()}\`\n**📈 Tithe Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\``)
                 );
 
                 components.push(transactionContainer);
@@ -288,30 +288,30 @@ module.exports = {
                 });
                 
             } else if (action === 'withdraw') {
-                if (amount > profile.familyVault) {
+                if (amount > profile.followerTithe) {
                     const components = [];
 
-                    const insufficientVaultContainer = new ContainerBuilder()
+                    const insufficientTitheContainer = new ContainerBuilder()
                         .setAccentColor(0xE74C3C);
 
-                    insufficientVaultContainer.addTextDisplayComponents(
+                    insufficientTitheContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 💸 Insufficient Vault Funds\n## NOT ENOUGH MONEY IN VAULT\n\n> You don't have enough money in your family vault for this withdrawal!`)
+                            .setContent(`# 💸 Insufficient Tithe Funds\n## NOT ENOUGH MONEY IN TITHE\n\n> You don't have enough money in your follower tithe for this withdrawal!`)
                     );
 
-                    components.push(insufficientVaultContainer);
+                    components.push(insufficientTitheContainer);
 
                     components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                    const vaultBreakdownContainer = new ContainerBuilder()
+                    const titheBreakdownContainer = new ContainerBuilder()
                         .setAccentColor(0xF39C12);
 
-                    vaultBreakdownContainer.addTextDisplayComponents(
+                    titheBreakdownContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏦 **VAULT ANALYSIS**\n\n**Current Vault Balance:** \`$${profile.familyVault.toLocaleString()}\`\n**Attempted Withdrawal:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.familyVault).toLocaleString()}\`\n\n**💡 Suggestion:** Try \`!vault withdraw all\` to withdraw everything available!`)
+                            .setContent(`## 🏦 **TITHE ANALYSIS**\n\n**Current Tithe Balance:** \`$${profile.followerTithe.toLocaleString()}\`\n**Attempted Withdrawal:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.followerTithe).toLocaleString()}\`\n\n**💡 Suggestion:** Try \`!tithe withdraw all\` to withdraw everything available!`)
                     );
 
-                    components.push(vaultBreakdownContainer);
+                    components.push(titheBreakdownContainer);
 
                     return message.reply({
                         components: components,
@@ -320,7 +320,7 @@ module.exports = {
                 }
                 
          
-                profile.familyVault -= amount;
+                profile.followerTithe -= amount;
                 profile.wallet += amount;
                 
                 const components = [];
@@ -330,7 +330,7 @@ module.exports = {
 
                 withdrawSuccessContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏦 Vault Withdrawal Successful!\n## FUNDS TRANSFERRED TO WALLET\n\n> Successfully withdrew **\`$${amount.toLocaleString()}\`** from your family vault!\n> The funds are now available in your wallet for immediate use.`)
+                        .setContent(`# 🏦 Tithe Withdrawal Successful!\n## FUNDS TRANSFERRED TO WALLET\n\n> Successfully withdrew **\`$${amount.toLocaleString()}\`** from your follower tithe!\n> The funds are now available in your wallet for immediate use.`)
                 );
 
                 components.push(withdrawSuccessContainer);
@@ -342,7 +342,7 @@ module.exports = {
 
                 withdrawTransactionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **WITHDRAWAL SUMMARY**\n\n**💰 Withdrawn Amount:** \`$${amount.toLocaleString()}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 New Vault Balance:** \`$${profile.familyVault.toLocaleString()}\`\n**📈 Vault Usage:** \`${((profile.familyVault / vaultCapacity) * 100).toFixed(1)}%\``)
+                        .setContent(`## 📊 **WITHDRAWAL SUMMARY**\n\n**💰 Withdrawn Amount:** \`$${amount.toLocaleString()}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 New Tithe Balance:** \`$${profile.followerTithe.toLocaleString()}\`\n**📈 Tithe Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\``)
                 );
 
                 components.push(withdrawTransactionContainer);
@@ -356,7 +356,7 @@ module.exports = {
             await profile.save();
 
         } catch (error) {
-            console.error('Error in vault command:', error);
+            console.error('Error in tithe command:', error);
 
       
             const errorContainer = new ContainerBuilder()
@@ -364,7 +364,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **VAULT ERROR**\n\nSomething went wrong while processing your vault operation. Please try again in a moment.')
+                    .setContent('## ❌ **TITHE ERROR**\n\nSomething went wrong while processing your tithe operation. Please try again in a moment.')
             );
 
             return message.reply({
