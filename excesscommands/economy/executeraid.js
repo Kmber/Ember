@@ -6,7 +6,7 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager, Raid } = require('../../models/economy/economy');
-const { RAID_DUNGEONS } = require('../../models/economy/constants/businessData');
+const { RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
 
 module.exports = {
     name: 'executeraid',

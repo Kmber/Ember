@@ -8,15 +8,15 @@ const {
 const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
-    name: 'race',
-    description: 'Race your car to win money with v2 components',
+    name: 'beastrace',
+    description: 'Race your beast to win money with v2 components',
     cooldown: 300, 
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
          
-            const cooldownCheck = EconomyManager.checkCooldown(profile, 'race');
+            const cooldownCheck = EconomyManager.checkCooldown(profile, 'beastrace');
             if (cooldownCheck.onCooldown) {
                 const { hours, minutes } = cooldownCheck.timeLeft;
                 const components = [];
@@ -26,7 +26,7 @@ module.exports = {
 
                 cooldownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⏰ Racing Cooldown Active\n## ENGINE NEEDS TO COOL DOWN\n\n> Your car needs time to cool down after the last race!\n> Racing requires proper maintenance breaks between events.`)
+                        .setContent(`# ⏰ Beast Race Cooldown Active\n## BEAST NEEDS TO REST\n\n> Your beast needs time to recover after the last race!\n> Racing requires proper rest breaks between events.`)
                 );
 
                 components.push(cooldownContainer);
@@ -38,7 +38,7 @@ module.exports = {
 
                 timeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⏱️ **COOLDOWN INFORMATION**\n\n**Time Remaining:** \`${hours}h ${minutes}m\`\n**Next Race Available:** \`${new Date(Date.now() + cooldownCheck.totalMs).toLocaleTimeString()}\`\n**Cooldown Duration:** \`5 minutes\`\n\n> Use this time to maintain your car or check racing stats!`)
+                        .setContent(`## ⏱️ **COOLDOWN INFORMATION**\n\n**Time Remaining:** \`${hours}h ${minutes}m\`\n**Next Race Available:** \`${new Date(Date.now() + cooldownCheck.totalMs).toLocaleTimeString()}\`\n**Cooldown Duration:** \`5 minutes\`\n\n> Use this time to care for your beast or check racing stats!`)
                 );
 
                 components.push(timeContainer);
@@ -49,18 +49,18 @@ module.exports = {
                 });
             }
             
-            if (!profile.activeCar) {
+            if (!profile.activeBeast) {
                 const components = [];
 
-                const noCarContainer = new ContainerBuilder()
+                const noBeastContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
-                noCarContainer.addTextDisplayComponents(
+                noBeastContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚗 No Active Car\n## VEHICLE REQUIRED FOR RACING\n\n> You need to buy and select a car before you can race!\n> Can't participate in races without a proper vehicle.`)
+                        .setContent(`# 👹 No Active Beast\n## BEAST REQUIRED FOR RACING\n\n> You need to summon and select a beast before you can race!\n> Can't participate in races without a proper beast.`)
                 );
 
-                components.push(noCarContainer);
+                components.push(noBeastContainer);
 
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -69,7 +69,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏪 **GET RACING READY**\n\n**Step 1:** Use \`!buycar\` to purchase a vehicle\n**Step 2:** Set it as your active car\n**Step 3:** Return here to start racing!\n\n**💡 Tip:** Better cars have higher win chances and bigger payouts!`)
+                        .setContent(`## 📜 **GET RACING READY**\n\n**Step 1:** Use \`!summon\` to summon a beast\n**Step 2:** Set it as your active beast\n**Step 3:** Return here to start racing!\n\n**💡 Tip:** Better beasts have higher win chances and bigger payouts!`)
                 );
 
                 components.push(solutionContainer);
@@ -80,19 +80,19 @@ module.exports = {
                 });
             }
             
-            const car = profile.cars.find(c => c.carId === profile.activeCar);
-            if (!car) {
+            const beast = profile.beasts.find(b => b.beastId === profile.activeBeast);
+            if (!beast) {
                 const components = [];
 
-                const carNotFoundContainer = new ContainerBuilder()
+                const beastNotFoundContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
-                carNotFoundContainer.addTextDisplayComponents(
+                beastNotFoundContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Active Car Not Found\n## DATABASE ERROR\n\n> Your active car was not found in your garage!\n> This might be a system error. Please try setting your active car again.`)
+                        .setContent(`# ❌ Active Beast Not Found\n## DATABASE ERROR\n\n> Your active beast was not found in your bestiary!\n> This might be a system error. Please try setting your active beast again.`)
                 );
 
-                components.push(carNotFoundContainer);
+                components.push(beastNotFoundContainer);
 
                 return message.reply({
                     components: components,
@@ -100,7 +100,7 @@ module.exports = {
                 });
             }
             
-            const performance = (car.speed + car.acceleration + car.handling) / 3;
+            const performance = (beast.speed + beast.acceleration + beast.handling) / 3;
             const winChance = Math.min(90, Math.max(10, performance + Math.random() * 20));
             
             const won = Math.random() * 100 < winChance;
@@ -115,7 +115,7 @@ module.exports = {
             });
             
          
-            profile.cooldowns.race = new Date();
+            profile.cooldowns.beastrace = new Date();
             
             const components = [];
 
@@ -125,14 +125,14 @@ module.exports = {
                 profile.racingStats.wins += 1;
                 profile.racingStats.winStreak += 1;
                 profile.racingStats.earnings += totalWinnings;
-                car.raceWins += 1;
+                beast.raceWins += 1;
 
                 const victoryContainer = new ContainerBuilder()
                     .setAccentColor(0xFFD700);
 
                 victoryContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏁 RACE VICTORY!\n## CHECKERED FLAG CHAMPION\n\n> Congratulations! You dominated the track with your **${car.name}**!\n> Your driving skills and car performance led to a spectacular win!`)
+                        .setContent(`# 🏁 BEAST RACE VICTORY!\n## CHAMPION OF THE COURSE\n\n> Congratulations! You dominated the course with your **${beast.name}**!\n> Your skills and beast's power led to a spectacular win!`)
                 );
 
                 components.push(victoryContainer);
@@ -155,7 +155,7 @@ module.exports = {
 
                 resultsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏁 Win Streak:** \`${profile.racingStats.winStreak}\`\n**📊 Car Performance:** \`${performance.toFixed(1)}/100\`\n**🎯 Win Chance:** \`${winChance.toFixed(1)}%\``)
+                        .setContent(`**🏁 Win Streak:** \`${profile.racingStats.winStreak}\`\n**📊 Beast Performance:** \`${performance.toFixed(1)}/100\`\n**🎯 Win Chance:** \`${winChance.toFixed(1)}%\``)
                 );
 
                 components.push(resultsContainer);
@@ -168,17 +168,17 @@ module.exports = {
 
                 statsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 🚗 **VEHICLE & DRIVER STATS**')
+                        .setContent('## 📜 **BEAST & RIDER STATS**')
                 );
 
                 statsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🚗 Vehicle:** \`${car.name}\`\n**⚡ Speed:** \`${car.speed}/100\`\n**🚀 Acceleration:** \`${car.acceleration}/100\`\n**🎯 Handling:** \`${car.handling}/100\`\n**🔧 Durability:** \`${car.durability}%\``)
+                        .setContent(`**👹 Beast:** \`${beast.name}\`\n**⚔️ Speed:** \`${beast.speed}/100\`\n**🔥 Power:** \`${beast.acceleration}/100\`\n**🧠 Control:** \`${beast.handling}/100\`\n**CONDITION:** \`${beast.durability}%\``)
                 );
 
                 statsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏆 Car Race Wins:** \`${car.raceWins}\`\n**📈 Total Career Earnings:** \`$${profile.racingStats.earnings.toLocaleString()}\`\n**🏁 Total Races:** \`${profile.racingStats.totalRaces + 1}\``)
+                        .setContent(`**🏆 Beast Race Wins:** \`${beast.raceWins}\`\n**📈 Total Career Earnings:** \`$${profile.racingStats.earnings.toLocaleString()}\`\n**🏁 Total Races:** \`${profile.racingStats.totalRaces + 1}\``)
                 );
 
                 components.push(statsContainer);
@@ -188,9 +188,9 @@ module.exports = {
                 profile.wallet = Math.max(0, profile.wallet - loss);
                 profile.racingStats.losses += 1;
                 profile.racingStats.winStreak = 0;
-                car.raceLosses += 1;
+                beast.raceLosses += 1;
                 const durabilityLoss = Math.floor(Math.random() * 5);
-                car.durability = Math.max(0, car.durability - durabilityLoss);
+                beast.durability = Math.max(0, beast.durability - durabilityLoss);
 
             
                 const lossContainer = new ContainerBuilder()
@@ -198,7 +198,7 @@ module.exports = {
 
                 lossContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏁 Race Defeat\n## TOUGH LUCK ON THE TRACK\n\n> Unfortunately, you didn't place well in this race.\n> Sometimes the competition is just too fierce, but that's racing!`)
+                        .setContent(`# 🏁 Beast Race Defeat\n## TOUGH LUCK ON THE COURSE\n\n> Unfortunately, you didn't place well in this race.\n> Sometimes the competition is just too fierce, but that's racing!`)
                 );
 
                 components.push(lossContainer);
@@ -216,12 +216,12 @@ module.exports = {
 
                 lossDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Damage Costs:** \`$${loss.toLocaleString()}\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🔧 Durability Loss:** \`-${durabilityLoss}%\`\n**🚗 Car Condition:** \`${car.durability}%\``)
+                        .setContent(`**💰 Care Costs:** \`$${loss.toLocaleString()}\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Stamina Loss:** \`-${durabilityLoss}%\`\n**👹 Beast Condition:** \`${beast.durability}%\``)
                 );
 
                 lossDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**📊 Car Performance:** \`${performance.toFixed(1)}/100\`\n**🎯 Win Chance:** \`${winChance.toFixed(1)}%\`\n**💔 Win Streak:** \`Reset to 0\``)
+                        .setContent(`**📊 Beast Performance:** \`${performance.toFixed(1)}/100\`\n**🎯 Win Chance:** \`${winChance.toFixed(1)}%\`\n**💔 Win Streak:** \`Reset to 0\``)
                 );
 
                 components.push(lossDetailsContainer);
@@ -234,7 +234,7 @@ module.exports = {
 
                 tipsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **IMPROVEMENT TIPS**\n\n**🔧 Maintain Your Car:** Use shop items to repair durability\n**🚗 Upgrade Vehicle:** Better cars have higher win rates\n**👑 Get Racing Roles:** Bonus earnings from role benefits\n**🏁 Keep Racing:** Practice makes perfect!\n\n> Every champion has faced defeats - comeback stronger!`)
+                        .setContent(`## 💡 **IMPROVEMENT TIPS**\n\n**🔧 Care For Your Beast:** Use shop items to restore stamina\n**👹 Upgrade Your Beast:** Better beasts have higher win rates\n**👑 Get Racing Roles:** Bonus earnings from role benefits\n**🏁 Keep Racing:** Practice makes perfect!\n\n> Every champion has faced defeats - comeback stronger!`)
                 );
 
                 components.push(tipsContainer);
@@ -248,7 +248,7 @@ module.exports = {
 
             nextRaceContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🏁 **NEXT RACE AVAILABILITY**\n\n**Next Race:** \`${new Date(Date.now() + 300000).toLocaleDateString()} at ${new Date(Date.now() + 300000).toLocaleTimeString()}\`\n**Cooldown:** \`5 minutes\`\n**Current Time:** \`${new Date().toLocaleString()}\`\n\n> Use the break to maintain your vehicle and plan your next racing strategy!`)
+                    .setContent(`## 🏁 **NEXT RACE AVAILABILITY**\n\n**Next Race:** \`${new Date(Date.now() + 300000).toLocaleDateString()} at ${new Date(Date.now() + 300000).toLocaleTimeString()}\`\n**Cooldown:** \`5 minutes\`\n**Current Time:** \`${new Date().toLocaleString()}\`\n\n> Use the break to care for your beast and plan your next racing strategy!`)
             );
 
             components.push(nextRaceContainer);
@@ -262,7 +262,7 @@ module.exports = {
             });
             
         } catch (error) {
-            console.error('Error in race command:', error);
+            console.error('Error in beastrace command:', error);
 
      
             const errorContainer = new ContainerBuilder()
@@ -270,7 +270,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **RACING ERROR**\n\nSomething went wrong during the race. Please try again in a moment.')
+                    .setContent('## ❌ **BEAST RACE ERROR**\n\nSomething went wrong during the race. Please try again in a moment.')
             );
 
             return message.reply({

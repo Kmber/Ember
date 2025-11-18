@@ -6,7 +6,7 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager, Raid } = require('../../models/economy/economy');
-const { RAID_DUNGEONS, RAID_GEAR } = require('../../models/economy/constants/businessData');
+const { RAID_DUNGEONS, RAID_GEAR } = require('../../models/economy/constants/guildData');
 
 module.exports = {
     name: 'planraid',
@@ -266,7 +266,7 @@ module.exports = {
 
                 gearBreakdownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`${gearList}\n\n**💰 Total Cost:** \`$${gearCost.toLocaleString()}\`\n\n**💡 Earning Tips:** Work, complete dailies, or run businesses to raise funds for your expedition!`)
+                        .setContent(`${gearList}\n\n**💰 Total Cost:** \`$${gearCost.toLocaleString()}\`\n\n**💡 Earning Tips:** Work, complete dailies, or run guilds to raise funds for your expedition!`)
                 );
 
                 components.push(gearBreakdownContainer);
@@ -414,7 +414,7 @@ module.exports = {
 
             nextStepsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## ⚔️ **NEXT STEPS FOR SUCCESS**\n\n**1. Recruit Your Party:** Share raid ID \`${raidId}\` with trusted adventurers\n**2. Assign Classes:** Ensure each required class is filled by capable adventurers\n**3. Plan Coordination:** Discuss strategy and timing with your party\n**4. Execute Expedition:** Use \`!executeraid ${raidId}\` when ready\n\n**💡 Leader Tips:**\n> • Choose party members with relevant skills\n> • Coordinate timing for maximum success\n> • Higher skilled party = better success chances\n> • Communication is key to raid success`)
+                    .setContent(`## ⚔️ **NEXT STEPS FOR SUCCESS**\n\n**1. Recruit Your Party:** Share raid ID \`${raidId}\` with trusted adventurers\n**2. Assign Classes:** Ensure each required class is filled by capable adventurers\n**3. Plan Coordination:** Discuss strategy and timing with your party\n**4. Execute Expedition:** Use \`!executeraid ${raidId}\` when ready\n**💡 Leader Tips:**\n> • Choose party members with relevant skills\n> • Coordinate timing for maximum success\n> • Higher skilled party = better success chances\n> • Communication is key to raid success`)
             );
 
             components.push(nextStepsContainer);

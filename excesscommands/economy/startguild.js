@@ -6,13 +6,13 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { BUSINESS_TYPES } = require('../../models/economy/constants/businessData');
+const { GUILD_TYPES } = require('../../models/economy/constants/guildData');
 
 module.exports = {
-    name: 'startbusiness',
-    aliases: ['business-start', 'newbusiness'],
-    description: 'Start a new business for passive income with v2 components',
-    usage: '!startbusiness <type>',
+    name: 'startguild',
+    aliases: ['guild-start', 'newguild'],
+    description: 'Start a new guild for passive income with v2 components',
+    usage: '!startguild <type>',
     async execute(message, args) {
         try {
             if (!args[0]) {
@@ -25,7 +25,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏢 Available Business Types\n## START YOUR ENTREPRENEURIAL JOURNEY\n\n> Choose from various business types, each with unique profit potential and requirements`)
+                        .setContent(`# 🏰 Available Guild Types\n## FORGE YOUR LEGACY\n\n> Choose from various guild types, each with unique profit potential and requirements`)
                 );
 
                 components.push(headerContainer);
@@ -34,42 +34,42 @@ module.exports = {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                
-                const businessContainer = new ContainerBuilder()
+                const guildContainer = new ContainerBuilder()
                     .setAccentColor(0x2ECC71);
 
-                businessContainer.addTextDisplayComponents(
+                guildContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 💼 **BUSINESS CATEGORIES**')
+                        .setContent('## 📜 **GUILD CATEGORIES**')
                 );
 
           
-                const businessEntries = Object.entries(BUSINESS_TYPES);
-                const firstHalf = businessEntries.slice(0, 3);
-                const secondHalf = businessEntries.slice(3);
+                const guildEntries = Object.entries(GUILD_TYPES);
+                const firstHalf = guildEntries.slice(0, 3);
+                const secondHalf = guildEntries.slice(3);
 
             
-                const firstBusinessText = firstHalf.map(([id, biz]) =>
-                    `**\`${id}\`** - ${biz.name}\n> **Cost:** \`$${biz.baseCost.toLocaleString()}\`\n> **Description:** ${biz.description}\n> **Daily Income:** \`$${biz.dailyIncome[0]}-${biz.dailyIncome[1]}\``
+                const firstGuildText = firstHalf.map(([id, g]) =>
+                    `**\`${id}\`** - ${g.name}\n> **Cost:** \`$${g.baseCost.toLocaleString()}\`\n> **Description:** ${g.description}\n> **Daily Income:** \`$${g.dailyIncome[0]}-${g.dailyIncome[1]}\``
                 ).join('\n\n');
 
-                businessContainer.addTextDisplayComponents(
+                guildContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(firstBusinessText)
+                        .setContent(firstGuildText)
                 );
 
                
                 if (secondHalf.length > 0) {
-                    const secondBusinessText = secondHalf.map(([id, biz]) =>
-                        `**\`${id}\`** - ${biz.name}\n> **Cost:** \`$${biz.baseCost.toLocaleString()}\`\n> **Description:** ${biz.description}\n> **Daily Income:** \`$${biz.dailyIncome[0]}-${biz.dailyIncome[1]}\``
+                    const secondGuildText = secondHalf.map(([id, g]) =>
+                        `**\`${id}\`** - ${g.name}\n> **Cost:** \`$${g.baseCost.toLocaleString()}\`\n> **Description:** ${g.description}\n> **Daily Income:** \`$${g.dailyIncome[0]}-${g.dailyIncome[1]}\``
                     ).join('\n\n');
 
-                    businessContainer.addTextDisplayComponents(
+                    guildContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(secondBusinessText)
+                            .setContent(secondGuildText)
                     );
                 }
 
-                components.push(businessContainer);
+                components.push(guildContainer);
 
               
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -79,7 +79,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚀 **HOW TO START**\n\n**Command:** \`!startbusiness <type>\`\n**Example:** \`!startbusiness security_company\`\n\n**💡 Tips:**\n> • Each business type has different profit potential\n> • Higher cost businesses usually have better returns\n> • You can upgrade and hire employees later`)
+                        .setContent(`## 🚀 **HOW TO START**\n\n**Command:** \`!startguild <type>\`\n**Example:** \`!startguild thieves_guild\`\n\n**💡 Tips:**\n> • Each guild type has different profit potential\n> • Higher cost guilds usually have better returns\n> • You can upgrade and recruit acolytes later`)
                 );
 
                 components.push(instructionsContainer);
@@ -90,10 +90,10 @@ module.exports = {
                 });
             }
 
-            const businessType = args[0].toLowerCase();
-            const businessData = BUSINESS_TYPES[businessType];
+            const guildType = args[0].toLowerCase();
+            const guildData = GUILD_TYPES[guildType];
 
-            if (!businessData) {
+            if (!guildData) {
                 const components = [];
 
                 const errorContainer = new ContainerBuilder()
@@ -101,7 +101,7 @@ module.exports = {
 
                 errorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Business Type\n## BUSINESS NOT FOUND\n\n> **\`${businessType}\`** is not a valid business type!\n> Use \`!startbusiness\` to see all available options.`)
+                        .setContent(`# ❌ Invalid Guild Type\n## GUILD NOT FOUND\n\n> **\`${guildType}\`** is not a valid guild type!\n> Use \`!startguild\` to see all available options.`)
                 );
 
                 components.push(errorContainer);
@@ -115,7 +115,7 @@ module.exports = {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
 
          
-            if (profile.businesses.length >= profile.maxBusinesses) {
+            if (profile.guilds.length >= profile.maxGuilds) {
                 const components = [];
 
                 const limitContainer = new ContainerBuilder()
@@ -123,7 +123,7 @@ module.exports = {
 
                 limitContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏢 Business Limit Reached\n## MAXIMUM CAPACITY\n\n> You can only own **${profile.maxBusinesses}** businesses!\n> Current businesses: **${profile.businesses.length}/${profile.maxBusinesses}**\n\n**💡 Tip:** Upgrade your business skill to increase capacity.`)
+                        .setContent(`# 🏰 Guild Limit Reached\n## MAXIMUM CAPACITY\n\n> You can only own **${profile.maxGuilds}** guilds!\n> Current guilds: **${profile.guilds.length}/${profile.maxGuilds}**\n\n**💡 Tip:** Increase your influence to expand your guild capacity.`)
                 );
 
                 components.push(limitContainer);
@@ -135,7 +135,7 @@ module.exports = {
             }
 
     
-            if (profile.businesses.some(b => b.type === businessType)) {
+            if (profile.guilds.some(b => b.type === guildType)) {
                 const components = [];
 
                 const duplicateContainer = new ContainerBuilder()
@@ -143,7 +143,7 @@ module.exports = {
 
                 duplicateContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Business Already Owned\n## DUPLICATE BUSINESS TYPE\n\n> You already own a **${businessData.name}**!\n> Each player can only own one business of each type.`)
+                        .setContent(`# 🚫 Guild Already Owned\n## DUPLICATE GUILD TYPE\n\n> You already own a **${guildData.name}**!\n> Each player can only own one guild of each type.`)
                 );
 
                 components.push(duplicateContainer);
@@ -154,7 +154,7 @@ module.exports = {
                 });
             }
 
-            if (profile.wallet < businessData.baseCost) {
+            if (profile.wallet < guildData.baseCost) {
                 const components = [];
 
                 const insufficientContainer = new ContainerBuilder()
@@ -162,7 +162,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD BUSINESS\n\n> You need **\`$${businessData.baseCost.toLocaleString()}\`** to start **${businessData.name}**!\n> Current wallet: **\`$${profile.wallet.toLocaleString()}\`**\n> Shortage: **\`$${(businessData.baseCost - profile.wallet).toLocaleString()}\`**`)
+                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD GUILD\n\n> You need **\`$${guildData.baseCost.toLocaleString()}\`** to start **${guildData.name}**!\n> Current wallet: **\`$${profile.wallet.toLocaleString()}\`**\n> Shortage: **\`$${(guildData.baseCost - profile.wallet).toLocaleString()}\`**`)
                 );
 
                 components.push(insufficientContainer);
@@ -174,33 +174,33 @@ module.exports = {
             }
 
             
-            const business = {
-                businessId: `${businessType}_${Date.now()}`,
-                name: businessData.name,
-                type: businessType,
+            const guild = {
+                guildId: `${guildType}_${Date.now()}`,
+                name: guildData.name,
+                type: guildType,
                 level: 1,
-                employees: 0,
+                acolytes: 0,
                 revenue: 0,
                 expenses: 0,
                 profit: 0,
                 reputation: 50,
-                purchasePrice: businessData.baseCost,
-                upgradeCost: Math.floor(businessData.baseCost * businessData.upgradeCostMultiplier),
+                purchasePrice: guildData.baseCost,
+                upgradeCost: Math.floor(guildData.baseCost * guildData.upgradeCostMultiplier),
                 dailyIncome: 0,
                 lastCollection: new Date(),
                 efficiency: 1.0
             };
 
-            profile.wallet -= businessData.baseCost;
-            profile.businesses.push(business);
-            profile.businessSkill = Math.min(100, profile.businessSkill + 5);
+            profile.wallet -= guildData.baseCost;
+            profile.guilds.push(guild);
+            profile.guildInfluence = Math.min(100, profile.guildInfluence + 5);
 
         
             profile.transactions.push({
                 type: 'expense',
-                amount: businessData.baseCost,
-                description: `Started business: ${businessData.name}`,
-                category: 'business'
+                amount: guildData.baseCost,
+                description: `Started guild: ${guildData.name}`,
+                category: 'guild'
             });
 
             await profile.save();
@@ -213,7 +213,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🏢 Business Started Successfully!\n## WELCOME TO ENTREPRENEURSHIP\n\n> Congratulations! You've successfully started **${businessData.name}** for \`$${businessData.baseCost.toLocaleString()}\`!`)
+                    .setContent(`# 🏰 Guild Started Successfully!\n## WELCOME TO THE CONGLOMERATE\n\n> Congratulations! You\'ve successfully started **${guildData.name}** for \`$${guildData.baseCost.toLocaleString()}\`!`)
             );
 
             components.push(headerContainer);
@@ -227,17 +227,17 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 📊 **BUSINESS OVERVIEW**')
+                    .setContent('## 📊 **GUILD OVERVIEW**')
             );
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏢 Business Name:** \`${businessData.name}\`\n**📊 Starting Level:** \`1\`\n**👥 Employees:** \`0\`\n**⭐ Reputation:** \`50%\`\n**🎯 Efficiency:** \`100%\``)
+                    .setContent(`**🏰 Guild Name:** \`${guildData.name}\`\n**📊 Starting Level:** \`1\`\n**👥 Acolytes:** \`0\`\n**⭐ Reputation:** \`50%\`\n**🎯 Efficiency:** \`100%\``)
             );
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Daily Income Range:** \`$${businessData.dailyIncome[0].toLocaleString()}-${businessData.dailyIncome[1].toLocaleString()}\`\n**📈 Next Upgrade Cost:** \`$${business.upgradeCost.toLocaleString()}\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\``)
+                    .setContent(`**💰 Daily Income Range:** \`$${guildData.dailyIncome[0].toLocaleString()}-${guildData.dailyIncome[1].toLocaleString()}\`\n**📈 Next Upgrade Cost:** \`$${guild.upgradeCost.toLocaleString()}\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\``)
             );
 
             components.push(detailsContainer);
@@ -255,7 +255,7 @@ module.exports = {
 
             progressContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🎯 Business Skill Gained:** \`+5%\` (Now ${profile.businessSkill}%)\n**🏢 Total Businesses:** \`${profile.businesses.length}/${profile.maxBusinesses}\`\n**💼 Business Portfolio:** Growing strong!`)
+                    .setContent(`**🎯 Guild Influence Gained:** \`+5%\` (Now ${profile.guildInfluence}%)\n**🏰 Total Guilds:** \`${profile.guilds.length}/${profile.maxGuilds}\`\n**💼 Guild Conglomerate:** Growing strong!`)
             );
 
             components.push(progressContainer);
@@ -268,7 +268,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **MANAGEMENT TIPS**\n\n**\`!business\`** - View your business empire\n**\`!business collect\`** - Collect daily profits (24h cooldown)\n**\`!business upgrade <#>\`** - Upgrade for higher income\n**\`!business hire <#> [amount]\`** - Hire employees to boost profits\n\n> Your business will start generating income immediately!`)
+                    .setContent(`## 💡 **MANAGEMENT TIPS**\n\n**\`!guild\`** - View your guild conglomerate\n**\`!guild collect\`** - Collect daily profits (24h cooldown)\n**\`!guild upgrade <#>\`** - Upgrade for higher income\n**\`!guild recruit <#> [amount]\`** - Recruit acolytes to boost profits\n\n> Your guild will start generating income immediately!`)
             );
 
             components.push(tipsContainer);
@@ -279,7 +279,7 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in startbusiness command:', error);
+            console.error('Error in startguild command:', error);
 
        
             const errorContainer = new ContainerBuilder()
@@ -287,7 +287,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **BUSINESS STARTUP ERROR**\n\nSomething went wrong while starting your business. Please try again in a moment.')
+                    .setContent('## ❌ **GUILD STARTUP ERROR**\n\nSomething went wrong while starting your guild. Please try again in a moment.')
             );
 
             return message.reply({

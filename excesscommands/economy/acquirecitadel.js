@@ -52,7 +52,7 @@ module.exports = {
                     for (let i = 0; i < citadels.length; i += 3) {
                         const citadelGroup = citadels.slice(i, i + 3);
                         const citadelText = citadelGroup.map(([id, citadel]) =>
-                            `**\`${id}\`** - ${citadel.name}\n> **Price:** \`$${citadel.price.toLocaleString()}\`\n> **Followers:** ${citadel.maxFollowers} • **Security:** ${citadel.securityLevel} • **Vault:** $${citadel.vaultCapacity.toLocaleString()}\n> **Garrison:** ${citadel.garrisonCapacity > 0 ? `${citadel.garrisonCapacity} cars` : 'None'} • **Upkeep:** $${citadel.monthlyUpkeep.toLocaleString()}`
+                            `**\`${id}\`** - ${citadel.name}\n> **Price:** \`$${citadel.price.toLocaleString()}\`\n> **Followers:** ${citadel.maxFollowers} • **Security:** ${citadel.securityLevel} • **Vault:** $${citadel.vaultCapacity.toLocaleString()}\n> **Lair:** ${citadel.lairCapacity > 0 ? `${citadel.lairCapacity} beasts` : 'None'} • **Upkeep:** $${citadel.monthlyUpkeep.toLocaleString()}`
                         ).join('\n\n');
 
                         categoryContainer.addTextDisplayComponents(
@@ -68,7 +68,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                    .setContent(`## 🛒 **HOW TO ACQUIRE**\n\n**Command:** \`!acquirecitadel <citadel_id>\`\n**Example:** \`!acquirecitadel outpost\`\n\n**💡 Benefits:**\n> • House your followers securely\n> • Unlock vault storage\n> • Enable garrison for multiple cars\n> • Increase security against raids\n> • First citadel becomes your primary stronghold`)
+                    .setContent(`## 🛒 **HOW TO ACQUIRE**\n\n**Command:** \`!acquirecitadel <citadel_id>\`\n**Example:** \`!acquirecitadel outpost\`\n\n**💡 Benefits:**\n> • House your followers securely\n> • Unlock vault storage\n> • Enable lair for multiple beasts\n> • Increase security against raids\n> • First citadel becomes your primary stronghold`)
                 );
 
                 components.push(instructionsContainer);
@@ -119,7 +119,7 @@ module.exports = {
                     new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
                     new ContainerBuilder().setAccentColor(0xF39C12)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Citadel:** \`${citadelData.name}\`\n**Price:** \`$${citadelData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(citadelData.price - profile.wallet).toLocaleString()}\`\n\n**💡 Investment Tips:** Complete quests, manage businesses, or engage in profitable ventures to build wealth for citadel investments!`)
+                        new TextDisplayBuilder().setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Citadel:** \`${citadelData.name}\`\n**Price:** \`$${citadelData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(citadelData.price - profile.wallet).toLocaleString()}\`\n\n**💡 Investment Tips:** Complete quests, manage guilds, or engage in profitable ventures to build wealth for citadel investments!`)
                     )
                 ];
                 return message.reply({
@@ -140,7 +140,7 @@ module.exports = {
                 monthlyUpkeep: citadelData.monthlyUpkeep,
                 securityLevel: citadelData.securityLevel,
                 maxFollowers: citadelData.maxFollowers,
-                garrisonCapacity: citadelData.garrisonCapacity,
+                lairCapacity: citadelData.lairCapacity,
                 vaultCapacity: citadelData.vaultCapacity,
                 condition: 'pristine',
                 dateAcquired: new Date()
@@ -174,7 +174,7 @@ module.exports = {
             specsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder().setContent('## 🏘️ **CITADEL SPECIFICATIONS**'),
                 new TextDisplayBuilder().setContent(`**🏰 Citadel Name:** \`${citadelData.name}\`\n**🏷️ Citadel Type:** \`${citadelData.type}\`\n**👨‍👩‍👧‍👦 Follower Capacity:** \`${citadelData.maxFollowers} followers\`\n**🛡️ Security Level:** \`${citadelData.securityLevel}/10\`\n**🏦 Vault Capacity:** \`$${citadelData.vaultCapacity.toLocaleString()}\``),
-                new TextDisplayBuilder().setContent(`**🚗 Garrison:** ${citadelData.garrisonCapacity > 0 ? `\`${citadelData.garrisonCapacity} cars\`` : '\`None\`'}\n**💰 Monthly Upkeep:** \`$${citadelData.monthlyUpkeep.toLocaleString()}\`\n**📅 Acquisition Date:** \`${new Date().toLocaleDateString()}\``)
+                new TextDisplayBuilder().setContent(`**👹 Lair:** ${citadelData.lairCapacity > 0 ? `\`${citadelData.lairCapacity} beasts\`` : '\`None\`'}\n**💰 Monthly Upkeep:** \`$${citadelData.monthlyUpkeep.toLocaleString()}\`\n**📅 Acquisition Date:** \`${new Date().toLocaleDateString()}\``)
             );
             components.push(specsContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -186,7 +186,7 @@ module.exports = {
             const unlockedFeatures = [];
             if (citadelData.maxFollowers > 0) unlockedFeatures.push(`**👨‍👩‍👧‍👦 Follower Housing:** Accommodate up to ${citadelData.maxFollowers} followers`);
             if (citadelData.vaultCapacity > 0) unlockedFeatures.push(`**🏦 Vault:** Secure storage for $${citadelData.vaultCapacity.toLocaleString()}`);
-            if (citadelData.garrisonCapacity > 0) unlockedFeatures.push(`**🚗 Garrison:** House up to ${citadelData.garrisonCapacity} cars safely`);
+            if (citadelData.lairCapacity > 0) unlockedFeatures.push(`**👹 Lair:** House up to ${citadelData.lairCapacity} beasts safely`);
             if (citadelData.securityLevel > 0) unlockedFeatures.push(`**🛡️ Enhanced Security:** Level ${citadelData.securityLevel} protection against raids`);
             if (isFirstCitadel) unlockedFeatures.push(`**🐾 Pet Ownership:** Own up to ${Math.floor(citadelData.maxFollowers / 2)} pets`);
 
@@ -205,7 +205,7 @@ module.exports = {
 
             const nextStepsContainer = new ContainerBuilder().setAccentColor(0xE91E63);
             nextStepsContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit money in your vault for security\n**🚗 Garrison Cars:** Store multiple cars in your garrison\n**🐾 Adopt Pets:** Adopt pets for companionship and security\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
+                new TextDisplayBuilder().setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit money in your vault for security\n**👹 Lair Beasts:** Store multiple beasts in your lair\n**🐾 Adopt Pets:** Adopt pets for companionship and security\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
             );
             components.push(nextStepsContainer);
 

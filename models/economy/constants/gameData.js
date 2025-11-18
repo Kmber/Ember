@@ -1,48 +1,48 @@
-const CARS = {
-    'economy_sedan': {
-        name: 'Economy Sedan',
-        type: 'economy',
+const BEASTS = {
+    'shadow_panther': {
+        name: 'Shadow Panther',
+        type: 'terrestrial',
         price: 15000,
-        speed: 45,
-        acceleration: 40,
-        handling: 50,
-        maintenanceCost: 200
+        speed: 50,
+        acceleration: 45,
+        handling: 55,
+        upkeepCost: 200
     },
-    'sports_coupe': {
-        name: 'Sports Coupe',
-        type: 'sports',
+    'river_serpent': {
+        name: 'River Serpent',
+        type: 'aquatic',
         price: 45000,
         speed: 70,
         acceleration: 75,
         handling: 65,
-        maintenanceCost: 600
+        upkeepCost: 600
     },
-    'luxury_sedan': {
-        name: 'Luxury Sedan',
-        type: 'luxury',
+    'ironhide_boar': {
+        name: 'Ironhide Boar',
+        type: 'terrestrial',
         price: 80000,
         speed: 60,
         acceleration: 55,
         handling: 80,
-        maintenanceCost: 1000
+        upkeepCost: 1000
     },
-    'supercar': {
-        name: 'Supercar',
-        type: 'supercar',
+    'gryphon': {
+        name: 'Gryphon',
+        type: 'aerial',
         price: 200000,
         speed: 95,
         acceleration: 90,
         handling: 85,
-        maintenanceCost: 2500
+        upkeepCost: 2500
     },
-    'hypercar': {
-        name: 'Hypercar',
-        type: 'hypercar',
+    'nether_drake': {
+        name: 'Nether Drake',
+        type: 'aerial',
         price: 500000,
         speed: 100,
         acceleration: 100,
         handling: 95,
-        maintenanceCost: 5000
+        upkeepCost: 5000
     }
 };
 
@@ -92,7 +92,7 @@ const CITADELS = {
         maxFollowers: 3,
         securityLevel: 3,
         vaultCapacity: 20000,
-        garrisonCapacity: 1,
+        lairCapacity: 1,
         monthlyUpkeep: 1300
     },
     'fortress': {
@@ -102,7 +102,7 @@ const CITADELS = {
         maxFollowers: 5,
         securityLevel: 5,
         vaultCapacity: 40000,
-        garrisonCapacity: 2,
+        lairCapacity: 2,
         monthlyUpkeep: 2200
     },
     'sanctuary': {
@@ -112,7 +112,7 @@ const CITADELS = {
         maxFollowers: 7,
         securityLevel: 7,
         vaultCapacity: 90000,
-        garrisonCapacity: 3,
+        lairCapacity: 3,
         monthlyUpkeep: 3500
     },
     'castle': {
@@ -122,7 +122,7 @@ const CITADELS = {
         maxFollowers: 12,
         securityLevel: 9,
         vaultCapacity: 280000,
-        garrisonCapacity: 6,
+        lairCapacity: 6,
         monthlyUpkeep: 6000
     },
     'palace': {
@@ -132,7 +132,7 @@ const CITADELS = {
         maxFollowers: 18,
         securityLevel: 10,
         vaultCapacity: 700000,
-        garrisonCapacity: 12,
+        lairCapacity: 12,
         monthlyUpkeep: 14000
     }
 };
@@ -182,11 +182,11 @@ const SHOP_ITEMS = {
         category: 'pet_care',
         cooldown: 0
     },
-    'car_repair': {
-        name: 'Car Repair Kit',
+    'beast_healing': {
+        name: 'Beast Healing Potion',
         price: 1500,
-        description: 'Restores 30 durability to your active car',
-        category: 'vehicle',
+        description: 'Restores 30 durability to your active beast',
+        category: 'beast',
         cooldown: 0
     },
     'security_upgrade': {
@@ -267,4 +267,4 @@ const SHOP_ITEMS = {
     }
 };
 
-module.exports = { CARS, PETS, CITADELS, ROLES, SHOP_ITEMS };
+module.exports = { BEASTS, PETS, CITADELS, ROLES, SHOP_ITEMS };

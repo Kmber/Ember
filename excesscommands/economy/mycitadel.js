@@ -23,7 +23,7 @@ module.exports = {
 
                 noCitadelContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('# 🏰 No Citadel Acquired\n## START YOUR CONQUEST\n\n> You don\'t own any citadels yet! Citadel ownership is essential for building your kingdom.\n> Citadels provide follower housing, secure storage, and garage space for your cars.')
+                        .setContent('# 🏰 No Citadel Acquired\n## START YOUR CONQUEST\n\n> You don\'t own any citadels yet! Citadel ownership is essential for building your kingdom.\n> Citadels provide follower housing, secure storage, and lair space for your beasts.')
                 );
 
                 components.push(noCitadelContainer);
@@ -35,7 +35,7 @@ module.exports = {
 
                 startContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET YOUR FIRST CITADEL**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available citadels\n**Step 2:** Choose a citadel that fits your budget and needs\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Start building your congregation with followers and pets!\n\n**💡 Citadel Benefits:**\n> • House followers for work bonuses\n> • Secure tithe storage\n> • Garage space for car collection\n> • Enhanced security against raids\n> • Investment appreciation over time`)
+                        .setContent(`## 🏘️ **GET YOUR FIRST CITADEL**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available citadels\n**Step 2:** Choose a citadel that fits your budget and needs\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Start building your congregation with followers and pets!\n\n**💡 Citadel Benefits:**\n> • House followers for work bonuses\n> • Secure tithe storage\n> • Lair space for beast collection\n> • Enhanced security against raids\n> • Investment appreciation over time`)
                 );
 
                 components.push(startContainer);
@@ -144,52 +144,52 @@ module.exports = {
        
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-            const garageContainer = new ContainerBuilder()
+            const lairContainer = new ContainerBuilder()
                 .setAccentColor(0x3498DB);
 
-            garageContainer.addTextDisplayComponents(
+            lairContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🚗 **GARAGE**')
+                    .setContent('## 👹 **LAIR**')
             );
 
-            if (primaryCitadel.garrisonCapacity > 0) {
-                garageContainer.addTextDisplayComponents(
+            if (primaryCitadel.lairCapacity > 0) {
+                lairContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Garage Capacity:** \`${profile.cars.length}/${primaryCitadel.garrisonCapacity} cars\`\n**Total Fleet Value:** \`$${profile.cars.reduce((sum, car) => sum + (car.currentValue || car.purchasePrice), 0).toLocaleString()}\``)
+                        .setContent(`**Lair Capacity:** \`${profile.beasts.length}/${primaryCitadel.lairCapacity} beasts\`\n**Total Bestiary Value:** \`$${profile.beasts.reduce((sum, beast) => sum + (beast.currentValue || beast.purchasePrice), 0).toLocaleString()}\``)
                 );
 
-                if (profile.cars.length > 0) {
-                    const carList = profile.cars.slice(0, 4).map(car => {
-                        const activeIndicator = car.carId === profile.activeCar ? '🚗 **ACTIVE**' : '🅿️ Stationed';
-                        const condition = car.durability > 80 ? '🟢' : car.durability > 50 ? '🟡' : '🔴';
-                        return `**${car.name}** ${activeIndicator}\n> **Condition:** ${condition} \`${car.durability}%\` • **Value:** \`$${(car.currentValue || car.purchasePrice).toLocaleString()}\``;
+                if (profile.beasts.length > 0) {
+                    const beastList = profile.beasts.slice(0, 4).map(beast => {
+                        const activeIndicator = beast.beastId === profile.activeBeast ? '👹 **ACTIVE**' : '🐾 Stabled';
+                        const condition = beast.durability > 80 ? '🟢' : beast.durability > 50 ? '🟡' : '🔴';
+                        return `**${beast.name}** ${activeIndicator}\n> **Condition:** ${condition} \`${beast.durability}%\` • **Value:** \`$${(beast.currentValue || beast.purchasePrice).toLocaleString()}\``;
                     }).join('\n\n');
 
-                    garageContainer.addTextDisplayComponents(
+                    lairContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(carList)
+                            .setContent(beastList)
                     );
 
-                    if (profile.cars.length > 4) {
-                        garageContainer.addTextDisplayComponents(
+                    if (profile.beasts.length > 4) {
+                        lairContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`*...and ${profile.cars.length - 4} more cars in your garage*`)
+                                .setContent(`*...and ${profile.beasts.length - 4} more beasts in your lair*`)
                         );
                     }
                 } else {
-                    garageContainer.addTextDisplayComponents(
+                    lairContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🏢 Empty Garage:** Your garage is ready for cars!\n\n**💡 Get Started:** Use \`!buycar\` to acquire your first car\n**🎯 Benefits:** Cars enable racing and other activities`)
+                            .setContent(`**👹 Empty Lair:** Your lair is ready for beasts!\n\n**💡 Get Started:** Use \`!summon\` to acquire your first beast\n**🎯 Benefits:** Beasts enable racing and other activities`)
                     );
                 }
             } else {
-                garageContainer.addTextDisplayComponents(
+                lairContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🚫 No Garage Available**\n\n**🏠 Citadel Limitation:** This citadel doesn\'t include garage space\n**💡 Upgrade Option:** Consider moving to a citadel with garage facilities\n**🚗 Car Storage:** You\'ll need garage space to house cars safely`)
+                        .setContent(`**🚫 No Lair Available**\n\n**🏠 Citadel Limitation:** This citadel doesn\'t include lair space\n**💡 Upgrade Option:** Consider moving to a citadel with lair facilities\n**👹 Beast Storage:** You\'ll need lair space to house beasts safely`)
                 );
             }
 
-            components.push(garageContainer);
+            components.push(lairContainer);
 
     
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -270,7 +270,7 @@ module.exports = {
 
             managementContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`!tithe\` to manage your secure savings\n**⛪ Follower Growth:** Recruit more followers if space allows\n**🚗 Car Collection:** Expand your garage with more cars for racing\n**🐾 Pet Adoption:** Adopt pets to increase security and companionship\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
+                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`!tithe\` to manage your secure savings\n**⛪ Follower Growth:** Recruit more followers if space allows\n**👹 Beast Collection:** Expand your lair with more beasts for racing\n**🐾 Pet Adoption:** Adopt pets to increase security and companionship\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
             );
 
             components.push(managementContainer);

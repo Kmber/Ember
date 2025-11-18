@@ -134,7 +134,7 @@ module.exports = {
 
                 alternativeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **ALTERNATIVE MONEY METHODS**\n\n**💼 Work:** Use \`!work\` for legitimate income\n**🎰 Gamble:** Try \`!gamble\` for risky gains\n**🏪 Business:** Run businesses for passive income\n**🎁 Daily:** Claim \`!daily\` rewards regularly\n\n> Why rob yourself when you can rob others? 😏`)
+                        .setContent(`## 💰 **ALTERNATIVE MONEY METHODS**\n\n**💼 Work:** Use \`!work\` for legitimate income\n**🎰 Gamble:** Try \`!gamble\` for risky gains\n**🏪 Guild:** Run guilds for passive income\n**🎁 Daily:** Claim \`!daily\` rewards regularly\n\n> Why rob yourself when you can rob others? 😏`)
                 );
 
                 components.push(alternativeContainer);

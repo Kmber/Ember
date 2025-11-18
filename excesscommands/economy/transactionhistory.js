@@ -39,7 +39,7 @@ module.exports = {
             
             
             const filterType = args.find(arg => ['income', 'expense', 'transfer', 'investment', 'trade', 'racing', 'robbery', 'family_work', 'gambling', 'shop'].includes(arg.toLowerCase()));
-            const filterCategory = args.find(arg => ['business', 'raid', 'racing', 'gambling', 'shop', 'family', 'work'].includes(arg.toLowerCase()));
+            const filterCategory = args.find(arg => ['guild', 'raid', 'racing', 'gambling', 'shop', 'family', 'work'].includes(arg.toLowerCase()));
             
           
             let transactions = [...(profile.transactions || [])];
@@ -220,7 +220,7 @@ module.exports = {
 
                 filterGuideContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎯 **FILTERING OPTIONS**\n\n**By Type:** \`income\`, \`expense\`, \`transfer\`\n**By Category:** \`business\`, \`raid\`, \`racing\`, \`gambling\`, \`shop\`, \`family\`, \`work\`\n\n**Examples:**\n> • \`!transactions income\` - Only income records\n> • \`!transactions gambling\` - Only gambling transactions\n> • \`!transactions expense shop\` - Only shop purchases\n> • \`!transactions 2\` - Jump to page 2\n\n**💡 Combine filters and pages for precise record searching!`)
+                        .setContent(`## 🎯 **FILTERING OPTIONS**\n\n**By Type:** \`income\`, \`expense\`, \`transfer\`\n**By Category:** \`guild\`, \`raid\`, \`racing\`, \`gambling\`, \`shop\`, \`family\`, \`work\`\n\n**Examples:**\n> • \`!transactions income\` - Only income records\n> • \`!transactions gambling\` - Only gambling transactions\n> • \`!transactions expense shop\` - Only shop purchases\n> • \`!transactions 2\` - Jump to page 2\n\n**💡 Combine filters and pages for precise record searching!`)
                 );
 
                 components.push(filterGuideContainer);
@@ -326,7 +326,7 @@ module.exports = {
 function getTransactionEmoji(type, category) {
     const emojiMap = {
         income: {
-            business: '🏢',
+            guild: '🏢',
             raid: '💰',
             racing: '🏁',
             gambling: '🎰',

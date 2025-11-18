@@ -1,5 +1,5 @@
 const { Economy, Raid } = require('./schema');
-const { BUSINESS_TYPES, RAID_DUNGEONS } = require('./constants/businessData');
+const { GUILD_TYPES, RAID_DUNGEONS } = require('./constants/guildData');
 
 class EconomyManager {
     // ✅ FIXED: Atomic profile creation/retrieval
@@ -19,19 +19,19 @@ class EconomyManager {
                         followerTithe: 0,
                         followers: [],
                         followerAllegiance: 0,
-                        // Vehicle System defaults
-                        cars: [],
-                        activeCar: null,
+                        // Beast System defaults
+                        beasts: [],
+                        activeBeast: null,
                         // Pet System defaults
                         pets: [],
                         maxPets: 1,
                         // Citadel System defaults
                         citadels: [],
                         primaryCitadel: null,
-                        // Business System defaults
-                        businesses: [],
-                        maxBusinesses: 1,
-                        businessSkill: 0,
+                        // Guild System defaults
+                        guilds: [],
+                        maxGuilds: 1,
+                        guildInfluence: 0,
                         // Dungeon Raid System defaults
                         activeRaids: [],
                         completedRaids: 0,
@@ -64,14 +64,14 @@ class EconomyManager {
                             daily: null,
                             weekly: null,
                             work: null,
-                            race: null,
+                            beastrace: null,
                             ritual: null,
                             petCare: null,
                             robbery: null,
                             beg: null,
                             gambling: null,
                             shop: null,
-                            business: null,
+                            guild: null,
                             raid: null
                         },
                         dailyStreak: 0,
@@ -131,14 +131,14 @@ class EconomyManager {
             daily: 24 * 60 * 60 * 1000, // 24 hours
             weekly: 7 * 24 * 60 * 60 * 1000, // 7 days
             work: 60 * 60 * 1000, // 1 hour
-            race: 5 * 60 * 1000, // 5 minutes
+            beastrace: 5 * 60 * 1000, // 5 minutes
             ritual: 24 * 60 * 60 * 1000, // 24 hours
             petCare: 30 * 60 * 1000, // 30 minutes
             robbery: 30 * 60 * 1000, // 30 minutes
             beg: 10 * 60 * 1000, // 10 minutes
             gambling: 30 * 1000, // 30 seconds
             shop: 10 * 1000, // 10 seconds
-            business: 24 * 60 * 60 * 1000, // 24 hours  
+            guild: 24 * 60 * 60 * 1000, // 24 hours  
             raid: 60 * 60 * 1000, // 1 hour
         };
 
@@ -198,33 +198,33 @@ class EconomyManager {
     }
 
 // Add this corrected method to replace the buggy one:
-static async calculateBusinessIncome(business, profile = null) {
-    const businessType = BUSINESS_TYPES[business.type];
-    const baseIncome = businessType.dailyIncome;
+static async calculateGuildIncome(guild, profile = null) {
+    const guildType = GUILD_TYPES[guild.type];
+    const baseIncome = guildType.dailyIncome;
 
-    const levelMultiplier = business.level * 0.5 + 0.5;
-    const employeeBonus = business.employees * (200 + (business.level * 50));
-    const efficiencyMultiplier = business.efficiency || 1.0;
-    const reputationBonus = (business.reputation / 100) * (500 + business.level * 100);
+    const levelMultiplier = guild.level * 0.5 + 0.5;
+    const acolyteBonus = guild.acolytes * (200 + (guild.level * 50));
+    const efficiencyMultiplier = guild.efficiency || 1.0;
+    const reputationBonus = (guild.reputation / 100) * (500 + guild.level * 100);
     
-    // ✅ FIXED - Safely use profile businessSkill if available
-    const skillBonus = profile ? ((profile.businessSkill || 0) * 10) : 0;
+    // ✅ FIXED - Safely use profile guildInfluence if available
+    const skillBonus = profile ? ((profile.guildInfluence || 0) * 10) : 0;
 
-    const minIncome = Math.floor((baseIncome[0] * levelMultiplier + employeeBonus + reputationBonus + skillBonus) * efficiencyMultiplier);
-    const maxIncome = Math.floor((baseIncome[1] * levelMultiplier + employeeBonus + reputationBonus + skillBonus) * efficiencyMultiplier);
+    const minIncome = Math.floor((baseIncome[0] * levelMultiplier + acolyteBonus + reputationBonus + skillBonus) * efficiencyMultiplier);
+    const maxIncome = Math.floor((baseIncome[1] * levelMultiplier + acolyteBonus + reputationBonus + skillBonus) * efficiencyMultiplier);
 
     const randomIncome = Math.floor(Math.random() * (maxIncome - minIncome + 1)) + minIncome;
-    const employeeCosts = business.employees * Math.floor(businessType.employeeCost * 0.6);
+    const acolyteCosts = guild.acolytes * Math.floor(guildType.acolyteCost * 0.6);
 
     return {
         revenue: randomIncome,
-        expenses: employeeCosts,
-        profit: Math.max(0, randomIncome - employeeCosts)
+        expenses: acolyteCosts,
+        profit: Math.max(0, randomIncome - acolyteCosts)
     };
 }
 
 // ENHANCED: Better experience and skill rewards
-static async giveBusinessExperience(profile, action, amount = 0) {
+static async giveGuildExperience(profile, action, amount = 0) {
     let expGain = 0;
     let skillGain = 0;
     
@@ -237,11 +237,11 @@ static async giveBusinessExperience(profile, action, amount = 0) {
             expGain = 25;
             skillGain = 3;
             break;
-        case 'hire':
-            expGain = 10 * amount; // 10 XP per employee hired
+        case 'recruit':
+            expGain = 10 * amount; // 10 XP per acolyte recruited
             skillGain = 1;
             break;
-        case 'fire':
+        case 'dismiss':
             expGain = 5;
             skillGain = 0;
             break;
@@ -252,57 +252,57 @@ static async giveBusinessExperience(profile, action, amount = 0) {
     }
     
     profile.experience = (profile.experience || 0) + expGain;
-    profile.businessSkill = Math.min(100, (profile.businessSkill || 0) + skillGain);
+    profile.guildInfluence = Math.min(100, (profile.guildInfluence || 0) + skillGain);
     
     return { expGain, skillGain };
 }
 
-// NEW: Delete/Sell business functionality
-static async sellBusiness(profile, businessIndex) {
-    const business = profile.businesses[businessIndex];
-    const businessType = BUSINESS_TYPES[business.type];
+// NEW: Delete/Sell guild functionality
+static async sellGuild(profile, guildIndex) {
+    const guild = profile.guilds[guildIndex];
+    const guildType = GUILD_TYPES[guild.type];
     
     // Calculate sell value (60-80% of purchase price based on level and reputation)
-    const baseValue = business.purchasePrice * 0.6;
-    const levelBonus = business.purchasePrice * 0.02 * business.level; // 2% per level
-    const reputationBonus = business.purchasePrice * 0.002 * business.reputation; // 0.2% per reputation point
+    const baseValue = guild.purchasePrice * 0.6;
+    const levelBonus = guild.purchasePrice * 0.02 * guild.level; // 2% per level
+    const reputationBonus = guild.purchasePrice * 0.002 * guild.reputation; // 0.2% per reputation point
     
     const sellValue = Math.floor(baseValue + levelBonus + reputationBonus);
     
-    // Remove business and add money
-    profile.businesses.splice(businessIndex, 1);
+    // Remove guild and add money
+    profile.guilds.splice(guildIndex, 1);
     profile.wallet += sellValue;
     
     // Add transaction record
     profile.transactions.push({
         type: 'income',
         amount: sellValue,
-        description: `Sold business: ${business.name}`,
-        category: 'business'
+        description: `Sold guild: ${guild.name}`,
+        category: 'guild'
     });
     
     return sellValue;
 }
-static async collectBusinessIncome(userId, guildId) {
+static async collectGuildIncome(userId, guildId) {
     const profile = await this.getProfile(userId, guildId);
     let totalProfit = 0;
-    let businessReport = [];
+    let guildReport = [];
 
-    for (let business of profile.businesses) {
-        const hoursSinceCollection = business.lastCollection ?
-            (Date.now() - business.lastCollection.getTime()) / (1000 * 60 * 60) : 24;
+    for (let guild of profile.guilds) {
+        const hoursSinceCollection = guild.lastCollection ?
+            (Date.now() - guild.lastCollection.getTime()) / (1000 * 60 * 60) : 24;
 
         if (hoursSinceCollection >= 24) {
             // ✅ FIXED - Pass profile to get skill bonus
-            const income = await this.calculateBusinessIncome(business, profile);
-            business.revenue += income.revenue;
-            business.expenses += income.expenses;
-            business.profit += income.profit;
-            business.lastCollection = new Date();
+            const income = await this.calculateGuildIncome(guild, profile);
+            guild.revenue += income.revenue;
+            guild.expenses += income.expenses;
+            guild.profit += income.profit;
+            guild.lastCollection = new Date();
 
             totalProfit += income.profit;
-            businessReport.push({
-                name: business.name,
+            guildReport.push({
+                name: guild.name,
                 profit: income.profit,
                 revenue: income.revenue,
                 expenses: income.expenses
@@ -315,13 +315,13 @@ static async collectBusinessIncome(userId, guildId) {
         profile.transactions.push({
             type: 'income',
             amount: totalProfit,
-            description: 'Business profits collected',
-            category: 'business'
+            description: 'Guild profits collected',
+            category: 'guild'
         });
     }
 
     await profile.save();
-    return { totalProfit, businessReport };
+    return { totalProfit, guildReport };
 }
 
 

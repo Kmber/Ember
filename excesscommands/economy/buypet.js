@@ -165,7 +165,7 @@ module.exports = {
 
                 priceBreakdownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **ADOPTION FEES**\n\n**Pet:** \`${petData.name} (${petData.breed})\`\n**Adoption Fee:** \`$${petData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(petData.price - profile.wallet).toLocaleString()}\`\n\n**💡 Earning Tips:** Work regularly, complete dailies, or run businesses to save for your new companion!`)
+                        .setContent(`## 💰 **ADOPTION FEES**\n\n**Pet:** \`${petData.name} (${petData.breed})\`\n**Adoption Fee:** \`$${petData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(petData.price - profile.wallet).toLocaleString()}\`\n\n**💡 Earning Tips:** Work regularly, complete dailies, or run guilds to save for your new companion!`)
                 );
 
                 components.push(priceBreakdownContainer);

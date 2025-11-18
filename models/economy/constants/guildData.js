@@ -1,99 +1,99 @@
-// constants/businessData.js
-const BUSINESS_TYPES = {
-    'restaurant': {
-        name: 'Restaurant Chain',
-        description: 'Serve customers and earn daily profits',
+// constants/guildData.js
+const GUILD_TYPES = {
+    'alchemists_guild': {
+        name: 'Alchemist\'s Guild',
+        description: 'Brew potions and transmute metals for profit.',
         baseCost: 50000,
-        dailyIncome: [200, 800], // min, max per level
+        dailyIncome: [200, 800],
         maxLevel: 10,
-        employeeCost: 150, // per employee per day
-        maxEmployees: 20,
+        acolyteCost: 150,
+        maxAcolytes: 20,
         upgradeCostMultiplier: 1.5,
-        categories: ['food_quality', 'service', 'location', 'marketing'],
+        categories: ['potion_brewing', 'transmutation', 'reputation', 'patronage'],
         specialBonuses: {
-            family_discount: 'Family members eat free (saves $50/day per member)',
-            celebrity_chef: 'Hire famous chef (+50% income for 30 days)',
-            franchise: 'Expand to multiple locations (+25% base income)'
+            philosophers_stone: 'Achieve mastery of transmutation (major income boost)',
+            elixir_of_life: 'Create the legendary elixir (+100% income for 30 days)',
+            exclusive_patronage: 'Secure a contract with a noble house (+50% base income)'
         }
     },
-    'tech_startup': {
-        name: 'Tech Startup',
-        description: 'Develop apps and software for high profits',
+    'scriveners_guild': {
+        name: 'Scrivener\'s Guild',
+        description: 'Create scrolls and illuminated manuscripts.',
         baseCost: 100000,
-        dailyIncome: [100, 1500], // very volatile
+        dailyIncome: [100, 1500],
         maxLevel: 10,
-        employeeCost: 300, // expensive developers
-        maxEmployees: 15,
+        acolyteCost: 300,
+        maxAcolytes: 15,
         upgradeCostMultiplier: 2.0,
-        categories: ['innovation', 'marketing', 'user_base', 'funding'],
+        categories: ['calligraphy', 'illumination', 'book_binding', 'clientele'],
         specialBonuses: {
-            ipo: 'Go public (1000x daily income for 7 days, then +100% forever)',
-            viral_app: 'Create viral app (+200% income for 14 days)',
-            government_contract: 'Secure government deal (+75% income, very stable)'
+            forbidden_knowledge: 'Transcribe a forbidden text (high risk, high reward event)',
+            royal_charter: 'Become the official scribes of the monarchy (+75% income)',
+            mass_production: 'Discover a method for rapid copying (+200% income for 14 days)'
         }
     },
-    'real_estate': {
-        name: 'Real Estate Agency',
-        description: 'Earn commissions from property sales',
+    'masons_guild': {
+        name: 'Masons\' Guild',
+        description: 'Construct buildings and fortifications.',
         baseCost: 75000,
-        dailyIncome: [300, 600], // stable income
+        dailyIncome: [300, 600],
         maxLevel: 10,
-        employeeCost: 200,
-        maxEmployees: 12,
+        acolyteCost: 200,
+        maxAcolytes: 12,
         upgradeCostMultiplier: 1.3,
-        categories: ['market_knowledge', 'network', 'reputation', 'listings'],
+        categories: ['stoneworking', 'architecture', 'contracts', 'reputation'],
         specialBonuses: {
-            luxury_specialist: 'Specialize in luxury properties (+100% income)',
-            market_insider: 'Get insider info (predict market trends)',
-            property_flip: 'Buy and flip properties (massive profit events)'
+            cathedral_contract: 'Win the bid to construct a grand cathedral (massive income)',
+            master_architect: 'Hire a legendary architect (+100% income)',
+            quarry_ownership: 'Gain control of a stone quarry (reduced material costs)'
         }
     },
-    'car_dealership': {
-        name: 'Car Dealership',
-        description: 'Sell cars to players and NPCs',
+    'mercenary_guild': {
+        name: 'Mercenary Guild',
+        description: 'Fulfill contracts for coin and glory.',
         baseCost: 200000,
         dailyIncome: [400, 1000],
         maxLevel: 10,
-        employeeCost: 250,
-        maxEmployees: 10,
+        acolyteCost: 250,
+        maxAcolytes: 10,
         upgradeCostMultiplier: 1.4,
-        categories: ['inventory', 'sales_team', 'service_center', 'reputation'],
+        categories: ['combat_prowess', 'reputation', 'equipment', 'contracts'],
         specialBonuses: {
-            exotic_cars: 'Sell hypercars (+150% profit margins)',
-            racing_team: 'Sponsor racing team (marketing boost)',
-            trade_ins: 'Accept player car trade-ins (extra revenue stream)'
+            war_for_hire: 'Participate in a major conflict (huge income, high risk)',
+            elite_squad: 'Train a squad of elite mercenaries (+150% profit margins)',
+            bodyguard_contract: 'Protect a high-profile individual (steady, high income)'
         }
     },
-    'security_company': {
-        name: 'Security Company',
-        description: 'Provide protection services to players',
+    'thieves_guild': {
+        name: 'Thieves\' Guild',
+        description: 'Operate in the shadows, liberating wealth.',
         baseCost: 150000,
         dailyIncome: [250, 700],
         maxLevel: 10,
-        employeeCost: 280,
-        maxEmployees: 25,
+        acolyteCost: 280,
+        maxAcolytes: 25,
         upgradeCostMultiplier: 1.6,
-        categories: ['equipment', 'training', 'contracts', 'reputation'],
+        categories: ['stealth', 'infiltration', 'network', 'reputation'],
         specialBonuses: {
-            government_contract: 'Protect government buildings (+200% income)',
-            private_military: 'Become PMC (can participate in heists)',
-            insurance_partner: 'Partner with insurance companies (+50% steady income)'
+            the_big_heist: 'Pull off a legendary heist (massive one-time payout)',
+            syndicate_ties: 'Forge alliances with other criminal organizations (+50% income)',
+            master_of_disguise: 'Gain access to high-society events (unlocks new opportunities)'
         }
     },
-    'casino': {
-        name: 'Private Casino',
-        description: 'Ultimate high-risk, high-reward business',
+    'arcane_syndicate': {
+        name: 'Arcane Syndicate',
+        description: 'A clandestine organization dealing in forbidden magic.',
         baseCost: 500000,
-        dailyIncome: [0, 3000], // very volatile
+        dailyIncome: [0, 3000],
         maxLevel: 10,
-        employeeCost: 400,
-        maxEmployees: 30,
+        acolyteCost: 400,
+        maxAcolytes: 30,
         upgradeCostMultiplier: 1.8,
-        categories: ['games', 'security', 'vip_services', 'entertainment'],
+        categories: ['spellcraft', 'enchanting', 'rituals', 'secrecy'],
         specialBonuses: {
-            high_roller_suite: 'Attract whales (+300% income spikes)',
-            tournament_host: 'Host poker tournaments (huge profit events)',
-            money_laundering: 'Illegal but profitable (+100% income, +50% heat)'
+            demon_binding: 'Summon and bind a powerful demon (high risk, immense power)',
+            lichdom_pact: 'Make a pact with a lich for forbidden knowledge (+300% income spikes)',
+            shadow_market: 'Dominate the black market for magical artifacts (+100% income, +50% heat)'
         }
     }
 };
@@ -177,4 +177,4 @@ const RAID_GEAR = {
     'potion_of_fire_breath': { name: 'Potion of Fire Breath', cost: 150000, description: 'Temporarily grants the ability to breathe fire.' }
 };
 
-module.exports = { BUSINESS_TYPES, RAID_DUNGEONS, RAID_GEAR };
+module.exports = { GUILD_TYPES, RAID_DUNGEONS, RAID_GEAR };

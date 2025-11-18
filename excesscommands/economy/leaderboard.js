@@ -118,7 +118,7 @@ module.exports = {
 
                 encouragementContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚀 **GET STARTED**\n\n**💡 Tips to appear on this leaderboard:**\n> • Participate in economy activities\n> • Build wealth through work and businesses\n> • Level up through regular activity\n> • Start racing and building family relationships\n\n> Your journey to the top starts now!`)
+                        .setContent(`## 🚀 **GET STARTED**\n\n**💡 Tips to appear on this leaderboard:**\n> • Participate in economy activities\n> • Build wealth through work and guilds\n> • Level up through regular activity\n> • Start racing and building family relationships\n\n> Your journey to the top starts now!`)
                 );
 
                 components.push(encouragementContainer);
@@ -295,7 +295,7 @@ module.exports = {
             let tipText = '';
             switch (type) {
                 case 'wealth':
-                    tipText = '💡 **Wealth Building Tips:** Work regularly, run businesses, invest in properties, and save money in your bank and family vault!';
+                    tipText = '💡 **Wealth Building Tips:** Work regularly, run guilds, invest in properties, and save money in your bank and family vault!';
                     break;
                 case 'level':
                     tipText = '💡 **Leveling Tips:** Complete daily activities, work consistently, participate in all economy features to gain XP!';

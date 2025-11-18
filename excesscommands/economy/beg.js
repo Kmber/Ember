@@ -76,7 +76,7 @@ module.exports = {
                 { success: true, min: 25, max: 75, message: "A kind stranger took pity on you!" },
                 { success: true, min: 50, max: 100, message: "Someone dropped their wallet and let you keep the change!" },
                 { success: true, min: 10, max: 40, message: "A generous person gave you some spare change." },
-                { success: true, min: 75, max: 150, message: "A wealthy business person felt generous today!" },
+                { success: true, min: 75, max: 150, message: "A wealthy guild master felt generous today!" },
                 { success: false, amount: 0, message: "People just walked past you ignoring your pleas..." },
                 { success: false, amount: 0, message: "A security guard told you to move along." },
                 { success: false, amount: 0, message: "Everyone seems to be in a hurry today." }

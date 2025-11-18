@@ -247,7 +247,7 @@ module.exports = {
 
                 tipsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **GAMBLING TIPS & ENCOURAGEMENT**\n\n**🍀 Improve Your Odds:** Buy luck items from the premium shop\n**🎲 Smart Betting:** Start with smaller amounts to minimize risk\n**💰 Earn More:** Work, complete dailies, or run businesses to rebuild funds\n**🎯 Patience Pays:** With ${winChance.toFixed(1)}% win chance, victory will come!\n\n**💫 Remember:** Every loss brings you closer to the next big win!`)
+                        .setContent(`## 💡 **GAMBLING TIPS & ENCOURAGEMENT**\n\n**🍀 Improve Your Odds:** Buy luck items from the premium shop\n**🎲 Smart Betting:** Start with smaller amounts to minimize risk\n**💰 Earn More:** Work, complete dailies, or run guilds to rebuild funds\n**🎯 Patience Pays:** With ${winChance.toFixed(1)}% win chance, victory will come!\n\n**💫 Remember:** Every loss brings you closer to the next big win!`)
                 );
 
                 components.push(tipsContainer);

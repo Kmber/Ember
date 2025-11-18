@@ -6,7 +6,7 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { BUSINESS_TYPES, RAID_DUNGEONS } = require('../../models/economy/constants/businessData');
+const { GUILD_TYPES, RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
 
 module.exports = {
     name: 'profile',
@@ -20,7 +20,7 @@ module.exports = {
             const totalWealth = profile.wallet + profile.bank + profile.followerTithe;
             const securityLevel = EconomyManager.calculateSecurityLevel(profile);
             const workMultiplier = EconomyManager.calculateWorkMultiplier(profile);
-            const carValue = profile.cars.reduce((sum, car) => sum + car.currentValue, 0);
+            const beastValue = profile.beasts.reduce((sum, beast) => sum + beast.currentValue, 0);
             const citadelValue = profile.properties.reduce((sum, prop) => sum + prop.currentValue, 0);
             const winRate = profile.racingStats.totalRaces > 0 ? 
                 ((profile.racingStats.wins / profile.racingStats.totalRaces) * 100).toFixed(1) : '0.0';
@@ -76,7 +76,7 @@ module.exports = {
 
             assetsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏘️ Citadels Owned:** \`${profile.properties.length}\`\n**🏰 Citadel Value:** \`$${citadelValue.toLocaleString()}\`\n**🚗 Cars Owned:** \`${profile.cars.length}\`\n**🚙 Car Value:** \`$${carValue.toLocaleString()}\``)
+                    .setContent(`**🏘️ Citadels Owned:** \`${profile.properties.length}\`\n**🏰 Citadel Value:** \`$${citadelValue.toLocaleString()}\`\n**👹 Beasts Owned:** \`${profile.beasts.length}\`\n**🔥 Beast Value:** \`$${beastValue.toLocaleString()}\``)
             );
 
             assetsContainer.addTextDisplayComponents(
@@ -111,51 +111,51 @@ module.exports = {
             components.push(statsContainer);
 
          
-            if (profile.businesses.length > 0) {
+            if (profile.guilds.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                const businessContainer = new ContainerBuilder()
+                const guildContainer = new ContainerBuilder()
                     .setAccentColor(0x8E44AD);
 
-                businessContainer.addTextDisplayComponents(
+                guildContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 🏢 **BUSINESS EMPIRE**')
+                        .setContent('## 🏢 **GUILD EMPIRE**')
                 );
 
             
-                const totalBusinessValue = profile.businesses.reduce((sum, b) => sum + (b.purchasePrice || 0), 0);
-                const totalProfit = profile.businesses.reduce((sum, b) => sum + (b.profit || 0), 0);
-                const totalRevenue = profile.businesses.reduce((sum, b) => sum + (b.revenue || 0), 0);
+                const totalGuildValue = profile.guilds.reduce((sum, g) => sum + (g.purchasePrice || 0), 0);
+                const totalProfit = profile.guilds.reduce((sum, g) => sum + (g.profit || 0), 0);
+                const totalRevenue = profile.guilds.reduce((sum, g) => sum + (g.revenue || 0), 0);
 
-                businessContainer.addTextDisplayComponents(
+                guildContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏢 Active Businesses:** \`${profile.businesses.length}/${profile.maxBusinesses}\`\n**📊 Business Skill:** \`${profile.businessSkill}%\`\n**💰 Total Investment:** \`$${totalBusinessValue.toLocaleString()}\`\n**📈 Total Profit:** \`${totalProfit.toLocaleString()}\``)
+                        .setContent(`**🏢 Active Guilds:** \`${profile.guilds.length}/${profile.maxGuilds}\`\n**📊 Guild Skill:** \`${profile.guildSkill}%\`\n**💰 Total Investment:** \`$${totalGuildValue.toLocaleString()}\`\n**📈 Total Profit:** \`${totalProfit.toLocaleString()}\``)
                 );
 
             
-                if (profile.businesses.length > 0) {
-                    let businessDetails = profile.businesses.slice(0, 3).map(business => {
-                        const businessType = BUSINESS_TYPES[business.type];
-                        const lastCollection = business.lastCollection ? 
-                            new Date(business.lastCollection).toLocaleDateString() : 'Never';
+                if (profile.guilds.length > 0) {
+                    let guildDetails = profile.guilds.slice(0, 3).map(guild => {
+                        const guildType = GUILD_TYPES[guild.type];
+                        const lastCollection = guild.lastCollection ? 
+                            new Date(guild.lastCollection).toLocaleDateString() : 'Never';
                         
-                        return `**\`${business.name}\`** (${businessType?.name || business.type})\n` +
-                               `> **Level:** \`${business.level}/10\` • **Employees:** \`${business.employees}\`\n` +
-                               `> **Reputation:** \`${business.reputation}%\` • **Efficiency:** \`${(business.efficiency * 100).toFixed(0)}%\`\n` +
+                        return `**\`${guild.name}\`** (${guildType?.name || guild.type})\n` +
+                               `> **Level:** \`${guild.level}/10\` • **Acolytes:** \`${guild.acolytes}\`\n` +
+                               `> **Reputation:** \`${guild.reputation}%\` • **Efficiency:** \`${(guild.efficiency * 100).toFixed(0)}%\`\n` +
                                `> **Last Collection:** \`${lastCollection}\``;
                     }).join('\n\n');
 
-                    if (profile.businesses.length > 3) {
-                        businessDetails += `\n\n*...and ${profile.businesses.length - 3} more businesses*`;
+                    if (profile.guilds.length > 3) {
+                        guildDetails += `\n\n*...and ${profile.guilds.length - 3} more guilds*`;
                     }
 
-                    businessContainer.addTextDisplayComponents(
+                    guildContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(businessDetails)
+                            .setContent(guildDetails)
                     );
                 }
 
-                components.push(businessContainer);
+                components.push(guildContainer);
             }
 
          

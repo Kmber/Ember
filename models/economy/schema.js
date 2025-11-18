@@ -105,16 +105,16 @@ const slayingInventorySchema = new mongoose.Schema({
     description: String
 });
 
-// Business Schema
-const businessSchema = new mongoose.Schema({
-    businessId: String,
+// Guild Schema
+const guildSchema = new mongoose.Schema({
+    guildId: String,
     name: String,
     type: {
         type: String,
-        enum: ['restaurant', 'tech_startup', 'real_estate', 'car_dealership', 'security_company', 'casino']
+        enum: ['alchemists_guild', 'scriveners_guild', 'masons_guild', 'mercenary_guild', 'thieves_guild', 'arcane_syndicate']
     },
     level: { type: Number, default: 1, max: 10 },
-    employees: { type: Number, default: 0 },
+    acolytes: { type: Number, default: 0 },
     revenue: { type: Number, default: 0 },
     expenses: { type: Number, default: 0 },
     profit: { type: Number, default: 0 },
@@ -184,12 +184,12 @@ const transactionSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now }
 });
 
-const carSchema = new mongoose.Schema({
-    carId: String,
+const beastSchema = new mongoose.Schema({
+    beastId: String,
     name: String,
     type: {
         type: String,
-        enum: ['economy', 'sports', 'luxury', 'supercar', 'hypercar']
+        enum: ['terrestrial', 'aquatic', 'aerial']
     },
     speed: { type: Number, min: 1, max: 100 },
     acceleration: { type: Number, min: 1, max: 100 },
@@ -197,7 +197,7 @@ const carSchema = new mongoose.Schema({
     durability: { type: Number, min: 1, max: 100, default: 100 },
     purchasePrice: Number,
     currentValue: Number,
-    maintenanceCost: Number,
+    upkeepCost: Number,
     raceWins: { type: Number, default: 0 },
     raceLosses: { type: Number, default: 0 },
     totalDistance: { type: Number, default: 0 },
@@ -252,7 +252,7 @@ const citadelSchema = new mongoose.Schema({
     monthlyUpkeep: Number,
     securityLevel: { type: Number, min: 1, max: 10, default: 1 },
     maxFollowers: Number,
-    garrisonCapacity: { type: Number, default: 0 },
+    lairCapacity: { type: Number, default: 0 },
     vaultCapacity: { type: Number, default: 0 },
     condition: {
         type: String,
@@ -306,9 +306,9 @@ const economySchema = new mongoose.Schema({
     followers: [followerSchema],
     followerAllegiance: { type: Number, min: 0, max: 100, default: 0 },
     
-    // Vehicle System
-    cars: [carSchema],
-    activeCar: String,
+    // Beast System
+    beasts: [beastSchema],
+    activeBeast: String,
     
     // Pet System
     pets: [petSchema],
@@ -318,10 +318,10 @@ const economySchema = new mongoose.Schema({
     citadels: [citadelSchema],
     primaryCitadel: String,
     
-    // Business System
-    businesses: [businessSchema],
-    maxBusinesses: { type: Number, default: 1 },
-    businessSkill: { type: Number, default: 0, max: 100 },
+    // Guild System
+    guilds: [guildSchema],
+    maxGuilds: { type: Number, default: 1 },
+    guildInfluence: { type: Number, default: 0, max: 100 },
     
     // Dungeon Raid System
     activeRaids: [String],
@@ -403,14 +403,14 @@ const economySchema = new mongoose.Schema({
         daily: Date,
         weekly: Date,
         work: Date,
-        race: Date,
+        beastrace: Date,
         ritual: Date,
         petCare: Date,
         robbery: Date,
         beg: Date,
         gambling: Date,
         shop: Date,
-        business: Date,
+        guild: Date,
         raid: Date,
         slay: Date
     },

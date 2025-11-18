@@ -138,7 +138,7 @@ module.exports = {
 
                 earningContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **EARN MONEY FOR PET CARE**\n\n**Shortage:** \`$${cost - profile.wallet}\`\n\n**💡 Quick Earning Tips:**\n> • Use \`!work\` to earn regular income\n> • Complete \`!daily\` rewards\n> • Try your luck with \`!gamble\`\n> • Run businesses for passive income\n\n**🐾 Your pet is counting on you!**`)
+                        .setContent(`## 💰 **EARN MONEY FOR PET CARE**\n\n**Shortage:** \`$${cost - profile.wallet}\`\n\n**💡 Quick Earning Tips:**\n> • Use \`!work\` to earn regular income\n> • Complete \`!daily\` rewards\n> • Try your luck with \`!gamble\`\n> • Run guilds for passive income\n\n**🐾 Your pet is counting on you!**`)
                 );
 
                 components.push(earningContainer);

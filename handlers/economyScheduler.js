@@ -204,20 +204,20 @@ module.exports = (client) => {
                 }
             },
             {
-                name: 'Car Breakdown',
+                name: 'Beast Sickness',
                 type: 'negative',
-                condition: () => profile.cars.length > 0,
+                condition: () => profile.beasts.length > 0,
                 action: () => {
-                    const car = profile.cars[Math.floor(Math.random() * profile.cars.length)];
-                    const repairCost = Math.floor(Math.random() * 1000) + 200;
+                    const beast = profile.beasts[Math.floor(Math.random() * profile.beasts.length)];
+                    const vetCost = Math.floor(Math.random() * 1000) + 200;
                     const durabilityLoss = Math.floor(Math.random() * 20) + 5;
                     
-                    profile.wallet = Math.max(0, profile.wallet - repairCost);
-                    car.durability = Math.max(0, car.durability - durabilityLoss);
+                    profile.wallet = Math.max(0, profile.wallet - vetCost);
+                    beast.durability = Math.max(0, beast.durability - durabilityLoss);
                     
                     return {
-                        title: '🔧 Car Breakdown!',
-                        description: `Your ${car.name} broke down! Repair cost: ${repairCost}. Durability: ${car.durability}%`,
+                        title: '🐾 Beast Sickness!',
+                        description: `Your ${beast.name} fell ill! Vet cost: ${vetCost}. Durability: ${beast.durability}%`,
                         color: '#FF5722'
                     };
                 }
