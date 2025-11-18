@@ -145,7 +145,7 @@ const raidSchema = new mongoose.Schema({
         username: String,
         class: {
             type: String,
-            enum: ['warrior', 'mage', 'thief', 'cleric', 'paladin', 'ranger', 'dragon_slayer', 'archmage', 'master_thief', 'high_cleric']
+            enum: ['war lord', 'warrior', 'mage', 'thief', 'cleric', 'paladin', 'ranger', 'dragon_slayer', 'archmage', 'master_thief', 'high_cleric']
         },
         confirmed: { type: Boolean, default: false },
         gear: [String]

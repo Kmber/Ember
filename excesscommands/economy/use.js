@@ -4,7 +4,7 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { slayingData } = require('../../models/economy/slayingData');
+const { slayingData } = require('../../models/economy/constants/slayingData');
 const ServerConfig = require('../../models/serverConfig/schema');
 const config = require('../../config.json');
 

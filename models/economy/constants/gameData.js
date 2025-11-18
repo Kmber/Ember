@@ -84,66 +84,56 @@ const PETS = {
     }
 };
 
-const PROPERTIES = {
-    'manor': {
+const CITADELS = {
+    'outpost': {
         name: 'Secluded Manor',
-        type: 'manor',
+        type: 'outpost',
         price: 80000,
-        monthlyRent: 1300,
-        utilities: 250,
-        maxFamilyMembers: 3,
+        maxFollowers: 3,
         securityLevel: 3,
         vaultCapacity: 20000,
-        hasGarage: true,
-        garageCapacity: 1
+        garrisonCapacity: 1,
+        monthlyUpkeep: 1300
     },
-    'keep': {
+    'fortress': {
         name: 'Valiant Keep',
-        type: 'keep',
+        type: 'fortress',
         price: 160000,
-        monthlyRent: 2200,
-        utilities: 400,
-        maxFamilyMembers: 5,
+        maxFollowers: 5,
         securityLevel: 5,
         vaultCapacity: 40000,
-        hasGarage: true,
-        garageCapacity: 2
+        garrisonCapacity: 2,
+        monthlyUpkeep: 2200
     },
-    'citadel': {
+    'sanctuary': {
         name: 'Grand Citadel',
-        type: 'citadel',
+        type: 'sanctuary',
         price: 380000,
-        monthlyRent: 3500,
-        utilities: 600,
-        maxFamilyMembers: 7,
+        maxFollowers: 7,
         securityLevel: 7,
         vaultCapacity: 90000,
-        hasGarage: true,
-        garageCapacity: 3
+        garrisonCapacity: 3,
+        monthlyUpkeep: 3500
     },
-    'stronghold': {
+    'castle': {
         name: 'Imperial Stronghold',
-        type: 'stronghold',
+        type: 'castle',
         price: 950000,
-        monthlyRent: 6000,
-        utilities: 1000,
-        maxFamilyMembers: 12,
+        maxFollowers: 12,
         securityLevel: 9,
         vaultCapacity: 280000,
-        hasGarage: true,
-        garageCapacity: 6
+        garrisonCapacity: 6,
+        monthlyUpkeep: 6000
     },
     'palace': {
         name: 'Celestial Palace',
         type: 'palace',
         price: 2800000,
-        monthlyRent: 14000,
-        utilities: 2000,
-        maxFamilyMembers: 18,
+        maxFollowers: 18,
         securityLevel: 10,
         vaultCapacity: 700000,
-        hasGarage: true,
-        garageCapacity: 12
+        garrisonCapacity: 12,
+        monthlyUpkeep: 14000
     }
 };
 
@@ -277,4 +267,4 @@ const SHOP_ITEMS = {
     }
 };
 
-module.exports = { CARS, PETS, PROPERTIES, ROLES, SHOP_ITEMS };
+module.exports = { CARS, PETS, CITADELS, ROLES, SHOP_ITEMS };

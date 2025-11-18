@@ -10,7 +10,7 @@ const { CITADELS } = require('../../models/economy/constants/gameData');
 
 module.exports = {
     name: 'acquirecitadel',
-    aliases: ['citadel-buy', 'citadel'],
+    aliases: ['citadel-buy', 'aqcitadel'],
     description: 'Acquire a citadel to house your followers and treasures.',
     usage: '!acquirecitadel <citadel_id>',
     async execute(message, args) {
@@ -23,7 +23,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                    .setContent('# 🏰 Grand Citadel Market\\n## EXCLUSIVE CITADEL COLLECTION\\n\\n> Welcome to the grand citadel market! Invest in a citadel to expand your follower capacity, secure storage, and unlock new gameplay features.')
+                    .setContent('# 🏰 Grand Citadel Market\n## EXCLUSIVE CITADEL COLLECTION\n\n> Welcome to the grand citadel market! Invest in a citadel to expand your follower capacity, secure storage, and unlock new gameplay features.')
                 );
 
                 components.push(headerContainer);
@@ -52,8 +52,8 @@ module.exports = {
                     for (let i = 0; i < citadels.length; i += 3) {
                         const citadelGroup = citadels.slice(i, i + 3);
                         const citadelText = citadelGroup.map(([id, citadel]) =>
-                            `**\`${id}\`** - ${citadel.name}\\n> **Price:** \`$${citadel.price.toLocaleString()}\`\\n> **Followers:** ${citadel.maxFollowers} • **Security:** ${citadel.securityLevel} • **Vault:** $${citadel.vaultCapacity.toLocaleString()}\\n> **Garrison:** ${citadel.garrisonCapacity > 0 ? `${citadel.garrisonCapacity} cars` : 'None'} • **Upkeep:** $${citadel.monthlyUpkeep.toLocaleString()}`
-                        ).join('\\n\\n');
+                            `**\`${id}\`** - ${citadel.name}\n> **Price:** \`$${citadel.price.toLocaleString()}\`\n> **Followers:** ${citadel.maxFollowers} • **Security:** ${citadel.securityLevel} • **Vault:** $${citadel.vaultCapacity.toLocaleString()}\n> **Garrison:** ${citadel.garrisonCapacity > 0 ? `${citadel.garrisonCapacity} cars` : 'None'} • **Upkeep:** $${citadel.monthlyUpkeep.toLocaleString()}`
+                        ).join('\n\n');
 
                         categoryContainer.addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(citadelText)
@@ -68,7 +68,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                    .setContent(`## 🛒 **HOW TO ACQUIRE**\\n\\n**Command:** \`!acquirecitadel <citadel_id>\`\\n**Example:** \`!acquirecitadel outpost\`\\n\\n**💡 Benefits:**\\n> • House your followers securely\\n> • Unlock vault storage\\n> • Enable garrison for multiple cars\\n> • Increase security against raids\\n> • First citadel becomes your primary stronghold`)
+                    .setContent(`## 🛒 **HOW TO ACQUIRE**\n\n**Command:** \`!acquirecitadel <citadel_id>\`\n**Example:** \`!acquirecitadel outpost\`\n\n**💡 Benefits:**\n> • House your followers securely\n> • Unlock vault storage\n> • Enable garrison for multiple cars\n> • Increase security against raids\n> • First citadel becomes your primary stronghold`)
                 );
 
                 components.push(instructionsContainer);
@@ -86,7 +86,7 @@ module.exports = {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xE74C3C)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`# ❌ Invalid Citadel ID\\n## CITADEL NOT FOUND\\n\\n> **\`${citadelId}\`** is not a valid citadel ID!\\n> Use \`!acquirecitadel\` to see all available citadels with their correct IDs.`)
+                        new TextDisplayBuilder().setContent(`# ❌ Invalid Citadel ID\n## CITADEL NOT FOUND\n\n> **\`${citadelId}\`** is not a valid citadel ID!\n> Use \`!acquirecitadel\` to see all available citadels with their correct IDs.`)
                     )
                 ];
                 return message.reply({
@@ -101,7 +101,7 @@ module.exports = {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xF39C12)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`# 🏰 Citadel Already Acquired\\n## DUPLICATE ACQUISITION BLOCKED\\n\\n> You already own **${citadelData.name}**!\\n> Each player can only own one of each citadel type.\\n\\n**💡 Tip:** Check your citadel portfolio with \`!mycitadel\` to see your current holdings.`)
+                        new TextDisplayBuilder().setContent(`# 🏰 Citadel Already Acquired\n## DUPLICATE ACQUISITION BLOCKED\n\n> You already own **${citadelData.name}**!\n> Each player can only own one of each citadel type.\n\n**💡 Tip:** Check your citadel portfolio with \`!mycitadel\` to see your current holdings.`)
                     )
                 ];
                 return message.reply({
@@ -114,12 +114,12 @@ module.exports = {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xE74C3C)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`# 💸 Insufficient Funds\\n## CANNOT AFFORD CITADEL\\n\\n> You don't have enough money to acquire **${citadelData.name}**!`)
+                        new TextDisplayBuilder().setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD CITADEL\n\n> You don't have enough money to acquire **${citadelData.name}**!`)
                     ),
                     new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
                     new ContainerBuilder().setAccentColor(0xF39C12)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`## 💰 **PRICE BREAKDOWN**\\n\\n**Citadel:** \`${citadelData.name}\`\\n**Price:** \`$${citadelData.price.toLocaleString()}\`\\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\\n**Shortage:** \`$${(citadelData.price - profile.wallet).toLocaleString()}\`\\n\\n**💡 Investment Tips:** Complete quests, manage businesses, or engage in profitable ventures to build wealth for citadel investments!`)
+                        new TextDisplayBuilder().setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Citadel:** \`${citadelData.name}\`\n**Price:** \`$${citadelData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(citadelData.price - profile.wallet).toLocaleString()}\`\n\n**💡 Investment Tips:** Complete quests, manage businesses, or engage in profitable ventures to build wealth for citadel investments!`)
                     )
                 ];
                 return message.reply({
@@ -165,7 +165,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                .setContent(`# 🏰 Citadel Acquisition Successful!\\n## CITADEL ACQUIRED\\n\\n> Congratulations! You've successfully acquired **${citadelData.name}** for **\`$${citadelData.price.toLocaleString()}\`**!\\n> ${isFirstCitadel ? 'This is now your primary stronghold!' : 'Your citadel portfolio is growing!'}`)
+                .setContent(`# 🏰 Citadel Acquisition Successful!\n## CITADEL ACQUIRED\n\n> Congratulations! You've successfully acquired **${citadelData.name}** for **\`$${citadelData.price.toLocaleString()}\`**!\n> ${isFirstCitadel ? 'This is now your primary stronghold!' : 'Your citadel portfolio is growing!'}`)
             );
             components.push(successContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -173,8 +173,8 @@ module.exports = {
             const specsContainer = new ContainerBuilder().setAccentColor(0x27AE60);
             specsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder().setContent('## 🏘️ **CITADEL SPECIFICATIONS**'),
-                new TextDisplayBuilder().setContent(`**🏰 Citadel Name:** \`${citadelData.name}\`\\n**🏷️ Citadel Type:** \`${citadelData.type}\`\\n**👨‍👩‍👧‍👦 Follower Capacity:** \`${citadelData.maxFollowers} followers\`\\n**🛡️ Security Level:** \`${citadelData.securityLevel}/10\`\\n**🏦 Vault Capacity:** \`$${citadelData.vaultCapacity.toLocaleString()}\``),
-                new TextDisplayBuilder().setContent(`**🚗 Garrison:** ${citadelData.garrisonCapacity > 0 ? `\`${citadelData.garrisonCapacity} cars\`` : '\`None\`'}\\n**💰 Monthly Upkeep:** \`$${citadelData.monthlyUpkeep.toLocaleString()}\`\\n**📅 Acquisition Date:** \`${new Date().toLocaleDateString()}\``)
+                new TextDisplayBuilder().setContent(`**🏰 Citadel Name:** \`${citadelData.name}\`\n**🏷️ Citadel Type:** \`${citadelData.type}\`\n**👨‍👩‍👧‍👦 Follower Capacity:** \`${citadelData.maxFollowers} followers\`\n**🛡️ Security Level:** \`${citadelData.securityLevel}/10\`\n**🏦 Vault Capacity:** \`$${citadelData.vaultCapacity.toLocaleString()}\``),
+                new TextDisplayBuilder().setContent(`**🚗 Garrison:** ${citadelData.garrisonCapacity > 0 ? `\`${citadelData.garrisonCapacity} cars\`` : '\`None\`'}\n**💰 Monthly Upkeep:** \`$${citadelData.monthlyUpkeep.toLocaleString()}\`\n**📅 Acquisition Date:** \`${new Date().toLocaleDateString()}\``)
             );
             components.push(specsContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -191,21 +191,21 @@ module.exports = {
             if (isFirstCitadel) unlockedFeatures.push(`**🐾 Pet Ownership:** Own up to ${Math.floor(citadelData.maxFollowers / 2)} pets`);
 
             featuresContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(unlockedFeatures.join('\\n\\n'))
+                new TextDisplayBuilder().setContent(unlockedFeatures.join('\n\n'))
             );
             components.push(featuresContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const financialContainer = new ContainerBuilder().setAccentColor(0x9B59B6);
             financialContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`## 💰 **FINANCIAL SUMMARY**\\n\\n**Acquisition Price:** \`$${citadelData.price.toLocaleString()}\`\\n**Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\\n**Total Citadels:** \`${profile.citadels.length}\`\\n**Citadel Investment:** \`$${profile.citadels.reduce((sum, c) => sum + c.purchasePrice, 0).toLocaleString()}\`\\n**Transaction Logged:** Acquisition recorded in your transaction history`)
+                new TextDisplayBuilder().setContent(`## 💰 **FINANCIAL SUMMARY**\n\n**Acquisition Price:** \`$${citadelData.price.toLocaleString()}\`\n**Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Total Citadels:** \`${profile.citadels.length}\`\n**Citadel Investment:** \`$${profile.citadels.reduce((sum, c) => sum + c.purchasePrice, 0).toLocaleString()}\`\n**Transaction Logged:** Acquisition recorded in your transaction history`)
             );
             components.push(financialContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const nextStepsContainer = new ContainerBuilder().setAccentColor(0xE91E63);
             nextStepsContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`## 🎯 **WHAT'S NEXT?**\\n\\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\\n**🏦 Use Vault:** Deposit money in your vault for security\\n**🚗 Garrison Cars:** Store multiple cars in your garrison\\n**🐾 Adopt Pets:** Adopt pets for companionship and security\\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\\n\\n> Your new citadel opens up exciting expansion opportunities!`)
+                new TextDisplayBuilder().setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit money in your vault for security\n**🚗 Garrison Cars:** Store multiple cars in your garrison\n**🐾 Adopt Pets:** Adopt pets for companionship and security\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
             );
             components.push(nextStepsContainer);
 
@@ -215,7 +215,7 @@ module.exports = {
             console.error('Error in acquirecitadel command:', error);
             const errorContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
             errorContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent('## ❌ **CITADEL ACQUISITION ERROR**\\n\\nSomething went wrong while processing your citadel acquisition. Please try again in a moment.')
+                new TextDisplayBuilder().setContent('## ❌ **CITADEL ACQUISITION ERROR**\n\nSomething went wrong while processing your citadel acquisition. Please try again in a moment.')
             );
             return message.reply({
                 components: [errorContainer],

@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 async function viewCitadels(message) {
     const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-    if (!profile.properties || profile.properties.length === 0) {
+    if (!profile.citadels || profile.citadels.length === 0) {
         return message.reply('You do not own any citadels. Use `!acquirecitadel` to get your first one!');
     }
 
@@ -21,8 +21,8 @@ async function viewCitadels(message) {
         );
     components.push(header);
 
-    profile.properties.forEach(citadel => {
-        const isPrimary = profile.primaryResidence === citadel.propertyId;
+    profile.citadels.forEach(citadel => {
+        const isPrimary = profile.primaryCitadel === citadel.propertyId;
         const citadelContainer = new ContainerBuilder()
             .setAccentColor(isPrimary ? 0xFFD700 : 0x95A5A6)
             .addTextDisplayComponents(
@@ -67,7 +67,7 @@ async function renameCitadel(message, args) {
     }
 
     const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-    const targetCitadel = profile.properties.find(p => p.name.toLowerCase() === oldName.toLowerCase());
+    const targetCitadel = profile.citadels.find(p => p.name.toLowerCase() === oldName.toLowerCase());
 
     if (!targetCitadel) {
         return message.reply(`You do not own a citadel named \`${oldName}\`.`);
@@ -87,17 +87,17 @@ async function sellCitadel(message, args) {
     }
 
     const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-    const citadelIndex = profile.properties.findIndex(p => p.name.toLowerCase() === citadelName.toLowerCase());
+    const citadelIndex = profile.citadels.findIndex(p => p.name.toLowerCase() === citadelName.toLowerCase());
 
     if (citadelIndex === -1) {
         return message.reply(`You do not own a citadel named \`${citadelName}\`.`);
     }
 
-    const [soldCitadel] = profile.properties.splice(citadelIndex, 1);
+    const [soldCitadel] = profile.citadels.splice(citadelIndex, 1);
     profile.wallet += soldCitadel.currentValue;
 
-    if (profile.primaryResidence === soldCitadel.propertyId) {
-        profile.primaryResidence = profile.properties.length > 0 ? profile.properties[0].propertyId : null;
+    if (profile.primaryCitadel === soldCitadel.propertyId) {
+        profile.primaryCitadel = profile.citadels.length > 0 ? profile.citadels[0].propertyId : null;
     }
 
     await profile.save();

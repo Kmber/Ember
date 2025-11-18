@@ -9,8 +9,8 @@ const SLAYING_MONSTERS = {
         baseValue: 50,
         rarity: 'common',
         requiredHauntedLandsTier: 1,
-        manaConsumption: { min: 1, max: 2 }, 
-        staminaConsumption: 5, 
+        manaConsumption: { min: 1, max: 2 },
+        staminaConsumption: 5,
         lootTable: {
             flesh: { chance: 90, value: 25 },
             hide: { chance: 60, value: 35 },
@@ -148,32 +148,32 @@ const SLAYING_MONSTERS = {
 const POTION_TYPES = {
     minor_healing_potion: {
         name: 'Minor Healing Potion',
-        type: 'healing',
-        efficiency: 1.0, 
-        price: 10, 
+        type: 'potion',
+        efficiency: 1.0,
+        price: 10,
         description: 'A basic potion to restore some stamina',
-        staminaValue: 10 
+        staminaValue: 10
     },
     greater_healing_potion: {
         name: 'Greater Healing Potion',
-        type: 'healing', 
-        efficiency: 0.8, 
+        type: 'potion',
+        efficiency: 0.8,
         price: 18,
         description: 'A quality potion for extended quests',
         staminaValue: 15
     },
     superior_healing_potion: {
         name: 'Superior Healing Potion',
-        type: 'healing',
-        efficiency: 0.6, 
+        type: 'potion',
+        efficiency: 0.6,
         price: 35,
         description: 'A superior potion for the most arduous quests',
         staminaValue: 20
     },
     weak_healing_potion: {
         name: 'Weak Healing Potion',
-        type: 'healing',
-        efficiency: 1.2, 
+        type: 'potion',
+        efficiency: 1.2,
         price: 7,
         description: 'A cheap but less effective potion',
         staminaValue: 8
@@ -183,15 +183,17 @@ const POTION_TYPES = {
 const WEAPON_OILS = {
     sharpening_oil: {
         name: 'Sharpening Oil',
+        type: 'oil',
         compatibleWeapons: ['sword', 'axe', 'mace', 'greatsword'],
-        damage: 1.0, 
-        accuracy: 1.0, 
-        price: 5, 
+        damage: 1.0,
+        accuracy: 1.0,
+        price: 5,
         description: 'Standard oil for weapon maintenance',
-        manaValue: 20 
+        manaValue: 20
     },
     poison_oil: {
         name: 'Poison Oil',
+        type: 'oil',
         compatibleWeapons: ['sword', 'axe', 'mace', 'greatsword'],
         damage: 1.3,
         accuracy: 1.1,
@@ -201,6 +203,7 @@ const WEAPON_OILS = {
     },
     fire_oil: {
         name: 'Fire Oil',
+        type: 'oil',
         compatibleWeapons: ['sword', 'axe', 'mace', 'greatsword'],
         damage: 1.0,
         accuracy: 1.0,
@@ -210,6 +213,7 @@ const WEAPON_OILS = {
     },
     frost_oil: {
         name: 'Frost Oil',
+        type: 'oil',
         compatibleWeapons: ['sword', 'axe', 'mace', 'greatsword'],
         damage: 1.5,
         accuracy: 1.2,
@@ -219,6 +223,7 @@ const WEAPON_OILS = {
     },
     lightning_oil: {
         name: 'Lightning Oil',
+        type: 'oil',
         compatibleWeapons: ['staff', 'wand'],
         damage: 1.0,
         accuracy: 1.0,
@@ -228,6 +233,7 @@ const WEAPON_OILS = {
     },
     shadow_oil: {
         name: 'Shadow Oil',
+        type: 'oil',
         compatibleWeapons: ['staff', 'wand'],
         damage: 1.4,
         accuracy: 0.9,
@@ -237,6 +243,7 @@ const WEAPON_OILS = {
     },
     holy_oil: {
         name: 'Holy Oil',
+        type: 'oil',
         compatibleWeapons: ['staff', 'wand'],
         damage: 1.0,
         accuracy: 1.0,
@@ -246,6 +253,7 @@ const WEAPON_OILS = {
     },
     dragons_breath_oil: {
         name: 'Dragons Breath Oil',
+        type: 'oil',
         compatibleWeapons: ['staff', 'wand'],
         damage: 1.6,
         accuracy: 1.3,
@@ -255,18 +263,20 @@ const WEAPON_OILS = {
     },
     soul_trap_oil: {
         name: 'Soul-Trap Oil',
+        type: 'oil',
         compatibleWeapons: ['any'],
-        damage: 0.1, 
+        damage: 0.1,
         accuracy: 1.0,
         price: 30,
         description: 'An oil for capturing the essence of a monster',
         manaValue: 15,
-        special: 'capture' 
+        special: 'capture'
     },
     binding_oil: {
         name: 'Binding Oil',
+        type: 'oil',
         compatibleWeapons: ['any'],
-        damage: 0.0, 
+        damage: 0.0,
         accuracy: 0.8,
         price: 45,
         description: 'An oil for binding a monster',
@@ -574,6 +584,12 @@ const CHESTS = {
     }
 };
 
+const items = {
+    ...POTION_TYPES,
+    ...WEAPON_OILS,
+    ...ENCHANTMENT_SUPPLIES
+};
+
 module.exports = {
     SLAYING_MONSTERS,
     SLAYING_MOUNTS,
@@ -583,5 +599,6 @@ module.exports = {
     CHESTS,
     POTION_TYPES,
     WEAPON_OILS,
-    ENCHANTMENT_SUPPLIES
+    ENCHANTMENT_SUPPLIES,
+    items
 };

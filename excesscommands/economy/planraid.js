@@ -290,7 +290,7 @@ module.exports = {
                 members: [{
                     userId: message.author.id,
                     username: message.author.username,
-                    class: 'leader',
+                    class: 'war lord',
                     confirmed: true,
                     gear: [],
                     joinedAt: new Date()
