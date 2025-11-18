@@ -85,65 +85,65 @@ const PETS = {
 };
 
 const PROPERTIES = {
-    'studio': {
-        name: 'Studio Apartment',
-        type: 'studio',
-        price: 50000,
-        monthlyRent: 800,
-        utilities: 150,
-        maxFamilyMembers: 1,
-        securityLevel: 1,
-        vaultCapacity: 10000,
-        hasGarage: false,
-        garageCapacity: 0
-    },
-    'apartment': {
-        name: '2BR Apartment',
-        type: 'apartment',
-        price: 120000,
-        monthlyRent: 1500,
+    'manor': {
+        name: 'Secluded Manor',
+        type: 'manor',
+        price: 80000,
+        monthlyRent: 1300,
         utilities: 250,
         maxFamilyMembers: 3,
-        securityLevel: 2,
-        vaultCapacity: 25000,
+        securityLevel: 3,
+        vaultCapacity: 20000,
         hasGarage: true,
         garageCapacity: 1
     },
-    'house': {
-        name: 'Family House',
-        type: 'house',
-        price: 300000,
-        monthlyRent: 2500,
+    'keep': {
+        name: 'Valiant Keep',
+        type: 'keep',
+        price: 160000,
+        monthlyRent: 2200,
         utilities: 400,
         maxFamilyMembers: 5,
-        securityLevel: 4,
-        vaultCapacity: 75000,
+        securityLevel: 5,
+        vaultCapacity: 40000,
         hasGarage: true,
         garageCapacity: 2
     },
-    'mansion': {
-        name: 'Luxury Mansion',
-        type: 'mansion',
-        price: 800000,
-        monthlyRent: 5000,
-        utilities: 800,
-        maxFamilyMembers: 8,
+    'citadel': {
+        name: 'Grand Citadel',
+        type: 'citadel',
+        price: 380000,
+        monthlyRent: 3500,
+        utilities: 600,
+        maxFamilyMembers: 7,
         securityLevel: 7,
-        vaultCapacity: 200000,
+        vaultCapacity: 90000,
         hasGarage: true,
-        garageCapacity: 5
+        garageCapacity: 3
     },
-    'estate': {
-        name: 'Private Estate',
-        type: 'estate',
-        price: 2000000,
-        monthlyRent: 10000,
-        utilities: 1500,
+    'stronghold': {
+        name: 'Imperial Stronghold',
+        type: 'stronghold',
+        price: 950000,
+        monthlyRent: 6000,
+        utilities: 1000,
         maxFamilyMembers: 12,
-        securityLevel: 10,
-        vaultCapacity: 500000,
+        securityLevel: 9,
+        vaultCapacity: 280000,
         hasGarage: true,
-        garageCapacity: 10
+        garageCapacity: 6
+    },
+    'palace': {
+        name: 'Celestial Palace',
+        type: 'palace',
+        price: 2800000,
+        monthlyRent: 14000,
+        utilities: 2000,
+        maxFamilyMembers: 18,
+        securityLevel: 10,
+        vaultCapacity: 700000,
+        hasGarage: true,
+        garageCapacity: 12
     }
 };
 

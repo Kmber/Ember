@@ -53,9 +53,9 @@ module.exports = {
             
           
             let familyEarnings = 0;
-            const hasProperty = profile.properties.length > 0;
+            const hasCitadel = profile.properties.length > 0;
             
-            if (hasProperty && profile.familyMembers.length > 0) {
+            if (hasCitadel && profile.familyMembers.length > 0) {
                 profile.familyMembers.forEach(member => {
                     const memberEarnings = member.salary * member.workEfficiency * (member.bond / 100);
                     familyEarnings += memberEarnings;
@@ -160,9 +160,9 @@ module.exports = {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const familyContainer = new ContainerBuilder()
-                    .setAccentColor(hasProperty ? 0x9B59B6 : 0xF39C12);
+                    .setAccentColor(hasCitadel ? 0x9B59B6 : 0xF39C12);
 
-                if (hasProperty) {
+                if (hasCitadel) {
                     familyContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
                             .setContent('## 👨‍👩‍👧‍👦 **FAMILY WORKFORCE**')
@@ -187,7 +187,7 @@ module.exports = {
                 } else {
                     familyContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏠 **FAMILY NEEDS HOUSING**\n\n> Your **${profile.familyMembers.length}** family members want to help with work earnings, but they need a home first!\n\n**💡 Solution:** Purchase a property to unlock family workforce contributions and boost your income significantly!`)
+                            .setContent(`## 🏰 **FAMILY NEEDS A CITADEL**\n\n> Your **${profile.familyMembers.length}** family members want to help with work earnings, but they need a citadel first!\n\n**💡 Solution:** Acquire a citadel (\`!acquirecitadel\`) to unlock family workforce contributions and boost your income significantly!`)
                     );
                 }
 

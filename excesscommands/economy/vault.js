@@ -16,19 +16,19 @@ module.exports = {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            const primaryProperty = profile.properties.find(p => p.propertyId === profile.primaryResidence);
-            if (!primaryProperty) {
+            const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
+            if (!primaryCitadel) {
                 const components = [];
 
-                const noPropertyContainer = new ContainerBuilder()
+                const noCitadelContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
-                noPropertyContainer.addTextDisplayComponents(
+                noCitadelContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏠 Property Required for Vault\n## SECURE STORAGE NEEDS A HOME\n\n> You need to own a property to have a family vault!\n> A vault requires a secure location to store your family's wealth.`)
+                        .setContent(`# 🏰 Citadel Required for Vault\n## SECURE STORAGE NEEDS A CITADEL\n\n> You need to own a citadel to have a family vault!\n> A vault requires a secure location to store your family's wealth.`)
                 );
 
-                components.push(noPropertyContainer);
+                components.push(noCitadelContainer);
 
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -37,7 +37,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET STARTED WITH PROPERTY**\n\n**💡 Solutions:**\n> • Purchase a property through the property shop\n> • Set it as your primary residence\n> • Unlock family vault storage capacity\n> • Enjoy secure wealth storage for your family\n\n**Benefits of Family Vault:**\n> • Enhanced security from robberies\n> • Separate from personal banking\n> • Family-focused wealth management`)
+                        .setContent(`## 🏘️ **GET STARTED WITH A CITADEL**\n\n**💡 Solutions:**\n> • Acquire a citadel through the citadel market (\`!acquirecitadel\`)\n> • Set it as your primary stronghold\n> • Unlock family vault storage capacity\n> • Enjoy secure wealth storage for your family\n\n**Benefits of Family Vault:**\n> • Enhanced security from robberies\n> • Separate from personal banking\n> • Family-focused wealth management`)
                 );
 
                 components.push(solutionContainer);
@@ -62,7 +62,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏦 Family Vault Management\n## SECURE WEALTH STORAGE CENTER\n\n> Your family's secure financial storage facility\n> Protected by advanced security systems and property-based encryption`)
+                        .setContent(`# 🏦 Family Vault Management\n## SECURE WEALTH STORAGE CENTER\n\n> Your family's secure financial storage facility\n> Protected by advanced security systems and citadel-based encryption`)
                 );
 
                 components.push(headerContainer);
@@ -85,7 +85,7 @@ module.exports = {
 
                 statusContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🛡️ Security Level:** \`${securityLevel}%\`\n**🏠 Property:** \`${primaryProperty.name}\`\n**🏘️ Property Type:** \`${primaryProperty.type}\``)
+                        .setContent(`**🛡️ Security Level:** \`${securityLevel}%\`\n**🏰 Citadel:** \`${primaryCitadel.name}\`\n**🏘️ Citadel Type:** \`${primaryCitadel.type}\``)
                 );
 
                 components.push(statusContainer);
@@ -243,7 +243,7 @@ module.exports = {
 
                     capacityDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**💡 Solutions:**\n> • Try \`!vault deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your property for more vault capacity\n> • Use \`!vault deposit max\` for automatic maximum deposit`)
+                            .setContent(`**💡 Solutions:**\n> • Try \`!vault deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your citadel for more vault capacity\n> • Use \`!vault deposit max\` for automatic maximum deposit`)
                     );
 
                     components.push(capacityDetailsContainer);

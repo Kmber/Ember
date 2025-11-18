@@ -25,9 +25,9 @@ class EconomyManager {
                         // Pet System defaults
                         pets: [],
                         maxPets: 1,
-                        // Property System defaults
-                        properties: [],
-                        primaryResidence: null,
+                        // Citadel System defaults
+                        citadels: [],
+                        primaryCitadel: null,
                         // Business System defaults
                         businesses: [],
                         maxBusinesses: 1,
@@ -168,10 +168,10 @@ class EconomyManager {
     static calculateSecurityLevel(profile) {
         let totalSecurity = 0;
 
-        // Property security
-        const primaryProperty = profile.properties.find(p => p.propertyId === profile.primaryResidence);
-        if (primaryProperty) {
-            totalSecurity += primaryProperty.securityLevel * 10;
+        // Citadel security
+        const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
+        if (primaryCitadel) {
+            totalSecurity += primaryCitadel.securityLevel * 10;
         }
 
         // Pet security
@@ -439,13 +439,13 @@ static async collectBusinessIncome(userId, guildId) {
         return { success, raid, memberProfiles };
     }
 
-    // Calculate work multiplier (FIXED: Requires house for family bonus)
+    // Calculate work multiplier (FIXED: Requires citadel for family bonus)
     static calculateWorkMultiplier(profile) {
         let multiplier = 1.0;
 
-        // Family bond bonus ONLY if they have a property
-        const hasProperty = profile.properties.length > 0;
-        if (hasProperty && profile.familyMembers.length > 0) {
+        // Family bond bonus ONLY if they have a citadel
+        const hasCitadel = profile.citadels.length > 0;
+        if (hasCitadel && profile.familyMembers.length > 0) {
             const familyBonus = (profile.familyBond / 100) * 0.5;
             multiplier += familyBonus;
         }
@@ -482,8 +482,8 @@ static async collectBusinessIncome(userId, guildId) {
 
     // Get vault capacity with bonuses
     static getVaultCapacity(profile) {
-        const primaryProperty = profile.properties.find(p => p.propertyId === profile.primaryResidence);
-        let baseCapacity = primaryProperty ? primaryProperty.vaultCapacity : 0;
+        const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
+        let baseCapacity = primaryCitadel ? primaryCitadel.vaultCapacity : 0;
 
         profile.activeEffects.forEach(effect => {
             if (effect.type === 'vault_boost') {

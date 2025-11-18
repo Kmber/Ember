@@ -21,7 +21,7 @@ module.exports = {
             const securityLevel = EconomyManager.calculateSecurityLevel(profile);
             const workMultiplier = EconomyManager.calculateWorkMultiplier(profile);
             const carValue = profile.cars.reduce((sum, car) => sum + car.currentValue, 0);
-            const propertyValue = profile.properties.reduce((sum, prop) => sum + prop.currentValue, 0);
+            const citadelValue = profile.properties.reduce((sum, prop) => sum + prop.currentValue, 0);
             const winRate = profile.racingStats.totalRaces > 0 ? 
                 ((profile.racingStats.wins / profile.racingStats.totalRaces) * 100).toFixed(1) : '0.0';
             
@@ -71,12 +71,12 @@ module.exports = {
 
             assetsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🏠 **ASSETS & PROPERTIES**')
+                    .setContent('## 🏰 **ASSETS & CITADELS**')
             );
 
             assetsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏘️ Properties Owned:** \`${profile.properties.length}\`\n**🏠 Property Value:** \`$${propertyValue.toLocaleString()}\`\n**🚗 Cars Owned:** \`${profile.cars.length}\`\n**🚙 Car Value:** \`$${carValue.toLocaleString()}\``)
+                    .setContent(`**🏘️ Citadels Owned:** \`${profile.properties.length}\`\n**🏰 Citadel Value:** \`$${citadelValue.toLocaleString()}\`\n**🚗 Cars Owned:** \`${profile.cars.length}\`\n**🚙 Car Value:** \`$${carValue.toLocaleString()}\``)
             );
 
             assetsContainer.addTextDisplayComponents(

@@ -240,26 +240,24 @@ const familyMemberSchema = new mongoose.Schema({
     totalTrips: { type: Number, default: 0 }
 });
 
-const propertySchema = new mongoose.Schema({
+const citadelSchema = new mongoose.Schema({
     propertyId: String,
     name: String,
     type: {
         type: String,
-        enum: ['studio', 'apartment', 'house', 'mansion', 'penthouse', 'estate']
+        enum: ['outpost', 'fortress', 'sanctuary', 'castle', 'palace']
     },
     purchasePrice: Number,
     currentValue: Number,
-    monthlyRent: Number,
-    utilities: Number,
+    monthlyUpkeep: Number,
     securityLevel: { type: Number, min: 1, max: 10, default: 1 },
     maxFamilyMembers: Number,
-    hasGarage: { type: Boolean, default: false },
-    garageCapacity: { type: Number, default: 0 },
+    garrisonCapacity: { type: Number, default: 0 },
     vaultCapacity: { type: Number, default: 0 },
     condition: {
         type: String,
-        enum: ['poor', 'fair', 'good', 'excellent'],
-        default: 'good'
+        enum: ['decrepit', 'worn', 'pristine', 'legendary'],
+        default: 'worn'
     },
     dateAcquired: Date
 });
@@ -316,9 +314,9 @@ const economySchema = new mongoose.Schema({
     pets: [petSchema],
     maxPets: { type: Number, default: 1 },
     
-    // Property System
-    properties: [propertySchema],
-    primaryResidence: String,
+    // Citadel System
+    citadels: [citadelSchema],
+    primaryCitadel: String,
     
     // Business System
     businesses: [businessSchema],

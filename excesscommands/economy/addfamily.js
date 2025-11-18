@@ -110,18 +110,18 @@ module.exports = {
             
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-            if (profile.properties.length === 0) {
+            if (profile.citadels.length === 0) {
                 const components = [];
 
-                const noPropertyContainer = new ContainerBuilder()
+                const noCitadelContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
-                noPropertyContainer.addTextDisplayComponents(
+                noCitadelContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏠 Property Required for Family\n## NO HOME FOR FAMILY MEMBERS\n\n> You need to own a property before adding family members!\n> Family members need a safe and comfortable place to live.`)
+                        .setContent(`# 🏰 Citadel Required for Family\n## NO HOME FOR FAMILY MEMBERS\n\n> You need to own a citadel before adding family members!\n> Family members need a safe and comfortable place to live.`)
                 );
 
-                components.push(noPropertyContainer);
+                components.push(noCitadelContainer);
 
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -130,7 +130,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET A HOME FOR YOUR FAMILY**\n\n**Step 1:** Use \`!buyhouse\` to browse available properties\n**Step 2:** Purchase a property with family capacity\n**Step 3:** Set it as your primary residence\n**Step 4:** Return here to add **${name}** as your ${type}!\n\n**💡 Family Benefits:**\n> • Family members contribute to work income\n> • Build relationships through trips and activities\n> • Enhanced household security and companionship\n> • Larger families = more earning potential`)
+                        .setContent(`## 🏘️ **GET A HOME FOR YOUR FAMILY**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available citadels\n**Step 2:** Acquire a citadel with family capacity\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Return here to add **${name}** as your ${type}!\n\n**💡 Family Benefits:**\n> • Family members contribute to work income\n> • Build relationships through trips and activities\n> • Enhanced household security and companionship\n> • Larger families = more earning potential`)
                 );
 
                 components.push(solutionContainer);
@@ -141,15 +141,16 @@ module.exports = {
                 });
             }
             
-            const primaryProperty = profile.properties.find(p => p.propertyId === profile.primaryResidence);
-            if (!primaryProperty) {
-                profile.primaryResidence = profile.properties[0].propertyId;
+            let primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
+            if (!primaryCitadel && profile.citadels.length > 0) {
+                profile.primaryCitadel = profile.citadels[0].propertyId;
                 await profile.save();
+                primaryCitadel = profile.citadels[0];
             }
             
-            const activeProperty = primaryProperty || profile.properties[0];
+            const activeCitadel = primaryCitadel;
             
-            if (profile.familyMembers.length >= activeProperty.maxFamilyMembers) {
+            if (profile.familyMembers.length >= activeCitadel.maxFamilyMembers) {
                 const components = [];
 
                 const capacityContainer = new ContainerBuilder()
@@ -157,7 +158,7 @@ module.exports = {
 
                 capacityContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏠 Family Capacity Limit Reached\n## MAXIMUM HOUSEHOLD SIZE\n\n> Your **${activeProperty.name}** can only house **${activeProperty.maxFamilyMembers}** family members!\n> You currently have **${profile.familyMembers.length}** family members living there.`)
+                        .setContent(`# 🏰 Family Capacity Limit Reached\n## MAXIMUM HOUSEHOLD SIZE\n\n> Your **${activeCitadel.name}** can only house **${activeCitadel.maxFamilyMembers}** family members!\n> You currently have **${profile.familyMembers.length}** family members living there.`)
                 );
 
                 components.push(capacityContainer);
@@ -169,7 +170,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **EXPAND YOUR FAMILY HOME**\n\n**Current Family:** ${profile.familyMembers.map(m => m.name).join(', ')}\n\n**💡 Solutions:**\n> • Upgrade to a larger property with more family capacity\n> • Purchase an additional property for extended family\n> • Consider which family relationships are most important\n\n**🎯 Goal:** Find a property that can house **${profile.familyMembers.length + 1}+** family members`)
+                        .setContent(`## 🏘️ **EXPAND YOUR FAMILY HOME**\n\n**Current Family:** ${profile.familyMembers.map(m => m.name).join(', ')}\n\n**💡 Solutions:**\n> • Upgrade to a larger citadel with more family capacity (\`!acquirecitadel\`)\n> • Acquire an additional citadel for extended family\n> • Consider which family relationships are most important\n\n**🎯 Goal:** Find a citadel that can house **${profile.familyMembers.length + 1}+** family members`)
                 );
 
                 components.push(solutionContainer);
@@ -239,7 +240,7 @@ module.exports = {
             profile.familyBond = Math.floor(avgBond);
             
          
-            profile.maxPets = Math.min(10, Math.floor(activeProperty.maxFamilyMembers / 2) + 1);
+            profile.maxPets = Math.min(10, Math.floor(activeCitadel.maxFamilyMembers / 2) + 1);
             
             await profile.save();
             
@@ -252,7 +253,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 👨‍👩‍👧‍👦 Family Member Added!\n## WELCOME TO THE FAMILY\n\n> **${name}** has officially joined your household as your ${type}!\n> Your family is growing stronger and your home feels more complete.`)
+                    .setContent(`# 👨‍👩‍👧‍👦 Family Member Added!\n## WELCOME TO THE FAMILY\n\n> **${name}** has officially joined your household as your ${type}!\n> Your family is growing stronger and your citadel feels more complete.`)
             );
 
             components.push(successContainer);
@@ -297,7 +298,7 @@ module.exports = {
 
             householdContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👥 Total Family Members:** \`${profile.familyMembers.length}/${activeProperty.maxFamilyMembers}\`\n**❤️ Average Family Bond:** \`${profile.familyBond}%\`\n**💰 Combined Family Income:** \`$${Math.floor(totalFamilyIncome)}/work\`\n**🏠 Property:** \`${activeProperty.name}\``)
+                    .setContent(`**👥 Total Family Members:** \`${profile.familyMembers.length}/${activeCitadel.maxFamilyMembers}\`\n**❤️ Average Family Bond:** \`${profile.familyBond}%\`\n**💰 Combined Family Income:** \`$${Math.floor(totalFamilyIncome)}/work\`\n**🏰 Citadel:** \`${activeCitadel.name}\``)
             );
 
             householdContainer.addTextDisplayComponents(
@@ -320,7 +321,7 @@ module.exports = {
 
             bondingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🚗 Take Family Trips:** Use \`!trip\` to build stronger relationships\n**❤️ Build Bonds:** Higher bonds = better work efficiency and income\n**👨‍👩‍👧‍👦 Expand Family:** Add more members if you have space\n**🏠 Upgrade Home:** Larger properties house bigger families\n**🎯 Long-term Goal:** Reach 100% bond with all family members`)
+                    .setContent(`**🚗 Take Family Trips:** Use \`!trip\` to build stronger relationships\n**❤️ Build Bonds:** Higher bonds = better work efficiency and income\n**👨‍👩‍👧‍👦 Expand Family:** Add more members if you have space\n**🏰 Upgrade Citadel:** Larger citadels house bigger families\n**🎯 Long-term Goal:** Reach 100% bond with all family members`)
             );
 
             bondingContainer.addTextDisplayComponents(

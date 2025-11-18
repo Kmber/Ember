@@ -35,7 +35,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏠 **HOW TO BUILD YOUR FAMILY**\n\n**Step 1:** Purchase a property with family capacity\n**Step 2:** Add family members through family management commands\n**Step 3:** Build bonds through trips and activities\n**Step 4:** Enjoy enhanced work earnings and companionship\n\n**💡 Benefits:**\n> • Enhanced work income through family support\n> • Emotional bonds that boost productivity\n> • Family trips and shared experiences\n> • Larger households with more capacity`)
+                        .setContent(`## 🏠 **HOW TO BUILD YOUR FAMILY**\n\n**Step 1:** Acquire a citadel with family capacity (\`!acquirecitadel\`)\n**Step 2:** Add family members through family management commands (\`!addfamily\`)\n**Step 3:** Build bonds through trips and activities\n**Step 4:** Enjoy enhanced work earnings and companionship\n\n**💡 Benefits:**\n> • Enhanced work income through family support\n> • Emotional bonds that boost productivity\n> • Family trips and shared experiences\n> • Larger households with more capacity`)
                 );
 
                 components.push(solutionContainer);
@@ -124,8 +124,8 @@ module.exports = {
 
             const totalTrips = profile.familyMembers.reduce((sum, m) => sum + m.totalTrips, 0);
 
-            const primaryProperty = profile.properties.find(p => p.propertyId === profile.primaryResidence);
-            const maxCapacity = primaryProperty ? primaryProperty.maxFamilyMembers : 0;
+            const primaryCitadel = profile.properties.find(p => p.propertyId === profile.primaryResidence);
+            const maxCapacity = primaryCitadel ? primaryCitadel.maxFamilyMembers : 0;
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
@@ -134,7 +134,7 @@ module.exports = {
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🚗 Total Family Trips:** \`${totalTrips}\`\n**🏠 Property Capacity:** \`${maxCapacity} members max\`\n**📈 Work Multiplier Impact:** \`${EconomyManager.calculateWorkMultiplier(profile).toFixed(2)}x\``)
+                    .setContent(`**🚗 Total Family Trips:** \`${totalTrips}\`\n**🏰 Citadel Capacity:** \`${maxCapacity} members max\`\n**📈 Work Multiplier Impact:** \`${EconomyManager.calculateWorkMultiplier(profile).toFixed(2)}x\``)
             );
 
             components.push(statsContainer);
@@ -177,7 +177,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **FAMILY MANAGEMENT TIPS**\n\n**🚗 Take Trips:** Use \`!trip\` to improve family bonds and relationships\n**💼 Work Benefits:** Family members contribute to your work earnings automatically\n**🏠 Expand:** Upgrade to larger properties to accommodate more family members\n**❤️ Build Bonds:** Higher bond levels = better work efficiency and income\n**📅 Regular Care:** Consistent trips and attention maintain strong family relationships\n\n> A happy family is a productive family!`)
+                    .setContent(`## 💡 **FAMILY MANAGEMENT TIPS**\n\n**🚗 Take Trips:** Use \`!trip\` to improve family bonds and relationships\n**💼 Work Benefits:** Family members contribute to your work earnings automatically\n**🏰 Expand:** Upgrade to larger citadels to accommodate more family members\n**❤️ Build Bonds:** Higher bond levels = better work efficiency and income\n**📅 Regular Care:** Consistent trips and attention maintain strong family relationships\n\n> A happy family is a productive family!`)
             );
 
             components.push(tipsContainer);

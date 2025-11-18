@@ -133,8 +133,8 @@ module.exports = {
             }
 
            
-            const primaryProperty = profile.properties.find(p => p.propertyId === profile.primaryResidence);
-            if (primaryProperty && profile.cars.length >= primaryProperty.garageCapacity) {
+            const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
+            if (primaryCitadel && profile.cars.length >= primaryCitadel.garrisonCapacity) {
                 const components = [];
 
                 const garageFullContainer = new ContainerBuilder()
@@ -142,7 +142,7 @@ module.exports = {
 
                 garageFullContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏠 Garage Full\n## MAXIMUM VEHICLE CAPACITY REACHED\n\n> Your garage is at maximum capacity!\n> You can't purchase more cars without additional storage space.`)
+                        .setContent(`# 🏠 Garrison Full\n## MAXIMUM VEHICLE CAPACITY REACHED\n\n> Your garrison is at maximum capacity!\n> You can't purchase more cars without additional storage space.`)
                 );
 
                 components.push(garageFullContainer);
@@ -154,7 +154,7 @@ module.exports = {
 
                 capacityContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **GARAGE STATUS**\n\n**Current Cars:** \`${profile.cars.length}\`\n**Garage Capacity:** \`${primaryProperty.garageCapacity}\`\n**Property:** \`${primaryProperty.name}\`\n\n**💡 Solutions:**\n> • Upgrade to a larger property with bigger garage\n> • Sell existing cars to make space\n> • Consider property with premium garage features`)
+                        .setContent(`## 📊 **GARRISON STATUS**\n\n**Current Cars:** \`${profile.cars.length}\`\n**Garrison Capacity:** \`${primaryCitadel.garrisonCapacity}\`\n**Citadel:** \`${primaryCitadel.name}\`\n\n**💡 Solutions:**\n> • Upgrade to a larger citadel with bigger garrison\n> • Sell existing cars to make space\n> • Consider a citadel with premium garrison features`)
                 );
 
                 components.push(capacityContainer);

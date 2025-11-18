@@ -34,7 +34,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 💀 ${message.author.username}'s Slaying Profile\\n## MONSTER SLAYER\\n\\n> Your complete slaying quest overview`)
+                    .setContent(`# 💀 ${message.author.username}'s Slaying Profile\n## MONSTER SLAYER\n\n> Your complete slaying quest overview`)
             );
 
             components.push(headerContainer);
@@ -54,12 +54,12 @@ module.exports = {
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏹 Slayer Level:** ${profile.slayingProfile.slayerLevel}\\n**⭐ Experience:** ${profile.slayingProfile.slayerExperience.toLocaleString()} XP\\n**❤️ Health:** ${profile.slayingProfile.currentHealth}/100`)
+                    .setContent(`**🏹 Slayer Level:** ${profile.slayingProfile.slayerLevel}\n**⭐ Experience:** ${profile.slayingProfile.slayerExperience.toLocaleString()} XP\n**❤️ Health:** ${profile.slayingProfile.currentHealth}/100`)
             );
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🎯 Slaying Skill:** ${profile.slayingStats.slayingSkill}%\\n**🛡️ Survival Skill:** ${profile.slayingStats.survivalSkill}%\\n**⭐ Success Rate:** ${successRate}%`)
+                    .setContent(`**🎯 Slaying Skill:** ${profile.slayingStats.slayingSkill}%\n**🛡️ Survival Skill:** ${profile.slayingStats.survivalSkill}%\n**⭐ Success Rate:** ${successRate}%`)
             );
 
             components.push(statsContainer);
@@ -76,12 +76,12 @@ module.exports = {
 
             historyContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🎯 Total Quests:** ${profile.slayingStats.totalSlays}\\n**✅ Successful:** ${profile.slayingStats.successfulSlays}\\n**❌ Failed:** ${profile.slayingStats.failedSlays}`)
+                    .setContent(`**🎯 Total Quests:** ${profile.slayingStats.totalSlays}\n**✅ Successful:** ${profile.slayingStats.successfulSlays}\n**❌ Failed:** ${profile.slayingStats.failedSlays}`)
             );
 
             historyContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💀 Monsters Slain:** ${profile.slayingStats.monstersSlain}\\n**💰 Total Earnings:** ${profile.slayingStats.totalEarnings.toLocaleString()} Embers\\n**📦 Chests Found:** ${profile.slayingStats.chestsFound}`)
+                    .setContent(`**💀 Monsters Slain:** ${profile.slayingStats.monstersSlain}\n**💰 Total Earnings:** ${profile.slayingStats.totalEarnings.toLocaleString()} Embers\n**📦 Chests Found:** ${profile.slayingStats.chestsFound}`)
             );
 
             components.push(historyContainer);
@@ -103,12 +103,12 @@ module.exports = {
 
             equipmentContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🐎 Active Mount:** ${activeMount ? activeMount.name : 'None'}\\n**⚔️ Active Weapon:** ${activeWeapon ? activeWeapon.name : 'None'}\\n**👥 Active Allies:** ${activeAllyCount}/${profile.maxAllies}`)
+                    .setContent(`**🐎 Active Mount:** ${activeMount ? activeMount.name : 'None'}\n**⚔️ Active Weapon:** ${activeWeapon ? activeWeapon.name : 'None'}\n**👥 Active Allies:** ${activeAllyCount}/${profile.maxAllies}`)
             );
 
             equipmentContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🐎 Total Mounts:** ${profile.slayingMounts.length}\\n**⚔️ Total Weapons:** ${profile.slayingWeapons.length}\\n**👥 Total Allies:** ${profile.slayingAllies.length}`)
+                    .setContent(`**🐎 Total Mounts:** ${profile.slayingMounts.length}\n**⚔️ Total Weapons:** ${profile.slayingWeapons.length}\n**👥 Total Allies:** ${profile.slayingAllies.length}`)
             );
 
             components.push(equipmentContainer);
@@ -130,14 +130,14 @@ module.exports = {
 
                 storageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**📦 Inventory Items:** ${profile.slayingInventory.length}\\n**⚖️ Storage Used:** ${storageUsed}/${storageCapacity} capacity\\n**🏰 Vaults:** ${profile.slayingVaults.length}`)
+                        .setContent(`**📦 Inventory Items:** ${profile.slayingInventory.length}\n**⚖️ Storage Used:** ${storageUsed}/${storageCapacity} capacity\n**🏰 Vaults:** ${profile.slayingVaults.length}`)
                 );
 
                 const totalInventoryValue = profile.slayingInventory.reduce((sum, item) => sum + (item.currentValue * item.quantity), 0);
                 
                 storageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 Inventory Value:** ${totalInventoryValue.toLocaleString()} Embers\\n**💡 Commands:**\\n> **\`${prefix}inventory\`** - View your full inventory\\n> **\`${prefix}openchest <id>\`** - Open a found chest\\n> **\`${prefix}sell <id>\`** - Sell an item for Embers`)
+                        .setContent(`**💎 Inventory Value:** ${totalInventoryValue.toLocaleString()} Embers\n**💡 Commands:**\n> **\`${prefix}inventory\`** - View your full inventory\n> **\`${prefix}openchest <id>\`** - Open a found chest\n> **\`${prefix}sell <id>\`** - Sell an item for Embers`)
                 );
 
                 components.push(storageContainer);
@@ -151,7 +151,7 @@ module.exports = {
 
             commandsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📋 **QUICK COMMANDS**\\n\\n**\`${prefix}slay\`** - Go on a quest\\n**\`${prefix}heal\`** - Restore health or allies\\n**\`${prefix}equip <id>\`** - Manage your loadout\\n**\`${prefix}use <id>\`** - Use a consumable item\\n**\`${prefix}slayershop\`** - Buy new gear\\n**\`${prefix}upgrade\`** - Upgrade your weapons`)
+                    .setContent(`## 📋 **QUICK COMMANDS**\n\n**\`${prefix}slay\`** - Go on a quest\n**\`${prefix}heal\`** - Restore health or allies\n**\`${prefix}equip <id>\`** - Manage your loadout\n**\`${prefix}use <id>\`** - Use a consumable item\n**\`${prefix}slayershop\`** - Buy new gear\n**\`${prefix}upgrade\`** - Upgrade your weapons`)
             );
 
             components.push(commandsContainer);
@@ -169,7 +169,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## ❌ **PROFILE ERROR**\\n\\nCouldn't load your slaying profile. Please try again.`)
+                    .setContent(`## ❌ **PROFILE ERROR**\n\nCouldn't load your slaying profile. Please try again.`)
             );
 
             return message.reply({

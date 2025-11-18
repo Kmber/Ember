@@ -178,8 +178,8 @@ module.exports = {
             const averagePerformance = profile.cars.reduce((sum, car) => sum + ((car.speed + car.acceleration + car.handling) / 3), 0) / profile.cars.length;
 
          
-            const primaryProperty = profile.properties.find(p => p.propertyId === profile.primaryResidence);
-            const garageCapacity = primaryProperty ? primaryProperty.garageCapacity : 'Unlimited';
+            const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
+            const garageCapacity = primaryCitadel ? primaryCitadel.garrisonCapacity : 'Unlimited';
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
