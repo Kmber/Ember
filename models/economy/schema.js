@@ -89,7 +89,7 @@ const slayingInventorySchema = new mongoose.Schema({
     name: String,
     type: {
         type: String,
-        enum: ['monster_part', 'essence', 'relic', 'trophy', 'rare_material', 'chest', 'artifact', 'flesh', 'hide', 'rare_essence']
+        enum: ['monster_part', 'essence', 'relic', 'trophy', 'rare_material', 'chest', 'artifact', 'flesh', 'hide', 'rare_essence', 'potion', 'oil', 'enchantment']
     },
     rarity: {
         type: String,
