@@ -129,6 +129,7 @@ class SlayingManager {
             damageDealt: 0,
             damageTaken: 0,
             loot: [],
+            discardedLoot: [],
             allyInjuries: [],
             experience: 0,
             skillGain: 0,
@@ -251,15 +252,31 @@ class SlayingManager {
 
         if (monsterHealth <= 0) {
             results.success = true;
-            results.loot = this.generateLoot(monster, profile.slayingStats.slayingSkill);
+            const newLoot = this.generateLoot(monster, profile.slayingStats.slayingSkill);
+            const lootWeight = newLoot.reduce((total, item) => total + item.weight, 0);
+            const currentWeight = this.calculateInventoryWeight(profile);
+            const capacity = this.calculateStorageCapacity(profile);
+
+            if (currentWeight + lootWeight > capacity) {
+                results.discardedLoot = newLoot;
+            } else {
+                results.loot = newLoot;
+                profile.slayingInventory.push(...newLoot);
+            }
+
             results.experience = Math.floor(50 + (monster.tier * 25));
             results.skillGain = Math.floor(1 + (monster.tier * 0.5));
             
             const chestChance = 10 + (profile.slayingStats.slayingSkill * 0.2);
             if (Math.random() * 100 < chestChance) {
                 const chest = this.generateChest();
-                results.loot.push(chest);
-                profile.slayingStats.chestsFound = (profile.slayingStats.chestsFound || 0) + 1;
+                if (this.calculateInventoryWeight(profile) + chest.weight <= this.calculateStorageCapacity(profile)) {
+                    results.loot.push(chest);
+                    profile.slayingInventory.push(chest);
+                    profile.slayingStats.chestsFound = (profile.slayingStats.chestsFound || 0) + 1;
+                } else {
+                    results.discardedLoot.push(chest);
+                }
             }
         } else {
             results.success = false;

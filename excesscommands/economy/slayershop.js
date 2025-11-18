@@ -7,6 +7,7 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { SlayingManager } = require('../../models/economy/slayingManager');
+const { ServerManager } = require('../../models/server/serverManager');
 const { 
     SLAYING_MOUNTS, 
     SLAYING_WEAPONS, 
@@ -21,10 +22,11 @@ module.exports = {
     name: 'slayershop',
     aliases: ['slaystore', 'buygear'],
     description: 'Buy slaying mounts, weapons, allies, vaults, potions, and oils',
-    usage: '!slayershop [category] [item] OR !slayershop buy [item_id] [quantity] OR !slayershop enchant/fortify',
+    usage: 'slayershop [category] [item] OR !slayershop buy [item_id] [quantity] OR !slayershop enchant/fortify',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            const prefix = await ServerManager.getPrefix(message.guild.id);
             
             if (args[0] === 'enchant' && args[1] && args[2]) {
                 const weaponIndex = parseInt(args[1]) - 1;
@@ -32,7 +34,7 @@ module.exports = {
                 const quantity = parseInt(args[3]) || 1;
 
                 if (isNaN(weaponIndex) || weaponIndex < 0 || weaponIndex >= profile.slayingWeapons.length) {
-                    return this.sendError(message, 'Invalid weapon number! Use `!slaying` to see your weapons.');
+                    return this.sendError(message, `Invalid weapon number! Use \`${prefix}slaying\` to see your weapons.`);
                 }
 
                 const weapon = profile.slayingWeapons[weaponIndex];
@@ -101,7 +103,7 @@ module.exports = {
                 }
 
                 if (!item) {
-                    return this.sendError(message, `Item \`${itemId}\` not found! Use \`!slayershop\` to browse available items.`);
+                    return this.sendError(message, `Item \`${itemId}\` not found! Use \`${prefix}slayershop\` to browse available items.`);
                 }
 
                 if (profile.wallet < price) {
@@ -169,13 +171,13 @@ module.exports = {
 
                 successContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Total Cost:** ${price.toLocaleString()} Embers\n**💳 Remaining Balance:** ${profile.wallet.toLocaleString()} Embers\n**📦 Added to Inventory:** Use \`!inventory\` to see your new item!`)
+                        .setContent(`**💰 Total Cost:** ${price.toLocaleString()} Embers\n**💳 Remaining Balance:** ${profile.wallet.toLocaleString()} Embers\n**📦 Added to Inventory:** Use \`${prefix}inventory\` to see your new item!`)
                 );
 
                 if (category === 'oil') {
                     successContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**💡 How to Use:** \`!slayershop enchant <weapon#> ${itemId} <amount>\``)
+                            .setContent(`**💡 How to Use:** \`${prefix}slayershop enchant <weapon#> ${itemId} <amount>\``)
                     );
                 }
 
@@ -208,17 +210,17 @@ module.exports = {
 
                 categoriesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🐎 Mounts** - \`!slayershop mounts\`\n**⚔️ Weapons** - \`!slayershop weapons\`\n**👥 Allies** - \`!slayershop allies\`\n**🏰 Vaults** - \`!slayershop vaults\``)
+                        .setContent(`**🐎 Mounts** - \`${prefix}slayershop mounts\`\n**⚔️ Weapons** - \`${prefix}slayershop weapons\`\n**👥 Allies** - \`${prefix}slayershop allies\`\n**🏰 Vaults** - \`${prefix}slayershop vaults\``)
                 );
 
                 categoriesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🧪 Potions** - \`!slayershop potions\`\n**✨ Weapon Oils** - \`!slayershop oils\`\n**📜 Enchantments** - \`!slayershop enchantments\``)
+                        .setContent(`**🧪 Potions** - \`${prefix}slayershop potions\`\n**✨ Weapon Oils** - \`${prefix}slayershop oils\`\n**📜 Enchantments** - \`${prefix}slayershop enchantments\``)
                 );
 
                 categoriesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Quick Actions:**\n\`!slayershop enchant <weapon#> <oil_type> [amount]\``)
+                        .setContent(`**💡 Quick Actions:**\n\`${prefix}slayershop enchant <weapon#> <oil_type> [amount]\``)
                 );
 
                 components.push(categoriesContainer);
@@ -228,7 +230,7 @@ module.exports = {
 
                 playerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **YOUR COIN**\n\n**Current Balance:** ${profile.wallet.toLocaleString()} Embers\n**💡 How to Buy:** \`!slayershop buy <item_id> [quantity]\``)
+                        .setContent(`## 💰 **YOUR COIN**\n\n**Current Balance:** ${profile.wallet.toLocaleString()} Embers\n**💡 How to Buy:** \`${prefix}slayershop buy <item_id> [quantity]\``)
                 );
 
                 components.push(playerContainer);
@@ -236,7 +238,7 @@ module.exports = {
             } else {
                 this.displayCategory(components, category, profile);
                 if (components.length === 0) {
-                    return this.sendError(message, `Invalid category: \`${category}\`. Use \`!slayershop\` to see available categories.`);
+                    return this.sendError(message, `Invalid category: \`${category}\`. Use \`${prefix}slayershop\` to see available categories.`);
                 }
             }
 
@@ -256,6 +258,7 @@ module.exports = {
         let categoryName = '';
         let categoryIcon = '';
         let accentColor = 0x3498DB;
+        const prefix = ServerManager.getPrefix(profile.guildId);
 
         switch(category) {
             case 'mounts':
@@ -347,7 +350,7 @@ module.exports = {
 
             itemContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Price:** ${item.price.toLocaleString()} Embers ${canAfford ? '✅' : '❌'}\n**📖 Description:** ${item.description}\n**💡 Buy:** \`!slayershop buy ${itemId} [quantity]\``)
+                    .setContent(`**💰 Price:** ${item.price.toLocaleString()} Embers ${canAfford ? '✅' : '❌'}\n**📖 Description:** ${item.description}\n**💡 Buy:** \`${prefix}slayershop buy ${itemId} [quantity]\``)
             );
 
             components.push(itemContainer);

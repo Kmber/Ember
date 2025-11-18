@@ -7,15 +7,17 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { SlayingManager } = require('../../models/economy/slayingManager');
+const { ServerManager } = require('../../models/server/serverManager');
 
 module.exports = {
     name: 'slayininventory',
     aliases: ['sinv', 'slayinv', 'sloot'],
     description: 'View your slaying inventory and loot',
-    usage: '!slayininventory [filter] [page]',
+    usage: 'slayininventory [filter] [page]',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            const prefix = await ServerManager.getPrefix(message.guild.id);
             
             if (profile.slayingInventory.length === 0) {
                 const components = [];
@@ -30,7 +32,7 @@ module.exports = {
 
                 emptyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 How to Get Loot:**\n\`!slay\` - Go slaying\n\`!slayershop\` - Buy supplies`)
+                        .setContent(`**💡 How to Get Loot:**\n\`${prefix}slay\` - Go slaying\n\`${prefix}slayershop\` - Buy supplies`)
                 );
 
                 components.push(emptyContainer);
@@ -206,10 +208,10 @@ module.exports = {
                     .setContent(`## 📋 **QUICK COMMANDS**`)
             );
 
-            let commandText = `**\`!sell <item_id>\`** - Sell specific item\n**\`!sell all <type>\`** - Sell all of type\n**\`!openchest <item_id>\`** - Open a chest`;
+            let commandText = `**\`${prefix}sell <item_id>\`** - Sell specific item\n**\`${prefix}sell all <type>\`** - Sell all of type\n**\`${prefix}openchest <item_id>\`** - Open a chest`;
             
             if (totalPages > 1) {
-                commandText += `\n\n**Navigation:** Page ${page}/${totalPages}\n\`!sinv ${filter} ${page + 1}\` - Next page`;
+                commandText += `\n\n**Navigation:** Page ${page}/${totalPages}\n\`${prefix}sinv ${filter} ${page + 1}\` - Next page`;
             }
 
             footerContainer.addTextDisplayComponents(

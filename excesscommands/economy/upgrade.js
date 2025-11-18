@@ -6,16 +6,18 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { HuntingManager } = require('../../models/economy/huntingManager');
+const { SlayingManager } = require('../../models/economy/slayingManager');
+const { ServerManager } = require('../../models/server/serverManager');
 
 module.exports = {
     name: 'upgrade',
     aliases: ['upg', 'improve', 'enhance'],
-    description: 'Upgrade your hunting weapons and vehicles',
-    usage: '!upgrade weapon <#> OR !upgrade vehicle <#>',
+    description: 'Upgrade your slaying weapons and mounts',
+    usage: '!upgrade weapon <#> OR !upgrade mount <#>',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            const prefix = await ServerManager.getPrefix(message.guild.id);
 
             if (!args[0] || !args[1]) {
                 const components = [];
@@ -25,7 +27,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⚡ Equipment Upgrade Center\n## IMPROVE YOUR GEAR\n\n> Enhance your weapons and vehicles for better performance`)
+                        .setContent(`# ⚡ Equipment Upgrade Center\n## IMPROVE YOUR GEAR\n\n> Enhance your weapons and mounts for better performance`)
                 );
 
                 components.push(helpContainer);
@@ -41,17 +43,17 @@ module.exports = {
 
                 commandsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🔫 Weapon Upgrades:**\n\`!upgrade weapon <number>\`\n> Increases damage, accuracy, and critical chance\n> Max level: 10`)
+                        .setContent(`**🔫 Weapon Upgrades:**\n\`${prefix}upgrade weapon <number>\`\n> Increases damage, accuracy, and critical chance\n> Max level: 10`)
                 );
 
                 commandsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🚗 Vehicle Upgrades:**\n\`!upgrade vehicle <number>\`\n> Increases capacity, fuel tank, and jungle depth\n> Max tier: 5`)
+                        .setContent(`**🐎 Mount Upgrades:**\n\`${prefix}upgrade mount <number>\`\n> Increases capacity, stamina, and haunted lands tier\n> Max tier: 5`)
                 );
 
                 commandsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 How to Find Numbers:**\n\`!hunting\` - Shows all your equipment with numbers\n\n**💰 Upgrade Costs:**\n> Weapons: 30% of purchase price × level\n> Vehicles: 40% of purchase price × tier`)
+                        .setContent(`**💡 How to Find Numbers:**\n\`${prefix}slaying\` - Shows all your equipment with numbers\n\n**💰 Upgrade Costs:**\n> Weapons: 30% of purchase price × level\n> Mounts: 40% of purchase price × tier`)
                 );
 
                 components.push(commandsContainer);
@@ -67,7 +69,7 @@ module.exports = {
 
             if (equipmentType === 'weapon') {
            
-                if (isNaN(equipmentNumber) || equipmentNumber < 1 || equipmentNumber > profile.huntingWeapons.length) {
+                if (isNaN(equipmentNumber) || equipmentNumber < 1 || equipmentNumber > profile.slayingWeapons.length) {
                     const components = [];
 
                     const errorContainer = new ContainerBuilder()
@@ -75,7 +77,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Weapon Number\n## WEAPON NOT FOUND\n\n> Invalid weapon number! You have ${profile.huntingWeapons.length} weapons.\n> Use \`!hunting\` to see your weapons with numbers.`)
+                            .setContent(`# ❌ Invalid Weapon Number\n## WEAPON NOT FOUND\n\n> Invalid weapon number! You have ${profile.slayingWeapons.length} weapons.\n> Use \`${prefix}slaying\` to see your weapons with numbers.`)
                     );
 
                     components.push(errorContainer);
@@ -86,10 +88,10 @@ module.exports = {
                     });
                 }
 
-                const weapon = profile.huntingWeapons[equipmentNumber - 1];
+                const weapon = profile.slayingWeapons[equipmentNumber - 1];
                 
                 try {
-                    const result = await HuntingManager.upgradeWeapon(profile, weapon.weaponId);
+                    const result = await SlayingManager.upgradeWeapon(profile, weapon.weaponId);
                     await profile.save();
 
                     const components = [];
@@ -115,7 +117,7 @@ module.exports = {
 
                     upgradeContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**💰 Upgrade Cost:** $${result.upgradeCost.toLocaleString()}\n**⚡ New Level:** ${result.newLevel}/10\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}`)
+                            .setContent(`**💰 Upgrade Cost:** ${result.upgradeCost.toLocaleString()} Embers\n**⚡ New Level:** ${result.newLevel}/10\n**💳 Remaining Balance:** ${profile.wallet.toLocaleString()} Embers`)
                     );
 
                     const improvementsText = `**💥 Damage:** ${result.newStats.damage} (+${result.improvements.damage})\n**🎯 Accuracy:** ${result.newStats.accuracy}% (+${result.improvements.accuracy}%)\n**💥 Critical Chance:** ${result.newStats.criticalChance}% (+${result.improvements.criticalChance}%)`;
@@ -129,7 +131,7 @@ module.exports = {
                         const nextUpgradeCost = Math.floor(weapon.purchasePrice * 0.3 * (result.newLevel + 1));
                         upgradeContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🔮 Next Upgrade Cost:** $${nextUpgradeCost.toLocaleString()}`)
+                                .setContent(`**🔮 Next Upgrade Cost:** ${nextUpgradeCost.toLocaleString()} Embers`)
                         );
                     } else {
                         upgradeContainer.addTextDisplayComponents(
@@ -165,9 +167,9 @@ module.exports = {
                 }
             }
 
-            if (equipmentType === 'vehicle') {
+            if (equipmentType === 'mount') {
               
-                if (isNaN(equipmentNumber) || equipmentNumber < 1 || equipmentNumber > profile.huntingVehicles.length) {
+                if (isNaN(equipmentNumber) || equipmentNumber < 1 || equipmentNumber > profile.slayingMounts.length) {
                     const components = [];
 
                     const errorContainer = new ContainerBuilder()
@@ -175,7 +177,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Vehicle Number\n## VEHICLE NOT FOUND\n\n> Invalid vehicle number! You have ${profile.huntingVehicles.length} vehicles.\n> Use \`!hunting\` to see your vehicles with numbers.`)
+                            .setContent(`# ❌ Invalid Mount Number\n## MOUNT NOT FOUND\n\n> Invalid mount number! You have ${profile.slayingMounts.length} mounts.\n> Use \`${prefix}slaying\` to see your mounts with numbers.`)
                     );
 
                     components.push(errorContainer);
@@ -186,10 +188,10 @@ module.exports = {
                     });
                 }
 
-                const vehicle = profile.huntingVehicles[equipmentNumber - 1];
+                const mount = profile.slayingMounts[equipmentNumber - 1];
                 
                 try {
-                    const result = await HuntingManager.upgradeVehicle(profile, vehicle.vehicleId);
+                    const result = await SlayingManager.upgradeMount(profile, mount.mountId);
                     await profile.save();
 
                     const components = [];
@@ -199,7 +201,7 @@ module.exports = {
 
                     successContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ⚡ Vehicle Upgraded!\n## ${vehicle.name.toUpperCase()}\n\n> Successfully upgraded to tier ${result.newTier}!`)
+                            .setContent(`# ⚡ Mount Upgraded!\n## ${mount.name.toUpperCase()}\n\n> Successfully upgraded to tier ${result.newTier}!`)
                     );
 
                     components.push(successContainer);
@@ -210,15 +212,15 @@ module.exports = {
 
                     upgradeContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🚗 **UPGRADE IMPROVEMENTS**`)
+                            .setContent(`## 🐎 **UPGRADE IMPROVEMENTS**`)
                     );
 
                     upgradeContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**💰 Upgrade Cost:** $${result.upgradeCost.toLocaleString()}\n**⚡ New Tier:** ${result.newTier}/5\n**💳 Remaining Balance:** $${profile.wallet.toLocaleString()}`)
+                            .setContent(`**💰 Upgrade Cost:** ${result.upgradeCost.toLocaleString()} Embers\n**⚡ New Tier:** ${result.newTier}/5\n**💳 Remaining Balance:** ${profile.wallet.toLocaleString()} Embers`)
                     );
 
-                    const improvementsText = `**📦 Capacity:** ${vehicle.capacity} animals (+${result.improvements.capacity})\n**⛽ Fuel Tank:** ${vehicle.fuelCapacity} units (+${result.improvements.fuelCapacity})\n**🌲 Jungle Depth:** ${vehicle.jungleDepth}/10 (+${result.improvements.jungleDepth})`;
+                    const improvementsText = `**📦 Capacity:** ${mount.capacity} items (+${result.improvements.capacity})\n**💨 Stamina:** ${mount.staminaCapacity} units (+${result.improvements.staminaCapacity})\n**🏞️ Haunted Lands Tier:** ${mount.hauntedLandsTier}/10 (+${result.improvements.hauntedLandsTier})`;
 
                     upgradeContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
@@ -226,15 +228,15 @@ module.exports = {
                     );
 
                     if (result.newTier < 5) {
-                        const nextUpgradeCost = Math.floor(vehicle.purchasePrice * 0.4 * result.newTier);
+                        const nextUpgradeCost = Math.floor(mount.purchasePrice * 0.4 * result.newTier);
                         upgradeContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🔮 Next Upgrade Cost:** $${nextUpgradeCost.toLocaleString()}`)
+                                .setContent(`**🔮 Next Upgrade Cost:** ${nextUpgradeCost.toLocaleString()} Embers`)
                         );
                     } else {
                         upgradeContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🏆 MAXIMUM TIER REACHED!**\n> This vehicle is fully upgraded!`)
+                                .setContent(`**🏆 MAXIMUM TIER REACHED!**\n> This mount is fully upgraded!`)
                         );
                     }
 
@@ -253,7 +255,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Upgrade Failed\n## ${error.message}\n\n> ${vehicle.name} could not be upgraded.`)
+                            .setContent(`# ❌ Upgrade Failed\n## ${error.message}\n\n> ${mount.name} could not be upgraded.`)
                     );
 
                     components.push(errorContainer);
@@ -273,7 +275,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ❌ Invalid Equipment Type\n## UNKNOWN TYPE\n\n> Valid types are: \`weapon\` or \`vehicle\`\n> Example: \`!upgrade weapon 1\``)
+                    .setContent(`# ❌ Invalid Equipment Type\n## UNKNOWN TYPE\n\n> Valid types are: \`weapon\` or \`mount\`\n> Example: \`${prefix}upgrade weapon 1\``)
             );
 
             components.push(errorContainer);

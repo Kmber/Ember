@@ -7,17 +7,18 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { SlayingManager } = require('../../models/economy/slayingManager');
+const { ServerManager } = require('../../models/server/serverManager');
 
 module.exports = {
     name: 'slay',
     aliases: ['quest', 'journey'],
     description: 'Go on a slaying quest in the haunted lands',
-    usage: '!slay',
+    usage: 'slay',
     cooldown: 300, 
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-            
+            const prefix = await ServerManager.getPrefix(message.guild.id);
             
             const cooldownCheck = EconomyManager.checkCooldown(profile, 'slay');
             if (cooldownCheck.onCooldown) {
@@ -57,7 +58,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **GET STARTED**\n\n**Command:** \`!slayershop\`\n**Buy:** Mounts, weapons, and allies\n**Starting Budget:** You have ${profile.wallet.toLocaleString()} Embers available`)
+                        .setContent(`## 🛒 **GET STARTED**\n\n**Command:** \`${prefix}slayershop\`\n**Buy:** Mounts, weapons, and allies\n**Starting Budget:** You have ${profile.wallet.toLocaleString()} Embers available`)
                 );
 
                 components.push(helpContainer);
@@ -84,7 +85,7 @@ module.exports = {
                 
                 injuredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏥 Healing Cost:** ${healingCost.toLocaleString()} Embers\n**💡 Command:** \`!heal self\``)
+                        .setContent(`**🏥 Healing Cost:** ${healingCost.toLocaleString()} Embers\n**💡 Command:** \`${prefix}heal self\``)
                 );
 
                 components.push(injuredContainer);
@@ -106,12 +107,6 @@ module.exports = {
             if (slayResult.success) {
                 profile.slayingStats.successfulSlays += 1;
                 profile.slayingStats.monstersSlain += 1;
-                
-             
-                slayResult.loot.forEach(item => {
-                    profile.slayingInventory.push(item);
-                });
-                
             } else {
                 profile.slayingStats.failedSlays += 1;
             }
@@ -207,6 +202,41 @@ module.exports = {
                     components.push(lootContainer);
                 }
 
+                if (slayResult.discardedLoot.length > 0) {
+                    components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+
+                    const discardedLootContainer = new ContainerBuilder()
+                        .setAccentColor(0xE74C3C);
+
+                    discardedLootContainer.addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(`## 📦 **INVENTORY FULL**`)
+                    );
+
+                    const discardedLootText = slayResult.discardedLoot.slice(0, 5).map(item =>
+                        `**${item.name}** (${item.rarity}) - Discarded`
+                    ).join('\n');
+
+                    discardedLootContainer.addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(`You found loot, but your inventory is full! The following items were discarded:\n\n${discardedLootText}`)
+                    );
+
+                    if (slayResult.discardedLoot.length > 5) {
+                        discardedLootContainer.addTextDisplayComponents(
+                            new TextDisplayBuilder()
+                                .setContent(`*...and ${slayResult.discardedLoot.length - 5} more items were discarded.*`)
+                        );
+                    }
+
+                    discardedLootContainer.addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(`\n**💡 Tip:** Sell items or buy a vault to increase your storage capacity!`)
+                    );
+
+                    components.push(discardedLootContainer);
+                }
+
             } else {
               
                 const headerContainer = new ContainerBuilder()
@@ -264,7 +294,7 @@ module.exports = {
 
                 injuryContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Command:** \`!heal allies\` to restore them`)
+                        .setContent(`**💡 Command:** \`${prefix}heal allies\` to restore them`)
                 );
 
                 components.push(injuryContainer);

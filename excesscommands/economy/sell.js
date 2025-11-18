@@ -6,16 +6,18 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { HuntingManager } = require('../../models/economy/huntingManager');
+const { SlayingManager } = require('../../models/economy/slayingManager');
+const { ServerManager } = require('../../models/server/serverManager');
 
 module.exports = {
     name: 'sell',
-    aliases: ['sellitem', 'sellhunt', 'sellloot'],
-    description: 'Sell hunting loot and items',
-    usage: '!sell <item_id> OR !sell all <type> OR !sell confirm',
+    aliases: ['sellitem', 'sellslay', 'sellloot'],
+    description: 'Sell slaying loot and items',
+    usage: 'sell <item_id> OR !sell all <type> OR !sell confirm',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            const prefix = await ServerManager.getPrefix(message.guild.id);
 
             if (!args[0]) {
                 const components = [];
@@ -25,17 +27,17 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💰 Sell Hunting Loot\n## HOW TO SELL ITEMS\n\n> Various ways to sell your hunting inventory`)
+                        .setContent(`# 💰 Sell Slaying Loot\n## HOW TO SELL ITEMS\n\n> Various ways to sell your slaying inventory`)
                 );
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 Sell Specific Item:**\n\`!sell <item_id>\` - Sell one item\n\n**📦 Sell by Type:**\n\`!sell all meat\` - Sell all meat\n\`!sell all common\` - Sell all common items\n\`!sell all pelts\` - Sell all pelts`)
+                        .setContent(`**🎯 Sell Specific Item:**\n\`${prefix}sell <item_id>\` - Sell one item\n\n**📦 Sell by Type:**\n\`${prefix}sell all flesh\` - Sell all flesh\n\`${prefix}sell all common\` - Sell all common items\n\`${prefix}sell all hide\` - Sell all hides`)
                 );
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Available Types:**\n\`meat\`, \`pelts\`, \`trophies\`, \`materials\`, \`artifacts\`, \`common\`, \`uncommon\`, \`rare\`\n\n**📋 Use \`!inventory\` to see your items and their IDs**`)
+                        .setContent(`**💡 Available Types:**\n\`flesh\`, \`hide\`, \`trophies\`, \`rare_essence\`, \`relic\`, \`artifact\`, \`common\`, \`uncommon\`, \`rare\`\n\n**📋 Use \`${prefix}inventory\` to see your items and their IDs**`)
                 );
 
                 components.push(helpContainer);
@@ -51,22 +53,26 @@ module.exports = {
                 const type = args[1].toLowerCase();
                 
                 let itemsToSell = [];
-                profile.huntingInventory.forEach(item => {
+                profile.slayingInventory.forEach(item => {
                     switch(type) {
-                        case 'meat':
-                            if (item.type === 'meat') itemsToSell.push(item.itemId);
+                        case 'flesh':
+                            if (item.type === 'flesh') itemsToSell.push(item.itemId);
                             break;
-                        case 'pelts':
-                        case 'pelt':
-                            if (item.type === 'pelt') itemsToSell.push(item.itemId);
+                        case 'hide':
+                        case 'hides':
+                            if (item.type === 'hide') itemsToSell.push(item.itemId);
                             break;
                         case 'trophies':
                         case 'trophy':
                             if (item.type === 'trophy') itemsToSell.push(item.itemId);
                             break;
-                        case 'materials':
-                        case 'rare_material':
-                            if (item.type === 'rare_material') itemsToSell.push(item.itemId);
+                        case 'rare_essence':
+                        case 'essence':
+                            if (item.type === 'rare_essence') itemsToSell.push(item.itemId);
+                            break;
+                        case 'relics':
+                        case 'relic':
+                            if (item.type === 'relic') itemsToSell.push(item.itemId);
                             break;
                         case 'artifacts':
                         case 'artifact':
@@ -79,12 +85,6 @@ module.exports = {
                         case 'legendary':
                         case 'mythic':
                             if (item.rarity === type) itemsToSell.push(item.itemId);
-                            break;
-                        case 'fuel':
-                            if (item.type === 'fuel') itemsToSell.push(item.itemId);
-                            break;
-                        case 'ammo':
-                            if (item.type === 'ammo') itemsToSell.push(item.itemId);
                             break;
                     }
                 });
@@ -113,12 +113,12 @@ module.exports = {
                 const itemDetails = [];
                 
                 itemsToSell.forEach(itemId => {
-                    const item = profile.huntingInventory.find(i => i.itemId === itemId);
+                    const item = profile.slayingInventory.find(i => i.itemId === itemId);
                     if (item) {
                         let sellValue = item.currentValue;
-                        const warehouse = profile.huntingWarehouses.find(w => item.location === w.warehouseId);
-                        if (warehouse) {
-                            sellValue = Math.floor(sellValue * warehouse.bonusMultiplier);
+                        const vault = profile.slayingVaults.find(v => item.location === v.vaultId);
+                        if (vault) {
+                            sellValue = Math.floor(sellValue * vault.bonusMultiplier);
                         }
                         
                         totalValue += sellValue * item.quantity;
@@ -131,7 +131,7 @@ module.exports = {
                 });
 
              
-                const result = await HuntingManager.sellHuntingItems(profile, itemsToSell);
+                const result = await SlayingManager.sellSlayingItems(profile, itemsToSell);
                 await profile.save();
 
                 const components = [];
@@ -157,14 +157,14 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Total Earned:** $${result.totalValue.toLocaleString()}\n**📦 Items Sold:** ${result.soldItems.length}\n**💳 New Balance:** $${profile.wallet.toLocaleString()}\n**📈 Total Hunting Earnings:** $${profile.huntingStats.totalEarnings.toLocaleString()}`)
+                        .setContent(`**💰 Total Earned:** ${result.totalValue.toLocaleString()} Embers\n**📦 Items Sold:** ${result.soldItems.length}\n**💳 New Balance:** ${profile.wallet.toLocaleString()} Embers\n**📈 Total Slaying Earnings:** ${profile.slayingStats.totalEarnings.toLocaleString()} Embers`)
                 );
 
                
                 const topItems = result.soldItems
                     .sort((a, b) => b.value - a.value)
                     .slice(0, 5)
-                    .map(item => `**${item.name}** - $${item.value.toLocaleString()}`)
+                    .map(item => `**${item.name}** - ${item.value.toLocaleString()} Embers`)
                     .join('\n');
 
                 if (topItems) {
@@ -186,9 +186,9 @@ module.exports = {
             const itemId = args[0];
             
           
-            let item = profile.huntingInventory.find(i => i.itemId === itemId);
+            let item = profile.slayingInventory.find(i => i.itemId === itemId);
             if (!item) {
-                item = profile.huntingInventory.find(i => i.itemId.endsWith(itemId));
+                item = profile.slayingInventory.find(i => i.itemId.endsWith(itemId));
             }
 
             if (!item) {
@@ -199,7 +199,7 @@ module.exports = {
 
                 notFoundContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Item Not Found\n## INVALID ITEM ID\n\n> Item with ID \`${itemId}\` not found!\n> Use \`!inventory\` to see your items and their IDs.`)
+                        .setContent(`# ❌ Item Not Found\n## INVALID ITEM ID\n\n> Item with ID \`${itemId}\` not found!\n> Use \`${prefix}inventory\` to see your items and their IDs.`)
                 );
 
                 components.push(notFoundContainer);
@@ -212,19 +212,19 @@ module.exports = {
 
           
             let sellValue = item.currentValue;
-            const warehouse = profile.huntingWarehouses.find(w => item.location === w.warehouseId);
-            let warehouseBonus = 0;
+            const vault = profile.slayingVaults.find(v => item.location === v.vaultId);
+            let vaultBonus = 0;
             
-            if (warehouse) {
-                const bonusValue = Math.floor(item.currentValue * warehouse.bonusMultiplier) - item.currentValue;
-                warehouseBonus = bonusValue * item.quantity;
-                sellValue = Math.floor(item.currentValue * warehouse.bonusMultiplier);
+            if (vault) {
+                const bonusValue = Math.floor(item.currentValue * vault.bonusMultiplier) - item.currentValue;
+                vaultBonus = bonusValue * item.quantity;
+                sellValue = Math.floor(item.currentValue * vault.bonusMultiplier);
             }
 
             const totalSellValue = sellValue * item.quantity;
 
            
-            const result = await HuntingManager.sellHuntingItems(profile, [item.itemId]);
+            const result = await SlayingManager.sellSlayingItems(profile, [item.itemId]);
             await profile.save();
 
             const components = [];
@@ -234,7 +234,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 💰 Item Sold Successfully!\n## ${item.name.toUpperCase()}\n\n> Sold for $${totalSellValue.toLocaleString()}!`)
+                    .setContent(`# 💰 Item Sold Successfully!\n## ${item.name.toUpperCase()}\n\n> Sold for ${totalSellValue.toLocaleString()} Embers!`)
             );
 
             components.push(successContainer);
@@ -253,11 +253,11 @@ module.exports = {
                     .setContent(`**📦 Item:** ${item.name}\n**⭐ Rarity:** ${item.rarity.charAt(0).toUpperCase() + item.rarity.slice(1)}\n**📊 Quantity:** ${item.quantity}`)
             );
 
-            let valueBreakdown = `**💰 Base Value:** $${(item.currentValue * item.quantity).toLocaleString()}`;
-            if (warehouseBonus > 0) {
-                valueBreakdown += `\n**🏭 Warehouse Bonus:** +$${warehouseBonus.toLocaleString()}`;
+            let valueBreakdown = `**💰 Base Value:** ${(item.currentValue * item.quantity).toLocaleString()} Embers`;
+            if (vaultBonus > 0) {
+                valueBreakdown += `\n**🏰 Vault Bonus:** +${vaultBonus.toLocaleString()} Embers`;
             }
-            valueBreakdown += `\n**💎 Total Earned:** $${totalSellValue.toLocaleString()}\n**💳 New Balance:** $${profile.wallet.toLocaleString()}`;
+            valueBreakdown += `\n**💎 Total Earned:** ${totalSellValue.toLocaleString()} Embers\n**💳 New Balance:** ${profile.wallet.toLocaleString()} Embers`;
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()

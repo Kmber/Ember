@@ -7,14 +7,23 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { SlayingManager } = require('../../models/economy/slayingManager');
+const { ServerManager } = require('../../models/server/serverManager');
+
 module.exports = {
     name: 'slaying',
     aliases: ['slayer', 'slaystats'],
     description: 'View your complete slaying profile and statistics',
-    usage: '!slaying',
+    usage: 'slaying',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            const prefix = await ServerManager.getPrefix(message.guild.id);
+            
+            if (profile.slayingVaults.length === 0 && profile.slayingInventory.length > 0) {
+                profile.slayingInventory = [];
+                await profile.save();
+            }
+            
             const components = [];
 
      
@@ -126,7 +135,7 @@ module.exports = {
                 
                 storageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 Inventory Value:** ${totalInventoryValue.toLocaleString()} Embers\n**💡 Command:** \`!inventory\` to view items\n**💡 Command:** \`!sell\` to sell items`)
+                        .setContent(`**💎 Inventory Value:** ${totalInventoryValue.toLocaleString()} Embers\n**💡 Command:** \`${prefix}inventory\` to view items\n**💡 Command:** \`${prefix}sell\` to sell items`)
                 );
 
                 components.push(storageContainer);
@@ -140,7 +149,7 @@ module.exports = {
 
             commandsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📋 **QUICK COMMANDS**\n\n**\`!slay\`** - Go slaying\n**\`!slayershop\`** - Buy gear\n**\`!inventory\`** - View loot\n**\`!upgrade\`** - Upgrade weapons\n**\`!heal\`** - Heal wounds`)
+                    .setContent(`## 📋 **QUICK COMMANDS**\n\n**\`${prefix}slay\`** - Go slaying\n**\`${prefix}slayershop\`** - Buy gear\n**\`${prefix}inventory\`** - View loot\n**\`${prefix}upgrade\`** - Upgrade weapons\n**\`${prefix}heal\`** - Heal wounds`)
             );
 
             components.push(commandsContainer);
