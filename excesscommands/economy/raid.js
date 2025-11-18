@@ -5,14 +5,14 @@ const {
     SeparatorSpacingSize,
     MessageFlags
 } = require('discord.js');
-const { EconomyManager, Heist } = require('../../models/economy/economy');
-const { HEIST_TARGETS } = require('../../models/economy/constants/businessData');
+const { EconomyManager, Raid } = require('../../models/economy/economy');
+const { RAID_DUNGEONS } = require('../../models/economy/constants/businessData');
 
 module.exports = {
-    name: 'heist',
-    aliases: ['heists'],
-    description: 'View active heists and heist management with v2 components',
-    usage: '!heist [status/history/leaderboard]',
+    name: 'raid',
+    aliases: ['raids'],
+    description: 'View active raids and raid management with v2 components',
+    usage: '!raid [status/history/leaderboard]',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
@@ -20,25 +20,25 @@ module.exports = {
             
             if (!action || action === 'status') {
               
-                const activeHeists = await Heist.find({
-                    heistId: { $in: profile.activeHeists },
+                const activeRaids = await Raid.find({
+                    raidId: { $in: profile.activeRaids },
                     guildId: message.guild.id,
                     status: { $in: ['planning', 'recruiting', 'ready'] }
                 });
                 
                 const components = [];
                 
-                if (activeHeists.length === 0) {
+                if (activeRaids.length === 0) {
                  
-                    const noHeistsContainer = new ContainerBuilder()
+                    const noRaidsContainer = new ContainerBuilder()
                         .setAccentColor(0x607D8B);
 
-                    noHeistsContainer.addTextDisplayComponents(
+                    noRaidsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 🎯 No Active Heists\n## READY FOR CRIMINAL VENTURES\n\n> You're not currently involved in any heists. Time to plan your next big score!\n> The criminal underworld awaits your strategic mind and daring spirit.`)
+                            .setContent(`# ⚔️ No Active Raids\n## READY FOR ADVENTURE\n\n> You\'re not currently on any raids. Time to plan your next expedition!\n> The dungeons await your courage and strategic mind.`)
                     );
 
-                    components.push(noHeistsContainer);
+                    components.push(noRaidsContainer);
 
                     components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -48,12 +48,12 @@ module.exports = {
 
                     startContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent('## 🎭 **GET STARTED WITH HEISTS**')
+                            .setContent('## 📜 **GET STARTED WITH RAIDS**')
                     );
 
                     startContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🆕 Plan a Heist:** \`!planheist\` - Organize your own criminal operation\n**🤝 Join Others:** \`!joinheist <id> <role>\` - Join existing heist crews\n**📚 Learn Roles:** Each heist needs hackers, lookouts, drivers, and muscle\n**💡 Strategy:** Choose targets based on your skill level and heat`)
+                            .setContent(`**🆕 Plan a Raid:** \`!planraid\` - Organize your own expedition\n**🤝 Join Others:** \`!joinraid <id> <class>\` - Join existing raid parties\n**📚 Learn Classes:** Each raid needs warriors, mages, healers, and thieves\n**💡 Strategy:** Choose dungeons based on your skill level and threat`)
                     );
 
                     components.push(startContainer);
@@ -66,28 +66,28 @@ module.exports = {
 
                     statsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent('## 📊 **YOUR CRIMINAL RECORD**')
+                            .setContent('## 📊 **YOUR ADVENTURER\'S LOG**')
                     );
 
-                    const successRate = (profile.completedHeists + profile.failedHeists) > 0 ? 
-                        Math.floor((profile.completedHeists / (profile.completedHeists + profile.failedHeists)) * 100) : 0;
+                    const successRate = (profile.completedRaids + profile.failedRaids) > 0 ? 
+                        Math.floor((profile.completedRaids / (profile.completedRaids + profile.failedRaids)) * 100) : 0;
 
                     statsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**✅ Completed Heists:** \`${profile.completedHeists}\`\n**❌ Failed Heists:** \`${profile.failedHeists}\`\n**📈 Success Rate:** \`${successRate}%\`\n**🔥 Heat Level:** \`${profile.heatLevel}%\`\n**🎓 Heist Skill:** \`${profile.heistSkill}%\``)
+                            .setContent(`**✅ Completed Raids:** \`${profile.completedRaids}\`\n**❌ Failed Raids:** \`${profile.failedRaids}\`\n**📈 Success Rate:** \`${successRate}%\`\n**🔥 Threat Level:** \`${profile.threatLevel}%\`\n**🎓 Raid Skill:** \`${profile.raidSkill}%\``)
                     );
 
                
-                    if (profile.jailTime && profile.jailTime > new Date()) {
-                        const hoursLeft = Math.ceil((profile.jailTime - new Date()) / (1000 * 60 * 60));
+                    if (profile.recoveryTime && profile.recoveryTime > new Date()) {
+                        const hoursLeft = Math.ceil((profile.recoveryTime - new Date()) / (1000 * 60 * 60));
                         statsContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🚔 Jail Status:** \`${hoursLeft} hours remaining\`\n\n> You're currently behind bars! Wait for release before planning new heists.`)
+                                .setContent(`**🤕 Recovery Status:** \`${hoursLeft} hours remaining\`\n\n> You\'re currently recovering from your last adventure! Rest up before starting a new raid.`)
                         );
                     } else {
                         statsContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🚔 Legal Status:** \`Free to operate\`\n\n> You're ready to plan and execute new criminal ventures!`)
+                                .setContent(`**✨ Adventuring Status:** \`Ready for a new raid!\`\n\n> You\'re ready to plan and embark on new adventures!`)
                         );
                     }
 
@@ -105,7 +105,7 @@ module.exports = {
 
                 activeHeaderContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🎯 Active Heist Operations\n## CRIMINAL ENTERPRISES IN PROGRESS\n\n> You're currently involved in **${activeHeists.length}** active heist${activeHeists.length !== 1 ? 's' : ''}!\n> Manage your operations carefully to ensure successful outcomes.`)
+                        .setContent(`# ⚔️ Active Raid Expeditions\n## DUNGEONS BEING EXPLORED\n\n> You\'re currently involved in **${activeRaids.length}** active raid${activeRaids.length !== 1 ? 's' : ''}!\n> Manage your expeditions carefully to ensure successful outcomes.`)
                 );
 
                 components.push(activeHeaderContainer);
@@ -113,40 +113,40 @@ module.exports = {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
               
-                activeHeists.forEach((heist, index) => {
-                    const target = HEIST_TARGETS[heist.targetType];
-                    const memberRole = heist.members.find(m => m.userId === message.author.id)?.role || 'Unknown';
-                    const timeLeft = heist.plannedDate ? Math.max(0, Math.floor((heist.plannedDate - new Date()) / (1000 * 60 * 60))) : 0;
-                    const individualPayout = Math.floor(heist.potential_payout / heist.requiredMembers);
+                activeRaids.forEach((raid, index) => {
+                    const dungeon = RAID_DUNGEONS[raid.dungeonType];
+                    const memberClass = raid.members.find(m => m.userId === message.author.id)?.class || 'Unknown';
+                    const timeLeft = raid.plannedDate ? Math.max(0, Math.floor((raid.plannedDate - new Date()) / (1000 * 60 * 60))) : 0;
+                    const individualReward = Math.floor(raid.potential_reward / raid.requiredMembers);
 
-                    const heistContainer = new ContainerBuilder()
+                    const raidContainer = new ContainerBuilder()
                         .setAccentColor(0xE91E63);
 
-                    heistContainer.addTextDisplayComponents(
+                    raidContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏢 **${heist.targetName}** (${heist.status.toUpperCase()})`)
+                            .setContent(`## 🏰 **${raid.dungeonName}** (${raid.status.toUpperCase()})`)
                     );
 
-                    heistContainer.addTextDisplayComponents(
+                    raidContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🎭 Your Role:** \`${memberRole}\`\n**👥 Team Status:** \`${heist.members.length}/${heist.requiredMembers} members\`\n**💰 Your Cut:** \`$${individualPayout.toLocaleString()}\`\n**🎯 Target Type:** \`${heist.targetType}\`\n**🆔 Heist ID:** \`${heist.heistId}\``)
+                            .setContent(`**🎭 Your Class:** \`${memberClass}\`\n**👥 Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**💰 Your Share:** \`$${individualReward.toLocaleString()}\`\n**🎯 Dungeon Type:** \`${raid.dungeonType}\`\n**🆔 Raid ID:** \`${raid.raidId}\``)
                     );
 
                     if (timeLeft > 0) {
-                        heistContainer.addTextDisplayComponents(
+                        raidContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**⏰ Time Until Ready:** \`${timeLeft} hours\`\n**📅 Planned Date:** \`${heist.plannedDate.toLocaleString()}\`\n\n> **Status:** Preparation phase - gathering intel and resources`)
+                                .setContent(`**⏰ Time Until Ready:** \`${timeLeft} hours\`\n**📅 Planned Date:** \`${raid.plannedDate.toLocaleString()}\`\n\n> **Status:** Preparation phase - gathering gear and supplies`)
                         );
                     } else {
-                        heistContainer.addTextDisplayComponents(
+                        raidContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🚨 Status:** \`READY TO EXECUTE!\`\n**⚡ Action Required:** Use \`!executeheist ${heist.heistId}\` to begin\n\n> **Alert:** Your crew is ready - strike while the iron is hot!`)
+                                .setContent(`**🚨 Status:** \`READY TO EMBARK!\`\n**⚡ Action Required:** Use \`!executeraid ${raid.raidId}\` to begin\n\n> **Alert:** Your party is ready - the dungeon awaits!`)
                         );
                     }
 
-                    components.push(heistContainer);
+                    components.push(raidContainer);
 
-                    if (index < activeHeists.length - 1) {
+                    if (index < activeRaids.length - 1) {
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
                     }
                 });
@@ -159,7 +159,7 @@ module.exports = {
 
                 statsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **CRIMINAL STATISTICS**\n\n**✅ Completed:** \`${profile.completedHeists}\` • **❌ Failed:** \`${profile.failedHeists}\`\n**🔥 Heat Level:** \`${profile.heatLevel}%\` • **🎓 Skill:** \`${profile.heistSkill}%\`\n\n> Higher skill and lower heat improve your success chances!`)
+                        .setContent(`## 📊 **ADVENTURER STATISTICS**\n\n**✅ Completed:** \`${profile.completedRaids}\` • **❌ Failed:** \`${profile.failedRaids}\`\n**🔥 Threat Level:** \`${profile.threatLevel}%\` • **🎓 Skill:** \`${profile.raidSkill}%\`\n\n> Higher skill and lower threat improve your success chances!`)
                 );
 
                 components.push(statsContainer);
@@ -171,13 +171,13 @@ module.exports = {
             }
             
             if (action === 'history') {
-                const completedHeists = await Heist.find({
+                const completedRaids = await Raid.find({
                     guildId: message.guild.id,
                     'members.userId': message.author.id,
                     status: { $in: ['completed', 'failed'] }
                 }).sort({ executionDate: -1 }).limit(10);
                 
-                if (completedHeists.length === 0) {
+                if (completedRaids.length === 0) {
                     const components = [];
 
                     const noHistoryContainer = new ContainerBuilder()
@@ -185,7 +185,7 @@ module.exports = {
 
                     noHistoryContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 📜 No Heist History\n## CLEAN CRIMINAL RECORD\n\n> You haven't completed any heists yet! Your criminal career is just beginning.\n> Start planning heists to build your reputation in the underworld.`)
+                            .setContent(`# 📜 No Raid History\n## A BLANK PARCHMENT\n\n> You haven\'t completed any raids yet! Your adventuring career is just beginning.\n> Start planning raids to build your reputation as a legendary adventurer.`)
                     );
 
                     components.push(noHistoryContainer);
@@ -204,7 +204,7 @@ module.exports = {
 
                 historyHeaderContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 📜 Criminal History\n## YOUR HEIST LEGACY\n\n> Here's your complete criminal record showing all completed and failed operations.\n> Learn from past experiences to improve future success rates.`)
+                        .setContent(`# 📜 Raid History\n## YOUR ADVENTURING LEGACY\n\n> Here\'s your complete raid history showing all completed and failed expeditions.\n> Learn from past experiences to improve future success rates.`)
                 );
 
                 components.push(historyHeaderContainer);
@@ -213,8 +213,8 @@ module.exports = {
 
                 
                 const historyGroups = [];
-                for (let i = 0; i < completedHeists.length; i += 4) {
-                    historyGroups.push(completedHeists.slice(i, i + 4));
+                for (let i = 0; i < completedRaids.length; i += 4) {
+                    historyGroups.push(completedRaids.slice(i, i + 4));
                 }
 
                 historyGroups.forEach((group, groupIndex) => {
@@ -223,17 +223,17 @@ module.exports = {
 
                     historyContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🎭 **HEIST RECORDS ${groupIndex > 0 ? `(Continued)` : ''}**`)
+                            .setContent(`## 📜 **RAID RECORDS ${groupIndex > 0 ? `(Continued)` : ''}**`)
                     );
 
-                    const historyText = group.map(heist => {
-                        const success = heist.status === 'completed';
-                        const memberRole = heist.members.find(m => m.userId === message.author.id)?.role;
+                    const historyText = group.map(raid => {
+                        const success = raid.status === 'completed';
+                        const memberClass = raid.members.find(m => m.userId === message.author.id)?.class;
                         const outcome = success ? 
-                            `✅ **SUCCESS** - Earned \`$${Math.floor(heist.actual_payout / heist.members.length).toLocaleString()}\`` :
-                            `❌ **FAILED** - Jail time and fines`;
+                            `✅ **SUCCESS** - Earned \`$${Math.floor(raid.actual_reward / raid.members.length).toLocaleString()}\`` :
+                            `❌ **FAILED** - Recovery time and penalties`;
                         
-                        return `**${heist.targetName}** (${memberRole})\n> ${outcome}\n> **Date:** \`${new Date(heist.executionDate).toLocaleDateString()}\``;
+                        return `**${raid.dungeonName}** (${memberClass})\n> ${outcome}\n> **Date:** \`${new Date(raid.executionDate).toLocaleDateString()}\``;
                     }).join('\n\n');
 
                     historyContainer.addTextDisplayComponents(
@@ -254,12 +254,12 @@ module.exports = {
                 const analysisContainer = new ContainerBuilder()
                     .setAccentColor(0x4CAF50);
 
-                const successRate = profile.completedHeists > 0 ? 
-                    Math.floor((profile.completedHeists / (profile.completedHeists + profile.failedHeists)) * 100) : 0;
+                const successRate = profile.completedRaids > 0 ? 
+                    Math.floor((profile.completedRaids / (profile.completedRaids + profile.failedRaids)) * 100) : 0;
 
                 analysisContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📈 **PERFORMANCE ANALYSIS**\n\n**🎯 Success Rate:** \`${successRate}%\`\n**📊 Total Operations:** \`${profile.completedHeists + profile.failedHeists}\`\n**💰 Successful Heists:** \`${profile.completedHeists}\`\n**🚫 Failed Attempts:** \`${profile.failedHeists}\`\n\n**💡 Improvement Tips:** ${successRate < 70 ? 'Focus on skill building and heat management' : 'Excellent track record - keep up the strategic planning!'}`)
+                        .setContent(`## 📈 **PERFORMANCE ANALYSIS**\n\n**🎯 Success Rate:** \`${successRate}%\`\n**📊 Total Expeditions:** \`${profile.completedRaids + profile.failedRaids}\`\n**💰 Successful Raids:** \`${profile.completedRaids}\`\n**🚫 Failed Attempts:** \`${profile.failedRaids}\`\n\n**💡 Improvement Tips:** ${successRate < 70 ? 'Focus on skill building and threat management' : 'Excellent track record - keep up the strategic planning!'}`)
                 );
 
                 components.push(analysisContainer);
@@ -272,7 +272,7 @@ module.exports = {
             
             if (action === 'leaderboard') {
                 const topPlayers = await EconomyManager.Economy.find({ guildId: message.guild.id })
-                    .sort({ completedHeists: -1 })
+                    .sort({ completedRaids: -1 })
                     .limit(15);
                     
                 if (topPlayers.length === 0) {
@@ -283,7 +283,7 @@ module.exports = {
 
                     noDataContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 🏆 No Heist Data\n## CRIMINAL UNDERWORLD AWAITS\n\n> No one has completed any heists yet! Be the first to establish your criminal empire.\n> The leaderboard will track the most successful criminal masterminds.`)
+                            .setContent(`# 🏆 No Raid Data\n## THE AGE OF HEROES AWAITS\n\n> No one has completed any raids yet! Be the first to become a legendary adventurer.\n> The leaderboard will track the most successful adventurers.`)
                     );
 
                     components.push(noDataContainer);
@@ -302,7 +302,7 @@ module.exports = {
 
                 leaderboardHeaderContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏆 Criminal Masterminds Leaderboard\n## TOP HEIST OPERATIVES\n\n> These are the most successful criminals in **${message.guild.name}**.\n> Their skills, success rates, and completed operations set the standard for the underworld.`)
+                        .setContent(`# 🏆 Legendary Adventurers Leaderboard\n## TOP RAIDERS\n\n> These are the most successful adventurers in **${message.guild.name}**.\n> Their skills, success rates, and completed raids set the standard for all adventurers.`)
                 );
 
                 components.push(leaderboardHeaderContainer);
@@ -315,20 +315,20 @@ module.exports = {
 
                 podiumContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 🥇 **TOP 3 CRIMINAL MASTERMINDS**')
+                        .setContent('## 🥇 **TOP 3 LEGENDARY ADVENTURERS**')
                 );
 
                 const topThree = topPlayers.slice(0, 3);
                 topThree.forEach((player, index) => {
                     const user = message.guild.members.cache.get(player.userId);
-                    const username = user ? user.displayName : 'Unknown Criminal';
+                    const username = user ? user.displayName : 'Unknown Adventurer';
                     const medal = ['🥇', '🥈', '🥉'][index];
-                    const successRate = player.completedHeists > 0 ? 
-                        Math.floor((player.completedHeists / (player.completedHeists + player.failedHeists)) * 100) : 0;
+                    const successRate = player.completedRaids > 0 ? 
+                        Math.floor((player.completedRaids / (player.failedRaids + player.completedRaids)) * 100) : 0;
 
                     podiumContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`${medal} **${username}**\n> **Completed:** \`${player.completedHeists}\` • **Success Rate:** \`${successRate}%\`\n> **Skill:** \`${player.heistSkill}%\` • **Heat:** \`${player.heatLevel}%\``)
+                            .setContent(`${medal} **${username}**\n> **Completed:** \`${player.completedRaids}\` • **Success Rate:** \`${successRate}%\`\n> **Skill:** \`${player.raidSkill}%\` • **Threat:** \`${player.threatLevel}%\``)
                     );
                 });
 
@@ -357,11 +357,11 @@ module.exports = {
                         const rankingText = group.map((player, index) => {
                             const actualRank = 4 + (groupIndex * 6) + index;
                             const user = message.guild.members.cache.get(player.userId);
-                            const username = user ? user.displayName : 'Unknown Criminal';
-                            const successRate = player.completedHeists > 0 ? 
-                                Math.floor((player.completedHeists / (player.completedHeists + player.failedHeists)) * 100) : 0;
+                            const username = user ? user.displayName : 'Unknown Adventurer';
+                            const successRate = player.completedRaids > 0 ? 
+                                Math.floor((player.completedRaids / (player.failedRaids + player.completedRaids)) * 100) : 0;
 
-                            return `**${actualRank}.** ${username}\n> **Heists:** \`${player.completedHeists}\` • **Rate:** \`${successRate}%\` • **Skill:** \`${player.heistSkill}%\``;
+                            return `**${actualRank}.** ${username}\n> **Raids:** \`${player.completedRaids}\` • **Rate:** \`${successRate}%\` • **Skill:** \`${player.raidSkill}%\``;
                         }).join('\n\n');
 
                         rankingContainer.addTextDisplayComponents(
@@ -391,7 +391,7 @@ module.exports = {
 
             invalidContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ❌ Invalid Heist Action\n## UNKNOWN COMMAND\n\n> **\`${action}\`** is not a valid heist action!\n> Choose from the available options below.`)
+                    .setContent(`# ❌ Invalid Raid Action\n## UNKNOWN COMMAND\n\n> **\`${action}\`** is not a valid raid action!\n> Choose from the available options below.`)
             );
 
             components.push(invalidContainer);
@@ -403,7 +403,7 @@ module.exports = {
 
             optionsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🎯 **AVAILABLE HEIST COMMANDS**\n\n**\`!heist\`** or **\`!heist status\`** - View your active heists\n**\`!heist history\`** - See your completed heist record\n**\`!heist leaderboard\`** - Check top criminal masterminds\n\n**Additional Commands:**\n> • \`!planheist\` - Plan a new heist operation\n> • \`!joinheist <id> <role>\` - Join an existing heist crew`)
+                    .setContent(`## ⚔️ **AVAILABLE RAID COMMANDS**\n\n**\`!raid\`** or **\`!raid status\`** - View your active raids\n**\`!raid history\`** - See your completed raid history\n**\`!raid leaderboard\`** - Check top adventurers\n\n**Additional Commands:**\n> • \`!planraid\` - Plan a new raid expedition\n> • \`!joinraid <id> <class>\` - Join an existing raid party`)
             );
 
             components.push(optionsContainer);
@@ -414,7 +414,7 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('Error in heist command:', error);
+            console.error('Error in raid command:', error);
 
        
             const errorContainer = new ContainerBuilder()
@@ -422,7 +422,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **HEIST SYSTEM ERROR**\n\nSomething went wrong while accessing heist information. Please try again in a moment.')
+                    .setContent('## ❌ **RAID SYSTEM ERROR**\n\nSomething went wrong while accessing raid information. Please try again in a moment.')
             );
 
             return message.reply({

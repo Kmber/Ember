@@ -129,26 +129,26 @@ const businessSchema = new mongoose.Schema({
     dateAcquired: { type: Date, default: Date.now }
 });
 
-// Heist Schema
-const heistSchema = new mongoose.Schema({
-    heistId: String,
+// Raid Schema
+const raidSchema = new mongoose.Schema({
+    raidId: String,
     plannerUserId: String,
-    targetType: {
+    dungeonType: {
         type: String,
-        enum: ['central_bank', 'casino_vault', 'mansion_safe', 'jewelry_store', 'armored_truck']
+        enum: ['goblin_cave', 'sunken_crypt', 'cursed_citadel', 'shadowfen_lair', 'dragons_peak']
     },
-    targetName: String,
+    dungeonName: String,
     difficulty: { type: Number, min: 1, max: 5 },
     requiredMembers: { type: Number, min: 3, max: 6 },
     members: [{
         userId: String,
         username: String,
-        role: {
+        class: {
             type: String,
-            enum: ['mastermind', 'hacker', 'driver', 'muscle', 'lookout', 'safecracker']
+            enum: ['warrior', 'mage', 'thief', 'cleric', 'paladin', 'ranger', 'dragon_slayer', 'archmage', 'master_thief', 'high_cleric']
         },
         confirmed: { type: Boolean, default: false },
-        equipment: [String]
+        gear: [String]
     }],
     plannedDate: Date,
     executionDate: Date,
@@ -157,25 +157,25 @@ const heistSchema = new mongoose.Schema({
         enum: ['planning', 'recruiting', 'ready', 'in_progress', 'completed', 'failed', 'cancelled'],
         default: 'planning'
     },
-    potential_payout: Number, 
-    actual_payout: Number, 
+    potential_reward: Number, 
+    actual_reward: Number, 
     success_chance: { type: Number, default: 0 }, 
-    heat_level: { type: Number, default: 0 }, 
+    threat_level: { type: Number, default: 0 }, 
     preparation_time: { type: Number, default: 0 }, 
-    equipment_cost: { type: Number, default: 0 }, 
+    gear_cost: { type: Number, default: 0 }, 
     createdAt: { type: Date, default: Date.now }
 });
 
-const heistCollectionSchema = new mongoose.Schema({
-    heistId: { type: String, required: true, unique: true },
+const raidCollectionSchema = new mongoose.Schema({
+    raidId: { type: String, required: true, unique: true },
     guildId: { type: String, required: true },
-    ...heistSchema.obj
+    ...raidSchema.obj
 });
 
 const transactionSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['income', 'expense', 'transfer', 'investment', 'trade', 'racing', 'robbery', 'family_work', 'gambling', 'shop'],
+        enum: ['income', 'expense', 'transfer', 'investment', 'trade', 'racing', 'robbery', 'family_work', 'gambling', 'shop', 'raid'],
         required: true
     },
     amount: { type: Number, required: true },
@@ -325,13 +325,13 @@ const economySchema = new mongoose.Schema({
     maxBusinesses: { type: Number, default: 1 },
     businessSkill: { type: Number, default: 0, max: 100 },
     
-    // Heist System
-    activeHeists: [String],
-    completedHeists: { type: Number, default: 0 },
-    failedHeists: { type: Number, default: 0 },
-    heistSkill: { type: Number, default: 0, max: 100 },
-    heatLevel: { type: Number, default: 0, max: 100 },
-    jailTime: Date,
+    // Dungeon Raid System
+    activeRaids: [String],
+    completedRaids: { type: Number, default: 0 },
+    failedRaids: { type: Number, default: 0 },
+    raidSkill: { type: Number, default: 0, max: 100 },
+    threatLevel: { type: Number, default: 0, max: 100 },
+    recoveryTime: Date,
     
     // SLAYING SYSTEM
     slayingMounts: [slayingMountSchema],
@@ -413,7 +413,7 @@ const economySchema = new mongoose.Schema({
         gambling: Date,
         shop: Date,
         business: Date,
-        heist: Date,
+        raid: Date,
         slay: Date
     },
     
@@ -438,5 +438,5 @@ economySchema.pre('save', function(next) {
 
 module.exports = {
     Economy: mongoose.model('Economy', economySchema),
-    Heist: mongoose.model('Heist', heistCollectionSchema)
+    Raid: mongoose.model('Raid', raidCollectionSchema)
 };

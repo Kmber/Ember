@@ -1,5 +1,5 @@
-const { Economy, Heist } = require('./schema');
-const { BUSINESS_TYPES, HEIST_TARGETS } = require('./constants/businessData');
+const { Economy, Raid } = require('./schema');
+const { BUSINESS_TYPES, RAID_DUNGEONS } = require('./constants/businessData');
 
 class EconomyManager {
     // ✅ FIXED: Atomic profile creation/retrieval
@@ -32,13 +32,13 @@ class EconomyManager {
                         businesses: [],
                         maxBusinesses: 1,
                         businessSkill: 0,
-                        // Heist System defaults
-                        activeHeists: [],
-                        completedHeists: 0,
-                        failedHeists: 0,
-                        heistSkill: 0,
-                        heatLevel: 0,
-                        jailTime: null,
+                        // Dungeon Raid System defaults
+                        activeRaids: [],
+                        completedRaids: 0,
+                        failedRaids: 0,
+                        raidSkill: 0,
+                        threatLevel: 0,
+                        recoveryTime: null,
                         // Role System defaults
                         purchasedRoles: [],
                         // Active Effects defaults
@@ -72,7 +72,7 @@ class EconomyManager {
                             gambling: null,
                             shop: null,
                             business: null,
-                            heist: null
+                            raid: null
                         },
                         dailyStreak: 0,
                         transactions: [],
@@ -139,7 +139,7 @@ class EconomyManager {
             gambling: 30 * 1000, // 30 seconds
             shop: 10 * 1000, // 10 seconds
             business: 24 * 60 * 60 * 1000, // 24 hours  
-            heist: 60 * 60 * 1000, // 1 hour
+            raid: 60 * 60 * 1000, // 1 hour
         };
 
         const lastUsed = profile.cooldowns[commandName];
@@ -325,118 +325,118 @@ static async collectBusinessIncome(userId, guildId) {
 }
 
 
-    // HEIST SYSTEM METHODS
-    static async calculateHeistSuccess(heist, members) {
-        const target = HEIST_TARGETS[heist.targetType];
-        let successChance = target.successChance;
+    // DUNGEON RAID SYSTEM METHODS
+    static async calculateRaidSuccess(raid, members) {
+        const dungeon = RAID_DUNGEONS[raid.dungeonType];
+        let successChance = dungeon.successChance;
 
         // Member skill bonuses
         for (let member of members) {
-            const profile = await this.getProfile(member.userId, heist.guildId);
-            const skillBonus = profile.heistSkill * 0.5; // Up to 50% bonus
+            const profile = await this.getProfile(member.userId, raid.guildId);
+            const skillBonus = profile.raidSkill * 0.5; // Up to 50% bonus
             successChance += skillBonus / members.length;
         }
 
-        // Equipment bonuses
-        const requiredEquipment = target.equipment;
-        const hasAllEquipment = requiredEquipment.every(item =>
-            heist.members.some(member => member.equipment.includes(item))
+        // Gear bonuses
+        const requiredGear = dungeon.gear;
+        const hasAllGear = requiredGear.every(item =>
+            raid.members.some(member => member.gear.includes(item))
         );
-        if (hasAllEquipment) successChance += 20;
+        if (hasAllGear) successChance += 20;
 
-        // Heat level penalties
-        const heatPenalty = heist.heat_level * 0.3;
-        successChance -= heatPenalty;
+        // Threat level penalties
+        const threatPenalty = raid.threat_level * 0.3;
+        successChance -= threatPenalty;
 
         // Preparation time bonus
-        if (heist.preparation_time >= target.planningTime) {
+        if (raid.preparation_time >= dungeon.planningTime) {
             successChance += 15;
         }
 
         return Math.max(5, Math.min(95, successChance)); // 5% to 95% range
     }
 
-    static async executeHeist(heistId) {
-        const heist = await Heist.findOne({ heistId });
-        const target = HEIST_TARGETS[heist.targetType];
+    static async executeRaid(raidId) {
+        const raid = await Raid.findOne({ raidId });
+        const dungeon = RAID_DUNGEONS[raid.dungeonType];
 
         // Get all member profiles
         const memberProfiles = await Promise.all(
-            heist.members.map(member => this.getProfile(member.userId, heist.guildId))
+            raid.members.map(member => this.getProfile(member.userId, raid.guildId))
         );
 
-        const successChance = await this.calculateHeistSuccess(heist, memberProfiles);
+        const successChance = await this.calculateRaidSuccess(raid, memberProfiles);
         const success = Math.random() * 100 < successChance;
 
         if (success) {
             // Calculate payout
-            const basePayout = Math.floor(Math.random() * (target.payout[1] - target.payout[0] + 1)) + target.payout[0];
-            const memberShare = Math.floor(basePayout / heist.members.length);
+            const baseReward = Math.floor(Math.random() * (dungeon.payout[1] - dungeon.payout[0] + 1)) + dungeon.payout[0];
+            const memberShare = Math.floor(baseReward / raid.members.length);
 
             // Distribute rewards
-            for (let i = 0; i < heist.members.length; i++) {
+            for (let i = 0; i < raid.members.length; i++) {
                 const profile = memberProfiles[i];
-                const member = heist.members[i];
+                const member = raid.members[i];
 
-                // Role bonuses
-                let roleBonus = 1.0;
-                if (member.role === 'mastermind') roleBonus = 1.5;
-                else if (member.role === 'hacker') roleBonus = 1.3;
-                else if (member.role === 'safecracker') roleBonus = 1.2;
+                // Class bonuses
+                let classBonus = 1.0;
+                if (member.class === 'master_thief') classBonus = 1.5;
+                else if (member.class === 'archmage') classBonus = 1.3;
+                else if (member.class === 'dragon_slayer') classBonus = 1.2;
 
-                const finalPayout = Math.floor(memberShare * roleBonus);
+                const finalReward = Math.floor(memberShare * classBonus);
 
-                profile.wallet += finalPayout;
-                profile.completedHeists += 1;
-                profile.heistSkill = Math.min(100, profile.heistSkill + 10);
+                profile.wallet += finalReward;
+                profile.completedRaids += 1;
+                profile.raidSkill = Math.min(100, profile.raidSkill + 10);
                 profile.experience += 100;
-                profile.heatLevel = Math.min(100, profile.heatLevel + target.difficulty * 10);
+                profile.threatLevel = Math.min(100, profile.threatLevel + dungeon.difficulty * 10);
 
                 profile.transactions.push({
                     type: 'income',
-                    amount: finalPayout,
-                    description: `Heist: ${target.name}`,
-                    category: 'heist'
+                    amount: finalReward,
+                    description: `Raid: ${dungeon.name}`,
+                    category: 'raid'
                 });
 
                 await profile.save();
             }
 
-            heist.status = 'completed';
-            heist.actual_payout = basePayout;
-            heist.executionDate = new Date();
+            raid.status = 'completed';
+            raid.actual_reward = baseReward;
+            raid.executionDate = new Date();
 
         } else {
             // Failure consequences
-            for (let i = 0; i < heist.members.length; i++) {
+            for (let i = 0; i < raid.members.length; i++) {
                 const profile = memberProfiles[i];
 
-                // Jail time based on target difficulty
-                const jailHours = target.difficulty * 6; // 6-30 hours
-                profile.jailTime = new Date(Date.now() + jailHours * 60 * 60 * 1000);
+                // Recovery time based on dungeon difficulty
+                const recoveryHours = dungeon.difficulty * 6; // 6-30 hours
+                profile.recoveryTime = new Date(Date.now() + recoveryHours * 60 * 60 * 1000);
 
-                // Fine and heat
+                // Fine and threat
                 const fine = Math.floor(profile.wallet * 0.2); // 20% fine
                 profile.wallet = Math.max(0, profile.wallet - fine);
-                profile.failedHeists += 1;
-                profile.heatLevel = Math.min(100, profile.heatLevel + target.difficulty * 15);
+                profile.failedRaids += 1;
+                profile.threatLevel = Math.min(100, profile.threatLevel + dungeon.difficulty * 15);
 
                 profile.transactions.push({
                     type: 'expense',
                     amount: fine,
-                    description: `Heist failure fine: ${target.name}`,
-                    category: 'heist'
+                    description: `Raid failure penalty: ${dungeon.name}`,
+                    category: 'raid'
                 });
 
                 await profile.save();
             }
 
-            heist.status = 'failed';
-            heist.executionDate = new Date();
+            raid.status = 'failed';
+            raid.executionDate = new Date();
         }
 
-        await heist.save();
-        return { success, heist, memberProfiles };
+        await raid.save();
+        return { success, raid, memberProfiles };
     }
 
     // Calculate work multiplier (FIXED: Requires house for family bonus)
@@ -540,4 +540,4 @@ static async collectBusinessIncome(userId, guildId) {
     }
 }
 
-module.exports = { Economy, Heist, EconomyManager };
+module.exports = { Economy, Raid, EconomyManager };

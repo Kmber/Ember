@@ -98,80 +98,83 @@ const BUSINESS_TYPES = {
     }
 };
 
-const HEIST_TARGETS = {
-    'central_bank': {
-        name: 'Central Bank',
-        difficulty: 5,
-        requiredMembers: 4,
-        minHeatLevel: 80,
-        payout: [2000000, 5000000],
-        successChance: 15,
-        planningTime: 72, // hours
-        requiredRoles: ['mastermind', 'hacker', 'safecracker', 'driver', 'muscle', 'lookout'],
-        equipment: ['thermal_lance', 'emp_device', 'getaway_cars', 'explosives', 'hacking_tools'],
-        description: 'The ultimate heist - Fort Knox level security'
+const RAID_DUNGEONS = {
+    'goblin_cave': {
+        name: 'Goblin Cave',
+        difficulty: 1,
+        requiredMembers: 3,
+        minThreatLevel: 0,
+        payout: [50000, 150000],
+        successChance: 75,
+        planningTime: 6, // hours
+        requiredClasses: ['warrior', 'thief', 'healer'],
+        gear: ['basic_weapons', 'adventurers_kit'],
+        description: 'Clear out a nearby cave infested with goblins.'
     },
-    'casino_vault': {
-        name: 'Casino Vault',
-        difficulty: 4,
-        requiredMembers: 4,
-        minHeatLevel: 60,
-        payout: [800000, 2000000],
-        successChance: 25,
-        planningTime: 48,
-        requiredRoles: ['mastermind', 'hacker', 'safecracker', 'driver', 'muscle'],
-        equipment: ['keycard_cloner', 'getaway_cars', 'masks', 'weapons'],
-        description: 'Ocean\'s Eleven style casino heist'
-    },
-    'mansion_safe': {
-        name: 'Billionaire Mansion',
-        difficulty: 3,
-        requiredMembers: 4,
-        minHeatLevel: 40,
-        payout: [300000, 800000],
-        successChance: 40,
-        planningTime: 24,
-        requiredRoles: ['mastermind', 'hacker', 'driver', 'muscle'],
-        equipment: ['lock_picks', 'getaway_cars', 'masks'],
-        description: 'Rob a wealthy player\'s mansion'
-    },
-    'jewelry_store': {
-        name: 'Diamond Exchange',
+    'sunken_crypt': {
+        name: 'The Sunken Crypt',
         difficulty: 2,
         requiredMembers: 3,
-        minHeatLevel: 20,
+        minThreatLevel: 20,
         payout: [100000, 400000],
         successChance: 60,
         planningTime: 12,
-        requiredRoles: ['mastermind', 'driver', 'muscle'],
-        equipment: ['glass_cutter', 'getaway_cars', 'masks'],
-        description: 'Quick smash and grab operation'
+        requiredClasses: ['warrior', 'cleric', 'mage'],
+        gear: ['silver_weapons', 'scroll_of_warding', 'adventurers_kit'],
+        description: 'Brave the undead horrors of a long-forgotten crypt.'
     },
-    'armored_truck': {
-        name: 'Armored Vehicle',
-        difficulty: 1,
-        requiredMembers: 3,
-        minHeatLevel: 0,
-        payout: [50000, 150000],
-        successChance: 75,
-        planningTime: 6,
-        requiredRoles: ['mastermind', 'driver', 'muscle'],
-        equipment: ['weapons', 'getaway_cars'],
-        description: 'Intercept money transport'
+    'cursed_citadel': {
+        name: 'Cursed Citadel',
+        difficulty: 3,
+        requiredMembers: 4,
+        minThreatLevel: 40,
+        payout: [300000, 800000],
+        successChance: 40,
+        planningTime: 24,
+        requiredClasses: ['paladin', 'mage', 'thief', 'ranger'],
+        gear: ['enchanted_weapons', 'shadow_veil_cloak', 'scroll_of_unlocking'],
+        description: 'Break the curse on a citadel haunted by powerful spirits.'
+    },
+    'shadowfen_lair': {
+        name: 'Shadowfen Lair',
+        difficulty: 4,
+        requiredMembers: 4,
+        minThreatLevel: 60,
+        payout: [800000, 2000000],
+        successChance: 25,
+        planningTime: 48,
+        requiredClasses: ['paladin', 'mage', 'ranger', 'cleric'],
+        gear: ['masterwork_gear', 'potion_of_shadow_resistance', 'dragonfire_potion'],
+        description: 'Venture into a swamp to slay a hydra.'
+    },
+    'dragons_peak': {
+        name: "Dragon's Peak",
+        difficulty: 5,
+        requiredMembers: 4,
+        minThreatLevel: 80,
+        payout: [2000000, 5000000],
+        successChance: 15,
+        planningTime: 72, // hours
+        requiredClasses: ['dragon_slayer', 'archmage', 'master_thief', 'high_cleric'],
+        gear: ['dragonscale_shield', 'legendary_weapon', 'potion_of_fire_breath'],
+        description: 'Ascend to the highest peak and face an ancient dragon.'
     }
 };
 
-const HEIST_EQUIPMENT = {
-    'thermal_lance': { name: 'Thermal Lance', cost: 50000, description: 'Cuts through vault doors' },
-    'emp_device': { name: 'EMP Device', cost: 75000, description: 'Disables electronic security' },
-    'hacking_tools': { name: 'Hacking Equipment', cost: 25000, description: 'Bypass computer systems' },
-    'explosives': { name: 'C4 Explosives', cost: 40000, description: 'Blast through obstacles' },
-    'getaway_cars': { name: 'Getaway Vehicles', cost: 30000, description: 'Fast escape vehicles' },
-    'keycard_cloner': { name: 'Keycard Cloner', cost: 15000, description: 'Copy access cards' },
-    'lock_picks': { name: 'Lock Pick Set', cost: 5000, description: 'Silent entry tools' },
-    'glass_cutter': { name: 'Glass Cutter', cost: 3000, description: 'Cut display cases' },
-    'masks': { name: 'Disguise Masks', cost: 2000, description: 'Hide identities' },
-    'weapons': { name: 'Weapons Cache', cost: 20000, description: 'Intimidation and protection' }
+const RAID_GEAR = {
+    'adventurers_kit': { name: "Adventurer's Kit", cost: 2000, description: 'Basic supplies: ropes, torches, rations.' },
+    'basic_weapons': { name: 'Basic Weapons', cost: 5000, description: 'A simple sword or bow.' },
+    'silver_weapons': { name: 'Silver Weapons', cost: 15000, description: 'Effective against undead creatures.' },
+    'scroll_of_warding': { name: 'Scroll of Warding', cost: 20000, description: 'Protects the party from minor curses.' },
+    'enchanted_weapons': { name: 'Enchanted Weapons', cost: 40000, description: 'Weapons imbued with magical properties.' },
+    'shadow_veil_cloak': { name: 'Shadow Veil Cloak', cost: 30000, description: 'Provides concealment in shadows.' },
+    'scroll_of_unlocking': { name: 'Scroll of Unlocking', cost: 25000, description: 'Magically bypasses locks and wards.' },
+    'masterwork_gear': { name: 'Masterwork Gear', cost: 75000, description: 'Expertly crafted armor and weapons.' },
+    'potion_of_shadow_resistance': { name: 'Potion of Shadow Resistance', cost: 50000, description: 'Grants resistance to dark magic.' },
+    'dragonfire_potion': { name: 'Dragonfire Potion', cost: 100000, description: 'A volatile potion that mimics dragon fire.' },
+    'dragonscale_shield': { name: 'Dragonscale Shield', cost: 250000, description: 'Extremely resistant to fire and physical attacks.' },
+    'legendary_weapon': { name: 'Legendary Weapon', cost: 500000, description: 'A weapon of immense power.' },
+    'potion_of_fire_breath': { name: 'Potion of Fire Breath', cost: 150000, description: 'Temporarily grants the ability to breathe fire.' }
 };
 
-module.exports = { BUSINESS_TYPES, HEIST_TARGETS, HEIST_EQUIPMENT };
+module.exports = { BUSINESS_TYPES, RAID_DUNGEONS, RAID_GEAR };

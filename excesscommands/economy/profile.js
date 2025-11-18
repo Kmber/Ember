@@ -6,7 +6,7 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
-const { BUSINESS_TYPES, HEIST_TARGETS } = require('../../models/economy/constants/businessData');
+const { BUSINESS_TYPES, RAID_DUNGEONS } = require('../../models/economy/constants/businessData');
 
 module.exports = {
     name: 'profile',
@@ -129,7 +129,7 @@ module.exports = {
 
                 businessContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏢 Active Businesses:** \`${profile.businesses.length}/${profile.maxBusinesses}\`\n**📊 Business Skill:** \`${profile.businessSkill}%\`\n**💰 Total Investment:** \`$${totalBusinessValue.toLocaleString()}\`\n**📈 Total Profit:** \`$${totalProfit.toLocaleString()}\``)
+                        .setContent(`**🏢 Active Businesses:** \`${profile.businesses.length}/${profile.maxBusinesses}\`\n**📊 Business Skill:** \`${profile.businessSkill}%\`\n**💰 Total Investment:** \`$${totalBusinessValue.toLocaleString()}\`\n**📈 Total Profit:** \`${totalProfit.toLocaleString()}\``)
                 );
 
             
@@ -159,50 +159,50 @@ module.exports = {
             }
 
          
-            if (profile.completedHeists > 0 || profile.failedHeists > 0 || profile.activeHeists.length > 0) {
+            if (profile.completedRaids > 0 || profile.failedRaids > 0 || profile.activeRaids.length > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                const heistContainer = new ContainerBuilder()
+                const raidContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
-                heistContainer.addTextDisplayComponents(
+                raidContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 💰 **HEIST OPERATIONS**')
+                        .setContent('## ⚔️ **RAID EXPEDITIONS**')
                 );
 
               
-                const totalHeists = profile.completedHeists + profile.failedHeists;
-                const heistSuccessRate = totalHeists > 0 ? 
-                    ((profile.completedHeists / totalHeists) * 100).toFixed(1) : '0.0';
+                const totalRaids = profile.completedRaids + profile.failedRaids;
+                const raidSuccessRate = totalRaids > 0 ? 
+                    ((profile.completedRaids / totalRaids) * 100).toFixed(1) : '0.0';
 
-                heistContainer.addTextDisplayComponents(
+                raidContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 Total Heists:** \`${totalHeists}\`\n**✅ Successful Heists:** \`${profile.completedHeists}\`\n**❌ Failed Heists:** \`${profile.failedHeists}\`\n**📊 Success Rate:** \`${heistSuccessRate}%\``)
+                        .setContent(`**🎯 Total Raids:** \`${totalRaids}\`\n**✅ Successful Raids:** \`${profile.completedRaids}\`\n**❌ Failed Raids:** \`${profile.failedRaids}\`\n**📊 Success Rate:** \`${raidSuccessRate}%\``)
                 );
 
-                heistContainer.addTextDisplayComponents(
+                raidContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🔓 Heist Skill:** \`${profile.heistSkill}%\`\n**🔥 Heat Level:** \`${profile.heatLevel}%\`\n**🚨 Active Heists:** \`${profile.activeHeists.length}\`\n**⏰ Jail Status:** \`${profile.jailTime && profile.jailTime > new Date() ? 'In Jail' : 'Free'}\``)
+                        .setContent(`**⚔️ Raid Skill:** \`${profile.raidSkill}%\`\n**🔥 Threat Level:** \`${profile.threatLevel}%\`\n**🛡️ Active Raids:** \`${profile.activeRaids.length}\`\n**⏳ Recovery Status:** \`${profile.recoveryTime && profile.recoveryTime > new Date() ? 'Recovering' : 'Ready'}\``)
                 );
 
               
-                if (profile.jailTime && profile.jailTime > new Date()) {
-                    const jailTimeLeft = Math.ceil((profile.jailTime - new Date()) / (60 * 60 * 1000));
-                    heistContainer.addTextDisplayComponents(
+                if (profile.recoveryTime && profile.recoveryTime > new Date()) {
+                    const recoveryTimeLeft = Math.ceil((profile.recoveryTime - new Date()) / (60 * 60 * 1000));
+                    raidContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🔒 CURRENTLY IN JAIL**\n\n> **Time Remaining:** \`${jailTimeLeft} hours\`\n> **Release Date:** \`${new Date(profile.jailTime).toLocaleString()}\``)
+                            .setContent(`**⏳ CURRENTLY RECOVERING**\n\n> **Time Remaining:** \`${recoveryTimeLeft} hours\`\n> **Ready Date:** \`${new Date(profile.recoveryTime).toLocaleString()}\``)
                     );
                 }
 
               
-                if (profile.activeHeists.length > 0) {
-                    heistContainer.addTextDisplayComponents(
+                if (profile.activeRaids.length > 0) {
+                    raidContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🎯 ACTIVE HEIST OPERATIONS**\n\n> You are currently involved in \`${profile.activeHeists.length}\` active heist(s)\n> Use \`!heist status\` for detailed information`)
+                            .setContent(`**🎯 ACTIVE RAID EXPEDITIONS**\n\n> You are currently involved in \`${profile.activeRaids.length}\` active raid(s)\n> Use \`!raid status\` for detailed information`)
                     );
                 }
 
-                components.push(heistContainer);
+                components.push(raidContainer);
             }
 
           

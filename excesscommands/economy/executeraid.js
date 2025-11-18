@@ -5,14 +5,14 @@ const {
     SeparatorSpacingSize,
     MessageFlags
 } = require('discord.js');
-const { EconomyManager, Heist } = require('../../models/economy/economy');
-const { HEIST_TARGETS } = require('../../models/economy/constants/businessData');
+const { EconomyManager, Raid } = require('../../models/economy/economy');
+const { RAID_DUNGEONS } = require('../../models/economy/constants/businessData');
 
 module.exports = {
-    name: 'executeheist',
-    aliases: ['heist-execute', 'startheist'],
-    description: 'Execute a planned heist with v2 components',
-    usage: '!executeheist <heist_id>',
+    name: 'executeraid',
+    aliases: ['raid-execute', 'startraid'],
+    description: 'Execute a planned raid with v2 components',
+    usage: '!executeraid <raid_id>',
     async execute(message, args) {
         try {
             if (!args[0]) {
@@ -23,7 +23,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚨 Execute Heist Operation\n## MISSING HEIST IDENTIFIER\n\n> Please specify the heist ID to begin the operation!\n> **Usage:** \`!executeheist <heist_id>\``)
+                        .setContent(`# ⚔️ Execute Raid Expedition\n## MISSING RAID IDENTIFIER\n\n> Please specify the raid ID to begin the expedition!\n> **Usage:** \`!executeraid <raid_id>\``)
                 );
 
                 components.push(usageContainer);
@@ -35,7 +35,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎯 **EXECUTION REQUIREMENTS**\n\n**🆔 Heist ID:** Find this in your active heists (\`!heist\`)\n**👑 Authority:** Only the heist planner can execute\n**👥 Team Status:** All crew members must be recruited\n**⏰ Timing:** Execute when the crew is ready\n\n**Example:** \`!executeheist ABC123\`\n\n**⚠️ Warning:** Once executed, there's no turning back!`)
+                        .setContent(`## ⚔️ **EXECUTION REQUIREMENTS**\n\n**🆔 Raid ID:** Find this in your active raids (\`!raid\`)\n**👑 Authority:** Only the raid planner can execute\n**👥 Party Status:** All party members must be recruited\n**⏰ Timing:** Execute when the party is ready\n\n**Example:** \`!executeraid ABC123\`\n\n**⚠️ Warning:** Once executed, there\'s no turning back! `)
                 );
 
                 components.push(instructionsContainer);
@@ -46,10 +46,10 @@ module.exports = {
                 });
             }
             
-            const heistId = args[0];
-            const heist = await Heist.findOne({ heistId, guildId: message.guild.id });
+            const raidId = args[0];
+            const raid = await Raid.findOne({ raidId, guildId: message.guild.id });
             
-            if (!heist) {
+            if (!raid) {
                 const components = [];
 
                 const notFoundContainer = new ContainerBuilder()
@@ -57,7 +57,7 @@ module.exports = {
 
                 notFoundContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Heist Operation Not Found\n## INVALID OPERATION ID\n\n> Heist ID **\`${heistId}\`** doesn't exist or has been completed!\n> Verify the heist identifier and try again.`)
+                        .setContent(`# 🚫 Raid Expedition Not Found\n## INVALID EXPEDITION ID\n\n> Raid ID **\`${raidId}\`** doesn\'t exist or has been completed!\n> Verify the raid identifier and try again.`)
                 );
 
                 components.push(notFoundContainer);
@@ -69,7 +69,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🔍 **FIND YOUR ACTIVE HEISTS**\n\n**Check Status:** Use \`!heist\` to see your active operations\n**Verify ID:** Copy the exact heist ID from your active list\n**Case Sensitive:** Heist IDs must match exactly\n\n**💡 Alternatives:**\n> • Check if the heist has already been executed\n> • Verify you're in the correct server\n> • Plan a new heist with \`!planheist\``)
+                        .setContent(`## 🔍 **FIND YOUR ACTIVE RAIDS**\n\n**Check Status:** Use \`!raid\` to see your active expeditions\n**Verify ID:** Copy the exact raid ID from your active list\n**Case Sensitive:** Raid IDs must match exactly\n\n**💡 Alternatives:**\n> • Check if the raid has already been executed\n> • Verify you\'re in the correct server\n> • Plan a new raid with \`!planraid\``)
                 );
 
                 components.push(helpContainer);
@@ -80,18 +80,18 @@ module.exports = {
                 });
             }
             
-            if (heist.plannerUserId !== message.author.id) {
+            if (raid.plannerUserId !== message.author.id) {
                 const components = [];
 
                 const unauthorizedContainer = new ContainerBuilder()
                     .setAccentColor(0xE74C3C);
 
-                const planner = message.guild.members.cache.get(heist.plannerUserId);
+                const planner = message.guild.members.cache.get(raid.plannerUserId);
                 const plannerName = planner ? planner.displayName : 'Unknown';
 
                 unauthorizedContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Unauthorized Execution\n## INSUFFICIENT AUTHORITY\n\n> Only the heist planner can execute this operation!\n> **Heist Planner:** \`${plannerName}\`\n> **Your Role:** Crew member`)
+                        .setContent(`# 🚫 Unauthorized Execution\n## INSUFFICIENT AUTHORITY\n\n> Only the raid planner can execute this expedition!\n> **Raid Planner:** \`${plannerName}\`\n> **Your Role:** Party member`)
                 );
 
                 components.push(unauthorizedContainer);
@@ -103,7 +103,7 @@ module.exports = {
 
                 hierarchyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 👑 **HEIST HIERARCHY**\n\n**🎯 Target:** \`${heist.targetName}\`\n**👑 Mastermind:** \`${plannerName}\`\n**🎭 Your Role:** \`${heist.members.find(m => m.userId === message.author.id)?.role || 'Unknown'}\`\n\n**💡 Chain of Command:**\n> • Only the planner has execution authority\n> • Crew members await orders from the mastermind\n> • Contact the planner to request execution\n> • Trust the chain of command for success`)
+                        .setContent(`## 👑 **RAID HIERARCHY**\n\n**⚔️ Dungeon:** \`${raid.dungeonName}\`\n**👑 Leader:** \`${plannerName}\`\n**🛡️ Your Class:** \`${raid.members.find(m => m.userId === message.author.id)?.class || 'Unknown'}\`\n\n**💡 Chain of Command:**\n> • Only the planner has execution authority\n> • Party members await orders from the leader\n> • Contact the planner to request execution\n> • Trust the chain of command for success`)
                 );
 
                 components.push(hierarchyContainer);
@@ -114,7 +114,7 @@ module.exports = {
                 });
             }
             
-            if (heist.status !== 'ready') {
+            if (raid.status !== 'ready') {
                 const components = [];
 
                 const notReadyContainer = new ContainerBuilder()
@@ -122,7 +122,7 @@ module.exports = {
 
                 notReadyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⏳ Heist Not Ready for Execution\n## TEAM ASSEMBLY INCOMPLETE\n\n> The **${heist.targetName}** heist cannot be executed yet!\n> **Current Status:** \`${heist.status.toUpperCase()}\``)
+                        .setContent(`# ⏳ Raid Not Ready for Execution\n## PARTY ASSEMBLY INCOMPLETE\n\n> The **${raid.dungeonName}** raid cannot be executed yet!\n> **Current Status:** \`${raid.status.toUpperCase()}\``)
                 );
 
                 components.push(notReadyContainer);
@@ -132,9 +132,9 @@ module.exports = {
                 const requirementsContainer = new ContainerBuilder()
                     .setAccentColor(0x3498DB);
 
-                const targetData = HEIST_TARGETS[heist.targetType];
-                const currentMemberRoles = heist.members.map(m => m.role);
-                const missingRoles = targetData.requiredRoles.filter(role => !currentMemberRoles.includes(role));
+                const dungeonData = RAID_DUNGEONS[raid.dungeonType];
+                const currentMemberClasses = raid.members.map(m => m.class);
+                const missingClasses = dungeonData.requiredClasses.filter(role => !currentMemberClasses.includes(role));
 
                 requirementsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
@@ -143,18 +143,18 @@ module.exports = {
 
                 requirementsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**👥 Team Status:** \`${heist.members.length}/${heist.requiredMembers} members recruited\`\n**🎯 Target:** \`${heist.targetName}\`\n**📊 Required Team Size:** \`${heist.requiredMembers} specialists\``)
+                        .setContent(`**👥 Party Status:** \`${raid.members.length}/${raid.requiredMembers} members recruited\`\n**⚔️ Dungeon:** \`${raid.dungeonName}\`\n**📊 Required Party Size:** \`${raid.requiredMembers} adventurers\``)
                 );
 
-                if (missingRoles.length > 0) {
+                if (missingClasses.length > 0) {
                     requirementsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🔍 Missing Roles:** \`${missingRoles.join(', ')}\`\n\n**⚡ Next Steps:**\n> • Recruit specialists for missing roles\n> • Share the heist ID with potential crew members\n> • Use recruitment channels to find talent\n> • Wait for full team assembly before execution`)
+                            .setContent(`**🔍 Missing Classes:** \`${missingClasses.join(', ')}\`\n\n**⚡ Next Steps:**\n> • Recruit adventurers for missing classes\n> • Share the raid ID with potential party members\n> • Use recruitment channels to find talent\n> • Wait for full party assembly before execution`)
                     );
                 } else {
                     requirementsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**✅ All Roles Filled:** Crew complete!\n**⚠️ Status Issue:** Check heist coordination\n\n**💡 Troubleshooting:**\n> • Verify all members are confirmed\n> • Check if planning phase is complete\n> • Contact support if issues persist`)
+                            .setContent(`**✅ All Classes Filled:** Party complete!\n**⚠️ Status Issue:** Check raid coordination\n\n**💡 Troubleshooting:**\n> • Verify all members are confirmed\n> • Check if planning phase is complete\n> • Contact support if issues persist`)
                     );
                 }
 
@@ -166,7 +166,7 @@ module.exports = {
                 });
             }
             
-            const targetData = HEIST_TARGETS[heist.targetType];
+            const dungeonData = RAID_DUNGEONS[raid.dungeonType];
             
           
             const components = [];
@@ -176,7 +176,7 @@ module.exports = {
 
             executionContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🚨 HEIST EXECUTION INITIATED\n## ${heist.targetName.toUpperCase()} OPERATION\n\n> The heist operation is now beginning...\n> All crew members are moving into position...\n\n**⏳ PHASE 1:** Team deployment in progress...`)
+                    .setContent(`# ⚔️ RAID EXECUTION INITIATED\n## ${raid.dungeonName.toUpperCase()} EXPEDITION\n\n> The raid expedition is now beginning...\n> All party members are moving into position...\n\n**⏳ PHASE 1:** Party deployment in progress...`)
             );
 
             components.push(executionContainer);
@@ -195,7 +195,7 @@ module.exports = {
 
                 phase2Container.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚨 HEIST IN PROGRESS\n## ${heist.targetName.toUpperCase()} OPERATION\n\n> The operation is proceeding according to plan...\n\n**✅ PHASE 1:** Team successfully deployed\n**⏳ PHASE 2:** Bypassing security systems...\n**🔓 STATUS:** Hacking security protocols...`)
+                        .setContent(`# ⚔️ RAID IN PROGRESS\n## ${raid.dungeonName.toUpperCase()} EXPEDITION\n\n> The expedition is proceeding according to plan...\n\n**✅ PHASE 1:** Party successfully deployed\n**⏳ PHASE 2:** Navigating the dungeon...\n**⚔️ STATUS:** Encountering minions...`)
                 );
 
                 phase2Components.push(phase2Container);
@@ -215,7 +215,7 @@ module.exports = {
 
                 phase3Container.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚨 HEIST IN PROGRESS\n## ${heist.targetName.toUpperCase()} OPERATION\n\n> Critical phase - accessing primary target...\n\n**✅ PHASE 1:** Team deployed successfully\n**✅ PHASE 2:** Security systems bypassed\n**⏳ PHASE 3:** Accessing target vault...\n**🎯 STATUS:** Infiltration in progress...`)
+                        .setContent(`# ⚔️ RAID IN PROGRESS\n## ${raid.dungeonName.toUpperCase()} EXPEDITION\n\n> Critical phase - confronting the final boss...\n\n**✅ PHASE 1:** Party deployed successfully\n**✅ PHASE 2:** Minions defeated\n**⏳ PHASE 3:** Engaging the dungeon boss...\n**🎯 STATUS:** Final battle in progress...`)
                 );
 
                 phase3Components.push(phase3Container);
@@ -228,10 +228,10 @@ module.exports = {
             
             
             setTimeout(async () => {
-                heist.status = 'executing';
-                await heist.save();
+                raid.status = 'in_progress';
+                await raid.save();
                 
-                const result = await EconomyManager.executeHeist(heistId);
+                const result = await EconomyManager.executeRaid(raidId);
                 const resultComponents = [];
                 
                 if (result.success) {
@@ -241,7 +241,7 @@ module.exports = {
 
                     successContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 🎉 HEIST SUCCESSFUL!\n## ${result.heist.targetName.toUpperCase()} COMPLETELY COMPROMISED\n\n> **OPERATION COMPLETE:** Your crew has executed the perfect heist!\n> The target has been successfully infiltrated and the score secured!`)
+                            .setContent(`# 🎉 RAID SUCCESSFUL!\n## ${result.raid.dungeonName.toUpperCase()} COMPLETELY CONQUERED\n\n> **EXPEDITION COMPLETE:** Your party has executed the perfect raid!\n> The dungeon has been successfully cleared and the treasure secured!`)
                     );
 
                     resultComponents.push(successContainer);
@@ -257,31 +257,32 @@ module.exports = {
                             .setContent('## 💰 **FINANCIAL RESULTS**')
                     );
 
-                    const memberPayouts = result.heist.members.map(member => {
+                    const memberPayouts = result.raid.members.map(member => {
                         const profile = result.memberProfiles.find(p => p.userId === member.userId);
-                        const roleMultiplier = {
-                            mastermind: 1.5,
-                            hacker: 1.3,
-                            safecracker: 1.2,
-                            driver: 1.1,
-                            lookout: 1.0,
-                            muscle: 1.0
-                        }[member.role] || 1.0;
+                        const classMultiplier = {
+                            leader: 1.5,
+                            mage: 1.3,
+                            warrior: 1.2,
+                            ranger: 1.1,
+                            cleric: 1.0,
+                            paladin: 1.0,
+                            thief: 1.0
+                        }[member.class] || 1.0;
                         
-                        const basePayout = Math.floor(result.heist.actual_payout / result.heist.members.length);
-                        const finalPayout = Math.floor(basePayout * roleMultiplier);
+                        const basePayout = Math.floor(result.raid.actual_reward / result.raid.members.length);
+                        const finalPayout = Math.floor(basePayout * classMultiplier);
                         
-                        return `**${member.username}** (${member.role})\n> **Base Share:** \`$${basePayout.toLocaleString()}\`\n> **Role Bonus:** \`${((roleMultiplier - 1) * 100).toFixed(0)}%\`\n> **Final Payout:** \`$${finalPayout.toLocaleString()}\``;
+                        return `**${member.username}** (${member.class})\n> **Base Share:** \`$${basePayout.toLocaleString()}\`\n> **Class Bonus:** \`${((classMultiplier - 1) * 100).toFixed(0)}%\`\n> **Final Reward:** \`$${finalPayout.toLocaleString()}\``;
                     }).join('\n\n');
 
                     financialContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🏆 Total Heist Score:** \`$${result.heist.actual_payout.toLocaleString()}\`\n**📊 Success Probability:** \`${Math.floor(await EconomyManager.calculateHeistSuccess(result.heist, result.memberProfiles))}%\`\n**👥 Crew Size:** \`${result.heist.members.length} specialists\``)
+                            .setContent(`**🏆 Total Raid Treasure:** \`$${result.raid.actual_reward.toLocaleString()}\`\n**📊 Success Probability:** \`${Math.floor(await EconomyManager.calculateRaidSuccess(result.raid, result.memberProfiles))}%\`\n**👥 Party Size:** \`${result.raid.members.length} adventurers\``)
                     );
 
                     financialContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**💎 CREW PAYOUTS:**\n\n${memberPayouts}`)
+                            .setContent(`**💎 PARTY REWARDS:**\n\n${memberPayouts}`)
                     );
 
                     resultComponents.push(financialContainer);
@@ -294,7 +295,7 @@ module.exports = {
 
                     consequencesContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## ⚠️ **OPERATION CONSEQUENCES**\n\n**🔥 Heat Level Impact:** All crew members' heat levels have increased\n**🚔 Law Enforcement:** Heightened police awareness in the area\n**⏰ Laying Low:** Recommended to avoid high-profile activities\n**📈 Criminal Reputation:** Your crew's notoriety has grown\n\n**💡 Strategic Advice:** Use your earnings wisely and plan your next moves carefully!`)
+                            .setContent(`## ⚠️ **EXPEDITION CONSEQUENCES**\n\n**🔥 Threat Level Impact:** All party members\' threat levels have increased\n**🏰 Realm Security:** Heightened monster activity in the area\n**⏰ Laying Low:** Recommended to avoid high-threat dungeons\n**📈 Adventurer Reputation:** Your party\'s notoriety has grown\n\n**💡 Strategic Advice:** Use your earnings wisely and plan your next adventures carefully!`)
                     );
 
                     resultComponents.push(consequencesContainer);
@@ -306,7 +307,7 @@ module.exports = {
 
                     failureContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 🚨 HEIST FAILED!\n## ${result.heist.targetName.toUpperCase()} OPERATION COMPROMISED\n\n> **OPERATION FAILED:** Your crew has been caught!\n> Law enforcement responded faster than anticipated and your team was apprehended!`)
+                            .setContent(`# 🚨 RAID FAILED!\n## ${result.raid.dungeonName.toUpperCase()} EXPEDITION COMPROMISED\n\n> **EXPEDITION FAILED:** Your party has been defeated!\n> The dungeon\'s monsters proved too powerful and your party was overwhelmed!`)
                     );
 
                     resultComponents.push(failureContainer);
@@ -319,25 +320,25 @@ module.exports = {
 
                     penaltiesContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent('## ⚖️ **LEGAL CONSEQUENCES**')
+                            .setContent('## 🤕 **ADVENTURER PENALTIES**')
                     );
 
-                    const memberPenalties = result.heist.members.map(member => {
+                    const memberPenalties = result.raid.members.map(member => {
                         const profile = result.memberProfiles.find(p => p.userId === member.userId);
-                        const jailHours = targetData.difficulty * 6;
+                        const recoveryHours = dungeonData.difficulty * 6;
                         const fine = Math.floor(profile.wallet * 0.2);
                         
-                        return `**${member.username}** (${member.role})\n> **Jail Time:** \`${jailHours} hours\`\n> **Fine:** \`$${fine.toLocaleString()}\`\n> **Status:** Incarcerated`;
+                        return `**${member.username}** (${member.class})\n> **Recovery Time:** \`${recoveryHours} hours\`\n> **Penalty:** \`$${fine.toLocaleString()}\`\n> **Status:** Recovering`;
                     }).join('\n\n');
 
                     penaltiesContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**💸 Total Financial Loss:** No payout - all funds confiscated\n**⏰ Average Jail Time:** \`${targetData.difficulty * 6} hours\`\n**📊 Failure Probability:** \`${100 - Math.floor(await EconomyManager.calculateHeistSuccess(result.heist, result.memberProfiles))}%\``)
+                            .setContent(`**💸 Total Financial Loss:** No reward - all supplies lost\n**⏰ Average Recovery Time:** \`${dungeonData.difficulty * 6} hours\`\n**📊 Failure Probability:** \`${100 - Math.floor(await EconomyManager.calculateRaidSuccess(result.raid, result.memberProfiles))}%\``)
                     );
 
                     penaltiesContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🚔 CREW PENALTIES:**\n\n${memberPenalties}`)
+                            .setContent(`**🤕 PARTY PENALTIES:**\n\n${memberPenalties}`)
                     );
 
                     resultComponents.push(penaltiesContainer);
@@ -350,7 +351,7 @@ module.exports = {
 
                     severeContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🚨 **SEVERE CONSEQUENCES**\n\n**🔥 Heat Levels:** Massively increased for all crew members\n**👮 FBI Watchlist:** Your crew is now under federal surveillance\n**🚫 Criminal Record:** Failure recorded in permanent criminal database\n**⏰ Recovery Time:** Extended period required before next major operation\n\n**💔 Learn From Failure:** Study what went wrong to improve future heist planning!`)
+                            .setContent(`## 🚨 **SEVERE CONSEQUENCES**\n\n**🔥 Threat Levels:** Massively increased for all party members\n**🏰 Monster Infestation:** The realm is now more dangerous\n**📜 Record of Failure:** Failure recorded in the adventurer\'s chronicle\n**⏰ Recovery Time:** Extended period required before next major expedition\n\n**💔 Learn From Failure:** Study what went wrong to improve future raid planning!`)
                     );
 
                     resultComponents.push(severeContainer);
@@ -362,16 +363,16 @@ module.exports = {
                 });
                 
              
-                for (const member of result.heist.members) {
-                    const profile = await EconomyManager.getProfile(member.userId, result.heist.guildId);
-                    profile.activeHeists = profile.activeHeists.filter(id => id !== heistId);
+                for (const member of result.raid.members) {
+                    const profile = await EconomyManager.getProfile(member.userId, result.raid.guildId);
+                    profile.activeRaids = profile.activeRaids.filter(id => id !== raidId);
                     await profile.save();
                 }
                 
             }, 9000);
 
         } catch (error) {
-            console.error('Error in executeheist command:', error);
+            console.error('Error in executeraid command:', error);
 
           
             const errorContainer = new ContainerBuilder()
@@ -379,7 +380,7 @@ module.exports = {
 
             errorContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## ❌ **HEIST EXECUTION ERROR**\n\nSomething went wrong during heist execution. The operation has been aborted for safety.')
+                    .setContent('## ❌ **RAID EXECUTION ERROR**\n\nSomething went wrong during raid execution. The expedition has been aborted for safety.')
             );
 
             return message.reply({
