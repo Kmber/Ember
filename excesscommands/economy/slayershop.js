@@ -7,7 +7,8 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { SlayingManager } = require('../../models/economy/slayingManager');
-const { ServerManager } = require('../../models/server/serverManager');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 const { 
     SLAYING_MOUNTS, 
     SLAYING_WEAPONS, 
@@ -20,13 +21,14 @@ const {
 
 module.exports = {
     name: 'slayershop',
-    aliases: ['slaystore', 'buygear'],
+    aliases: ['slaystore', 'buygear', 'sshop'],
     description: 'Buy slaying mounts, weapons, allies, vaults, potions, and oils',
     usage: 'slayershop [category] [item] OR !slayershop buy [item_id] [quantity] OR !slayershop enchant/fortify',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-            const prefix = await ServerManager.getPrefix(message.guild.id);
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             
             if (args[0] === 'enchant' && args[1] && args[2]) {
                 const weaponIndex = parseInt(args[1]) - 1;
@@ -236,7 +238,7 @@ module.exports = {
                 components.push(playerContainer);
 
             } else {
-                this.displayCategory(components, category, profile);
+                this.displayCategory(components, category, profile, prefix);
                 if (components.length === 0) {
                     return this.sendError(message, `Invalid category: \`${category}\`. Use \`${prefix}slayershop\` to see available categories.`);
                 }
@@ -253,12 +255,11 @@ module.exports = {
         }
     },
 
-    displayCategory(components, category, profile) {
+    displayCategory(components, category, profile, prefix) {
         let items = {};
         let categoryName = '';
         let categoryIcon = '';
         let accentColor = 0x3498DB;
-        const prefix = ServerManager.getPrefix(profile.guildId);
 
         switch(category) {
             case 'mounts':

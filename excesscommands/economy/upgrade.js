@@ -7,17 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { SlayingManager } = require('../../models/economy/slayingManager');
-const { ServerManager } = require('../../models/server/serverManager');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'upgrade',
     aliases: ['upg', 'improve', 'enhance'],
     description: 'Upgrade your slaying weapons and mounts',
-    usage: '!upgrade weapon <#> OR !upgrade mount <#>',
+    usage: 'upgrade weapon <#> OR upgrade mount <#>',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-            const prefix = await ServerManager.getPrefix(message.guild.id);
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
 
             if (!args[0] || !args[1]) {
                 const components = [];
@@ -222,7 +224,7 @@ module.exports = {
 
                     const improvementsText = `**📦 Capacity:** ${mount.capacity} items (+${result.improvements.capacity})\n**💨 Stamina:** ${mount.staminaCapacity} units (+${result.improvements.staminaCapacity})\n**🏞️ Haunted Lands Tier:** ${mount.hauntedLandsTier}/10 (+${result.improvements.hauntedLandsTier})`;
 
-                    upgradeContainer.addTextDisplayComponents(
+                    upgradeContainer.addTextDipartialisplayComponents(
                         new TextDisplayBuilder()
                             .setContent(improvementsText)
                     );

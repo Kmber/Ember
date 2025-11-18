@@ -7,17 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { SlayingManager } = require('../../models/economy/slayingManager');
-const { ServerManager } = require('../../models/server/serverManager');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'sell',
-    aliases: ['sellitem', 'sellslay', 'sellloot'],
+    aliases: ['sellitem', 'ssly', 'sellloot'],
     description: 'Sell slaying loot and items',
     usage: 'sell <item_id> OR !sell all <type> OR !sell confirm',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
-            const prefix = await ServerManager.getPrefix(message.guild.id);
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
 
             if (!args[0]) {
                 const components = [];
