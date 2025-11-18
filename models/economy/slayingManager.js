@@ -156,7 +156,7 @@ class SlayingManager {
         }
 
         if (mount.currentStamina < 5) {
-            throw new Error('Not enough stamina for quest! Need at least 5 stamina.');
+            throw new Error('Not enough stamina for quest! Your mount needs at least 5 stamina. Purchase stamina potions from the !slayershop to replenish.');
         }
         if (weapon.currentMana < 1) {
             throw new Error('Weapon needs mana! Use !slayershop oils to recharge mana.');
@@ -167,7 +167,7 @@ class SlayingManager {
 
         const staminaNeeded = this.calculateStaminaConsumption(mount, monster, mount.hauntedLandsTier);
         if (mount.currentStamina < staminaNeeded) {
-            throw new Error(`Not enough stamina! Need ${staminaNeeded} stamina, have ${mount.currentStamina}.`);
+            throw new Error(`Not enough stamina for this quest! Your ${mount.name} has ${mount.currentStamina}/${mount.staminaCapacity} stamina, but this quest requires ${staminaNeeded}. Purchase stamina potions from the !slayershop to replenish.`);
         }
         
         mount.currentStamina = Math.max(0, mount.currentStamina - staminaNeeded);
@@ -373,7 +373,9 @@ class SlayingManager {
 
     // Calculate total storage capacity
     static calculateStorageCapacity(profile) {
-        return profile.slayingVaults.reduce((total, vault) => total + vault.capacity, 0);
+        const baseCapacity = 5; // Base inventory capacity
+        const vaultCapacity = profile.slayingVaults.reduce((total, vault) => total + vault.capacity, 0);
+        return baseCapacity + vaultCapacity;
     }
 
     // Calculate total inventory weight
