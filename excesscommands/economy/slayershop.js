@@ -334,12 +334,30 @@ module.exports = {
 
             let specs = '';
             if (category === 'potions') {
-                specs = `**✨ Effect:** ${item.effect}\n**⏳ Duration:** ${item.duration} quests\n**💰 Cost per Potion:** ${item.price} Embers`;
+                specs = `**✨ Effect:** Restores ${item.staminaValue} stamina\n**⏳ Duration:** Instant`;
             } else if (category === 'oils') {
                 const compatibleText = item.compatibleWeapons.join(', ');
                 specs = `**⚔️ Compatible:** ${compatibleText}\n**💥 Damage Bonus:** +${Math.floor((item.damage - 1) * 100)}%\n**🎯 Accuracy Bonus:** +${Math.floor((item.accuracy - 1) * 100)}%`;
             } else if (category === 'enchantments') {
-                specs = `**📜 Enchantment:** ${item.enchantmentType || 'N/A'}\n**🔄 Uses:** ${item.uses || 1}\n**⏰ Duration:** ${item.duration || 'Instant'} quests`;
+                specs = `**📜 Type:** ${item.type}\n`;
+                if (item.enchantmentAmount) {
+                    specs += `**✨ Effect:** Adds +${item.enchantmentAmount} enchantment points\n`;
+                }
+                if (item.effect) {
+                    const effectText = item.effect.replace(/_/g, ' ');
+                    specs += `**🛡️ Effect:** ${effectText}\n`;
+                }
+                if (item.rejuvenationAmount) {
+                    specs += `**🐎 Effect:** Restores ${item.rejuvenationAmount} health and stamina\n`;
+                }
+                if (item.duration) {
+                    specs += `**⏳ Duration:** ${item.duration} quests\n`;
+                }
+                if (item.uses) {
+                    specs += `**🔄 Uses:** ${item.uses} applications`;
+                }
+                // Trim trailing newline
+                specs = specs.trim();
             }
 
             if (specs) {
