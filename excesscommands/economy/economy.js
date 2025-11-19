@@ -8,10 +8,11 @@ const {
 
 module.exports = {
     name: 'economy',
-    aliases: ['eco', 'help-economy', 'guide'],
-    description: 'Complete guide to the advanced economy system .',
+    aliases: ['dark-economy', 'deco', 'dark-guide'],
+    description: 'Complete guide to the dark fantasy economy system.',
     async execute(message) {
         try {
+            const serverPrefix = message.prefix || '!';
             let currentPage = 0;
             const totalPages = 9;
 
@@ -21,11 +22,11 @@ module.exports = {
                 switch (pageNum) {
                     case 0: // Page 1: Command Overview
                         const headerContainer = new ContainerBuilder()
-                            .setAccentColor(0x4CAF50);
+                            .setAccentColor(0x8B0000);
 
                         headerContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 🏦 ULTIMATE ECONOMY SYSTEM\n## PROFESSIONAL ECONOMY BOT - 35+ COMMANDS\n\n> **Page 1 of 9** | Complete mastery guide for total economy domination\n> Use navigation buttons to explore all advanced systems and strategies`)
+                                .setContent(`# 🌑 DARK FANTASY ECONOMY\n## FORGE YOUR EMPIRE IN SHADOW\n\n> **Page 1 of 9** | Complete mastery guide for total domination\n> Use navigation buttons to explore all advanced systems and strategies`)
                         );
 
                         components.push(headerContainer);
@@ -33,16 +34,16 @@ module.exports = {
 
                         // Basic Economy Commands
                         const basicContainer = new ContainerBuilder()
-                            .setAccentColor(0x2196F3);
+                            .setAccentColor(0x4B0082);
 
                         basicContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 💰 **BASIC ECONOMY** (5 Commands)')
+                                .setContent('## 💰 **CORE COMMANDS** (5 Commands)')
                         );
 
                         basicContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`!balance\`** - Check finances & active effects\n**\`!daily\`** - Daily rewards with streak bonuses\n**\`!weekly\`** - Weekly mega rewards\n**\`!work\`** - Earn Embers (1 hour cooldown)\n**\`!beg\`** - Emergency Embers (10 min cooldown)`)
+                                .setContent(`**\`${serverPrefix}balance\`** (*bal*, *embers*) - Check your Soul Embers & active effects\n**\`${serverPrefix}daily\`** - Claim daily Soul Embers with streak bonuses\n**\`${serverPrefix}weekly\`** (*week*) - Claim weekly mega Soul Ember rewards\n**\`${serverPrefix}work\`** - Toil for Soul Embers (1 hour cooldown)\n**\`${serverPrefix}beg\`** (*ask*, *plead*) - Plead for Soul Embers (10 min cooldown)`)
                         );
 
                         components.push(basicContainer);
@@ -50,50 +51,50 @@ module.exports = {
 
                         // Banking & Trading
                         const bankingContainer = new ContainerBuilder()
-                            .setAccentColor(0xFF9800);
+                            .setAccentColor(0x800080);
 
                         bankingContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🏦 **BANKING & TRADING** (5 Commands)')
+                                .setContent('## 🏦 **VAULT & TRADE** (5 Commands)')
                         );
 
                         bankingContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`!deposit\`** - Store Embers safely in bank\n**\`!withdraw\`** - Take Embers from bank\n**\`!vault\`** - Family vault deposit/withdraw\n**\`!gamble\`** - Risk Embers for big wins\n**\`!rob\`** - Rob other players (risky!)`)
+                                .setContent(`**\`${serverPrefix}deposit\`** (*dep*) - Store Soul Embers safely in the vault\n**\`${serverPrefix}withdraw\`** (*with*) - Take Soul Embers from the vault\n**\`${serverPrefix}donate\`** (*give*, *transfer*) - Bestow your Embers to another soul\n**\`${serverPrefix}gamble\`** (*bet*) - Risk Soul Embers for twisted fortunes\n**\`${serverPrefix}rob\`** - Attempt to plunder another soul's Embers`)
                         );
 
                         components.push(bankingContainer);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Property System
+                        // Citadel System
                         const propertyContainer = new ContainerBuilder()
-                            .setAccentColor(0x9B59B6);
+                            .setAccentColor(0x9A2A2A);
 
                         propertyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🏠 **PROPERTY SYSTEM** (3 Commands)')
+                                .setContent('## 🏰 **CITADEL SYSTEM** (3 Commands)')
                         );
 
                         propertyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`!buyhouse\`** - Purchase properties for family\n**\`!myhome\`** - View your property & family\n**\`!addfamily\`** - Add family members to property`)
+                                .setContent(`**\`${serverPrefix}acquirecitadel\`** (*citadel-buy*) - Acquire a citadel for your followers\n**\`${serverPrefix}mycitadel\`** (*citadel-info*) - View your citadel and its inhabitants\n**\`${serverPrefix}addfollower\`** (*follower-add*) - Bind a follower to your citadel`)
                         );
 
                         components.push(propertyContainer);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Vehicle System
+                        // Beast System
                         const vehicleContainer = new ContainerBuilder()
-                            .setAccentColor(0xE91E63);
+                            .setAccentColor(0x556B2F);
 
                         vehicleContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🚗 **VEHICLE SYSTEM** (3 Commands)')
+                                .setContent('## 👹 **BEAST SYSTEM** (3 Commands)')
                         );
 
                         vehicleContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`!buycar\`** - Purchase vehicles for racing\n**\`!garage\`** - Manage your car collection\n**\`!race\`** - Race cars for Embers prizes`)
+                                .setContent(`**\`${serverPrefix}summon\`** (*beast-summon*) - Summon beasts for races and combat\n**\`${serverPrefix}bestiary\`** (*beasts*) - Manage your collection of beasts\n**\`${serverPrefix}beastrace\`** - Race your beasts for Ember prizes`)
                         );
 
                         components.push(vehicleContainer);
@@ -101,11 +102,11 @@ module.exports = {
 
                         // Advanced Systems Preview
                         const advancedContainer = new ContainerBuilder()
-                            .setAccentColor(0x607D8B);
+                            .setAccentColor(0x696969);
 
                         advancedContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 🚀 **ADVANCED SYSTEMS PREVIEW**\n\n**👨‍👩‍👧‍👦 Family System** - Build relationships for passive income\n**🐕 Pet System** - Security and companionship\n**🏢 Business Empire** - Passive income generation\n**🎯 Heist System** - Team-based criminal operations\n**🛒 Premium Features** - VIP roles and power-ups\n**📊 Information** - Statistics and leaderboards\n\n> Navigate through all 9 pages to master every aspect of the economy!`)
+                                .setContent(`## 🚀 **ADVANCED SYSTEMS PREVIEW**\n\n**👥 Follower System** - Build a loyal retinue for passive income\n**👾 Minion System** - Command dark creatures for protection\n**🛡️ Guild Empire** - Forge alliances for passive income generation\n**🎯 Raid System** - Team-based assaults on dark fortresses\n**🛒 Black Market** - Acquire forbidden roles and powerful artifacts\n**📊 Leaderboards** - Ascend the ranks of power\n\n> Navigate through all 9 pages to master every aspect of this dark economy!`)
                         );
 
                         components.push(advancedContainer);
@@ -113,11 +114,11 @@ module.exports = {
 
                     case 1: // Page 2: Basic Economy System
                         const basicEconHeader = new ContainerBuilder()
-                            .setAccentColor(0x2196F3);
+                            .setAccentColor(0x4B0082);
 
                         basicEconHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 💰 BASIC ECONOMY SYSTEM\n## HOW EMBERS WORK IN THIS ECONOMY\n\n> **Page 2 of 9** | Master the fundamentals\n> Understanding these basics is essential for building your empire`)
+                                .setContent(`# 💰 BASIC ECONOMY SYSTEM\n## HOW SOUL EMBERS FUEL THIS DARK WORLD\n\n> **Page 2 of 9** | Master the fundamentals\n> Understanding these basics is essential for building your shadow empire`)
                         );
 
                         components.push(basicEconHeader);
@@ -125,16 +126,16 @@ module.exports = {
 
                         // Income Sources
                         const incomeContainer = new ContainerBuilder()
-                            .setAccentColor(0x4CAF50);
+                            .setAccentColor(0x2E8B57);
 
                         incomeContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🔄 **INCOME SOURCES**')
+                                .setContent('## 🔄 **SOURCES OF SOUL EMBERS**')
                         );
 
                         incomeContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**Daily Rewards:** \`500-2,000+ Embers\` (streak bonuses)\n**Work Earnings:** \`200-800 Embers\` base + family bonus\n**Business Profits:** \`500-15,000+ Embers\` daily passive income\n**Heist Payouts:** \`50,000-5,000,000 Embers\` (high risk/reward)\n**Gambling Wins:** 45-75% chance with luck boosts\n**Racing Victories:** Depends on car quality\n**Family Contributions:** Passive income from members`)
+                                .setContent(`**Daily Tithe:** \`500-2,000+ Embers\` (streak bonuses)\n**Dark Labor:** \`200-800 Embers\` base + follower bonus\n**Guild Tribute:** \`500-15,000+ Embers\` daily passive income\n**Raid Spoils:** \`50,000-5,000,000 Embers\` (high risk/reward)\n**Gambling Wins:** 45-75% chance with forbidden luck\n**Beast Race Victories:** Depends on beast's might\n**Follower Offerings:** Passive income from your loyal subjects`)
                         );
 
                         components.push(incomeContainer);
@@ -142,16 +143,16 @@ module.exports = {
 
                         // Expenses
                         const expensesContainer = new ContainerBuilder()
-                            .setAccentColor(0xF44336);
+                            .setAccentColor(0xA52A2A);
 
                         expensesContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 💸 **EXPENSES & COSTS**')
+                                .setContent('## 💸 **COSTS & SACRIFICES**')
                         );
 
                         expensesContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**Property Bills:** Monthly rent + utilities\n**Business Expenses:** Employee wages + maintenance\n**Heist Equipment:** \`5,000-75,000 Embers\` per heist\n**Pet Care:** Food, grooming, medical care\n**Car Maintenance:** Repairs, fuel, upgrades\n**Shop Purchases:** Power-ups and boosts\n**Jail Fines:** Penalties for failed heists`)
+                                .setContent(`**Citadel Upkeep:** Monthly maintenance tribute\n**Guild Tithes:** Acolyte wages + upkeep\n**Raid Preparations:** \`5,000-75,000 Embers\` per assault\n**Minion Sustenance:** Offerings, rituals, and care\n**Beast Maintenance:** Mending, feeding, and enhancements\n**Black Market Purchases:** Artifacts and forbidden knowledge\n**Penance:** Fines for failed raids and transgressions`)
                         );
 
                         components.push(expensesContainer);
@@ -159,23 +160,23 @@ module.exports = {
 
                         // Ember Strategy
                         const strategyContainer = new ContainerBuilder()
-                            .setAccentColor(0xFF9800);
+                            .setAccentColor(0x800000);
 
                         strategyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 💡 **ADVANCED EMBERS STRATEGY**\n\n**🏦 Family Vault:** 50% (protected from robberies) (Embers)\n**💼 Business Investments:** 30% (passive income)\n**💳 Wallet:** 15% (for daily activities & heists) (Embers)\n**🏛️ Bank:** 5% (emergency safety fund) (Embers)\n\n**Why This Works:**\n> • Businesses generate passive income 24/7\n> • Vault protection from robberies\n> • Wallet for opportunities and heist funding`)
+                                .setContent(`## 💡 **ADVANCED SOUL EMBER STRATEGY**\n\n**🏰 Citadel Vault:** 50% (protected from plunder) (Embers)\n**🛡️ Guild Investments:** 30% (passive tribute)\n**💀 Wallet:** 15% (for daily rituals & raids) (Embers)\n**🏦 Shadow Bank:** 5% (emergency reserves) (Embers)\n\n**Why This Path Leads to Power:**\n> • Guilds generate passive tribute 24/7\n> • Citadel Vaults protect against plunder\n> • A full wallet funds opportunities and finances raids`)
                         );
 
                         components.push(strategyContainer);
                         break;
 
-                    case 2: // Page 3: Property System
+                    case 2: // Page 3: Citadel System
                         const propertyHeader = new ContainerBuilder()
-                            .setAccentColor(0xFF9800);
+                            .setAccentColor(0x9A2A2A);
 
                         propertyHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 🏠 PROPERTY SYSTEM - YOUR FOUNDATION\n## PROPERTIES ARE EVERYTHING - YOUR SUCCESS DEPENDS ON THIS\n\n> **Page 3 of 9** | Master property investment\n> Your property determines family capacity, vault size, and security level`)
+                                .setContent(`# 🏰 CITADEL SYSTEM - YOUR STRONGHOLD\n## CITADELS ARE POWER - YOUR DOMINION DEPENDS ON IT\n\n> **Page 3 of 9** | Master citadel investment\n> Your citadel determines follower capacity, vault size, and security`)
                         );
 
                         components.push(propertyHeader);
@@ -183,16 +184,16 @@ module.exports = {
 
                         // Starter Properties
                         const starterContainer = new ContainerBuilder()
-                            .setAccentColor(0x4CAF50);
+                            .setAccentColor(0x8FBC8F);
 
                         starterContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🏘️ **STARTER PROPERTIES**')
+                                .setContent('## 🏘️ **FLEDGLING STRONGHOLDS**')
                         );
 
                         starterContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**STUDIO APARTMENT** - \`50,000 Embers\`\n> • Family Slots: 1 member\n> • Vault Capacity: 10,000 Embers\n> • Security Level: 1\n> • Garage: None\n> • Monthly Cost: 950 Embers\n\n**2BR APARTMENT** - \`120,000 Embers\`\n> • Family Slots: 3 members\n> • Vault Capacity: 25,000 Embers\n> • Security Level: 2\n> • Garage: 1 car\n> • Monthly Cost: 1,750 Embers`)
+                                .setContent(`**CRYPT** - \`50,000 Embers\`\n> • Follower Slots: 1 follower\n> • Vault Capacity: 10,000 Embers\n> • Security Level: 1\n> • Beast Lair: None\n> • Monthly Upkeep: 950 Embers\n\n**FORTIFIED MANOR** - \`120,000 Embers\`\n> • Follower Slots: 3 followers\n> • Vault Capacity: 25,000 Embers\n> • Security Level: 2\n> • Beast Lair: 1 beast\n> • Monthly Upkeep: 1,750 Embers`)
                         );
 
                         components.push(starterContainer);
@@ -200,16 +201,16 @@ module.exports = {
 
                         // Mid-Tier Properties
                         const midTierContainer = new ContainerBuilder()
-                            .setAccentColor(0x2196F3);
+                            .setAccentColor(0x663399);
 
                         midTierContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🏘️ **MID-TIER PROPERTIES**')
+                                .setContent('## 🏰 **GROWING DOMINIONS**')
                         );
 
                         midTierContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**FAMILY HOUSE** - \`300,000 Embers\`\n> • Family Slots: 5 members\n> • Vault Capacity: 75,000 Embers\n> • Security Level: 4\n> • Garage: 2 cars\n> • Monthly Cost: 2,900 Embers\n\n**LUXURY MANSION** - \`800,000 Embers\`\n> • Family Slots: 8 members\n> • Vault Capacity: 200,000 Embers\n> • Security Level: 7\n> • Garage: 5 cars\n> • Monthly Cost: 5,800 Embers`)
+                                .setContent(`**SHADOW KEEP** - \`300,000 Embers\`\n> • Follower Slots: 5 followers\n> • Vault Capacity: 75,000 Embers\n> • Security Level: 4\n> • Beast Lair: 2 beasts\n> • Monthly Upkeep: 2,900 Embers\n\n**DREADFORT** - \`800,000 Embers\`\n> • Follower Slots: 8 followers\n> • Vault Capacity: 200,000 Embers\n> • Security Level: 7\n> • Beast Lair: 5 beasts\n> • Monthly Upkeep: 5,800 Embers`)
                         );
 
                         components.push(midTierContainer);
@@ -217,64 +218,64 @@ module.exports = {
 
                         // Elite Property
                         const eliteContainer = new ContainerBuilder()
-                            .setAccentColor(0x9C27B0);
+                            .setAccentColor(0x483D8B);
 
                         eliteContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 🏰 **ELITE PROPERTY**\n\n**PRIVATE ESTATE** - \`2,000,000 Embers\`\n> • Family Slots: 12 members\n> • Vault Capacity: 500,000 Embers\n> • Security Level: 10\n> • Garage: 10 cars\n> • Monthly Cost: 11,500 Embers\n\n**🎯 End Game Goal:** Estate with 12 family members + multiple businesses earning 50,000+ Embers daily!`)
+                                .setContent(`## 👑 **SOVEREIGN CITADEL**\n\n**OBSIDIAN SPIRE** - \`2,000,000 Embers\`\n> • Follower Slots: 12 followers\n> • Vault Capacity: 500,000 Embers\n> • Security Level: 10\n> • Beast Lair: 10 beasts\n> • Monthly Upkeep: 11,500 Embers\n\n**🎯 End Game Goal:** A Spire with 12 loyal followers + multiple guilds generating 50,000+ Embers daily!`)
                         );
 
                         components.push(eliteContainer);
                         break;
 
-                    case 3: // Page 4: Family & Security
+                    case 3: // Page 4: Follower & Minion System
                         const familyHeader = new ContainerBuilder()
-                            .setAccentColor(0xE91E63);
+                            .setAccentColor(0x9932CC);
 
                         familyHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 👨‍👩‍👧‍👦 FAMILY & 🛡️ SECURITY\n## YOUR PASSIVE INCOME ENGINE + VAULT PROTECTION\n\n> **Page 4 of 9** | Build your empire and protect it\n> Family members generate automatic work income and pets provide security`)
+                                .setContent(`# 👥 FOLLOWERS & 👾 MINIONS\n## YOUR LEGION OF SHADOW + VAULT GUARDIANS\n\n> **Page 4 of 9** | Build your legion and protect it\n> Followers generate passive income and minions provide security`)
                         );
 
                         components.push(familyHeader);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Family Hierarchy
+                        // Follower Hierarchy
                         const hierarchyContainer = new ContainerBuilder()
-                            .setAccentColor(0xFF9800);
+                            .setAccentColor(0x8A2BE2);
 
                         hierarchyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 👥 **FAMILY MEMBER HIERARCHY**')
+                                .setContent('## 💀 **FOLLOWER HIERARCHY**')
                         );
 
                         hierarchyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🥇 SPOUSE** (Priority #1)\n> • Salary Range: 300-800 Embers per work\n> • Professions: Teacher, Engineer, Manager\n> • Best ROI and affects other family bonds\n\n**🥈 PARENT** (Priority #2)\n> • Salary Range: 400-900 Embers per work\n> • Professions: Consultant, Business Owner\n> • Stable high income\n\n**🥉 SIBLING** (Fill remaining slots)\n> • Salary Range: 250-600 Embers per work\n> • Professions: Artist, Mechanic, Chef\n\n**🏅 CHILD** (Last resort)\n> • Salary Range: 50-200 Embers per work\n> • Professions: Student, Intern\n> • Lowest income but fills capacity`)
+                                .setContent(`**🥇 ACOLYTE** (Priority #1)\n> • Tribute Range: 300-800 Embers per task\n> • Roles: Scribe, Alchemist, Spymaster\n> • Best ROI and affects other follower loyalty\n\n**🥈 MERCENARY** (Priority #2)\n> • Tribute Range: 400-900 Embers per task\n> • Roles: Sellsword, Bodyguard\n> • Stable high income\n\n**🥉 THRALL** (Fill remaining slots)\n> • Tribute Range: 250-600 Embers per task\n> • Roles: Laborer, Miner, Forager\n\n**🏅 INITIATE** (Last resort)\n> • Tribute Range: 50-200 Embers per task\n> • Roles: Aspirant, Neophyte\n> • Lowest income but fills capacity`)
                         );
 
                         components.push(hierarchyContainer);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Bond Mechanics
+                        // Loyalty Mechanics
                         const bondContainer = new ContainerBuilder()
-                            .setAccentColor(0xF44336);
+                            .setAccentColor(0xDC143C);
 
                         bondContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## ❤️ **FAMILY BOND MECHANICS**\n\n**Bond Levels & Income Impact:**\n> • **0-25% Bond:** 0.25x income (25% efficiency)\n> • **26-50% Bond:** 0.50x income (50% efficiency)\n> • **51-75% Bond:** 0.75x income (75% efficiency)\n> • **76-90% Bond:** 0.90x income (90% efficiency)\n> • **91-100% Bond:** 1.00x income (100% efficiency)\n\n**Improving Bonds:**\n> • Family trips: +5-15% bond per trip\n> • Family vacation item: +15% to ALL members\n> • Bonds decay 1-2% weekly without attention`)
+                                .setContent(`## ❤️ **FOLLOWER LOYALTY MECHANICS**\n\n**Loyalty Levels & Income Impact:**\n> • **0-25% Loyalty:** 0.25x tribute (Fearful)\n> • **26-50% Loyalty:** 0.50x tribute (Indifferent)\n> • **51-75% Loyalty:** 0.75x tribute (Obedient)\n> • **76-90% Loyalty:** 0.90x tribute (Devoted)\n> • **91-100% Loyalty:** 1.00x tribute (Fanatical)\n\n**Improving Loyalty:**\n> • Dark Gifts: +5-15% loyalty per gift\n> • Rite of Binding artifact: +15% to ALL followers\n> • Loyalty decays 1-2% weekly without attention`)
                         );
 
                         components.push(bondContainer);
                         break;
 
-                    case 4: // Page 5: Shop & Effects
+                    case 4: // Page 5: Black Market & Effects
                         const shopHeader = new ContainerBuilder()
-                            .setAccentColor(0x9C27B0);
+                            .setAccentColor(0x483D8B);
 
                         shopHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# ⚡ ACTIVE EFFECTS & 🛒 PREMIUM SHOP\n## POWER-UPS, BOOSTS & STRATEGIC SHOPPING\n\n> **Page 5 of 9** | Master the enhancement systems\n> Strategic shop purchases can multiply your earnings and success rates`)
+                                .setContent(`# ⚡ DARK ARTS & 🛒 BLACK MARKET\n## ARTIFACTS, CURSES & STRATEGIC ACQUISITIONS\n\n> **Page 5 of 9** | Master the forbidden arts\n> Strategic black market purchases can multiply your power and success rates`)
                         );
 
                         components.push(shopHeader);
@@ -282,16 +283,16 @@ module.exports = {
 
                         // Gambling Luck System
                         const luckContainer = new ContainerBuilder()
-                            .setAccentColor(0x4CAF50);
+                            .setAccentColor(0x008080);
 
                         luckContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🍀 **GAMBLING LUCK SYSTEM**')
+                                .setContent('## 🍀 **FORBIDDEN LUCK SYSTEM**')
                         );
 
                         luckContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**Rabbit's Foot** - \`5,000 Embers each\`\n> • Effect: +20% gambling win chance\n> • Duration: 4 hours per use\n> • **Stackable up to 5 times!**\n> • Max boost: 100% extra win chance\n\n**Strategy:** Stack 5x before big gambling sessions\n**Math:** 45% base + 100% luck = 75% win rate!\n**Best Use:** When you have 50,000+ Embers to gamble`)
+                                .setContent(`**Hand of Glory** - \`5,000 Embers each\`\n> • Effect: +20% gambling win chance\n> • Duration: 4 hours per use\n> • **Stackable up to 5 times!**\n> • Max boost: 100% extra win chance\n\n**Strategy:** Stack 5x before a high-stakes gamble\n**Math:** 45% base + 100% luck = 75% win rate!\n**Best Use:** When you have 50,000+ Embers to risk`)
                         );
 
                         components.push(luckContainer);
@@ -299,134 +300,134 @@ module.exports = {
 
                         // Income Boosters
                         const boostersContainer = new ContainerBuilder()
-                            .setAccentColor(0xFF9800);
+                            .setAccentColor(0xDAA520);
 
                         boostersContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 💼 **INCOME BOOSTERS**\n\n**Lucky Charm** - \`10,000 Embers\`\n> • Effect: +50% work income for 7 days\n> • Stacks with family bonuses\n> • Example: 2,000 Embers work becomes 3,000 Embers\n\n**Family Vacation Package** - \`3,000 Embers\`\n> • Effect: +15% bond to ALL family members\n> • Instant effect, no cooldown\n> • Cheaper than taking multiple trips\n> • Best when bonds are below 80%`)
+                                .setContent(`## 💼 **TRIBUTE BOOSTERS**\n\n**Chalice of Greed** - \`10,000 Embers\`\n> • Effect: +50% work income for 7 days\n> • Stacks with follower bonuses\n> • Example: 2,000 Embers from toil becomes 3,000 Embers\n\n**Rite of Binding** - \`3,000 Embers\`\n> • Effect: +15% loyalty to ALL followers\n> • Instant effect, no cooldown\n> • Cheaper than bestowing multiple gifts\n> • Best when loyalty is below 80%`)
                         );
 
                         components.push(boostersContainer);
                         break;
 
-                    case 5: // Page 6: Vehicles & Pets
+                    case 5: // Page 6: Beasts & Minions
                         const vehiclesHeader = new ContainerBuilder()
-                            .setAccentColor(0xFF5722);
+                            .setAccentColor(0x556B2F);
 
                         vehiclesHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 🚗 VEHICLE SYSTEM & 🐕 PET MANAGEMENT\n## BUILD YOUR RACING EMPIRE & SECURITY FORCE\n\n> **Page 6 of 9** | Dominate races and protect your wealth\n> Cars provide racing income while pets offer security protection`)
+                                .setContent(`# 👹 BEASTS & 👾 MINION MANAGEMENT\n## BUILD YOUR MENAGERIE & SHADOW ARMY\n\n> **Page 6 of 9** | Dominate races and protect your domain\n> Beasts provide racing income while minions offer security`)
                         );
 
                         components.push(vehiclesHeader);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Car Performance Tiers
+                        // Beast Performance Tiers
                         const carsContainer = new ContainerBuilder()
-                            .setAccentColor(0x2196F3);
+                            .setAccentColor(0x808000);
 
                         carsContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🚗 **CAR PERFORMANCE TIERS**')
+                                .setContent('## 👹 **BEAST POWER TIERS**')
                         );
 
                         carsContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**ECONOMY SEDAN** - \`15,000 Embers\`\n> • Stats: 45 Speed, 40 Accel, 50 Handling\n> • Win Rate: ~30% • Winnings: 1,000-3,000 Embers\n\n**SPORTS COUPE** - \`45,000 Embers\`\n> • Stats: 70 Speed, 75 Accel, 65 Handling\n> • Win Rate: ~55% • Winnings: 2,000-5,000 Embers\n\n**SUPERCAR** - \`200,000 Embers\`\n> • Stats: 95 Speed, 90 Accel, 85 Handling\n> • Win Rate: ~80% • Winnings: 4,000-8,000 Embers\n\n**HYPERCAR** - \`500,000 Embers\`\n> • Stats: 100 Speed, 100 Accel, 95 Handling\n> • Win Rate: ~95% • Winnings: 6,000-12,000 Embers`)
+                                .setContent(`**DIRE WOLF** - \`15,000 Embers\`\n> • Stats: 45 Speed, 40 Cunning, 50 Agility\n> • Win Rate: ~30% • Winnings: 1,000-3,000 Embers\n\n**GRIFFIN** - \`45,000 Embers\`\n> • Stats: 70 Speed, 75 Cunning, 65 Agility\n> • Win Rate: ~55% • Winnings: 2,000-5,000 Embers\n\n**MANTICORE** - \`200,000 Embers\`\n> • Stats: 95 Speed, 90 Cunning, 85 Agility\n> • Win Rate: ~80% • Winnings: 4,000-8,000 Embers\n\n**WYVERN** - \`500,000 Embers\`\n> • Stats: 100 Speed, 100 Cunning, 95 Agility\n> • Win Rate: ~95% • Winnings: 6,000-12,000 Embers`)
                         );
 
                         components.push(carsContainer);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Pet Security Force
+                        // Minion Security Force
                         const petsContainer = new ContainerBuilder()
-                            .setAccentColor(0xFF69B4);
+                            .setAccentColor(0x2F4F4F);
 
                         petsContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 🐕 **PET SECURITY FORCE**\n\n**HOUSE CAT** - \`500 Embers\`\n> • Security: 10 points • Low maintenance\n> • Good for: Basic starter protection\n\n**GUARD DOG** - \`2,000 Embers\`\n> • Security: 40 points • Medium maintenance\n> • Good for: Standard home protection\n\n**ATTACK DOG** - \`5,000 Embers\`\n> • Security: 70 points • High maintenance\n> • Good for: Maximum vault protection\n\n**SURVEILLANCE BIRD** - \`3,000 Embers\`\n> • Security: 35 points • Medium maintenance\n> • Good for: Balanced security option`)
+                                .setContent(`## 👾 **MINION SECURITY FORCE**\n\n**IMP** - \`500 Embers\`\n> • Security: 10 points • Low sustenance\n> • Good for: Basic warding\n\n**GARGOYLE** - \`2,000 Embers\`\n> • Security: 40 points • Medium sustenance\n> • Good for: Standard citadel defense\n\n**HELL HOUND** - \`5,000 Embers\`\n> • Security: 70 points • High sustenance\n> • Good for: Maximum vault protection\n\n**SPECTRAL SENTINEL** - \`3,000 Embers\`\n> • Security: 35 points • Medium sustenance\n> • Good for: Balanced ethereal security`)
                         );
 
                         components.push(petsContainer);
                         break;
 
-                    case 6: // Page 7: Business System
+                    case 6: // Page 7: Guild System
                         const businessHeader = new ContainerBuilder()
-                            .setAccentColor(0x4CAF50);
+                            .setAccentColor(0x2E8B57);
 
                         businessHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 🏢 BUSINESS EMPIRE SYSTEM\n## BUILD YOUR PASSIVE INCOME EMPIRE\n\n> **Page 7 of 9** | Master business domination\n> Businesses generate income 24/7 even when you're offline`)
+                                .setContent(`# 🛡️ GUILD EMPIRE SYSTEM\n## BUILD YOUR PASSIVE TRIBUTE EMPIRE\n\n> **Page 7 of 9** | Master guild domination\n> Guilds generate tribute 24/7 even while you slumber`)
                         );
 
                         components.push(businessHeader);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Business Types
+                        // Guild Types
                         const businessTypesContainer = new ContainerBuilder()
-                            .setAccentColor(0xFF9800);
+                            .setAccentColor(0xDAA520);
 
                         businessTypesContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🏢 **BUSINESS TYPES & PROFITABILITY**')
+                                .setContent('## 🛡️ **GUILD TYPES & PROFITABILITY**')
                         );
 
                         businessTypesContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**RESTAURANT CHAIN** - \`50,000 Embers\`\n> • Daily Income: 200-800 Embers per level\n> • Max Level: 10 • Employees: 20\n> • Stable income, family discounts\n\n**TECH STARTUP** - \`100,000 Embers\`\n> • Daily Income: 100-1,500 Embers per level (volatile)\n> • Max Level: 10 • Employees: 15\n> • High risk/reward, IPO potential\n\n**REAL ESTATE AGENCY** - \`75,000 Embers\`\n> • Daily Income: 300-600 Embers per level\n> • Max Level: 10 • Employees: 12\n> • Steady income, market insider bonuses`)
+                                .setContent(`**THIEVES GUILD** - \`50,000 Embers\`\n> • Daily Tribute: 200-800 Embers per level\n> • Max Level: 10 • Acolytes: 20\n> • Stable income, follower discounts\n\n**ASSASSINS GUILD** - \`100,000 Embers\`\n> • Daily Tribute: 100-1,500 Embers per level (volatile)\n> • Max Level: 10 • Acolytes: 15\n> • High risk/reward, potential for great contracts\n\n**MERCHANTS GUILD** - \`75,000 Embers\`\n> • Daily Tribute: 300-600 Embers per level\n> • Max Level: 10 • Acolytes: 12\n> • Steady income, market manipulation bonuses`)
                         );
 
                         components.push(businessTypesContainer);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Premium Businesses
+                        // Premium Guilds
                         const premiumContainer = new ContainerBuilder()
-                            .setAccentColor(0x9C27B0);
+                            .setAccentColor(0x483D8B);
 
                         premiumContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 💎 **PREMIUM BUSINESSES**\n\n**CAR DEALERSHIP** - \`200,000 Embers\`\n> • Daily Income: 400-1,000 Embers per level\n> • Max Level: 10 • Employees: 10\n> • Sell to players, exotic car bonuses\n\n**SECURITY COMPANY** - \`150,000 Embers\`\n> • Daily Income: 250-700 Embers per level\n> • Max Level: 10 • Employees: 25\n> • Government contracts, PMC services\n\n**PRIVATE CASINO** - \`500,000 Embers\`\n> • Daily Income: 0-3,000 Embers per level (very volatile)\n> • Max Level: 10 • Employees: 30\n> • Ultimate high-risk business, Embers laundering`)
+                                .setContent(`## 💎 **ELITE GUILDS**\n\n**NECROMANCER COVEN** - \`200,000 Embers\`\n> • Daily Tribute: 400-1,000 Embers per level\n> • Max Level: 10 • Acolytes: 10\n> • Sell minions to players, undead bonuses\n\n**DARK WARRIORS CLAN** - \`150,000 Embers\`\n> • Daily Tribute: 250-700 Embers per level\n> • Max Level: 10 • Acolytes: 25\n> • Lucrative contracts, mercenary services\n\n**ILLUMINATI CABAL** - \`500,000 Embers\`\n> • Daily Tribute: 0-3,000 Embers per level (very volatile)\n> • Max Level: 10 • Acolytes: 30\n> • Ultimate high-risk guild, Ember laundering`)
                         );
 
                         components.push(premiumContainer);
                         break;
 
-                    case 7: // Page 8: Heist System
+                    case 7: // Page 8: Raid System
                         const heistHeader = new ContainerBuilder()
-                            .setAccentColor(0xFF5722);
+                            .setAccentColor(0xA52A2A);
 
                         heistHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 🎯 HEIST SYSTEM - TEAM CRIME OPERATIONS\n## PLAN & EXECUTE TEAM-BASED HEISTS\n\n> **Page 8 of 9** | Master criminal operations\n> High risk operations with massive rewards - requires teamwork`)
+                                .setContent(`# 🎯 RAID SYSTEM - TEAM-BASED ASSAULTS\n## PLAN & EXECUTE RAIDS ON DARK FORTRESSES\n\n> **Page 8 of 9** | Master the art of the raid\n> High risk operations with massive spoils - requires teamwork`)
                         );
 
                         components.push(heistHeader);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Heist Targets
+                        // Raid Targets
                         const targetsContainer = new ContainerBuilder()
-                            .setAccentColor(0xF44336);
+                            .setAccentColor(0xDC143C);
 
                         targetsContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent('## 🎯 **HEIST TARGETS & PAYOUTS**')
+                                .setContent('## 🎯 **RAID TARGETS & SPOILS**')
                         );
 
                         targetsContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**ARMORED TRUCK** - Easy (75% success)\n> • Payout: 50,000-150,000 Embers • Members: 3\n> • Equipment: Weapons, getaway cars\n\n**JEWELRY STORE** - Medium (60% success)\n> • Payout: 100,000-400,000 Embers • Members: 3\n> • Equipment: Glass cutters, masks, cars\n\n**CASINO VAULT** - Hard (25% success)\n> • Payout: 800,000-2,000,000 Embers • Members: 5\n> • Equipment: Keycard cloner, hacking tools\n\n**CENTRAL BANK** - Ultimate (15% success)\n> • Payout: 2,000,000-5,000,000 Embers • Members: 6\n> • Equipment: Thermal lance, EMP, explosives`)
+                                .setContent(`**GOBLIN ENCAMPMENT** - Easy (75% success)\n> • Spoils: 50,000-150,000 Embers • Members: 3\n> • Gear: Weapons, getaway beasts\n\n**HAUNTED CRYPT** - Medium (60% success)\n> • Spoils: 100,000-400,000 Embers • Members: 3\n> • Gear: Warding charms, lockpicks, beasts\n\n**DRAGON'S LAIR** - Hard (25% success)\n> • Spoils: 800,000-2,000,000 Embers • Members: 5\n> • Gear: Dragonfire wards, climbing tools\n\n**LICH'S SANCTUM** - Ultimate (15% success)\n> • Spoils: 2,000,000-5,000,000 Embers • Members: 6\n> • Gear: Soul-forged weapons, EMP, explosives`)
                         );
 
                         components.push(targetsContainer);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Heist Roles
+                        // Raid Roles
                         const rolesContainer = new ContainerBuilder()
-                            .setAccentColor(0x9C27B0);
+                            .setAccentColor(0x483D8B);
 
                         rolesContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`## 👥 **HEIST ROLES & RESPONSIBILITIES**\n\n**MASTERMIND** (Required)\n> • Plans the heist, gets 1.5x payout share\n> • Must own equipment and recruit team\n\n**HACKER** (Tech heists)\n> • Bypasses security systems, 1.3x payout\n> • Requires high heist skill level\n\n**SAFECRACKER** (Vault heists)\n> • Opens safes and vaults, 1.2x payout\n> • Specialized role for bank jobs\n\n**DRIVER/MUSCLE/LOOKOUT** (Support)\n> • Essential support roles, 1.0x payout\n> • Lower skill requirements`)
+                                .setContent(`## 👥 **RAID ROLES & RESPONSIBILITIES**\n\n**WARLORD** (Required)\n> • Plans the raid, gets 1.5x spoil share\n> • Must own gear and recruit warband\n\n**SORCERER** (Magic raids)\n> • Bypasses magical wards, 1.3x spoils\n> • Requires high raid skill level\n\n**ROGUE** (Vault raids)\n> • Opens locks and chests, 1.2x spoils\n> • Specialized role for sanctums\n\n**BERSERKER/RANGER/SENTINEL** (Support)\n> • Essential support roles, 1.0x spoils\n> • Lower skill requirements`)
                         );
 
                         components.push(rolesContainer);
@@ -438,7 +439,7 @@ module.exports = {
 
                         proHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 💡 PRO STRATEGIES & MASTER TIPS\n## ELITE-LEVEL STRATEGIES FOR TOTAL ECONOMY DOMINATION\n\n> **Page 9 of 9** | Become the server's richest player\n> Master these strategies to build an unstoppable criminal empire`)
+                                .setContent(`# 💡 DARK LORD STRATEGIES & MASTER TIPS\n## ELITE STRATEGIES FOR TOTAL ECONOMIC DOMINATION\n\n> **Page 9 of 9** | Become the server's most powerful soul\n> Master these strategies to build an unstoppable shadow empire`)
                         );
 
                         components.push(proHeader);
@@ -446,7 +447,7 @@ module.exports = {
 
                         // Early Game Mastery
                         const earlyGameContainer = new ContainerBuilder()
-                            .setAccentColor(0x4CAF50);
+                            .setAccentColor(0x2E8B57);
 
                         earlyGameContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
@@ -455,155 +456,156 @@ module.exports = {
 
                         earlyGameContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**Week 1: Foundation**\n1. Claim daily rewards religiously (build streaks)\n2. Work every hour possible\n3. Save 50,000 Embers for Studio Apartment + Restaurant\n4. Immediately add Spouse (highest income)\n5. Buy House Cat for basic security (500 Embers)\n\n**Week 2-3: Business Scaling**\n6. Upgrade restaurant to level 3-4\n7. Hire 5-10 employees for restaurant\n8. Save for 2BR Apartment upgrade\n9. Add Parent as 2nd family member\n10. Collect business profits daily`)
+                                .setContent(`**Week 1: Foundation**\n1. Claim daily tithes religiously (build streaks)\n2. Toil every hour possible\n3. Save 50,000 Embers for a Crypt + Thieves Guild\n4. Immediately bind an Acolyte (highest income)\n5. Summon an Imp for basic warding (500 Embers)\n\n**Week 2-3: Guild Scaling**\n6. Upgrade Thieves Guild to level 3-4\n7. Hire 5-10 acolytes for the guild\n8. Save for Fortified Manor upgrade\n9. Add a Mercenary as 2nd follower\n10. Collect guild tribute daily`)
                         );
 
                         components.push(earlyGameContainer);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Mid Game Tactics
-                        const midGameContainer = new ContainerBuilder()
-                            .setAccentColor(0xFF9800);
-
-                        midGameContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`## 💎 **MID GAME TACTICS** (Levels 10-25)\n\n**Month 2: Empire Expansion**\n1. Own Restaurant + Tech Startup businesses\n2. Save 300,000 Embers for Family House\n3. Fill all 5 family member slots\n4. Take trips to boost bonds to 80%+\n5. Plan first armored truck heist (easy Embers)\n\n**Income Targets Per Week:**\n> • Business profits: 20,000-40,000 Embers\n> • Work + family: 15,000-25,000 Embers\n> • Heist profits: 50,000-200,000 Embers\n> • **Total: 85,000-265,000 Embers weekly income**`)
-                        );
-
-                        components.push(midGameContainer);
-                        components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-                        // The 12 Commandments
-                        const commandmentsContainer = new ContainerBuilder()
-                            .setAccentColor(0xF44336);
-
-                        commandmentsContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`## ⚠️ **THE 12 COMMANDMENTS OF SUCCESS**\n\n1. **NEVER** attempt heists without full equipment\n2. **ALWAYS** check team members' heist skills\n3. **NEVER** plan heists during high heat periods\n4. **ALWAYS** collect business profits daily\n5. **NEVER** gamble without luck boosts\n6. **ALWAYS** care for pets every 2-3 days\n7. **NEVER** keep more than 25% wealth (Embers) in wallet\n8. **ALWAYS** upgrade businesses before buying new ones\n9. **NEVER** race with cars below 70% durability\n10. **ALWAYS** recruit experienced heist members\n11. **NEVER** attempt Central Bank with <80 heist skill\n12. **ALWAYS** diversify income: business + family + heists`)
-                        );
-
-                        components.push(commandmentsContainer);
-                        break;
-
-                    default:
-                        components.push(new ContainerBuilder().setAccentColor(0xE74C3C)
-                            .addTextDisplayComponents(new TextDisplayBuilder().setContent('Page not found')));
-                }
-
-                return components;
-            };
-
-            const createNavigationButtons = () => {
-                const navContainer = new ContainerBuilder()
-                    .setAccentColor(0x607D8B);
-
-                const navText = `## 📖 **NAVIGATION**\n\n**Current Page:** ${currentPage + 1} of ${totalPages}\n\n**📚 Guide Sections:**\n> 1. Command Overview • 2. Basic Economy • 3. Property System\n> 4. Family & Security • 5. Shop & Effects • 6. Vehicles & Pets\n> 7. Business Empire • 8. Heist System • 9. Pro Strategies\n\n**⏰ This guide expires in 10 minutes**`;
-
-                if (currentPage > 0) {
-                    navContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`${navText}\n\n**◀️ Previous:** Page ${currentPage}`)
-                    );
-                } else if (currentPage < totalPages - 1) {
-                    navContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`${navText}\n\n**▶️ Next:** Page ${currentPage + 2}`)
-                    );
-                } else {
-                    navContainer.addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(navText)
-                    );
-                }
-
-                return navContainer;
-            };
-
-            const sendPage = async (isEdit = false) => {
-                const components = createPage(currentPage);
-                components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-                components.push(createNavigationButtons());
-
-                const messageData = {
-                    components: components,
-                    flags: MessageFlags.IsComponentsV2
-                };
-
-                if (isEdit) {
-                    return msg.edit(messageData);
-                } else {
-                    return message.reply(messageData);
-                }
-            };
-
-
-            const msg = await sendPage();
-
-
-            await msg.react('◀️');
-            await msg.react('▶️');
-            await msg.react('❌');
-
-            const reactionCollector = msg.createReactionCollector({
-                filter: (reaction, user) => {
-                    return ['◀️', '▶️', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
-                },
-                time: 600000
-            });
-
-            reactionCollector.on('collect', async (reaction, user) => {
-                await reaction.users.remove(user.id);
-
-                switch (reaction.emoji.name) {
-                    case '◀️':
-                        if (currentPage > 0) {
-                            currentPage--;
-                            await sendPage(true);
-                        }
-                        break;
-                    case '▶️':
-                        if (currentPage < totalPages - 1) {
-                            currentPage++;
-                            await sendPage(true);
-                        }
-                        break;
-                    case '❌':
-                        const closedComponents = [];
-                        const closedContainer = new ContainerBuilder()
-                            .setAccentColor(0x95A5A6);
-
-                        closedContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`# 📚 Economy Guide Closed\n## THANK YOU FOR READING\n\n> The comprehensive economy guide has been closed.\n> Use \`!economy\` anytime to reopen this guide.\n\n**💡 Remember:** Master these strategies to dominate the server economy!`)
-                        );
-
-                        closedComponents.push(closedContainer);
-
-                        await msg.edit({
-                            components: closedComponents,
-                            flags: MessageFlags.IsComponentsV2
-                        });
-                        reactionCollector.stop();
-                        break;
-                }
-            });
-
-            reactionCollector.on('end', () => {
-                msg.reactions.removeAll().catch(() => {});
-            });
-
-        } catch (error) {
-            console.error('Error in economy command:', error);
-
-            const errorContainer = new ContainerBuilder()
-                .setAccentColor(0xE74C3C);
-
-            errorContainer.addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent('## ❌ **ECONOMY GUIDE ERROR**\n\nSomething went wrong while loading the economy guide. Please try again in a moment.')
-            );
-
-            return message.reply({
-                components: [errorContainer],
-                flags: MessageFlags.IsComponentsV2
-            });
-        }
-    }
-};
+                                             // Mid Game Tactics
+                                             const midGameContainer = new ContainerBuilder()
+                                             .setAccentColor(0xDAA520);
+                 
+                                         midGameContainer.addTextDisplayComponents(
+                                             new TextDisplayBuilder()
+                                                 .setContent(`## 💎 **MID GAME TACTICS** (Levels 10-25)\n\n**Month 2: Empire Expansion**\n1. Own a Thieves Guild + Assassins Guild\n2. Save 300,000 Embers for a Shadow Keep\n3. Fill all 5 follower slots\n4. Bestow Dark Gifts to boost loyalty to 80%+\n5. Plan first Goblin Encampment raid (easy Embers)\n\n**Tribute Targets Per Week:**\n> • Guild Tribute: 20,000-40,000 Embers\n> • Toil + Followers: 15,000-25,000 Embers\n> • Raid Spoils: 50,000-200,000 Embers\n> • **Total: 85,000-265,000 Embers weekly tribute**`)
+                                         );
+                 
+                                         components.push(midGameContainer);
+                                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+                 
+                                         // The 12 Dark Oaths
+                                         const commandmentsContainer = new ContainerBuilder()
+                                             .setAccentColor(0xDC143C);
+                 
+                                         commandmentsContainer.addTextDisplayComponents(
+                                             new TextDisplayBuilder()
+                                                 .setContent(`## ⚠️ **THE 12 DARK OATHS OF POWER**\n\n1. **NEVER** attempt raids without full gear\n2. **ALWAYS** inspect your warband's raid skills\n3. **NEVER** plan raids during high alert periods\n4. **ALWAYS** collect guild tribute daily\n5. **NEVER** gamble without forbidden luck\n6. **ALWAYS** tend to your minions every 2-3 days\n7. **NEVER** keep more than 25% of your Embers in your wallet\n8. **ALWAYS** upgrade guilds before acquiring new ones\n9. **NEVER** race with beasts below 70% health\n10. **ALWAYS** recruit experienced raid members\n11. **NEVER** attempt a Lich's Sanctum with <80 raid skill\n12. **ALWAYS** diversify tribute: guilds + followers + raids`)
+                                         );
+                 
+                                         components.push(commandmentsContainer);
+                                         break;
+                 
+                                     default:
+                                         components.push(new ContainerBuilder().setAccentColor(0xFF0000)
+                                             .addTextDisplayComponents(new TextDisplayBuilder().setContent('Page not found')));
+                                 }
+                 
+                                 return components;
+                             };
+                 
+                             const createNavigationButtons = () => {
+                                 const navContainer = new ContainerBuilder()
+                                     .setAccentColor(0x696969);
+                 
+                                 const navText = `## 📖 **NAVIGATION**\n\n**Current Page:** ${currentPage + 1} of ${totalPages}\n\n**📚 Guide Sections:**\n> 1. Command Overview • 2. Basic Economy • 3. Citadel System\n> 4. Followers & Minions • 5. Black Market & Effects • 6. Beasts & Minions\n> 7. Guild Empire • 8. Raid System • 9. Dark Lord Strategies\n\n**⏰ This guide expires in 10 minutes**`;
+                 
+                                 if (currentPage > 0) {
+                                     navContainer.addTextDisplayComponents(
+                                         new TextDisplayBuilder().setContent(\`${navText}\n\n**◀️ Previous:** Page ${currentPage}\`)
+                                     );
+                                 } else if (currentPage < totalPages - 1) {
+                                     navContainer.addTextDisplayComponents(
+                                         new TextDisplayBuilder().setContent(\`${navText}\n\n**▶️ Next:** Page ${currentPage + 2}\`)
+                                     );
+                                 } else {
+                                     navContainer.addTextDisplayComponents(
+                                         new TextDisplayBuilder().setContent(navText)
+                                     );
+                                 }
+                 
+                                 return navContainer;
+                             };
+                 
+                             const sendPage = async (isEdit = false) => {
+                                 const components = createPage(currentPage);
+                                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+                                 components.push(createNavigationButtons());
+                 
+                                 const messageData = {
+                                     components: components,
+                                     flags: MessageFlags.IsComponentsV2
+                                 };
+                 
+                                 if (isEdit) {
+                                     return msg.edit(messageData);
+                                 } else {
+                                     return message.reply(messageData);
+                                 }
+                             };
+                 
+                 
+                             const msg = await sendPage();
+                 
+                 
+                             await msg.react('◀️');
+                             await msg.react('▶️');
+                             await msg.react('❌');
+                 
+                             const reactionCollector = msg.createReactionCollector({
+                                 filter: (reaction, user) => {
+                                     return ['◀️', '▶️', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
+                                 },
+                                 time: 600000
+                             });
+                 
+                             reactionCollector.on('collect', async (reaction, user) => {
+                                 await reaction.users.remove(user.id);
+                 
+                                 switch (reaction.emoji.name) {
+                                     case '◀️':
+                                         if (currentPage > 0) {
+                                             currentPage--;
+                                             await sendPage(true);
+                                         }
+                                         break;
+                                     case '▶️':
+                                         if (currentPage < totalPages - 1) {
+                                             currentPage++;
+                                             await sendPage(true);
+                                         }
+                                         break;
+                                     case '❌':
+                                         const closedComponents = [];
+                                         const closedContainer = new ContainerBuilder()
+                                             .setAccentColor(0x696969);
+                 
+                                         closedContainer.addTextDisplayComponents(
+                                             new TextDisplayBuilder()
+                                                 .setContent(\`# 📚 Dark Fantasy Economy Guide Closed\n## MAY YOUR EMBERS NEVER FADE\n\n> The guide has been closed. Use \`${serverPrefix}economy\` to reopen it.\`)
+                                         );
+                 
+                                         closedComponents.push(closedContainer);
+                 
+                                         await msg.edit({
+                                             components: closedComponents,
+                                             flags: MessageFlags.IsComponentsV2
+                                         });
+                                         reactionCollector.stop();
+                                         break;
+                                 }
+                             });
+                 
+                             reactionCollector.on('end', () => {
+                                 msg.reactions.removeAll().catch(() => {});
+                             });
+                 
+                         } catch (error) {
+                             console.error('Error in economy command:', error);
+                 
+                             const errorContainer = new ContainerBuilder()
+                                 .setAccentColor(0xFF0000);
+                 
+                             errorContainer.addTextDisplayComponents(
+                                 new TextDisplayBuilder()
+                                     .setContent('## ❌ **ECONOMY GUIDE ERROR**\n\nSomething went wrong while loading the economy guide. Please try again in a moment.')
+                             );
+                 
+                             return message.reply({
+                                 components: [errorContainer],
+                                 flags: MessageFlags.IsComponentsV2
+                             });
+                         }
+                     }
+                 };
+                 
