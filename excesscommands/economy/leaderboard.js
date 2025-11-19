@@ -10,12 +10,12 @@ const { Economy } = require('../../models/economy/economy');
 module.exports = {
     name: 'leaderboard',
     aliases: ['lb', 'top'],
-    description: 'View server leaderboards .',
-    usage: '!leaderboard [wealth/level/racing/family]',
+    description: 'View server leaderboards with v2 components',
+    usage: '!leaderboard [wealth/level/racing/followers]',
     async execute(message, args) {
         try {
             const type = args[0]?.toLowerCase() || 'wealth';
-            const validTypes = ['wealth', 'level', 'racing', 'family'];
+            const validTypes = ['wealth', 'level', 'racing', 'followers'];
             
             if (!validTypes.includes(type)) {
                 const components = [];
@@ -37,7 +37,7 @@ module.exports = {
 
                 typesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏆 **AVAILABLE LEADERBOARDS**\n\n**💰 \`wealth\`** - Total wealth (wallet + bank + family vault, in Embers)\n**⭐ \`level\`** - Player levels and experience points\n**🏁 \`racing\`** - Racing wins and success rates\n**👨‍👩‍👧‍👦 \`family\`** - Family bonds and household sizes\n\n**Example:** \`!leaderboard wealth\``)
+                        .setContent(`## 🏆 **AVAILABLE LEADERBOARDS**\n\n**💰 \`wealth\`** - Total wealth (wallet + bank + follower tithe, in Embers)\n**⭐ \`level\`** - Player levels and experience points\n**🏁 \`racing\`** - Racing wins and success rates\n**👥 \`followers\`** - Number of followers and their allegiance\n\n**Example:** \`!leaderboard wealth\``)
                 );
 
                 components.push(typesContainer);
@@ -58,13 +58,13 @@ module.exports = {
                 case 'wealth':
                     leaderboardData = await Economy.aggregate([
                         { $match: { guildId: message.guild.id } },
-                        { $addFields: { totalWealth: { $add: ['$wallet', '$bank', '$familyVault'] } } },
+                        { $addFields: { totalWealth: { $add: ['$wallet', '$bank', '$followerTithe'] } } },
                         { $sort: { totalWealth: -1 } },
                         { $limit: 15 }
                     ]);
                     title = 'Wealth Champions';
                     emoji = '💰';
-                    description = 'Top players by total wealth (wallet + bank + family vault)';
+                    description = 'Top players by total wealth (wallet + bank + follower tithe)';
                     break;
 
                 case 'level':
@@ -85,16 +85,24 @@ module.exports = {
                     description = 'Top players by racing victories and win rates';
                     break;
 
-                case 'family':
-                    leaderboardData = await Economy.find({ 
-                        guildId: message.guild.id,
-                        'familyMembers.0': { $exists: true }
-                    })
-                    .sort({ familyBond: -1 })
-                    .limit(15);
-                    title = 'Family Leaders';
-                    emoji = '👨‍👩‍👧‍👦';
-                    description = 'Top players by family bonds and household management';
+                case 'followers':
+                    leaderboardData = await Economy.aggregate([
+                        { $match: { guildId: message.guild.id, 'followers.0': { $exists: true } } },
+                        {
+                            $project: {
+                                userId: 1,
+                                guildId: 1,
+                                followers: 1,
+                                followerAllegiance: 1,
+                                followersCount: { $size: '$followers' }
+                            }
+                        },
+                        { $sort: { followersCount: -1, followerAllegiance: -1 } },
+                        { $limit: 15 }
+                    ]);
+                    title = 'Follower Overlords';
+                    emoji = '👥';
+                    description = 'Top players by number of followers and allegiance';
                     break;
             }
 
@@ -118,7 +126,7 @@ module.exports = {
 
                 encouragementContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚀 **GET STARTED**\n\n**💡 Tips to appear on this leaderboard:**\n> • Participate in economy activities\n> • Build wealth through work and guilds\n> • Level up through regular activity\n> • Start racing and building family relationships\n\n> Your journey to the top starts now!`)
+                        .setContent(`## 🚀 **GET STARTED**\n\n**💡 Tips to appear on this leaderboard:**\n> • Participate in economy activities\n> • Build wealth through work and guilds\n> • Level up through regular activity\n> • Start racing and recruiting followers\n\n> Your journey to the top starts now!`)
                 );
 
                 components.push(encouragementContainer);
@@ -172,8 +180,8 @@ module.exports = {
                         const winRate = totalRaces > 0 ? ((profile.racingStats.wins / totalRaces) * 100).toFixed(1) : '0.0';
                         valueText = `${profile.racingStats.wins} wins (${winRate}% rate)`;
                         break;
-                    case 'family':
-                        valueText = `${profile.familyBond}% bond (${profile.familyMembers.length} members)`;
+                    case 'followers':
+                        valueText = `${profile.followersCount} followers (${profile.followerAllegiance}% allegiance)`;
                         break;
                 }
 
@@ -223,8 +231,8 @@ module.exports = {
                                 const winRate = totalRaces > 0 ? ((profile.racingStats.wins / totalRaces) * 100).toFixed(1) : '0.0';
                                 valueText = `${profile.racingStats.wins} wins (${winRate}%)`;
                                 break;
-                            case 'family':
-                                valueText = `${profile.familyBond}% bond (${profile.familyMembers.length} members)`;
+                            case 'followers':
+                                valueText = `${profile.followersCount} followers (${profile.followerAllegiance}% allegiance)`;
                                 break;
                         }
 
@@ -272,10 +280,10 @@ module.exports = {
                     const averageWins = totalWins / leaderboardData.length;
                     statsText = `**🏁 Total Wins:** \`${totalWins}\`\n**📊 Average Wins:** \`${averageWins.toFixed(1)}\`\n**🏆 Top Racer:** \`${leaderboardData[0].racingStats.wins} wins\``;
                     break;
-                case 'family':
-                    const averageBond = leaderboardData.reduce((sum, p) => sum + p.familyBond, 0) / leaderboardData.length;
-                    const totalMembers = leaderboardData.reduce((sum, p) => sum + p.familyMembers.length, 0);
-                    statsText = `**❤️ Average Family Bond:** \`${averageBond.toFixed(1)}%\`\n**👥 Total Family Members:** \`${totalMembers}\`\n**🏠 Largest Family:** \`${Math.max(...leaderboardData.map(p => p.familyMembers.length))} members\``;
+                case 'followers':
+                    const averageAllegiance = leaderboardData.reduce((sum, p) => sum + p.followerAllegiance, 0) / leaderboardData.length;
+                    const totalFollowers = leaderboardData.reduce((sum, p) => sum + p.followersCount, 0);
+                    statsText = `**❤️ Average Follower Allegiance:** \`${averageAllegiance.toFixed(1)}%\`\n**👥 Total Followers:** \`${totalFollowers}\`\n**🏠 Most Followers:** \`${Math.max(...leaderboardData.map(p => p.followersCount))} followers\``;
                     break;
             }
 
@@ -295,7 +303,7 @@ module.exports = {
             let tipText = '';
             switch (type) {
                 case 'wealth':
-                    tipText = '💡 **Wealth Building Tips:** Work regularly, run guilds, invest in properties, and save Embers in your bank and family vault!';
+                    tipText = '💡 **Wealth Building Tips:** Work regularly, run guilds, invest in properties, and save Embers in your bank and follower tithe!';
                     break;
                 case 'level':
                     tipText = '💡 **Leveling Tips:** Complete daily activities, work consistently, participate in all economy features to gain XP!';
@@ -303,14 +311,14 @@ module.exports = {
                 case 'racing':
                     tipText = '💡 **Racing Tips:** Buy better cars, maintain their condition, and practice regularly to improve your win rate!';
                     break;
-                case 'family':
-                    tipText = '💡 **Family Tips:** Take regular family trips, build strong relationships, and expand your household size!';
+                case 'followers':
+                    tipText = '💡 **Follower Tips:** Recruit more followers and perform rituals to increase their allegiance!';
                     break;
             }
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **CLIMB THE RANKS**\n\n${tipText}\n\n**🔄 Other Leaderboards:** Try \`!leaderboard wealth\`, \`!leaderboard level\`, \`!leaderboard racing\`, or \`!leaderboard family\``)
+                    .setContent(`## 💡 **CLIMB THE RANKS**\n\n${tipText}\n\n**🔄 Other Leaderboards:** Try \`!leaderboard wealth\`, \`!leaderboard level\`, \`!leaderboard racing\`, or \`!leaderboard followers\``)
             );
 
             components.push(tipsContainer);
