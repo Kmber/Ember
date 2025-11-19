@@ -146,7 +146,7 @@ const ROLES = {
             workMultiplier: 1.5,
             racingBonus: 1000,
             robberyProtection: 20,
-            familyBonus: 0.2
+            followerBonus: 0.2
         }
     },
     'premium': {
@@ -157,7 +157,7 @@ const ROLES = {
             workMultiplier: 2.0,
             racingBonus: 2500,
             robberyProtection: 40,
-            familyBonus: 0.5
+            followerBonus: 0.5
         }
     },
     'diamond': {
@@ -168,7 +168,7 @@ const ROLES = {
             workMultiplier: 3.0,
             racingBonus: 5000,
             robberyProtection: 60,
-            familyBonus: 1.0
+            followerBonus: 1.0
         }
     }
 };
@@ -196,11 +196,11 @@ const SHOP_ITEMS = {
         category: 'security',
         cooldown: 0
     },
-    'family_vacation': {
-        name: 'Family Vacation Package',
+    'follower_morale_booster': {
+        name: 'Follower Morale Booster',
         price: 3000,
-        description: 'Increases all family member bonds by 15%',
-        category: 'family',
+        description: 'Increases all follower allegiance by 15%',
+        category: 'follower',
         cooldown: 0
     },
     'lucky_charm': {

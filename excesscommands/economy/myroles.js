@@ -44,7 +44,7 @@ module.exports = {
 
                 purchaseContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **GET YOUR FIRST PREMIUM ROLE**\n\n**Step 1:** Use \`!buyrole\` to see available premium memberships\n**Step 2:** Choose a role that fits your budget and goals\n**Step 3:** Enjoy enhanced earnings and exclusive benefits\n**Step 4:** Stack multiple roles for maximum advantage!\n\n**💡 Benefits of Premium Roles:**\n> • Enhanced work earnings with multipliers\n> • Racing bonuses for competitive advantage\n> • Security boosts against robberies\n> • Family bonuses for household management\n> • Exclusive status and recognition`)
+                        .setContent(`## 🛒 **GET YOUR FIRST PREMIUM ROLE**\n\n**Step 1:** Use \`!buyrole\` to see available premium memberships\n**Step 2:** Choose a role that fits your budget and goals\n**Step 3:** Enjoy enhanced earnings and exclusive benefits\n**Step 4:** Stack multiple roles for maximum advantage!\n\n**💡 Benefits of Premium Roles:**\n> • Enhanced work earnings with multipliers\n> • Racing bonuses for competitive advantage\n> • Security boosts against robberies\n> • Follower bonuses for household management\n> • Exclusive status and recognition`)
                 );
 
                 components.push(purchaseContainer);
@@ -97,7 +97,7 @@ module.exports = {
                         `> **💼 Work Multiplier:** \`${role.benefits.workMultiplier}x\` bonus\n` +
                         `> **🏁 Racing Bonus:** \`+${role.benefits.racingBonus} Embers\` per win\n` +
                         `> **🛡️ Security Bonus:** \`+${role.benefits.robberyProtection}%\` protection\n` +
-                        `> **👨‍👩‍👧‍👦 Family Bonus:** \`+${role.benefits.familyBonus}\` multiplier\n` +
+                        `> **👥 Follower Bonus:** \`+${role.benefits.followerBonus}\` multiplier\n` +
                         `> **💰 Purchase Price:** \`${role.price?.toLocaleString() || 'Unknown'} Embers\`\n` +
                         `> **📅 Purchased:** \`${purchaseDate}\``;
 
@@ -126,12 +126,12 @@ module.exports = {
                     sum + role.benefits.racingBonus, 0);
                 const totalSecurityBonus = activeRoles.reduce((sum, role) => 
                     sum + role.benefits.robberyProtection, 0);
-                const totalFamilyBonus = activeRoles.reduce((sum, role) => 
-                    sum + role.benefits.familyBonus, 0);
+                const totalFollowerBonus = activeRoles.reduce((sum, role) => 
+                    sum + role.benefits.followerBonus, 0);
 
                 benefitsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💼 Total Work Multiplier:** \`${totalWorkMultiplier.toFixed(2)}x\` (${((totalWorkMultiplier - 1) * 100).toFixed(0)}% bonus)\n**🏁 Total Racing Bonus:** \`+${totalRacingBonus} Embers\` per race win\n**🛡️ Total Security Bonus:** \`+${totalSecurityBonus}%\` robbery protection\n**👨‍👩‍👧‍👦 Total Family Bonus:** \`+${totalFamilyBonus}\` family multiplier`)
+                        .setContent(`**💼 Total Work Multiplier:** \`${totalWorkMultiplier.toFixed(2)}x\` (${((totalWorkMultiplier - 1) * 100).toFixed(0)}% bonus)\n**🏁 Total Racing Bonus:** \`+${totalRacingBonus} Embers\` per race win\n**🛡️ Total Security Bonus:** \`+${totalSecurityBonus}%\` robbery protection\n**👥 Total Follower Bonus:** \`+${totalFollowerBonus}\` follower multiplier`)
                 );
 
                 benefitsContainer.addTextDisplayComponents(

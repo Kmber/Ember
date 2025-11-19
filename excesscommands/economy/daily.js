@@ -67,7 +67,7 @@ module.exports = {
             const streakBonus = Math.min(profile.dailyStreak * 50, 1000); 
             const roleBonus = profile.purchasedRoles
                 .filter(r => !r.expiryDate || r.expiryDate > new Date())
-                .reduce((sum, role) => sum + (role.benefits.familyBonus * 100), 0);
+                .reduce((sum, role) => sum + (role.benefits.followerBonus * 100), 0);
             
             const totalReward = baseReward + streakBonus + roleBonus;
             

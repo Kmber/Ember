@@ -16,7 +16,6 @@ module.exports = {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
-           
             const cooldownCheck = EconomyManager.checkCooldown(profile, 'shop');
             if (cooldownCheck.onCooldown) {
                 const components = [];
@@ -50,19 +49,17 @@ module.exports = {
             }
             
             if (!args[0]) {
-               
                 const categories = {
                     'minion_care': '🦇 Minion Care',
-                    'vehicle': '🚗 Vehicle', 
+                    'beast': '🐾 Beast',
                     'security': '🛡️ Security',
-                    'family': '👨‍👩‍👧‍👦 Family',
+                    'follower': '👥 Follower',
                     'boost': '⚡ Boosts',
                     'storage': '📦 Storage'
                 };
                 
                 const components = [];
 
-           
                 const headerContainer = new ContainerBuilder()
                     .setAccentColor(0x9C27B0);
 
@@ -73,7 +70,6 @@ module.exports = {
 
                 components.push(headerContainer);
 
-                
                 Object.entries(categories).forEach(([category, emoji]) => {
                     const items = Object.entries(SHOP_ITEMS).filter(([id, item]) => item.category === category);
                     if (items.length > 0) {
@@ -87,7 +83,6 @@ module.exports = {
                                 .setContent(`## ${emoji}`)
                         );
 
-                        
                         const itemsPerGroup = 3;
                         for (let i = 0; i < items.length; i += itemsPerGroup) {
                             const itemGroup = items.slice(i, i + itemsPerGroup);
@@ -105,7 +100,6 @@ module.exports = {
                     }
                 });
 
-           
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const instructionsContainer = new ContainerBuilder()
@@ -113,7 +107,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **HOW TO PURCHASE**\n\n**Command:** \`!shop buy <item_id>\`\n**Example:** \`!shop buy minion_food\`\n**Cooldown:** \`10 seconds between purchases\`\n\n> Choose your items wisely! Each purchase has strategic benefits for your economy journey.`)
+                        .setContent(`## 💡 **HOW TO PURCHASE**\n\n**Command:** \`!shop buy <item_id>\`\n**Example:** \`!shop buy minion_sustenance\`\n**Cooldown:** \`10 seconds between purchases\`\n\n> Choose your items wisely! Each purchase has strategic benefits for your economy journey.`)
                 );
 
                 components.push(instructionsContainer);
@@ -184,7 +178,7 @@ module.exports = {
                 let effectDescription = '';
                 
                 switch (itemId) {
-                    case 'minion_food':
+                    case 'minion_sustenance':
                         if (profile.minions.length === 0) {
                             profile.wallet += item.price;
                             const components = [];
@@ -211,33 +205,33 @@ module.exports = {
                         effectDescription = `Fed all ${profile.minions.length} minions! (+40 energy, +10 constitution each)`;
                         break;
                         
-                    case 'car_repair':
-                        const car = profile.cars.find(c => c.carId === profile.activeCar);
-                        if (!car) {
+                    case 'beast_healing':
+                        const beast = profile.beasts.find(b => b.beastId === profile.activeBeast);
+                        if (!beast) {
                             profile.wallet += item.price;
                             const components = [];
 
-                            const noCarContainer = new ContainerBuilder()
+                            const noBeastContainer = new ContainerBuilder()
                                 .setAccentColor(0xF39C12);
 
-                            noCarContainer.addTextDisplayComponents(
+                            noBeastContainer.addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(`# 🚗 No Active Car\n## ITEM CANNOT BE USED\n\n> You need an active car to use **${item.name}**!\n> Purchase a car and set it as active first.\n\n**💰 Refund:** Your Embers have been returned to your wallet.`)
+                                    .setContent(`# 🐾 No Active Beast\n## ITEM CANNOT BE USED\n\n> You need an active beast to use **${item.name}**!\n> Purchase a beast and set it as active first.\n\n**💰 Refund:** Your Embers have been returned to your wallet.`)
                             );
 
-                            components.push(noCarContainer);
+                            components.push(noBeastContainer);
 
                             return message.reply({
                                 components: components,
                                 flags: MessageFlags.IsComponentsV2
                             });
                         }
-                        car.durability = Math.min(100, car.durability + 30);
-                        effectDescription = `Repaired ${car.name}! (+30 durability, now ${car.durability}%)`;
+                        beast.durability = Math.min(100, beast.durability + 30);
+                        effectDescription = `Healed ${beast.name}! (+30 durability, now ${beast.durability}%)`;
                         break;
                         
                     case 'security_upgrade':
-                        const primaryProperty = profile.citadels.find(p => p.propertyId === profile.primaryResidence);
+                        const primaryProperty = profile.citadels.find(p => p.propertyId === profile.primaryCitadel);
                         if (!primaryProperty) {
                             profile.wallet += item.price;
                             const components = [];
@@ -261,32 +255,32 @@ module.exports = {
                         effectDescription = `Upgraded ${primaryProperty.name} security! (Level ${primaryProperty.securityLevel})`;
                         break;
                         
-                    case 'family_vacation':
-                        if (profile.familyMembers.length === 0) {
+                    case 'follower_morale_booster':
+                        if (profile.followers.length === 0) {
                             profile.wallet += item.price;
                             const components = [];
 
-                            const noFamilyContainer = new ContainerBuilder()
+                            const noFollowersContainer = new ContainerBuilder()
                                 .setAccentColor(0xF39C12);
 
-                            noFamilyContainer.addTextDisplayComponents(
+                            noFollowersContainer.addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(`# 👨‍👩‍👧‍👦 No Family Members\n## ITEM CANNOT BE USED\n\n> You need family members to use **${item.name}**!\n> Add family members to your household first.\n\n**💰 Refund:** Your Embers have been returned to your wallet.`)
+                                    .setContent(`# 👥 No Followers Available\n## ITEM CANNOT BE USED\n\n> You need followers to use **${item.name}**!\n> Add followers to your enterprise first.\n\n**💰 Refund:** Your Embers have been returned to your wallet.`)
                             );
 
-                            components.push(noFamilyContainer);
+                            components.push(noFollowersContainer);
 
                             return message.reply({
                                 components: components,
                                 flags: MessageFlags.IsComponentsV2
                             });
                         }
-                        profile.familyMembers.forEach(member => {
-                            member.bond = Math.min(100, member.bond + 15);
+                        profile.followers.forEach(member => {
+                            member.allegiance = Math.min(100, member.allegiance + 15);
                         });
-                        const newFamilyBond = Math.floor(profile.familyMembers.reduce((sum, m) => sum + m.bond, 0) / profile.familyMembers.length);
-                        profile.familyBond = newFamilyBond;
-                        effectDescription = `All family members gained +15% bond! (Family bond: ${profile.familyBond}%)`;
+                        const newFollowerAllegiance = Math.floor(profile.followers.reduce((sum, m) => sum + m.allegiance, 0) / profile.followers.length);
+                        profile.followerAllegiance = newFollowerAllegiance;
+                        effectDescription = `All followers gained +15% allegiance! (Average allegiance: ${profile.followerAllegiance}%)`;
                         break;
                         
                     case 'lucky_charm':
@@ -316,7 +310,6 @@ module.exports = {
                         break;
                 }
                 
-              
                 profile.transactions.push({
                     type: 'expense',
                     amount: item.price,
@@ -326,10 +319,8 @@ module.exports = {
                 
                 await profile.save();
                 
-              
                 const components = [];
 
-              
                 const successContainer = new ContainerBuilder()
                     .setAccentColor(0x4CAF50);
 
@@ -342,7 +333,6 @@ module.exports = {
 
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                
                 const effectContainer = new ContainerBuilder()
                     .setAccentColor(0x27AE60);
 
@@ -358,7 +348,6 @@ module.exports = {
 
                 components.push(effectContainer);
 
-              
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                 const tipsContainer = new ContainerBuilder()
@@ -380,7 +369,6 @@ module.exports = {
         } catch (error) {
             console.error('Error in shop command:', error);
 
-          
             const errorContainer = new ContainerBuilder()
                 .setAccentColor(0xE74C3C);
 
@@ -397,15 +385,14 @@ module.exports = {
     }
 };
 
-
 function getCategoryColor(category) {
     const colors = {
-        'minion_care': 0x992d22,   
-        'vehicle': 0x2196F3,     
-        'security': 0x4CAF50,   
-        'family': 0x9C27B0,    
-        'boost': 0xE91E63,      
-        'storage': 0x607D8B      
+        'minion_care': 0x992d22,
+        'beast': 0x6d4c41,
+        'security': 0x4CAF50,
+        'follower': 0x9B59B6,
+        'boost': 0xE91E63,
+        'storage': 0x607D8B
     };
     return colors[category] || 0x9C27B0;
 }
