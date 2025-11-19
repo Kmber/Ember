@@ -171,34 +171,38 @@ class EconomyManager {
         // Citadel power
         const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
         if (primaryCitadel) {
-            totalPower += primaryCitadel.securityLevel * 10;
+            totalPower += (primaryCitadel.securityLevel || 0) * 10;
         }
 
         // Minion power
         profile.minions.forEach(minion => {
-            const minionEfficiency = (minion.loyalty + minion.constitution + minion.corruption) / 300;
-            totalPower += minion.powerLevel * minionEfficiency;
+            const loyalty = minion.loyalty || 0;
+            const constitution = minion.constitution || 0;
+            const corruption = minion.corruption || 0;
+            const minionEfficiency = (loyalty + constitution + corruption) / 300;
+            const powerLevel = minion.powerLevel || 0;
+            totalPower += powerLevel * minionEfficiency;
         });
 
         // Role bonuses
         profile.purchasedRoles.forEach(role => {
             if (!role.expiryDate || role.expiryDate > new Date()) {
-                totalPower += role.benefits.robberyProtection;
+                totalPower += (role.benefits?.robberyProtection || 0);
             }
         });
 
         // Active effect bonuses
         profile.activeEffects.forEach(effect => {
             if (effect.type === 'robbery_protection') {
-                totalPower += effect.multiplier * effect.stacks;
+                totalPower += (effect.multiplier || 0) * (effect.stacks || 0);
             }
         });
 
-        return Math.min(100, totalPower);
+        return Math.min(100, Math.max(0, Math.floor(totalPower)));
     }
 
-// Add this corrected method to replace the buggy one:
-static async calculateGuildIncome(guild, profile = null) {
+    // Add this corrected method to replace the buggy one:
+    static async calculateGuildIncome(guild, profile = null) {
     const guildType = GUILD_TYPES[guild.type];
     const baseIncome = guildType.dailyIncome;
 
@@ -505,6 +509,37 @@ static async collectGuildIncome(userId, guildId) {
         });
 
         return Math.floor(baseLimit);
+    }
+
+    // Calculate security level
+    static calculateSecurityLevel(profile) {
+        let security = 0;
+
+        const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
+        if (primaryCitadel) {
+            security += primaryCitadel.securityLevel;
+        }
+
+        // Minion security bonuses
+        profile.minions.forEach(minion => {
+            security += Math.floor(minion.powerLevel * 0.1);
+        });
+
+        // Role bonuses
+        profile.purchasedRoles.forEach(role => {
+            if (!role.expiryDate || role.expiryDate > new Date()) {
+                security += role.benefits.robberyProtection * 0.5;
+            }
+        });
+
+        // Active effect bonuses
+        profile.activeEffects.forEach(effect => {
+            if (effect.type === 'security_boost') {
+                security += effect.multiplier * effect.stacks;
+            }
+        });
+
+        return Math.min(100, Math.floor(security));
     }
 
     // Add active effect

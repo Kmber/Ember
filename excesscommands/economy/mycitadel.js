@@ -117,8 +117,8 @@ module.exports = {
                         .setContent(`**Follower Count:** \`${profile.followers.length}/${primaryCitadel.maxFollowers} followers\`\n**Average Allegiance:** \`${profile.followerAllegiance}%\`\n**Follower Work Tithe:** \`$${Math.floor(totalFollowerIncome).toLocaleString()}/work\``)
                 );
 
-                const followerList = profile.followers.slice(0, 5).map(member => 
-                    `**${member.name}** (${member.relationship})\n> **Profession:** \`${member.profession}\` • **Allegiance:** \`${member.allegiance}%\` • **Follower Tithe:** \`$${member.salary}/work\``
+                const followerList = profile.followers.slice(0, 5).map(member =>
+                    `**${member.name}** (${member.profession})\n> **Profession:** \`${member.profession}\` • **Allegiance:** \`${member.allegiance}%\` • **Follower Tithe:** \`$${member.salary}/work\``
                 ).join('\n\n');
 
                 followerContainer.addTextDisplayComponents(

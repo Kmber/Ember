@@ -82,7 +82,7 @@ module.exports = {
                     const lastRitualText = member.lastRitual ? 
                         new Date(member.lastRitual).toLocaleDateString() : 'Never';
                     
-                    const memberText = `**${actualIndex}. ${member.name}** (${member.relationship})\n` +
+                    const memberText = `**${actualIndex}. ${member.name}** (${member.profession})\n` +
                         `> **📜 Role:** \`${member.profession}\`\n` +
                         `> **💰 Tithe:** \`$${member.salary}/work\`\n` +
                         `> **🖤 Allegiance Level:** \`${member.allegiance}%\`\n` +
