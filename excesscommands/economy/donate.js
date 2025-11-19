@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'donate',
     aliases: ['give', 'transfer'],
-    description: 'Donate money to another user with v2 components',
+    description: 'Donate Embers to another user with v2 components',
     usage: '!donate @user <amount>',
     cooldown: 5000,
     async execute(message, args) {
@@ -123,7 +123,7 @@ module.exports = {
 
                 parseErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Amount Format\n## PARSING ERROR\n\n> Could not understand the amount: \`${args[1]}\`\n> **Valid formats:** \`1000\`, \`1,000\`, \`$1000\`, \`all\`, \`max\``)
+                        .setContent(`# ❌ Invalid Amount Format\n## PARSING ERROR\n\n> Could not understand the amount: \`${args[1]}\`\n> **Valid formats:** \`1000\`, \`1,000\`, \`1000 Embers\`, \`all\`, \`max\``)
                 );
 
                 components.push(parseErrorContainer);
@@ -161,7 +161,7 @@ module.exports = {
 
                 minAmountContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💰 Minimum Donation Required\n## AMOUNT TOO SMALL\n\n> Minimum donation amount is **\`$10\`**\n> You tried to donate: **\`$${amount}\`**\n\n**💡 Tip:** Small donations help cover transaction fees better with larger amounts.`)
+                        .setContent(`# 💰 Minimum Donation Required\n## AMOUNT TOO SMALL\n\n> Minimum donation amount is **\`10 Embers\`**\n> You tried to donate: **\`${amount} Embers\`**\n\n**💡 Tip:** Small donations help cover transaction fees better with larger amounts.`)
                 );
 
                 components.push(minAmountContainer);
@@ -180,7 +180,7 @@ module.exports = {
 
                 maxAmountContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💎 Maximum Donation Limit\n## AMOUNT TOO LARGE\n\n> Maximum donation amount is **\`$1,000,000\`**\n> You tried to donate: **\`$${amount.toLocaleString()}\`**\n\n**💡 Tip:** Make multiple smaller donations if needed.`)
+                        .setContent(`# 💎 Maximum Donation Limit\n## AMOUNT TOO LARGE\n\n> Maximum donation amount is **\`1,000,000 Embers\`**\n> You tried to donate: **\`${amount.toLocaleString()} Embers\`**\n\n**💡 Tip:** Make multiple smaller donations if needed.`)
                 );
 
                 components.push(maxAmountContainer);
@@ -283,7 +283,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds\n## CANNOT COMPLETE DONATION\n\n> You don't have enough money for this donation!`)
+                        .setContent(`# 💸 Insufficient Funds\n## CANNOT COMPLETE DONATION\n\n> You don't have enough Embers for this donation!`)
                 );
 
                 components.push(insufficientContainer);
@@ -295,7 +295,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **BALANCE BREAKDOWN**\n\n**Your Current Balance:** \`$${donorProfile.wallet.toLocaleString()}\`\n**Donation Amount:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - donorProfile.wallet).toLocaleString()}\``)
+                        .setContent(`## 💰 **BALANCE BREAKDOWN**\n\n**Your Current Balance:** \`${donorProfile.wallet.toLocaleString()} Embers\`\n**Donation Amount:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - donorProfile.wallet).toLocaleString()} Embers\``)
                 );
 
                 components.push(balanceContainer);
@@ -372,7 +372,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💝 Donation Successful!\n## GENEROSITY IN ACTION\n\n> **${message.author.username}** donated **\`$${amount.toLocaleString()}\`** to **${target.username}**!\n> Your kindness makes the community stronger!`)
+                        .setContent(`# 💝 Donation Successful!\n## GENEROSITY IN ACTION\n\n> **${message.author.username}** donated **\`${amount.toLocaleString()} Embers\`** to **${target.username}**!\n> Your kindness makes the community stronger!`)
                 );
 
                 components.push(headerContainer);
@@ -390,7 +390,7 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Donation Amount:** \`$${amount.toLocaleString()}\`\n**💸 Transaction Fee:** \`$${tax.toLocaleString()}\` (2%)\n**💎 Net Received:** \`$${netAmount.toLocaleString()}\`\n**⏰ Timestamp:** \`${timestamp.toLocaleString()}\``)
+                        .setContent(`**💰 Donation Amount:** \`${amount.toLocaleString()} Embers\`\n**💸 Transaction Fee:** \`${tax.toLocaleString()} Embers\` (2%)\n**💎 Net Received:** \`${netAmount.toLocaleString()} Embers\`\n**⏰ Timestamp:** \`${timestamp.toLocaleString()}\``)
                 );
 
                 components.push(detailsContainer);
@@ -408,12 +408,12 @@ module.exports = {
 
                 balancesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**${message.author.username}** (You)\n> **New Balance:** \`$${donorProfile.wallet.toLocaleString()}\`\n> **XP Gained:** \`+${Math.min(50, Math.floor(amount / 1000))}\``)
+                        .setContent(`**${message.author.username}** (You)\n> **New Balance:** \`${donorProfile.wallet.toLocaleString()} Embers\`\n> **XP Gained:** \`+${Math.min(50, Math.floor(amount / 1000))}\``)
                 );
 
                 balancesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**${target.username}** (Recipient)\n> **New Balance:** \`$${recipientProfile.wallet.toLocaleString()}\`\n> **XP Gained:** \`+5\``)
+                        .setContent(`**${target.username}** (Recipient)\n> **New Balance:** \`${recipientProfile.wallet.toLocaleString()} Embers\`\n> **XP Gained:** \`+5\``)
                 );
 
                 components.push(balancesContainer);
@@ -425,7 +425,7 @@ module.exports = {
 
               
                 try {
-                    await target.send(`💸 You received a $${netAmount.toLocaleString()} donation from **${message.author.username}** in **${message.guild.name}**!`);
+                    await target.send(`💸 You received a ${netAmount.toLocaleString()} Embers donation from **${message.author.username}** in **${message.guild.name}**!`);
                 } catch (dmError) {
                     //console.log(`[DONATE] Could not DM recipient: ${dmError.message}`);
                 }

@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'gamble',
     aliases: ['bet'],
-    description: 'Gamble your money for a chance to win more! (Affected by gambling luck) with v2 components',
+    description: 'Gamble your Embers for a chance to win more! (Affected by gambling luck) with v2 components',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
@@ -82,7 +82,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds\n## NOT ENOUGH MONEY TO BET\n\n> You only have **\`$${profile.wallet.toLocaleString()}\`** in your wallet!\n> You're trying to bet **\`$${amount.toLocaleString()}\`**`)
+                        .setContent(`# 💸 Insufficient Funds\n## NOT ENOUGH EMBERS TO BET\n\n> You only have **\`${profile.wallet.toLocaleString()} Embers\`** in your wallet!\n> You're trying to bet **\`${amount.toLocaleString()} Embers\`**`)
                 );
 
                 components.push(insufficientContainer);
@@ -94,7 +94,7 @@ module.exports = {
 
                 suggestionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **BETTING SUGGESTIONS**\n\n**Available to Bet:** \`$${profile.wallet.toLocaleString()}\`\n**Try:** \`!gamble ${Math.floor(profile.wallet / 2)}\` (Half your wallet)\n**Safe Bet:** \`!gamble ${Math.floor(profile.wallet * 0.1)}\` (10% of wallet)\n**All-In:** \`!gamble all\` (Everything you have)\n\n> Remember: Only gamble what you can afford to lose!`)
+                        .setContent(`## 💡 **BETTING SUGGESTIONS**\n\n**Available to Bet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Try:** \`!gamble ${Math.floor(profile.wallet / 2)}\` (Half your Embers)\n**Safe Bet:** \`!gamble ${Math.floor(profile.wallet * 0.1)}\` (10% of Embers)\n**All-In:** \`!gamble all\` (Everything you have)\n\n> Remember: Only gamble what you can afford to lose!`)
                 );
 
                 components.push(suggestionContainer);
@@ -156,7 +156,7 @@ module.exports = {
 
                 successContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🎰 Gambling Victory!\n## ${winType || 'LUCKY WIN!'}\n\n> Congratulations! Lady Luck smiled upon you today!\n> You bet **\`$${amount.toLocaleString()}\`** and won **\`$${winnings.toLocaleString()}\`**!`)
+                        .setContent(`# 🎰 Gambling Victory!\n## ${winType || 'LUCKY WIN!'}\n\n> Congratulations! Lady Luck smiled upon you today!\n> You bet **\`${amount.toLocaleString()} Embers\`** and won **\`${winnings.toLocaleString()} Embers\`**!`)
                 );
 
                 components.push(successContainer);
@@ -174,12 +174,12 @@ module.exports = {
 
                 winDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 Pure Profit:** \`$${profit.toLocaleString()}\`\n**📈 Win Multiplier:** \`${multiplier.toFixed(2)}x\`\n**🍀 Luck Bonus:** \`${luckMultiplier.toFixed(2)}x\`\n**🎯 Win Chance:** \`${winChance.toFixed(1)}%\``)
+                        .setContent(`**💎 Pure Profit:** \`${profit.toLocaleString()} Embers\`\n**📈 Win Multiplier:** \`${multiplier.toFixed(2)}x\`\n**🍀 Luck Bonus:** \`${luckMultiplier.toFixed(2)}x\`\n**🎯 Win Chance:** \`${winChance.toFixed(1)}%\``)
                 );
 
                 winDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**🎲 Roll Result:** \`${roll.toFixed(1)}/100\`\n**📝 Transaction Logged:** Win recorded in history`)
+                        .setContent(`**💳 New Wallet Balance:** \`${profile.wallet.toLocaleString()} Embers\`\n**🎲 Roll Result:** \`${roll.toFixed(1)}/100\`\n**📝 Transaction Logged:** Win recorded in history`)
                 );
 
                 components.push(winDetailsContainer);
@@ -216,7 +216,7 @@ module.exports = {
 
                 lossContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🎲 Gambling Loss\n## LADY LUCK WASN'T ON YOUR SIDE\n\n> Unfortunately, you didn't win this time.\n> You bet **\`$${amount.toLocaleString()}\`** and lost it all, but don't give up!`)
+                        .setContent(`# 🎲 Gambling Loss\n## LADY LUCK WASN'T ON YOUR SIDE\n\n> Unfortunately, you didn't win this time.\n> You bet **\`${amount.toLocaleString()} Embers\`** and lost it all, but don't give up!`)
                 );
 
                 components.push(lossContainer);
@@ -234,7 +234,7 @@ module.exports = {
 
                 lossDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 Your Win Chance:** \`${winChance.toFixed(1)}%\`\n**🍀 Luck Multiplier:** \`${luckMultiplier.toFixed(2)}x\`\n**💸 Amount Lost:** \`$${amount.toLocaleString()}\`\n**💳 Remaining Balance:** \`$${profile.wallet.toLocaleString()}\``)
+                        .setContent(`**🎯 Your Win Chance:** \`${winChance.toFixed(1)}%\`\n**🍀 Luck Multiplier:** \`${luckMultiplier.toFixed(2)}x\`\n**💸 Amount Lost:** \`${amount.toLocaleString()} Embers\`\n**💳 Remaining Balance:** \`${profile.wallet.toLocaleString()} Embers\``)
                 );
 
                 components.push(lossDetailsContainer);
@@ -261,7 +261,7 @@ module.exports = {
 
             nextGambleContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🎰 **NEXT GAMBLING SESSION**\n\n**Cooldown:** \`30 seconds\`\n**Next Available:** \`${new Date(Date.now() + 30000).toLocaleTimeString()}\`\n**Current Balance:** \`$${profile.wallet.toLocaleString()}\`\n\n> ${won ? 'Ride your winning streak or cash out while ahead!' : 'Take a moment to plan your comeback strategy!'}`)
+                    .setContent(`## 🎰 **NEXT GAMBLING SESSION**\n\n**Cooldown:** \`30 seconds\`\n**Next Available:** \`${new Date(Date.now() + 30000).toLocaleTimeString()}\`\n**Current Balance:** \`${profile.wallet.toLocaleString()} Embers\`\n\n> ${won ? 'Ride your winning streak or cash out while ahead!' : 'Take a moment to plan your comeback strategy!'}`)
             );
 
             components.push(nextGambleContainer);

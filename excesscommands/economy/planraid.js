@@ -53,7 +53,7 @@ module.exports = {
                     );
 
                     dungeons.forEach(([id, dungeon]) => {
-                        const payoutRange = `$${dungeon.payout[0].toLocaleString()}-${dungeon.payout[1].toLocaleString()}`;
+                        const payoutRange = `${dungeon.payout[0].toLocaleString()} Embers-${dungeon.payout[1].toLocaleString()} Embers`;
                         const dungeonText = `**\`${id}\`** - ${dungeon.name}\n` +
                             `> **💰 Reward Range:** \`${payoutRange}\`\n` +
                             `> **👥 Party Size:** \`${dungeon.requiredMembers} adventurers\`\n` +
@@ -220,7 +220,7 @@ module.exports = {
 
                 currentRaidContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **CURRENT EXPEDITION STATUS**\n\n**⚔️ Dungeon:** \`${existingRaid.dungeonName}\`\n**🆔 Raid ID:** \`${existingRaid.raidId}\`\n**👥 Party Status:** \`${existingRaid.members.length}/${existingRaid.requiredMembers} adventurers\`\n**💰 Potential Reward:** \`$${existingRaid.potential_reward.toLocaleString()}\`\n\n**💡 Next Steps:**\n> • Use \`!raid\` to check detailed status\n> • Complete current expedition before planning new ones\n> • Focus on recruiting remaining party members`)
+                        .setContent(`## 📊 **CURRENT EXPEDITION STATUS**\n\n**⚔️ Dungeon:** \`${existingRaid.dungeonName}\`\n**🆔 Raid ID:** \`${existingRaid.raidId}\`\n**👥 Party Status:** \`${existingRaid.members.length}/${existingRaid.requiredMembers} adventurers\`\n**💰 Potential Reward:** \`${existingRaid.potential_reward.toLocaleString()} Embers\`\n\n**💡 Next Steps:**\n> • Use \`!raid\` to check detailed status\n> • Complete current expedition before planning new ones\n> • Focus on recruiting remaining party members`)
                 );
 
                 components.push(currentRaidContainer);
@@ -244,7 +244,7 @@ module.exports = {
 
                 insufficientFundsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds for Gear\n## CANNOT AFFORD EXPEDITION COSTS\n\n> You need **\`$${gearCost.toLocaleString()}\`** for the required gear!\n> **Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n> **Shortage:** \`$${(gearCost - profile.wallet).toLocaleString()}\``)
+                        .setContent(`# 💸 Insufficient Funds for Gear\n## CANNOT AFFORD EXPEDITION COSTS\n\n> You need **\`${gearCost.toLocaleString()} Embers\`** for the required gear!\n> **Your Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n> **Shortage:** \`${(gearCost - profile.wallet).toLocaleString()} Embers\``)
                 );
 
                 components.push(insufficientFundsContainer);
@@ -261,12 +261,12 @@ module.exports = {
 
                 const gearList = dungeonData.gear.map(item => {
                     const gear = RAID_GEAR[item];
-                    return `**${gear.name}** - \`$${gear.cost.toLocaleString()}\`\n> ${gear.description}`;
+                    return `**${gear.name}** - \`${gear.cost.toLocaleString()} Embers\`\n> ${gear.description}`;
                 }).join('\n\n');
 
                 gearBreakdownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`${gearList}\n\n**💰 Total Cost:** \`$${gearCost.toLocaleString()}\`\n\n**💡 Earning Tips:** Work, complete dailies, or run guilds to raise funds for your expedition!`)
+                        .setContent(`${gearList}\n\n**💰 Total Cost:** \`${gearCost.toLocaleString()} Embers\`\n\n**💡 Earning Tips:** Work, complete dailies, or run guilds to raise funds for your expedition!`)
                 );
 
                 components.push(gearBreakdownContainer);
@@ -350,12 +350,12 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**⚔️ Dungeon:** \`${dungeonData.name}\`\n**🆔 Expedition ID:** \`${raidId}\`\n**⚡ Difficulty Level:** \`${dungeonData.difficulty}/5\`\n**💰 Potential Reward:** \`$${raid.potential_reward.toLocaleString()}\`\n**📊 Base Success Rate:** \`${dungeonData.successChance}%\``)
+                    .setContent(`**⚔️ Dungeon:** \`${dungeonData.name}\`\n**🆔 Expedition ID:** \`${raidId}\`\n**⚡ Difficulty Level:** \`${dungeonData.difficulty}/5\`\n**💰 Potential Reward:** \`${raid.potential_reward.toLocaleString()} Embers\`\n**📊 Base Success Rate:** \`${dungeonData.successChance}%\``)
             );
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👥 Required Party Size:** \`${dungeonData.requiredMembers} adventurers\`\n**⏰ Planning Duration:** \`${dungeonData.planningTime} hours\`\n**📅 Ready Date:** \`${raid.plannedDate.toLocaleString()}\`\n**💸 Gear Investment:** \`$${gearCost.toLocaleString()}\``)
+                    .setContent(`**👥 Required Party Size:** \`${dungeonData.requiredMembers} adventurers\`\n**⏰ Planning Duration:** \`${dungeonData.planningTime} hours\`\n**📅 Ready Date:** \`${raid.plannedDate.toLocaleString()}\`\n**💸 Gear Investment:** \`${gearCost.toLocaleString()} Embers\``)
             );
 
             components.push(detailsContainer);
@@ -396,12 +396,12 @@ module.exports = {
 
             const gearList = dungeonData.gear.map(item => {
                 const gear = RAID_GEAR[item];
-                return `**${gear.name}** (\`$${gear.cost.toLocaleString()}\`)`;
+                return `**${gear.name}** (\`${gear.cost.toLocaleString()} Embers\`)`;
             }).join(' • ');
 
             preparationContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**✅ Gear Acquired:** ${gearList}\n**💰 Total Investment:** \`$${gearCost.toLocaleString()}\`\n**📦 Gear Status:** Secured and ready for the expedition\n**🎯 Preparation Level:** Professional grade adventuring gear`)
+                    .setContent(`**✅ Gear Acquired:** ${gearList}\n**💰 Total Investment:** \`${gearCost.toLocaleString()} Embers\`\n**📦 Gear Status:** Secured and ready for the expedition\n**🎯 Preparation Level:** Professional grade adventuring gear`)
             );
 
             components.push(preparationContainer);
@@ -433,7 +433,7 @@ module.exports = {
 
                 recruitmentContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 📢 RAID RECRUITMENT OPEN\n## ${dungeonData.name.toUpperCase()} EXPEDITION\n\n> **Leader:** \`${message.author.username}\`\n> **Dungeon:** \`${dungeonData.name}\`\n> **Potential Reward:** \`$${raid.potential_reward.toLocaleString()}\`\n> **Difficulty:** \`${dungeonData.difficulty}/5\`\n\n**👥 SEEKING:** ${dungeonData.requiredMembers - 1} skilled adventurers\n**⚔️ CLASSES NEEDED:** ${dungeonData.requiredClasses.filter(role => role !== 'leader').join(', ')}\n\n**⚡ JOIN NOW:** \`!joinraid ${raidId} <your_class>\``)
+                        .setContent(`# 📢 RAID RECRUITMENT OPEN\n## ${dungeonData.name.toUpperCase()} EXPEDITION\n\n> **Leader:** \`${message.author.username}\`\n> **Dungeon:** \`${dungeonData.name}\`\n> **Potential Reward:** \`${raid.potential_reward.toLocaleString()} Embers\`\n> **Difficulty:** \`${dungeonData.difficulty}/5\`\n\n**👥 SEEKING:** ${dungeonData.requiredMembers - 1} skilled adventurers\n**⚔️ CLASSES NEEDED:** ${dungeonData.requiredClasses.filter(role => role !== 'leader').join(', ')}\n\n**⚡ JOIN NOW:** \`!joinraid ${raidId} <your_class>\``)
                 );
 
                 recruitmentComponents.push(recruitmentContainer);

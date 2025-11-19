@@ -99,7 +99,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🎁 Daily Reward Claimed!\n## CONSISTENCY PAYS OFF\n\n> Congratulations! You've successfully claimed your daily reward of **\`$${totalReward.toLocaleString()}\`**!\n> ${streakMessage}`)
+                    .setContent(`# 🎁 Daily Reward Claimed!\n## CONSISTENCY PAYS OFF\n\n> Congratulations! You've successfully claimed your daily reward of **\`${totalReward.toLocaleString()} Embers\`**!\n> ${streakMessage}`)
             );
 
             components.push(successContainer);
@@ -117,12 +117,12 @@ module.exports = {
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Base Daily Reward:** \`$${baseReward.toLocaleString()}\`\n**🔥 Streak Bonus:** \`$${streakBonus.toLocaleString()}\` (${profile.dailyStreak} days)\n**👑 Role Bonus:** \`$${roleBonus.toLocaleString()}\`\n**💰 Total Reward:** \`$${totalReward.toLocaleString()}\``)
+                    .setContent(`**💎 Base Daily Reward:** \`${baseReward.toLocaleString()} Embers\`\n**🔥 Streak Bonus:** \`${streakBonus.toLocaleString()} Embers\` (${profile.dailyStreak} days)\n**👑 Role Bonus:** \`${roleBonus.toLocaleString()} Embers\`\n**💰 Total Reward:** \`${totalReward.toLocaleString()} Embers\``)
             );
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**⭐ Experience Gained:** \`+5 XP\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**📊 Transaction Logged:** Daily reward recorded`)
+                    .setContent(`**⭐ Experience Gained:** \`+5 XP\`\n**💳 New Wallet Balance:** \`${profile.wallet.toLocaleString()} Embers\`\n**📊 Transaction Logged:** Daily reward recorded`)
             );
 
             components.push(breakdownContainer);
@@ -144,7 +144,7 @@ module.exports = {
 
             streakContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🔥 Current Streak:** \`${profile.dailyStreak} days\`\n**💵 Current Bonus:** \`$${maxStreakBonus}\` per day\n**📈 Next Day Bonus:** \`$${nextStreakBonus}\`\n**🎯 Max Bonus:** \`$1,000\` (20+ day streak)`)
+                    .setContent(`**🔥 Current Streak:** \`${profile.dailyStreak} days\`\n**💵 Current Bonus:** \`${maxStreakBonus} Embers\` per day\n**📈 Next Day Bonus:** \`${nextStreakBonus} Embers\`\n**🎯 Max Bonus:** \`1,000 Embers\` (20+ day streak)`)
             );
 
             if (profile.dailyStreak >= 7) {
@@ -176,7 +176,7 @@ module.exports = {
                 const activeRoles = profile.purchasedRoles.filter(r => !r.expiryDate || r.expiryDate > new Date());
                 roleContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Active Premium Roles:** \`${activeRoles.length}\`\n**Daily Role Bonus:** \`$${roleBonus.toLocaleString()}\`\n**Monthly Role Value:** \`$${(roleBonus * 30).toLocaleString()}\`\n\n> Your premium membership is enhancing your daily earnings!`)
+                        .setContent(`**Active Premium Roles:** \`${activeRoles.length}\`\n**Daily Role Bonus:** \`${roleBonus.toLocaleString()} Embers\`\n**Monthly Role Value:** \`${(roleBonus * 30).toLocaleString()} Embers\`\n\n> Your premium membership is enhancing your daily earnings!`)
                 );
 
                 components.push(roleContainer);
@@ -190,7 +190,7 @@ module.exports = {
 
             nextRewardContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 📅 **NEXT DAILY REWARD**\n\n**Next Claim Available:** \`${new Date(now + oneDayMs).toLocaleDateString()} at ${new Date(now + oneDayMs).toLocaleTimeString()}\`\n**Projected Next Reward:** \`$${baseReward + nextStreakBonus + roleBonus}\`\n**Streak Continuation:** Come back within 48 hours to maintain your streak\n\n> Set a daily reminder to maximize your earning potential!`)
+                    .setContent(`## 📅 **NEXT DAILY REWARD**\n\n**Next Claim Available:** \`${new Date(now + oneDayMs).toLocaleDateString()} at ${new Date(now + oneDayMs).toLocaleTimeString()}\`\n**Projected Next Reward:** \`${baseReward + nextStreakBonus + roleBonus} Embers\`\n**Streak Continuation:** Come back within 48 hours to maintain your streak\n\n> Set a daily reminder to maximize your earning potential!`)
             );
 
             components.push(nextRewardContainer);

@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'beg',
     aliases: ['ask', 'plead'],
-    description: 'Beg for some money from kind strangers using v2 components',
+    description: 'Beg for some Embers from kind strangers using v2 components',
     async execute(message) {
         try {
             const userId = message.author.id;
@@ -137,7 +137,7 @@ module.exports = {
 
                 resultsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Earnings:** \`$${earnings.toLocaleString()}\`\n**💳 Current Wallet:** \`$${updatedProfile.wallet.toLocaleString()}\`\n**🎯 XP Gained:** \`+5 XP\`\n**📈 Current Level:** \`${profile.level}\``)
+                        .setContent(`**💰 Earnings:** \`${earnings} Embers\`\n**💳 Current Wallet:** \`${updatedProfile.wallet} Embers\`\n**🎯 XP Gained:** \`+5 XP\`\n**📈 Current Level:** \`${profile.level}\``)
                 );
 
        
@@ -145,7 +145,7 @@ module.exports = {
                 if (levelBonus > 0) {
                     resultsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🆙 Level Bonus:** \`+$${levelBonus}\` (Level ${profile.level} bonus)\n**💡 Base Amount:** \`$${earnings - levelBonus}\``)
+                            .setContent(`**🆙 Level Bonus:** \`+${levelBonus} Embers\` (Level ${profile.level} bonus)\n**💡 Base Amount:** \`${earnings - levelBonus} Embers\``)
                     );
                 }
 
@@ -162,7 +162,7 @@ module.exports = {
 
                 failureContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💸 Earnings:** \`$0\`\n**💳 Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**💡 Tip:** \`Try again in 10 minutes!\`\n**🎲 Better luck next time!**`)
+                        .setContent(`**💸 Earnings:** \`0 Embers\`\n**💳 Current Wallet:** \`${profile.wallet} Embers\`\n**💡 Tip:** \`Try again in 10 minutes!\`\n**🎲 Better luck next time!**`)
                 );
 
                 components.push(failureContainer);

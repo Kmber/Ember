@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'balance',
-    aliases: ['bal', 'money'],
+    aliases: ['bal', 'embers'],
     description: 'Check your financial status with v2 components',
     async execute(message) {
         try {
@@ -47,12 +47,12 @@ module.exports = {
 
             cashContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💵 Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 Bank Balance:** \`$${profile.bank.toLocaleString()}\`\n**📊 Bank Limit:** \`$${bankLimit.toLocaleString()}\``)
+                    .setContent(`**💵 Wallet:** \`${profile.wallet} Embers\`\n**🏦 Bank Balance:** \`${profile.bank} Embers\`\n**📊 Bank Limit:** \`${bankLimit} Embers\``)
             );
 
             cashContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👥 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📦 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**🛡️ Security Level:** \`${securityLevel}%\``)
+                    .setContent(`**👥 Follower Tithe:** \`${profile.followerTithe} Embers\`\n**📦 Tithe Capacity:** \`${vaultCapacity} Embers\`\n**🛡️ Security Level:** \`${securityLevel}%\``)
             );
 
             components.push(cashContainer);
@@ -71,7 +71,7 @@ module.exports = {
 
             wealthContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Total Net Worth:** \`$${totalWealth.toLocaleString()}\`\n**📈 Character Level:** \`${profile.level}\`\n**⭐ Experience Points:** \`${profile.experience.toLocaleString()} XP\``)
+                    .setContent(`**💎 Total Net Worth:** \`${totalWealth} Embers\`\n**📈 Character Level:** \`${profile.level}\`\n**⭐ Experience Points:** \`${profile.experience.toLocaleString()} XP\``)
             );
 
             wealthContainer.addTextDisplayComponents(

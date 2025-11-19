@@ -86,12 +86,12 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏰 Citadel:** \`${primaryCitadel.name}\`\n**🏷️ Type:** \`${primaryCitadel.type}\`\n**🛡️ Base Power:** \`Level ${primaryCitadel.securityLevel}\`\n**💰 Current Value:** \`$${primaryCitadel.currentValue.toLocaleString()}\`\n**💸 Acquisition Price:** \`$${primaryCitadel.purchasePrice.toLocaleString()}\``)
+                    .setContent(`**🏰 Citadel:** \`${primaryCitadel.name}\`\n**🏷️ Type:** \`${primaryCitadel.type}\`\n**🛡️ Base Power:** \`Level ${primaryCitadel.securityLevel}\`\n**💰 Current Value:** \`${primaryCitadel.currentValue.toLocaleString()} Embers\`\n**💸 Acquisition Price:** \`${primaryCitadel.purchasePrice.toLocaleString()} Embers\``)
             );
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Monthly Upkeep:** \`$${primaryCitadel.monthlyUpkeep.toLocaleString()}\`\n**📅 Acquired Since:** \`${new Date(primaryCitadel.dateAcquired).toLocaleDateString()}\` (${ownershipDays} days)\n**📈 Value Appreciation:** \`$${(primaryCitadel.currentValue - primaryCitadel.purchasePrice).toLocaleString()}\``)
+                    .setContent(`**💰 Monthly Upkeep:** \`${primaryCitadel.monthlyUpkeep.toLocaleString()} Embers\`\n**📅 Acquired Since:** \`${new Date(primaryCitadel.dateAcquired).toLocaleDateString()}\` (${ownershipDays} days)\n**📈 Value Appreciation:** \`${(primaryCitadel.currentValue - primaryCitadel.purchasePrice).toLocaleString()} Embers\``)
             );
 
             components.push(detailsContainer);
@@ -114,11 +114,11 @@ module.exports = {
 
                 followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Follower Count:** \`${profile.followers.length}/${primaryCitadel.maxFollowers} followers\`\n**Average Allegiance:** \`${profile.followerAllegiance}%\`\n**Follower Work Tithe:** \`$${Math.floor(totalFollowerIncome).toLocaleString()}/work\``)
+                        .setContent(`**Follower Count:** \`${profile.followers.length}/${primaryCitadel.maxFollowers} followers\`\n**Average Allegiance:** \`${profile.followerAllegiance}%\`\n**Follower Work Tithe:** \`${Math.floor(totalFollowerIncome).toLocaleString()} Embers/work\``)
                 );
 
                 const followerList = profile.followers.slice(0, 5).map(member =>
-                    `**${member.name}** (${member.profession})\n> **Profession:** \`${member.profession}\` • **Allegiance:** \`${member.allegiance}%\` • **Follower Tithe:** \`$${member.salary}/work\``
+                    `**${member.name}** (${member.profession})\n> **Profession:** \`${member.profession}\` • **Allegiance:** \`${member.allegiance}%\` • **Follower Tithe:** \`${member.salary} Embers/work\``
                 ).join('\n\n');
 
                 followerContainer.addTextDisplayComponents(
@@ -155,14 +155,14 @@ module.exports = {
             if (primaryCitadel.lairCapacity > 0) {
                 lairContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Lair Capacity:** \`${profile.beasts.length}/${primaryCitadel.lairCapacity} beasts\`\n**Total Bestiary Value:** \`$${profile.beasts.reduce((sum, beast) => sum + (beast.currentValue || beast.purchasePrice), 0).toLocaleString()}\``)
+                        .setContent(`**Lair Capacity:** \`${profile.beasts.length}/${primaryCitadel.lairCapacity} beasts\`\n**Total Bestiary Value:** \`${profile.beasts.reduce((sum, beast) => sum + (beast.currentValue || beast.purchasePrice), 0).toLocaleString()} Embers\``)
                 );
 
                 if (profile.beasts.length > 0) {
                     const beastList = profile.beasts.slice(0, 4).map(beast => {
                         const activeIndicator = beast.beastId === profile.activeBeast ? '👹 **ACTIVE**' : '🐾 Stabled';
                         const condition = beast.durability > 80 ? '🟢' : beast.durability > 50 ? '🟡' : '🔴';
-                        return `**${beast.name}** ${activeIndicator}\n> **Condition:** ${condition} \`${beast.durability}%\` • **Value:** \`$${(beast.currentValue || beast.purchasePrice).toLocaleString()}\``;
+                        return `**${beast.name}** ${activeIndicator}\n> **Condition:** ${condition} \`${beast.durability}%\` • **Value:** \`${(beast.currentValue || beast.purchasePrice).toLocaleString()} Embers\``;
                     }).join('\n\n');
 
                     lairContainer.addTextDisplayComponents(
@@ -212,7 +212,7 @@ module.exports = {
 
             securityContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📊 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**💾 Storage Used:** \`${vaultUsage}%\`\n**🔐 Tithe Security:** Protected by citadel and minion power`)
+                    .setContent(`**💰 Follower Tithe:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**📊 Tithe Capacity:** \`${vaultCapacity.toLocaleString()} Embers\`\n**💾 Storage Used:** \`${vaultUsage}%\`\n**🔐 Tithe Security:** Protected by citadel and minion power`)
             );
 
             components.push(securityContainer);
@@ -270,7 +270,7 @@ module.exports = {
 
             managementContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`!tithe\` to manage your secure savings\n**⛪ Follower Growth:** Recruit more followers if space allows\n**👹 Beast Collection:** Expand your lair with more beasts for racing\n**🦇 Summon Minions:** Summon minions to increase power and for protection\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
+                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`!tithe\` to manage your secure Embers\n**⛪ Follower Growth:** Recruit more followers if space allows\n**👹 Beast Collection:** Expand your lair with more beasts for racing\n**🦇 Summon Minions:** Summon minions to increase power and for protection\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
             );
 
             components.push(managementContainer);

@@ -66,10 +66,11 @@ module.exports = {
             if (profile.wallet < ritualCost) {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xE74C3C)
-                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 💸 Insufficient Offerings\n## THE OLD ONES DEMAND A PRICE\n\n> You need **\`$${ritualCost.toLocaleString()}\`** for the ritual components!\n> **Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n> **Shortage:** \`$${(ritualCost - profile.wallet).toLocaleString()}\``)),
+                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 💸 Insufficient Offerings\n## THE OLD ONES DEMAND A PRICE\n\n> You need **\`${ritualCost.toLocaleString()} Embers\`** for the ritual components!\n> **Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n> **Shortage:** \`${(ritualCost - profile.wallet).toLocaleString()} Embers\`\`)),
                     new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+
                     new ContainerBuilder().setAccentColor(0xF39C12)
-                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## 💰 **RITUAL COST BREAKDOWN**\n\n**Followers:** \`${profile.followers.length}\`\n**Cost per Follower:** \`$250\`\n**Total Ritual Cost:** \`$${ritualCost.toLocaleString()}\`\n\n> Scrounge for more coin. The ritual cannot wait forever.`))
+                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 💰 **RITUAL COST BREAKDOWN**\n\n**Followers:** \`${profile.followers.length}\`\n**Cost per Follower:** \`250 Embers\`\n**Total Ritual Cost:** \`${ritualCost.toLocaleString()} Embers\`\n\n> Scrounge for more ember. The ritual cannot wait forever.`)),
                 ];
                 return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
@@ -112,7 +113,7 @@ module.exports = {
             
             const allegianceChangeText = isSuccess ? `+${outcome.allegianceGain}%` : `-${outcome.allegianceLoss}%`;
             resultsContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`**💰 Ritual Cost:** \`$${ritualCost.toLocaleString()}\`\n**🖤 Allegiance Change:** \`${allegianceChangeText}\` per follower\n**🙏 New Avg. Allegiance:** \`${profile.followerAllegiance}%\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\``)
+                new TextDisplayBuilder().setContent(`**💰 Ritual Cost:** \`${ritualCost.toLocaleString()} Embers\`\n**🖤 Allegiance Change:** \`${allegianceChangeText}\` per follower\n**🙏 New Avg. Allegiance:** \`${profile.followerAllegiance}%\`\n**💳 Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\``)
             );
             components.push(resultsContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));

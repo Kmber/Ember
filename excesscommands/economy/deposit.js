@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'deposit',
     aliases: ['dep'],
-    description: 'Deposit money into your bank with v2 components',
+    description: 'Deposit Embers into your bank with v2 components',
     async execute(message, args) {
         try {
             const userId = message.author.id;
@@ -47,7 +47,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!deposit 1000\`** - Deposit specific amount\n**\`!deposit all\`** - Deposit all available funds\n**\`!deposit max\`** - Deposit maximum possible\n\n**Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Available Space:** \`$${(bankLimit - profile.bank).toLocaleString()}\``)
+                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!deposit 1000\`** - Deposit specific amount\n**\`!deposit all\`** - Deposit all available funds\n**\`!deposit max\`** - Deposit maximum possible\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Available Space:** \`${(bankLimit - profile.bank).toLocaleString()} Embers\``)
                 );
 
                 components.push(usageContainer);
@@ -66,7 +66,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Wallet Funds\n## NOT ENOUGH MONEY TO DEPOSIT\n\n> You don't have enough money in your wallet for this deposit!`)
+                        .setContent(`# 💸 Insufficient Wallet Funds\n## NOT ENOUGH MONEY TO DEPOSIT\n\n> You don't have enough Embers in your wallet for this deposit!`)
                 );
 
                 components.push(insufficientContainer);
@@ -78,7 +78,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **WALLET BREAKDOWN**\n\n**Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.wallet).toLocaleString()}\`\n\n**💡 Tip:** Try \`!deposit all\` to deposit everything you have!`)
+                        .setContent(`## 💰 **WALLET BREAKDOWN**\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Attempted Deposit:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Tip:** Try \`!deposit all\` to deposit everything you have!`)
                 );
 
                 components.push(balanceContainer);
@@ -110,7 +110,7 @@ module.exports = {
 
                 limitDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **BANK CAPACITY DETAILS**\n\n**Current Bank Balance:** \`$${profile.bank.toLocaleString()}\`\n**Bank Limit:** \`$${bankLimit.toLocaleString()}\`\n**Available Space:** \`$${maxDeposit.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\``)
+                        .setContent(`## 📊 **BANK CAPACITY DETAILS**\n\n**Current Bank Balance:** \`${profile.bank.toLocaleString()} Embers\`\n**Bank Limit:** \`${bankLimit.toLocaleString()} Embers\`\n**Available Space:** \`${maxDeposit.toLocaleString()} Embers\`\n**Attempted Deposit:** \`${amount.toLocaleString()} Embers\``)
                 );
 
                 limitDetailsContainer.addTextDisplayComponents(
@@ -152,7 +152,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ✅ Deposit Successful!\n## MONEY SAFELY BANKED\n\n> You have successfully deposited **\`$${amount.toLocaleString()}\`** into your bank account!\n> Your money is now secure and earning interest.`)
+                    .setContent(`# ✅ Deposit Successful!\n## MONEY SAFELY BANKED\n\n> You have successfully deposited **\`${amount.toLocaleString()} Embers\`** into your bank account!\n> Your Embers are now secure and earning interest.`)
             );
 
             components.push(headerContainer);
@@ -170,7 +170,7 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Deposit Amount:** \`$${amount.toLocaleString()}\`\n**⏰ Transaction Time:** \`${new Date().toLocaleString()}\`\n**📝 Transaction Type:** \`Bank Deposit\`\n**🏷️ Category:** \`Banking\``)
+                    .setContent(`**💰 Deposit Amount:** \`${amount.toLocaleString()} Embers\`\n**⏰ Transaction Time:** \`${new Date().toLocaleString()}\`\n**📝 Transaction Type:** \`Bank Deposit\`\n**🏷️ Category:** \`Banking\``)
             );
 
             components.push(detailsContainer);
@@ -188,12 +188,12 @@ module.exports = {
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💳 Wallet Balance:** \`$${newWallet.toLocaleString()}\`\n**🏦 Bank Balance:** \`$${newBank.toLocaleString()}\`\n**📊 Bank Limit:** \`$${bankLimit.toLocaleString()}\``)
+                    .setContent(`**💳 Wallet Balance:** \`${newWallet.toLocaleString()} Embers\`\n**🏦 Bank Balance:** \`${newBank.toLocaleString()} Embers\`\n**📊 Bank Limit:** \`${bankLimit.toLocaleString()} Embers\``)
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📈 Bank Usage:** \`${((newBank / bankLimit) * 100).toFixed(1)}%\`\n**💾 Remaining Space:** \`$${(bankLimit - newBank).toLocaleString()}\`\n**💎 Total Net Worth:** \`$${(newWallet + newBank + profile.followerTithe).toLocaleString()}\``)
+                    .setContent(`**📈 Bank Usage:** \`${((newBank / bankLimit) * 100).toFixed(1)}%\`\n**💾 Remaining Space:** \`${(bankLimit - newBank).toLocaleString()} Embers\`\n**💎 Total Net Worth:** \`${(newWallet + newBank + profile.followerTithe).toLocaleString()} Embers\``)
             );
 
             components.push(balancesContainer);
@@ -206,7 +206,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **BANKING BENEFITS**\n\n**🛡️ Security:** Money in bank is safer from robberies\n**📈 Interest:** Bank money may earn passive income\n**🏠 Requirements:** Some purchases require banked funds\n**👥 Followers:** Separate from follower tithe for organization\n\n> Use \`!withdraw <amount>\` to take money out when needed!`)
+                    .setContent(`## 💡 **BANKING BENEFITS**\n\n**🛡️ Security:** Embers in bank are safer from robberies\n**📈 Interest:** Banked Embers may earn passive income\n**🏠 Requirements:** Some purchases require banked funds\n**👥 Followers:** Separate from follower tithe for organization\n\n> Use \`!withdraw <amount>\` to take Embers out when needed!`)
             );
 
             components.push(tipsContainer);

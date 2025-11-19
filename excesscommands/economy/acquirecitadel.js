@@ -52,7 +52,7 @@ module.exports = {
                     for (let i = 0; i < citadels.length; i += 3) {
                         const citadelGroup = citadels.slice(i, i + 3);
                         const citadelText = citadelGroup.map(([id, citadel]) =>
-                            `**\`${id}\`** - ${citadel.name}\n> **Price:** \`$${citadel.price.toLocaleString()}\`\n> **Followers:** ${citadel.maxFollowers} • **Security:** ${citadel.securityLevel} • **Vault:** $${citadel.vaultCapacity.toLocaleString()}\n> **Lair:** ${citadel.lairCapacity > 0 ? `${citadel.lairCapacity} beasts` : 'None'} • **Upkeep:** $${citadel.monthlyUpkeep.toLocaleString()}`
+                            `**\`${id}\`** - ${citadel.name}\n> **Price:** \`${citadel.price} Embers\`\n> **Followers:** ${citadel.maxFollowers} • **Security:** ${citadel.securityLevel} • **Vault:** ${citadel.vaultCapacity} Embers\n> **Lair:** ${citadel.lairCapacity > 0 ? `${citadel.lairCapacity} beasts` : 'None'} • **Upkeep:** ${citadel.monthlyUpkeep} Embers`
                         ).join('\n\n');
 
                         categoryContainer.addTextDisplayComponents(
@@ -114,12 +114,12 @@ module.exports = {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xE74C3C)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD CITADEL\n\n> You don't have enough money to acquire **${citadelData.name}**!`)
+                        new TextDisplayBuilder().setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD CITADEL\n\n> You don't have enough Embers to acquire **${citadelData.name}**!`)
                     ),
                     new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
                     new ContainerBuilder().setAccentColor(0xF39C12)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Citadel:** \`${citadelData.name}\`\n**Price:** \`$${citadelData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(citadelData.price - profile.wallet).toLocaleString()}\`\n\n**💡 Investment Tips:** Complete quests, manage guilds, or engage in profitable ventures to build wealth for citadel investments!`)
+                        new TextDisplayBuilder().setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Citadel:** \`${citadelData.name}\`\n**Price:** \`${citadelData.price} Embers\`\n**Your Wallet:** \`${profile.wallet} Embers\`\n**Shortage:** \`${(citadelData.price - profile.wallet)} Embers\`\n\n**💡 Investment Tips:** Complete quests, manage guilds, or engage in profitable ventures to build Embers for citadel investments!`)
                     )
                 ];
                 return message.reply({
@@ -165,7 +165,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                .setContent(`# 🏰 Citadel Acquisition Successful!\n## CITADEL ACQUIRED\n\n> Congratulations! You've successfully acquired **${citadelData.name}** for **\`$${citadelData.price.toLocaleString()}\`**!\n> ${isFirstCitadel ? 'This is now your primary stronghold!' : 'Your citadel portfolio is growing!'}`)
+                .setContent(`# 🏰 Citadel Acquisition Successful!\n## CITADEL ACQUIRED\n\n> Congratulations! You've successfully acquired **${citadelData.name}** for **\`${citadelData.price} Embers\`**!\n> ${isFirstCitadel ? 'This is now your primary stronghold!' : 'Your citadel portfolio is growing!'}`)
             );
             components.push(successContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -173,8 +173,8 @@ module.exports = {
             const specsContainer = new ContainerBuilder().setAccentColor(0x27AE60);
             specsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder().setContent('## 🏘️ **CITADEL SPECIFICATIONS**'),
-                new TextDisplayBuilder().setContent(`**🏰 Citadel Name:** \`${citadelData.name}\`\n**🏷️ Citadel Type:** \`${citadelData.type}\`\n**👨‍👩‍👧‍👦 Follower Capacity:** \`${citadelData.maxFollowers} followers\`\n**🛡️ Security Level:** \`${citadelData.securityLevel}/10\`\n**🏦 Vault Capacity:** \`$${citadelData.vaultCapacity.toLocaleString()}\``),
-                new TextDisplayBuilder().setContent(`**👹 Lair:** ${citadelData.lairCapacity > 0 ? `\`${citadelData.lairCapacity} beasts\`` : '\`None\`'}\n**💰 Monthly Upkeep:** \`$${citadelData.monthlyUpkeep.toLocaleString()}\`\n**📅 Acquisition Date:** \`${new Date().toLocaleDateString()}\``)
+                new TextDisplayBuilder().setContent(`**🏰 Citadel Name:** \`${citadelData.name}\`\n**🏷️ Citadel Type:** \`${citadelData.type}\`\n**👨‍👩‍👧‍👦 Follower Capacity:** \`${citadelData.maxFollowers} followers\`\n**🛡️ Security Level:** \`${citadelData.securityLevel}/10\`\n**🏦 Vault Capacity:** \`${citadelData.vaultCapacity} Embers\``),
+                new TextDisplayBuilder().setContent(`**👹 Lair:** ${citadelData.lairCapacity > 0 ? `\`${citadelData.lairCapacity} beasts\`` : '\`None\`'}\n**💰 Monthly Upkeep:** \`${citadelData.monthlyUpkeep} Embers\`\n**📅 Acquisition Date:** \`${new Date().toLocaleDateString()}\``)
             );
             components.push(specsContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
@@ -185,7 +185,7 @@ module.exports = {
             );
             const unlockedFeatures = [];
             if (citadelData.maxFollowers > 0) unlockedFeatures.push(`**👨‍👩‍👧‍👦 Follower Housing:** Accommodate up to ${citadelData.maxFollowers} followers`);
-            if (citadelData.vaultCapacity > 0) unlockedFeatures.push(`**🏦 Vault:** Secure storage for $${citadelData.vaultCapacity.toLocaleString()}`);
+            if (citadelData.vaultCapacity > 0) unlockedFeatures.push(`**🏦 Vault:** Secure storage for ${citadelData.vaultCapacity} Embers`);
             if (citadelData.lairCapacity > 0) unlockedFeatures.push(`**👹 Lair:** House up to ${citadelData.lairCapacity} beasts safely`);
             if (citadelData.securityLevel > 0) unlockedFeatures.push(`**🛡️ Enhanced Security:** Level ${citadelData.securityLevel} protection against raids`);
             if (isFirstCitadel) unlockedFeatures.push(`**🦇 Minion Capacity:** Own up to ${Math.floor(citadelData.maxFollowers / 2)} minions`);
@@ -198,14 +198,14 @@ module.exports = {
 
             const financialContainer = new ContainerBuilder().setAccentColor(0x9B59B6);
             financialContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`## 💰 **FINANCIAL SUMMARY**\n\n**Acquisition Price:** \`$${citadelData.price.toLocaleString()}\`\n**Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Total Citadels:** \`${profile.citadels.length}\`\n**Citadel Investment:** \`$${profile.citadels.reduce((sum, c) => sum + c.purchasePrice, 0).toLocaleString()}\`\n**Transaction Logged:** Acquisition recorded in your transaction history`)
+                new TextDisplayBuilder().setContent(`## 💰 **FINANCIAL SUMMARY**\n\n**Acquisition Price:** \`${citadelData.price} Embers\`\n**Remaining Wallet:** \`${profile.wallet} Embers\`\n**Total Citadels:** \`${profile.citadels.length}\`\n**Citadel Investment:** \`${profile.citadels.reduce((sum, c) => sum + c.purchasePrice, 0)} Embers\`\n**Transaction Logged:** Acquisition recorded in your transaction history`)
             );
             components.push(financialContainer);
             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
             const nextStepsContainer = new ContainerBuilder().setAccentColor(0xE91E63);
             nextStepsContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit money in your vault for security\n**👹 Lair Beasts:** Store multiple beasts in your lair\n**🦇 Summon Minions:** Summon minions for power and protection\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
+                new TextDisplayBuilder().setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit Embers in your vault for security\n**👹 Lair Beasts:** Store multiple beasts in your lair\n**🦇 Summon Minions:** Summon minions for power and protection\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
             );
             components.push(nextStepsContainer);
 

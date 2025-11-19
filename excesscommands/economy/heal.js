@@ -112,7 +112,7 @@ module.exports = {
         const shortFall = price - currentBalance;
         const insufficientContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
         insufficientContainer.addTextDisplayComponents(
-            new TextDisplayBuilder().setContent(`# 💸 Insufficient Embers\n## PURCHASE FAILED\n\n> You do not have enough Embers for **${itemName}**.`),
+            new TextDisplayBuilder().setContent(`# 💸 Insufficient Embers\n## PURCHASE FAILED\n\n> You do not have enough Embers for **${itemName}**:`),
             new TextDisplayBuilder().setContent(`**Required:** ${price.toLocaleString()} Embers\n**You Have:** ${currentBalance.toLocaleString()} Embers\n**Shortage:** ${shortFall.toLocaleString()} Embers`)
         );
         return message.reply({ components: [insufficientContainer], flags: MessageFlags.IsComponentsV2 });

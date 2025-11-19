@@ -55,7 +55,7 @@ module.exports = {
 
                 commandsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 How to Find Numbers:**\n\`${prefix}slaying\` - Shows all your equipment with numbers\n\n**💰 Upgrade Costs:**\n> Weapons: 30% of purchase price × level\n> Mounts: 40% of purchase price × tier`)
+                        .setContent(`**💡 How to Find Numbers:**\n\`${prefix}slaying\` - Shows all your equipment with numbers\n\n**💰 Upgrade Costs (Embers):**\n> Weapons: 30% of purchase price × level\n> Mounts: 40% of purchase price × tier`)
                 );
 
                 components.push(commandsContainer);
@@ -224,7 +224,7 @@ module.exports = {
 
                     const improvementsText = `**📦 Capacity:** ${mount.capacity} items (+${result.improvements.capacity})\n**💨 Stamina:** ${mount.staminaCapacity} units (+${result.improvements.staminaCapacity})\n**🏞️ Haunted Lands Tier:** ${mount.hauntedLandsTier}/10 (+${result.improvements.hauntedLandsTier})`;
 
-                    upgradeContainer.addTextDipartialisplayComponents(
+                    upgradeContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
                             .setContent(improvementsText)
                     );

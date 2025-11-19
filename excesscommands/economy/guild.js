@@ -84,7 +84,7 @@ module.exports = {
 
                 statsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 Total Daily Profit:** \`$${totalDailyProfit.toLocaleString()}\`\n**🏰 Guild\'s Total Worth:** \`$${totalAssetValue.toLocaleString()}\`\n**📈 Guild Influence:** \`${profile.guildInfluence}%\``)
+                        .setContent(`**💎 Total Daily Profit:** \`${totalDailyProfit.toLocaleString()} Embers\`\n**🏰 Guild\'s Total Worth:** \`${totalAssetValue.toLocaleString()} Embers\`\n**📈 Guild Influence:** \`${profile.guildInfluence}%\``)
                 );
 
                 statsContainer.addTextDisplayComponents(
@@ -115,8 +115,8 @@ module.exports = {
 
                     const guildText = `**${i + 1}. ${g.name}** (Level ${g.level})\n` +
                         `> **Type:** \`${gType?.name || g.type}\`\n` +
-                        `> **💰 Daily Profit:** \`$${income.profit.toLocaleString()}\` (Revenue: $${income.revenue.toLocaleString()})\n` +
-                        `> **👥 Acolytes:** \`${g.acolytes}/${gType.maxAcolytes}\` (Cost: $${income.expenses.toLocaleString()})\n` +
+                        `> **💰 Daily Profit:** \`${income.profit.toLocaleString()} Embers\` (Revenue: ${income.revenue.toLocaleString()} Embers)\n` +
+                        `> **👥 Acolytes:** \`${g.acolytes}/${gType.maxAcolytes}\` (Cost: ${income.expenses.toLocaleString()} Embers)\n` +
                         `> **⭐ Reputation:** \`${g.reputation}%\` • **🎯 Efficiency:** \`${Math.floor(g.efficiency * 100)}%\`\n` +
                         `> **⏰ Collection:** \`${hoursUntilCollection > 0 ? `${hoursUntilCollection}h remaining` : 'Ready!'}\``;
 
@@ -203,7 +203,7 @@ module.exports = {
 
                 resultsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 Total Profit:** \`$${result.totalProfit.toLocaleString()}\`\n**💳 New Balance:** \`$${profile.wallet.toLocaleString()}\`\n**🏰 Guilds:** \`${result.guildReport.length}\``)
+                        .setContent(`**💎 Total Profit:** \`${result.totalProfit.toLocaleString()} Embers\`\n**💳 New Balance:** \`${profile.wallet.toLocaleString()} Embers\`\n**🏰 Guilds:** \`${result.guildReport.length}\``)
                 );
 
                 resultsContainer.addTextDisplayComponents(
@@ -224,7 +224,7 @@ module.exports = {
                     );
 
                     const reportText = result.guildReport.slice(0, 3).map(g =>
-                        `**${g.name}**\n> **Revenue:** \`$${g.revenue.toLocaleString()}\`\n> **Expenses:** \`$${g.expenses.toLocaleString()}\`\n> **Net Profit:** \`$${g.profit.toLocaleString()}\``
+                        `**${g.name}**\n> **Revenue:** \`${g.revenue.toLocaleString()} Embers\`\n> **Expenses:** \`${g.expenses.toLocaleString()} Embers\`\n> **Net Profit:** \`${g.profit.toLocaleString()} Embers\``
                     ).join('\n\n');
 
                     reportContainer.addTextDisplayComponents(
@@ -320,7 +320,7 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💸 Dismissal Fee:** \`$${dismissalFee.toLocaleString()}\`\n**👥 Remaining Acolytes:** \`${guild.acolytes}\`\n**💰 Daily Savings:** \`$${(dismissAmount * GUILD_TYPES[guild.type].acolyteCost * 0.6).toLocaleString()}\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\``)
+                        .setContent(`**💸 Dismissal Fee:** \`${dismissalFee.toLocaleString()} Embers\`\n**👥 Remaining Acolytes:** \`${guild.acolytes}\`\n**💰 Daily Savings:** \`${(dismissAmount * GUILD_TYPES[guild.type].acolyteCost * 0.6).toLocaleString()} Embers\`\n**💳 Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\``)
                 );
 
                 components.push(detailsContainer);
@@ -368,7 +368,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏰 Guild Disbanded Successfully!\n## GUILD CHARTER REVOKED\n\n> **${guild.name}** has been disbanded for \`$${sellValue.toLocaleString()}\`!`)
+                        .setContent(`# 🏰 Guild Disbanded Successfully!\n## GUILD CHARTER REVOKED\n\n> **${guild.name}** has been disbanded for \`${sellValue.toLocaleString()} Embers\`!`)
                 );
 
                 components.push(headerContainer);
@@ -384,7 +384,7 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 Revocation Value:** \`$${sellValue.toLocaleString()}\`\n**📊 Original Cost:** \`$${guild.purchasePrice.toLocaleString()}\`\n**📈 Net Gain/Loss:** \`$${(sellValue - guild.purchasePrice).toLocaleString()}\`\n**💳 New Balance:** \`$${profile.wallet.toLocaleString()}\``)
+                        .setContent(`**💎 Revocation Value:** \`${sellValue.toLocaleString()} Embers\`\n**📊 Original Cost:** \`${guild.purchasePrice.toLocaleString()} Embers\`\n**📈 Net Gain/Loss:** \`${(sellValue - guild.purchasePrice).toLocaleString()} Embers\`\n**💳 New Balance:** \`${profile.wallet.toLocaleString()} Embers\``)
                 );
 
                 detailsContainer.addTextDisplayComponents(
@@ -452,7 +452,7 @@ module.exports = {
 
                     insufficientContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 💸 Insufficient Funds\n## UPGRADE BLOCKED\n\n> You need \`$${guild.upgradeCost.toLocaleString()}\` to upgrade **${guild.name}**!\n> Current wallet: \`$${profile.wallet.toLocaleString()}\`\n> Shortage: \`$${(guild.upgradeCost - profile.wallet).toLocaleString()}\``)
+                            .setContent(`# 💸 Insufficient Funds\n## UPGRADE BLOCKED\n\n> You need \`${guild.upgradeCost.toLocaleString()} Embers\` to upgrade **${guild.name}**!\n> Current wallet: \`${profile.wallet.toLocaleString()} Embers\`\n> Shortage: \`${(guild.upgradeCost - profile.wallet).toLocaleString()} Embers\``)
                     );
 
                     components.push(insufficientContainer);
@@ -511,21 +511,21 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Upgrade Cost:** \`$${upgradeCostPaid.toLocaleString()}\`\n**📊 New Level:** \`${guild.level}/${guildType.maxLevel}\`\n**⭐ Reputation:** \`${guild.reputation}%\` (+5%)\n**🎯 Efficiency:** \`${Math.floor(guild.efficiency * 100)}%\` (+5%)`)
+                        .setContent(`**💰 Upgrade Cost:** \`${upgradeCostPaid.toLocaleString()} Embers\`\n**📊 New Level:** \`${guild.level}/${guildType.maxLevel}\`\n**⭐ Reputation:** \`${guild.reputation}%\` (+5%)\n**🎯 Efficiency:** \`${Math.floor(guild.efficiency * 100)}%\` (+5%)`)
                 );
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**📈 Daily Profit Increase:** \`$${(newIncome.profit - oldIncome.profit).toLocaleString()}\`\n**💎 New Daily Profit:** \`$${newIncome.profit.toLocaleString()}\`\n**⭐ Experience:** \`+${rewards.expGain} XP\`\n**📊 Skill:** \`+${rewards.skillGain}%\``)
+                        .setContent(`**📈 Daily Profit Increase:** \`${(newIncome.profit - oldIncome.profit).toLocaleString()} Embers\`\n**💎 New Daily Profit:** \`${newIncome.profit.toLocaleString()} Embers\`\n**⭐ Experience:** \`+${rewards.expGain} XP\`\n**📊 Skill:** \`+${rewards.skillGain}%\``)
                 );
 
                 const nextUpgradeText = guild.level < guildType.maxLevel ? 
-                    `**🔮 Next Upgrade:** \`$${guild.upgradeCost.toLocaleString()}\`` : 
+                    `**🔮 Next Upgrade:** \`${guild.upgradeCost.toLocaleString()} Embers\`` : 
                     '**🏆 Max Level Reached!**';
                 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`${nextUpgradeText}\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\``)
+                        .setContent(`${nextUpgradeText}\n**💳 Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\``)
                 );
 
                 components.push(detailsContainer);
@@ -594,7 +594,7 @@ module.exports = {
 
                     insufficientContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 💸 Insufficient Funds\n## RECRUITMENT BLOCKED\n\n> You need \`$${recruitingCost.toLocaleString()}\` to recruit ${recruitAmount} acolytes!\n> Current wallet: \`$${profile.wallet.toLocaleString()}\`\n> Cost per acolyte: \`$${baseRecruitingCost.toLocaleString()}\``)
+                            .setContent(`# 💸 Insufficient Funds\n## RECRUITMENT BLOCKED\n\n> You need \`${recruitingCost.toLocaleString()} Embers\` to recruit ${recruitAmount} acolytes!\n> Current wallet: \`${profile.wallet.toLocaleString()} Embers\`\n> Cost per acolyte: \`${baseRecruitingCost.toLocaleString()} Embers\``)
                     );
 
                     components.push(insufficientContainer);
@@ -641,12 +641,12 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Recruiting Cost:** \`$${recruitingCost.toLocaleString()}\`\n**👥 Total Acolytes:** \`${guild.acolytes}/${guildType.maxAcolytes}\`\n**💸 Daily Acolyte Cost:** \`$${newIncome.expenses.toLocaleString()}\`\n**📈 Daily Profit Increase:** \`$${profitIncrease.toLocaleString()}\``)
+                        .setContent(`**💰 Recruiting Cost:** \`${recruitingCost.toLocaleString()} Embers\`\n**👥 Total Acolytes:** \`${guild.acolytes}/${guildType.maxAcolytes}\`\n**💸 Daily Acolyte Cost:** \`${newIncome.expenses.toLocaleString()} Embers\`\n**📈 Daily Profit Increase:** \`${profitIncrease.toLocaleString()} Embers\``)
                 );
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 New Daily Profit:** \`$${newIncome.profit.toLocaleString()}\`\n**⭐ Experience:** \`+${rewards.expGain} XP\`\n**📊 Skill:** \`+${rewards.skillGain}%\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\``)
+                        .setContent(`**💎 New Daily Profit:** \`${newIncome.profit.toLocaleString()} Embers\`\n**⭐ Experience:** \`+${rewards.expGain} XP\`\n**📊 Skill:** \`+${rewards.skillGain}%\`\n**💳 Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\``)
                 );
 
                 components.push(detailsContainer);

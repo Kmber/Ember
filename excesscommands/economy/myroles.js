@@ -95,10 +95,10 @@ module.exports = {
                     const roleText = `**${index + 1}. ${role.roleName}**\n` +
                         `> **⏰ Status:** \`${timeLeftText}\`\n` +
                         `> **💼 Work Multiplier:** \`${role.benefits.workMultiplier}x\` bonus\n` +
-                        `> **🏁 Racing Bonus:** \`+$${role.benefits.racingBonus}\` per win\n` +
+                        `> **🏁 Racing Bonus:** \`+${role.benefits.racingBonus} Embers\` per win\n` +
                         `> **🛡️ Security Bonus:** \`+${role.benefits.robberyProtection}%\` protection\n` +
                         `> **👨‍👩‍👧‍👦 Family Bonus:** \`+${role.benefits.familyBonus}\` multiplier\n` +
-                        `> **💰 Purchase Price:** \`$${role.price?.toLocaleString() || 'Unknown'}\`\n` +
+                        `> **💰 Purchase Price:** \`${role.price?.toLocaleString() || 'Unknown'} Embers\`\n` +
                         `> **📅 Purchased:** \`${purchaseDate}\``;
 
                     activeContainer.addTextDisplayComponents(
@@ -131,7 +131,7 @@ module.exports = {
 
                 benefitsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💼 Total Work Multiplier:** \`${totalWorkMultiplier.toFixed(2)}x\` (${((totalWorkMultiplier - 1) * 100).toFixed(0)}% bonus)\n**🏁 Total Racing Bonus:** \`+$${totalRacingBonus}\` per race win\n**🛡️ Total Security Bonus:** \`+${totalSecurityBonus}%\` robbery protection\n**👨‍👩‍👧‍👦 Total Family Bonus:** \`+${totalFamilyBonus}\` family multiplier`)
+                        .setContent(`**💼 Total Work Multiplier:** \`${totalWorkMultiplier.toFixed(2)}x\` (${((totalWorkMultiplier - 1) * 100).toFixed(0)}% bonus)\n**🏁 Total Racing Bonus:** \`+${totalRacingBonus} Embers\` per race win\n**🛡️ Total Security Bonus:** \`+${totalSecurityBonus}%\` robbery protection\n**👨‍👩‍👧‍👦 Total Family Bonus:** \`+${totalFamilyBonus}\` family multiplier`)
                 );
 
                 benefitsContainer.addTextDisplayComponents(

@@ -58,7 +58,7 @@ module.exports = {
                     for (let i = 0; i < beasts.length; i += 3) {
                         const beastGroup = beasts.slice(i, i + 3);
                         const beastText = beastGroup.map(([id, beast]) => 
-                            `**\`${id}\`** - ${beast.name}\n> **Price:** \`$${beast.price.toLocaleString()}\`\n> **Stats:** Speed ${beast.speed} • Power ${beast.acceleration} • Control ${beast.handling}`
+                            `**\`${id}\`** - ${beast.name}\n> **Price:** \`${beast.price.toLocaleString()} Embers\`\n> **Stats:** Speed ${beast.speed} • Power ${beast.acceleration} • Control ${beast.handling}`
                         ).join('\n\n');
 
                         categoryContainer.addTextDisplayComponents(
@@ -173,7 +173,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD BEAST\n\n> You don't have enough money to summon the **${beastData.name}**!`)
+                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD BEAST\n\n> You don't have enough Embers to summon the **${beastData.name}**!`)
                 );
 
                 components.push(insufficientContainer);
@@ -185,7 +185,7 @@ module.exports = {
 
                 priceBreakdownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Beast:** \`${beastData.name}\`\n**Price:** \`$${beastData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(beastData.price - profile.wallet).toLocaleString()}\`\n\n**💡 Earning Tips:** Work, complete dailies, race, or run guilds to earn more money!`)
+                        .setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Beast:** \`${beastData.name}\`\n**Price:** \`${beastData.price.toLocaleString()} Embers\`\n**Your Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Shortage:** \`${(beastData.price - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Earning Tips:** Work, complete dailies, race, or run guilds to earn more Embers!`)
                 );
 
                 components.push(priceBreakdownContainer);
@@ -239,7 +239,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 👹 Beast Summoning Successful!\n## CREATURE ACQUIRED\n\n> Congratulations! You've successfully summoned a **${beastData.name}** for **\`$${beastData.price.toLocaleString()}\`**!\n> ${!profile.beasts.find(c => c.beastId !== beastId) ? 'This is now your active beast and ready for battle!' : 'Your new beast is ready for action!'}`)
+                    .setContent(`# 👹 Beast Summoning Successful!\n## CREATURE ACQUIRED\n\n> Congratulations! You've successfully summoned a **${beastData.name}** for **\`${beastData.price.toLocaleString()} Embers\`**!\n> ${!profile.beasts.find(c => c.beastId !== beastId) ? 'This is now your active beast and ready for battle!' : 'Your new beast is ready for action!'}`)
             );
 
             components.push(successContainer);
@@ -263,7 +263,7 @@ module.exports = {
             const overallPerformance = ((beastData.speed + beastData.acceleration + beastData.handling) / 3).toFixed(1);
             specsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📊 Overall Rating:** \`${overallPerformance}/100\`\n**CONDITION:** \`100%\` (Pristine)\n**💰 Upkeep Cost:** \`$${beastData.upkeepCost}/day\`\n**📅 Summon Date:** \`${new Date().toLocaleDateString()}\``)
+                    .setContent(`**📊 Overall Rating:** \`${overallPerformance}/100\`\n**CONDITION:** \`100%\` (Pristine)\n**💰 Upkeep Cost:** \`${beastData.upkeepCost} Embers/day\`\n**📅 Summon Date:** \`${new Date().toLocaleDateString()}\``)
             );
 
             components.push(specsContainer);
@@ -276,7 +276,7 @@ module.exports = {
 
             financialContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💰 **TRANSACTION SUMMARY**\n\n**Summoning Cost:** \`$${beastData.price.toLocaleString()}\`\n**Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Total Beasts:** \`${profile.beasts.length}\`\n**Transaction Logged:** Purchase recorded in your transaction history`)
+                    .setContent(`## 💰 **TRANSACTION SUMMARY**\n\n**Summoning Cost:** \`${beastData.price.toLocaleString()} Embers\`\n**Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Total Beasts:** \`${profile.beasts.length}\`\n**Transaction Logged:** Purchase recorded in your transaction history`)
             );
 
             components.push(financialContainer);
@@ -289,7 +289,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🎯 **WHAT'S NEXT?**\n\n**🏁 Racing:** Use \`!beastrace\` to compete and earn money\n**🛡️ Quests:** Take your beast on epic quests\n**🔧 Upkeep:** Keep your beast well-maintained for best performance\n**📊 Stats:** Check your beast collection and racing statistics\n\n> Your new beast opens up exciting gameplay opportunities!`)
+                    .setContent(`## 🎯 **WHAT'S NEXT?**\n\n**🏁 Racing:** Use \`!beastrace\` to compete and earn Embers\n**🛡️ Quests:** Take your beast on epic quests\n**🔧 Upkeep:** Keep your beast well-maintained for best performance\n**📊 Stats:** Check your beast collection and racing statistics\n\n> Your new beast opens up exciting gameplay opportunities!`)
             );
 
             components.push(tipsContainer);

@@ -50,7 +50,7 @@ module.exports = {
 
                 timeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 While You Wait:**\n> • Work regularly for consistent income\n> • Build follower allegiance for bigger bonuses\n> • Level up to increase weekly rewards\n> • The longer wait makes it more valuable!`)
+                        .setContent(`**💡 While You Wait:**\n> • Work regularly for consistent Embers\n> • Build follower allegiance for bigger bonuses\n> • Level up to increase weekly rewards\n> • The longer wait makes it more valuable!`)
                 );
 
                 components.push(timeContainer);
@@ -103,7 +103,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🎁 Weekly Reward Claimed!\n## CONGRATULATIONS ON YOUR DEDICATION\n\n> You have successfully claimed your weekly reward of **\`$${totalReward.toLocaleString()}\`**!\n> Your consistent activity has paid off with substantial bonuses!`)
+                    .setContent(`# 🎁 Weekly Reward Claimed!\n## CONGRATULATIONS ON YOUR DEDICATION\n\n> You have successfully claimed your weekly reward of **\`${totalReward.toLocaleString()} Embers\`**!\n> Your consistent activity has paid off with substantial bonuses!`)
             );
 
             components.push(headerContainer);
@@ -121,12 +121,12 @@ module.exports = {
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Base Weekly Reward:** \`$${baseReward.toLocaleString()}\`\n**⭐ Level Bonus:** \`$${levelBonus.toLocaleString()}\` (Level ${profile.level})\n**👥 Follower Bonus:** \`$${followerBonus.toLocaleString()}\` (${profile.followerAllegiance}% allegiance)`)
+                    .setContent(`**💎 Base Weekly Reward:** \`${baseReward.toLocaleString()} Embers\`\n**⭐ Level Bonus:** \`${levelBonus.toLocaleString()} Embers\` (Level ${profile.level})\n**👥 Follower Bonus:** \`${followerBonus.toLocaleString()} Embers\` (${profile.followerAllegiance}% allegiance)`)
             );
 
             breakdownContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📈 Work Multiplier:** \`${workMultiplier.toFixed(2)}x\`\n**👑 Role Bonuses:** \`$${roleBonus.toLocaleString()}\`\n**🏆 Total Reward:** \`$${totalReward.toLocaleString()}\``)
+                    .setContent(`**📈 Work Multiplier:** \`${workMultiplier.toFixed(2)}x\`\n**👑 Role Bonuses:** \`${roleBonus.toLocaleString()} Embers\`\n**🏆 Total Reward:** \`${totalReward.toLocaleString()} Embers\``)
             );
 
             components.push(breakdownContainer);
@@ -144,7 +144,7 @@ module.exports = {
 
             progressContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🎯 Experience Gained:** \`+100 XP\`\n**🏆 Current Level:** \`${profile.level}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**📊 Total Net Worth:** \`$${(profile.wallet + profile.bank + profile.followerTithe).toLocaleString()}\``)
+                    .setContent(`**🎯 Experience Gained:** \`+100 XP\`\n**🏆 Current Level:** \`${profile.level}\`\n**💳 New Wallet Balance:** \`${profile.wallet.toLocaleString()} Embers\`\n**📊 Total Net Worth:** \`${(profile.wallet + profile.bank + profile.followerTithe).toLocaleString()} Embers\``)
             );
 
           
@@ -179,7 +179,7 @@ module.exports = {
 
                 followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Followers:** \`${profile.followers.length}\`\n**Average Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**Follower Bonus Applied:** \`$${followerBonus.toLocaleString()}\`\n**Allegiance Impact:** \`${((profile.followerAllegiance / 100) * 100).toFixed(1)}% of maximum bonus\``)
+                        .setContent(`**Followers:** \`${profile.followers.length}\`\n**Average Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**Follower Bonus Applied:** \`${followerBonus.toLocaleString()} Embers\`\n**Allegiance Impact:** \`${((profile.followerAllegiance / 100) * 100).toFixed(1)}% of maximum bonus\``)
                 );
 
                 followerContainer.addTextDisplayComponents(

@@ -57,7 +57,7 @@ module.exports = {
 
                 const typesList = Object.entries(FOLLOWER_TEMPLATES).map(([type, template]) => {
                     const professions = template.professions.slice(0, 2).join(', ');
-                    const salaryRange = `$${template.salaryRange[0]}-${template.salaryRange[1]}`;
+                    const salaryRange = `${template.salaryRange[0]} Embers-${template.salaryRange[1]} Embers`;
                     return `**\`${type}\`** - ${professions} (${salaryRange})`;
                 }).join('\n');
 
@@ -269,7 +269,7 @@ module.exports = {
 
             profileContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👤 Name:** \`${name}\`\n**📜 Role:** \`${type}\`\n**🎂 Age:** \`${age} years old\`\n**💼 Profession:** \`${profession}\`\n**💰 Work Tithe:** \`$${salary} per work session\``)
+                    .setContent(`**👤 Name:** \`${name}\`\n**📜 Role:** \`${type}\`\n**🎂 Age:** \`${age} years old\`\n**💼 Profession:** \`${profession}\`\n**💰 Work Tithe:** \`${salary} Embers per work session\``)
             );
 
             profileContainer.addTextDisplayComponents(
@@ -296,7 +296,7 @@ module.exports = {
 
             householdContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👥 Total Followers:** \`${profile.followers.length}/${activeCitadel.maxFollowers}\`\n**🖤 Average Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**💰 Combined Follower Tithe:** \`$${Math.floor(totalFollowerIncome)}/work\`\n**🏰 Citadel:** \`${activeCitadel.name}\``)
+                    .setContent(`**👥 Total Followers:** \`${profile.followers.length}/${activeCitadel.maxFollowers}\`\n**🖤 Average Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**💰 Combined Follower Tithe:** \`${Math.floor(totalFollowerIncome)} Embers/work\`\n**🏰 Citadel:** \`${activeCitadel.name}\``)
             );
 
             householdContainer.addTextDisplayComponents(

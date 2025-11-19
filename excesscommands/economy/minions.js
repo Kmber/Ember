@@ -133,7 +133,7 @@ module.exports = {
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🦇 Total Minions:** \`${profile.minions.length}/${profile.maxMinions}\`\n**⚔️ Total Power:** \`${Math.floor(totalPower)}\`\n**📊 Average Condition:** \`${averageCondition.toFixed(1)}%\`\n**💰 Full Care Cost:** \`$175 (all minions)\``)
+                    .setContent(`**🦇 Total Minions:** \`${profile.minions.length}/${profile.maxMinions}\`\n**⚔️ Total Power:** \`${Math.floor(totalPower)}\`\n**📊 Average Condition:** \`${averageCondition.toFixed(1)}%\`\n**💰 Full Care Cost:** \`175 Embers (all minions)\``)
             );
 
             statsContainer.addTextDisplayComponents(

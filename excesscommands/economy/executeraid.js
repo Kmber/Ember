@@ -272,12 +272,12 @@ module.exports = {
                         const basePayout = Math.floor(result.raid.actual_reward / result.raid.members.length);
                         const finalPayout = Math.floor(basePayout * classMultiplier);
                         
-                        return `**${member.username}** (${member.class})\n> **Base Share:** \`$${basePayout.toLocaleString()}\`\n> **Class Bonus:** \`${((classMultiplier - 1) * 100).toFixed(0)}%\`\n> **Final Reward:** \`$${finalPayout.toLocaleString()}\``;
+                        return `**${member.username}** (${member.class})\n> **Base Share:** \`${basePayout.toLocaleString()} Embers\`\n> **Class Bonus:** \`${((classMultiplier - 1) * 100).toFixed(0)}%\`\n> **Final Reward:** \`${finalPayout.toLocaleString()} Embers\``;
                     }).join('\n\n');
 
                     financialContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🏆 Total Raid Treasure:** \`$${result.raid.actual_reward.toLocaleString()}\`\n**📊 Success Probability:** \`${Math.floor(await EconomyManager.calculateRaidSuccess(result.raid, result.memberProfiles))}%\`\n**👥 Party Size:** \`${result.raid.members.length} adventurers\``)
+                            .setContent(`**🏆 Total Raid Treasure:** \`${result.raid.actual_reward.toLocaleString()} Embers\`\n**📊 Success Probability:** \`${Math.floor(await EconomyManager.calculateRaidSuccess(result.raid, result.memberProfiles))}%\`\n**👥 Party Size:** \`${result.raid.members.length} adventurers\``)
                     );
 
                     financialContainer.addTextDisplayComponents(
@@ -328,7 +328,7 @@ module.exports = {
                         const recoveryHours = dungeonData.difficulty * 6;
                         const fine = Math.floor(profile.wallet * 0.2);
                         
-                        return `**${member.username}** (${member.class})\n> **Recovery Time:** \`${recoveryHours} hours\`\n> **Penalty:** \`$${fine.toLocaleString()}\`\n> **Status:** Recovering`;
+                        return `**${member.username}** (${member.class})\n> **Recovery Time:** \`${recoveryHours} hours\`\n> **Penalty:** \`${fine.toLocaleString()} Embers\`\n> **Status:** Recovering`;
                     }).join('\n\n');
 
                     penaltiesContainer.addTextDisplayComponents(

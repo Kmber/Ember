@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'beastrace',
-    description: 'Race your beast to win money with v2 components',
+    description: 'Race your beast to win Embers with v2 components',
     cooldown: 300, 
     async execute(message) {
         try {
@@ -150,7 +150,7 @@ module.exports = {
 
                 resultsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏆 Base Winnings:** \`$${winnings.toLocaleString()}\`\n**👑 Role Bonus:** \`$${roleBonus.toLocaleString()}\`\n**💎 Total Winnings:** \`$${totalWinnings.toLocaleString()}\`\n**💳 New Wallet:** \`$${profile.wallet.toLocaleString()}\``)
+                        .setContent(`**🏆 Base Winnings:** \`${winnings} Embers\`\n**👑 Role Bonus:** \`${roleBonus} Embers\`\n**💎 Total Winnings:** \`${totalWinnings} Embers\`\n**💳 New Wallet:** \`${profile.wallet} Embers\``)
                 );
 
                 resultsContainer.addTextDisplayComponents(
@@ -178,7 +178,7 @@ module.exports = {
 
                 statsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏆 Beast Race Wins:** \`${beast.raceWins}\`\n**📈 Total Career Earnings:** \`$${profile.racingStats.earnings.toLocaleString()}\`\n**🏁 Total Races:** \`${profile.racingStats.totalRaces + 1}\``)
+                        .setContent(`**🏆 Beast Race Wins:** \`${beast.raceWins}\`\n**📈 Total Career Earnings:** \`${profile.racingStats.earnings} Embers\`\n**🏁 Total Races:** \`${profile.racingStats.totalRaces + 1}\``)
                 );
 
                 components.push(statsContainer);
@@ -216,7 +216,7 @@ module.exports = {
 
                 lossDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Care Costs:** \`$${loss.toLocaleString()}\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Stamina Loss:** \`-${durabilityLoss}%\`\n**👹 Beast Condition:** \`${beast.durability}%\``)
+                        .setContent(`**💰 Care Costs:** \`${loss} Embers\`\n**💳 Remaining Wallet:** \`${profile.wallet} Embers\`\n**Stamina Loss:** \`-${durabilityLoss}%\`\n**👹 Beast Condition:** \`${beast.durability}%\``)
                 );
 
                 lossDetailsContainer.addTextDisplayComponents(

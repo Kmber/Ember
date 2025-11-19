@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'withdraw',
     aliases: ['with'],
-    description: 'Withdraw money from your bank to your wallet with v2 components',
+    description: 'Withdraw Embers from your bank to your wallet with v2 components',
     usage: '<amount | all | max>',
     async execute(message, args) {
         try {
@@ -38,7 +38,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!withdraw 1000\`** - Withdraw specific amount\n**\`!withdraw all\`** - Withdraw all bank funds\n**\`!withdraw max\`** - Withdraw maximum available\n\n**🏦 Available Balance:** \`$${profile.bank.toLocaleString()}\``)
+                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!withdraw 1000\`** - Withdraw specific amount\n**\`!withdraw all\`** - Withdraw all bank funds\n**\`!withdraw max\`** - Withdraw maximum available\n\n**🏦 Available Balance:** \`${profile.bank.toLocaleString()} Embers\``)
                 );
 
                 components.push(usageContainer);
@@ -76,7 +76,7 @@ module.exports = {
 
                 examplesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **VALID FORMATS**\n\n**Numbers:** \`1000\`, \`2500\`, \`10000\`\n**Keywords:** \`all\`, \`max\`\n**Invalid:** \`${args[0]}\` (not recognized)\n\n**🏦 Your Bank Balance:** \`$${profile.bank.toLocaleString()}\``)
+                        .setContent(`## 💡 **VALID FORMATS**\n\n**Numbers:** \`1000\`, \`2500\`, \`10000\`\n**Keywords:** \`all\`, \`max\`\n**Invalid:** \`${args[0]}\` (not recognized)\n\n**🏦 Your Bank Balance:** \`${profile.bank.toLocaleString()} Embers\``)
                 );
 
                 components.push(examplesContainer);
@@ -95,7 +95,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Bank Funds\n## NOT ENOUGH MONEY IN BANK\n\n> You don't have enough money in your bank account for this withdrawal!`)
+                        .setContent(`# 💸 Insufficient Bank Funds\n## NOT ENOUGH EMBERS IN BANK\n\n> You don't have enough Embers in your bank account for this withdrawal!`)
                 );
 
                 components.push(insufficientContainer);
@@ -107,12 +107,12 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏦 **ACCOUNT BREAKDOWN**\n\n**Bank Balance:** \`$${profile.bank.toLocaleString()}\`\n**Attempted Withdrawal:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.bank).toLocaleString()}\`\n**Wallet Balance:** \`$${profile.wallet.toLocaleString()}\``)
+                        .setContent(`## 🏦 **ACCOUNT BREAKDOWN**\n\n**Bank Balance:** \`${profile.bank.toLocaleString()} Embers\`\n**Attempted Withdrawal:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.bank).toLocaleString()} Embers\`\n**Wallet Balance:** \`${profile.wallet.toLocaleString()} Embers\``)
                 );
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Suggestions:**\n> • Try \`!withdraw all\` to withdraw everything\n> • Check \`!balance\` for complete financial overview\n> • Consider depositing more money first`)
+                        .setContent(`**💡 Suggestions:**\n> • Try \`!withdraw all\` to withdraw everything\n> • Check \`!balance\` for complete financial overview\n> • Consider depositing more Embers first`)
                 );
 
                 components.push(balanceContainer);
@@ -149,7 +149,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ✅ Withdrawal Successful!\n## MONEY TRANSFERRED TO WALLET\n\n> You have successfully withdrawn **\`$${amount.toLocaleString()}\`** from your bank to your wallet!\n> Your funds are now available for immediate use.`)
+                    .setContent(`# ✅ Withdrawal Successful!\n## EMBERS TRANSFERRED TO WALLET\n\n> You have successfully withdrawn **\`${amount.toLocaleString()} Embers\`** from your bank to your wallet!\n> Your funds are now available for immediate use.`)
             );
 
             components.push(headerContainer);
@@ -167,7 +167,7 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Withdrawal Amount:** \`$${amount.toLocaleString()}\`\n**⏰ Transaction Time:** \`${new Date().toLocaleString()}\`\n**📝 Transaction Type:** \`Bank Withdrawal\`\n**🏷️ Category:** \`Banking\``)
+                    .setContent(`**💰 Withdrawal Amount:** \`${amount.toLocaleString()} Embers\`\n**⏰ Transaction Time:** \`${new Date().toLocaleString()}\`\n**📝 Transaction Type:** \`Bank Withdrawal\`\n**🏷️ Category:** \`Banking\``)
             );
 
             components.push(detailsContainer);
@@ -185,12 +185,12 @@ module.exports = {
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💳 Wallet Balance:** \`$${newWallet.toLocaleString()}\`\n**🏦 Bank Balance:** \`$${newBank.toLocaleString()}\`\n**👥 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\``)
+                    .setContent(`**💳 Wallet Balance:** \`${newWallet.toLocaleString()} Embers\`\n**🏦 Bank Balance:** \`${newBank.toLocaleString()} Embers\`\n**👥 Follower Tithe:** \`${profile.followerTithe.toLocaleString()} Embers\``)
             );
 
             balancesContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💎 Total Net Worth:** \`$${totalWealth.toLocaleString()}\`\n**📈 Liquid Assets:** \`$${newWallet.toLocaleString()}\` (Available for spending)\n**🛡️ Secured Assets:** \`$${(newBank + profile.followerTithe).toLocaleString()}\``)
+                    .setContent(`**💎 Total Net Worth:** \`${totalWealth.toLocaleString()} Embers\`\n**📈 Liquid Assets:** \`${newWallet.toLocaleString()} Embers\` (Available for spending)\n**🛡️ Secured Assets:** \`${(newBank + profile.followerTithe).toLocaleString()} Embers\``)
             );
 
             components.push(balancesContainer);
@@ -203,7 +203,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **FINANCIAL MANAGEMENT TIPS**\n\n**💳 Wallet Money:** Ready for purchases, gambling, and donations\n**🏦 Bank Money:** Safer from robberies, earns potential interest\n**🔄 Quick Banking:** Use \`!deposit <amount>\` to secure funds again\n**📊 Monitoring:** Check \`!balance\` for complete financial overview\n\n> Keep some money in the bank for security and some in wallet for convenience!`)
+                    .setContent(`## 💡 **FINANCIAL MANAGEMENT TIPS**\n\n**💳 Wallet Embers:** Ready for purchases, gambling, and donations\n**🏦 Bank Embers:** Safer from robberies, earns potential interest\n**🔄 Quick Banking:** Use \`!deposit <amount>\` to secure funds again\n**📊 Monitoring:** Check \`!balance\` for complete financial overview\n\n> Keep some Embers in the bank for security and some in wallet for convenience!`)
             );
 
             components.push(tipsContainer);

@@ -232,7 +232,7 @@ module.exports = {
 
                 statusContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚔️ **YOUR RAID STATUS**\n\n**Dungeon:** \`${raid.dungeonName}\`\n**Class:** \`${currentClass}\`\n**Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**Expected Share:** \`$${Math.floor(raid.potential_reward / raid.requiredMembers).toLocaleString()}\`\n\n**💡 Next Steps:** Use \`!raid\` to check when the expedition is ready to begin!`)
+                        .setContent(`## ⚔️ **YOUR RAID STATUS**\n\n**Dungeon:** \`${raid.dungeonName}\`\n**Class:** \`${currentClass}\`\n**Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**Expected Share:** \`${Math.floor(raid.potential_reward / raid.requiredMembers).toLocaleString()} Embers\`\n\n**💡 Next Steps:** Use \`!raid\` to check when the expedition is ready to begin!`)
                 );
 
                 components.push(statusContainer);
@@ -413,7 +413,7 @@ module.exports = {
             const individualReward = Math.floor(raid.potential_reward / raid.requiredMembers);
             classContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**⚔️ Dungeon:** \`${raid.dungeonName}\`\n**🛡️ Your Class:** \`${playerClass.charAt(0).toUpperCase() + playerClass.slice(1)}\`\n**👥 Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**💰 Your Share:** \`$${individualReward.toLocaleString()}\`\n**🆔 Raid ID:** \`${raidId}\``)
+                    .setContent(`**⚔️ Dungeon:** \`${raid.dungeonName}\`\n**🛡️ Your Class:** \`${playerClass.charAt(0).toUpperCase() + playerClass.slice(1)}\`\n**👥 Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**💰 Your Share:** \`${individualReward.toLocaleString()} Embers\`\n**🆔 Raid ID:** \`${raidId}\``)
             );
 
             classContainer.addTextDisplayComponents(

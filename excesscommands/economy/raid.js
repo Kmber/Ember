@@ -129,7 +129,7 @@ module.exports = {
 
                     raidContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🎭 Your Class:** \`${memberClass}\`\n**👥 Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**💰 Your Share:** \`$${individualReward.toLocaleString()}\`\n**🎯 Dungeon Type:** \`${raid.dungeonType}\`\n**🆔 Raid ID:** \`${raid.raidId}\``)
+                            .setContent(`**🎭 Your Class:** \`${memberClass}\`\n**👥 Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**💰 Your Share:** \`${individualReward.toLocaleString()} Embers\`\n**🎯 Dungeon Type:** \`${raid.dungeonType}\`\n**🆔 Raid ID:** \`${raid.raidId}\``)
                     );
 
                     if (timeLeft > 0) {
@@ -230,7 +230,7 @@ module.exports = {
                         const success = raid.status === 'completed';
                         const memberClass = raid.members.find(m => m.userId === message.author.id)?.class;
                         const outcome = success ? 
-                            `✅ **SUCCESS** - Earned \`$${Math.floor(raid.actual_reward / raid.members.length).toLocaleString()}\`` :
+                            `✅ **SUCCESS** - Earned \`${Math.floor(raid.actual_reward / raid.members.length).toLocaleString()} Embers\`` :
                             `❌ **FAILED** - Recovery time and penalties`;
                         
                         return `**${raid.dungeonName}** (${memberClass})\n> ${outcome}\n> **Date:** \`${new Date(raid.executionDate).toLocaleDateString()}\``;
@@ -259,7 +259,7 @@ module.exports = {
 
                 analysisContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📈 **PERFORMANCE ANALYSIS**\n\n**🎯 Success Rate:** \`${successRate}%\`\n**📊 Total Expeditions:** \`${profile.completedRaids + profile.failedRaids}\`\n**💰 Successful Raids:** \`${profile.completedRaids}\`\n**🚫 Failed Attempts:** \`${profile.failedRaids}\`\n\n**💡 Improvement Tips:** ${successRate < 70 ? 'Focus on skill building and threat management' : 'Excellent track record - keep up the strategic planning!'}`)
+                        .setContent(`## 📈 **PERFORMANCE ANALYSIS**\n\n**🎯 Success Rate:** \`${successRate}%\`\n**📊 Total Expeditions:** \`${profile.completedRaids + profile.failedRaids}\`\n**💰 Successful Raids:** \`${profile.completedRaids}\`\n**🚫 Failed Attempts:** \`${profile.failedRaids}\`\n\n> Higher skill and lower threat improve your success chances!`)
                 );
 
                 components.push(analysisContainer);
@@ -426,7 +426,7 @@ module.exports = {
             );
 
             return message.reply({
-                components: [errorContainer],
+                components: [errorContainer],               
                 flags: MessageFlags.IsComponentsV2
             });
         }

@@ -49,7 +49,7 @@ module.exports = {
 
             
                 const firstGuildText = firstHalf.map(([id, g]) =>
-                    `**\`${id}\`** - ${g.name}\n> **Cost:** \`$${g.baseCost.toLocaleString()}\`\n> **Description:** ${g.description}\n> **Daily Income:** \`$${g.dailyIncome[0]}-${g.dailyIncome[1]}\``
+                    `**\`${id}\`** - ${g.name}\n> **Cost:** \`${g.baseCost.toLocaleString()} Embers\`\n> **Description:** ${g.description}\n> **Daily Income:** \`${g.dailyIncome[0]} Embers-${g.dailyIncome[1]} Embers\``
                 ).join('\n\n');
 
                 guildContainer.addTextDisplayComponents(
@@ -60,7 +60,7 @@ module.exports = {
                
                 if (secondHalf.length > 0) {
                     const secondGuildText = secondHalf.map(([id, g]) =>
-                        `**\`${id}\`** - ${g.name}\n> **Cost:** \`$${g.baseCost.toLocaleString()}\`\n> **Description:** ${g.description}\n> **Daily Income:** \`$${g.dailyIncome[0]}-${g.dailyIncome[1]}\``
+                        `**\`${id}\`** - ${g.name}\n> **Cost:** \`${g.baseCost.toLocaleString()} Embers\`\n> **Description:** ${g.description}\n> **Daily Income:** \`${g.dailyIncome[0]} Embers-${g.dailyIncome[1]} Embers\``
                     ).join('\n\n');
 
                     guildContainer.addTextDisplayComponents(
@@ -162,7 +162,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD GUILD\n\n> You need **\`$${guildData.baseCost.toLocaleString()}\`** to start **${guildData.name}**!\n> Current wallet: **\`$${profile.wallet.toLocaleString()}\`**\n> Shortage: **\`$${(guildData.baseCost - profile.wallet).toLocaleString()}\`**`)
+                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD GUILD\n\n> You need **\`${guildData.baseCost.toLocaleString()} Embers\`** to start **${guildData.name}**!\n> Current wallet: **\`${profile.wallet.toLocaleString()} Embers\`**\n> Shortage: **\`${(guildData.baseCost - profile.wallet).toLocaleString()} Embers\`**`)
                 );
 
                 components.push(insufficientContainer);
@@ -213,7 +213,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🏰 Guild Started Successfully!\n## WELCOME TO THE CONGLOMERATE\n\n> Congratulations! You\'ve successfully started **${guildData.name}** for \`$${guildData.baseCost.toLocaleString()}\`!`)
+                    .setContent(`# 🏰 Guild Started Successfully!\n## WELCOME TO THE CONGLOMERATE\n\n> Congratulations! You\'ve successfully started **${guildData.name}** for \`${guildData.baseCost.toLocaleString()} Embers\`!`)
             );
 
             components.push(headerContainer);
@@ -237,7 +237,7 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Daily Income Range:** \`$${guildData.dailyIncome[0].toLocaleString()}-${guildData.dailyIncome[1].toLocaleString()}\`\n**📈 Next Upgrade Cost:** \`$${guild.upgradeCost.toLocaleString()}\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\``)
+                    .setContent(`**💰 Daily Income Range:** \`${guildData.dailyIncome[0].toLocaleString()} Embers-${guildData.dailyIncome[1].toLocaleString()} Embers\`\n**📈 Next Upgrade Cost:** \`${guild.upgradeCost.toLocaleString()} Embers\`\n**💳 Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\``)
             );
 
             components.push(detailsContainer);

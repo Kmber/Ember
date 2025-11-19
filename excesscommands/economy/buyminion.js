@@ -11,7 +11,7 @@ const { MINIONS } = require('../../models/economy/constants/gameData');
 module.exports = {
     name: 'buyminion',
     aliases: ['minion-buy'],
-    description: 'Summon a minion for power and protection with v2 components',
+    description: 'Summon a minion for power and protection using Embers with v2 components',
     usage: '!buyminion <minion_id> <name>',
     async execute(message, args) {
         try {
@@ -52,7 +52,7 @@ module.exports = {
                     for (let i = 0; i < minions.length; i += 3) {
                         const minionGroup = minions.slice(i, i + 3);
                         const minionText = minionGroup.map(([id, minion]) => 
-                            `**\`${id}\`** - ${minion.name} (${minion.breed})\n> **Price:** \`$${minion.price.toLocaleString()}\`\n> **Power Level:** \`${minion.powerLevel}/100\`\n> **Type:** ${minion.type}`
+                            `**\`${id}\`** - ${minion.name} (${minion.breed})\n> **Price:** \`${minion.price.toLocaleString()} Embers\`\n> **Power Level:** \`${minion.powerLevel}/100\`\n> **Type:** ${minion.type}`
                         ).join('\n\n');
 
                         categoryContainer.addTextDisplayComponents(
@@ -145,7 +145,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD MINION SUMMONING\n\n> You don't have enough money to summon **${minionData.name}**!`)
+                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD MINION SUMMONING\n\n> You don't have enough Embers to summon **${minionData.name}**!`)
                 );
 
                 components.push(insufficientContainer);
@@ -157,7 +157,7 @@ module.exports = {
 
                 priceBreakdownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **SUMMONING FEES**\n\n**Minion:** \`${minionData.name} (${minionData.breed})\`\n**Summoning Fee:** \`$${minionData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(minionData.price - profile.wallet).toLocaleString()}\`\n\n**💡 Earning Tips:** Work regularly, complete dailies, or run guilds to save for your new minion!`)
+                        .setContent(`## 💰 **SUMMONING FEES**\n\n**Minion:** \`${minionData.name} (${minionData.breed})\`\n**Summoning Fee:** \`${minionData.price.toLocaleString()} Embers\`\n**Your Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Shortage:** \`${(minionData.price - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Earning Tips:** Work regularly, complete dailies, or run guilds to save for your new minion!`)
                 );
 
                 components.push(priceBreakdownContainer);
@@ -202,7 +202,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 🦇 Minion Summoned Successfully!\n## WELCOME YOUR NEW SERVANT\n\n> Congratulations! You've successfully summoned **${minionName}** the ${minionData.breed} for **\`$${minionData.price.toLocaleString()}\`**!\n> Your new dark servant is ready to protect your citadel and bring chaos to your enemies!`)
+                    .setContent(`# 🦇 Minion Summoned Successfully!\n## WELCOME YOUR NEW SERVANT\n\n> Congratulations! You've successfully summoned **${minionName}** the ${minionData.breed} for **\`${minionData.price.toLocaleString()} Embers\`**!\n> Your new dark servant is ready to protect your citadel and bring chaos to your enemies!`)
             );
 
             components.push(successContainer);
@@ -262,7 +262,7 @@ module.exports = {
 
             financialContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💰 **SUMMONING SUMMARY**\n\n**Summoning Fee:** \`$${minionData.price.toLocaleString()}\`\n**Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Total Minions:** \`${profile.minions.length}/${profile.maxMinions}\`\n**Transaction Logged:** Summoning recorded in your transaction history\n\n> Your investment in power and servitude is complete!`)
+                    .setContent(`## 💰 **SUMMONING SUMMARY**\n\n**Summoning Fee:** \`${minionData.price.toLocaleString()} Embers\`\n**Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Total Minions:** \`${profile.minions.length}/${profile.maxMinions}\`\n**Transaction Logged:** Summoning recorded in your transaction history\n\n> Your investment in power and servitude is complete!`)
             );
 
             components.push(financialContainer);

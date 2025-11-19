@@ -68,7 +68,7 @@ module.exports = {
 
                 actionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🦇 **AVAILABLE RITUALS**\n\n**⚡ \`sustain\`** - Sustain your minion to restore energy and constitution (\`$75\`)\n**🖤 \`tend\`** - Tend to your minion to increase corruption and loyalty (\`$150\`)\n**💀 \`commune\`** - Commune with your minion to boost loyalty and bonding (\`$50\`)\n**🌟 \`all\`** - Perform a grand ritual for maximum effect (\`$275\`)\n\n**Examples:**\n> \`!minioncare sustain 1\` - Sustain your first minion\n> \`!minioncare all 2\` - Perform a grand ritual for your second minion`)
+                        .setContent(`## 🦇 **AVAILABLE RITUALS**\n\n**⚡ \`sustain\`** - Sustain your minion to restore energy and constitution (\`75 Embers\`)\n**🖤 \`tend\`** - Tend to your minion to increase corruption and loyalty (\`150 Embers\`)\n**💀 \`commune\`** - Commune with your minion to boost loyalty and bonding (\`50 Embers\`)\n**🌟 \`all\`** - Perform a grand ritual for maximum effect (\`275 Embers\`)\n\n**Examples:**\n> \`!minioncare sustain 1\` - Sustain your first minion\n> \`!minioncare all 2\` - Perform a grand ritual for your second minion`)
                 );
 
                 components.push(actionsContainer);
@@ -123,7 +123,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds for Dark Ritual\n## CANNOT AFFORD ${action.toUpperCase()} RITUAL\n\n> You need **\`$${cost}\`** to perform the **${action}** ritual for **${minion.name}**!\n> Your wallet has **\`$${profile.wallet.toLocaleString()}\`**`)
+                        .setContent(`# 💸 Insufficient Funds for Dark Ritual\n## CANNOT AFFORD ${action.toUpperCase()} RITUAL\n\n> You need **\`${cost} Embers\`** to perform the **${action}** ritual for **${minion.name}**!\n> Your wallet has **\`${profile.wallet.toLocaleString()} Embers\`**`)
                 );
 
                 components.push(insufficientContainer);
@@ -134,7 +134,7 @@ module.exports = {
 
                 earningContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **GATHER MORE WEALTH**\n\n**Shortage:** \`$${cost - profile.wallet}\`\n\n**💡 Quick Earning Tips:**\n> • Use \`!work\` to earn regular income\n> • Complete \`!daily\` rewards\n> • Try your luck with \`!gamble\`\n> • Run guilds for passive income\n\n**🦇 Your minion awaits its tribute!**`)
+                        .setContent(`## 💰 **GATHER MORE WEALTH**\n\n**Shortage:** \`${cost - profile.wallet} Embers\`\n\n**💡 Quick Earning Tips:**\n> • Use \`!work\` to earn regular income\n> • Complete \`!daily\` rewards\n> • Try your luck with \`!gamble\`\n> • Run guilds for passive income\n\n**🦇 Your minion awaits its tribute!**`)
                 );
 
                 components.push(earningContainer);
@@ -210,7 +210,7 @@ module.exports = {
 
             resultsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Ritual Cost:** \`$${cost}\`\n**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🎯 Ritual Type:** \`${action.toUpperCase()}\`\n**⏰ Ritual Time:** \`${new Date().toLocaleString()}\``)
+                    .setContent(`**💰 Ritual Cost:** \`${cost} Embers\`\n**💳 Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**🎯 Ritual Type:** \`${action.toUpperCase()}\`\n**⏰ Ritual Time:** \`${new Date().toLocaleString()}\``)
             );
 
             if (improvements.length > 0) {
@@ -285,7 +285,7 @@ module.exports = {
             if (careNeeds.length > 0) {
                 recommendationsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 Next Ritual Suggestions:**\n${careNeeds.join('\n')}\n\n**💰 Ritual Costs:** Sustain \`$75\` • Tend \`$150\` • Commune \`$50\` • All \`$275\``)
+                        .setContent(`**🎯 Next Ritual Suggestions:**\n${careNeeds.join('\n')}\n\n**💰 Ritual Costs:** Sustain \`75 Embers\` • Tend \`150 Embers\` • Commune \`50 Embers\` • All \`275 Embers\``)
                 );
             } else {
                 recommendationsContainer.addTextDisplayComponents(

@@ -80,7 +80,7 @@ module.exports = {
 
                 statusContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💰 Current Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📊 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**📈 Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\`\n**💾 Available Space:** \`$${(vaultCapacity - profile.followerTithe).toLocaleString()}\``)
+                        .setContent(`**💰 Current Tithe:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**📊 Tithe Capacity:** \`${vaultCapacity.toLocaleString()} Embers\`\n**📈 Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\`\n**💾 Available Space:** \`${(vaultCapacity - profile.followerTithe).toLocaleString()} Embers\``)
                 );
 
                 statusContainer.addTextDisplayComponents(
@@ -98,7 +98,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📋 **TITHE OPERATIONS**\n\n**\`!tithe deposit <amount>\`** - Store money securely\n**\`!tithe withdraw <amount>\`** - Retrieve stored funds\n**\`!tithe deposit all\`** - Deposit all available wallet funds\n**\`!tithe withdraw all\`** - Withdraw all tithe funds\n\n**💡 Tip:** Keep emergency funds in the tithe for maximum security!`)
+                        .setContent(`## 📋 **TITHE OPERATIONS**\n\n**\`!tithe deposit <amount>\`** - Store Embers securely\n**\`!tithe withdraw <amount>\`** - Retrieve stored Embers\n**\`!tithe deposit all\`** - Deposit all available wallet funds\n**\`!tithe withdraw all\`** - Withdraw all tithe funds\n\n**💡 Tip:** Keep emergency funds in the tithe for maximum security!`)
                 );
 
                 components.push(instructionsContainer);
@@ -132,7 +132,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **CORRECT USAGE**\n\n**\`!tithe deposit <amount>\`** - Store money in tithe\n**\`!tithe withdraw <amount>\`** - Take money from tithe\n\n**Examples:**\n> \`!tithe deposit 5000\`\n> \`!tithe withdraw 2000\`\n> \`!tithe deposit all\``)
+                        .setContent(`## 💡 **CORRECT USAGE**\n\n**\`!tithe deposit <amount>\`** - Store Embers in tithe\n**\`!tithe withdraw <amount>\`** - Take Embers from tithe\n\n**Examples:**\n> \`!tithe deposit 5000\`\n> \`!tithe withdraw 2000\`\n> \`!tithe deposit all\``)
                 );
 
                 components.push(usageContainer);
@@ -174,7 +174,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **CURRENT BALANCES**\n\n**💳 Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📊 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\``)
+                        .setContent(`## 💰 **CURRENT BALANCES**\n\n**💳 Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**🏦 Follower Tithe:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**📊 Tithe Capacity:** \`${vaultCapacity.toLocaleString()} Embers\``)
                 );
 
                 components.push(balanceContainer);
@@ -194,7 +194,7 @@ module.exports = {
 
                     insufficientWalletContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 💸 Insufficient Wallet Funds\n## NOT ENOUGH MONEY TO DEPOSIT\n\n> You don't have enough money in your wallet for this deposit!`)
+                            .setContent(`# 💸 Insufficient Wallet Funds\n## NOT ENOUGH EMBERS TO DEPOSIT\n\n> You don't have enough Embers in your wallet for this deposit!`)
                     );
 
                     components.push(insufficientWalletContainer);
@@ -206,7 +206,7 @@ module.exports = {
 
                     walletBreakdownContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💳 **WALLET ANALYSIS**\n\n**Current Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.wallet).toLocaleString()}\`\n\n**💡 Suggestion:** Try \`!tithe deposit all\` to deposit everything you have!`)
+                            .setContent(`## 💳 **WALLET ANALYSIS**\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Attempted Deposit:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Suggestion:** Try \`!tithe deposit all\` to deposit everything you have!`)
                     );
 
                     components.push(walletBreakdownContainer);
@@ -238,7 +238,7 @@ module.exports = {
 
                     capacityDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏦 **TITHE CAPACITY ANALYSIS**\n\n**Current Tithe Balance:** \`$${profile.followerTithe.toLocaleString()}\`\n**Maximum Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**Available Space:** \`$${maxDeposit.toLocaleString()}\`\n**Attempted Deposit:** \`$${amount.toLocaleString()}\``)
+                            .setContent(`## 🏦 **TITHE CAPACITY ANALYSIS**\n\n**Current Tithe Balance:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**Maximum Capacity:** \`${vaultCapacity.toLocaleString()} Embers\`\n**Available Space:** \`${maxDeposit.toLocaleString()} Embers\`\n**Attempted Deposit:** \`${amount.toLocaleString()} Embers\``)
                     );
 
                     capacityDetailsContainer.addTextDisplayComponents(
@@ -265,7 +265,7 @@ module.exports = {
 
                 successContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏦 Tithe Deposit Successful!\n## FUNDS SECURELY STORED\n\n> Successfully deposited **\`$${amount.toLocaleString()}\`** into your follower tithe!\n> Your followers' contributions are now safely protected.`)
+                        .setContent(`# 🏦 Tithe Deposit Successful!\n## FUNDS SECURELY STORED\n\n> Successfully deposited **\`${amount.toLocaleString()} Embers\`** into your follower tithe!\n> Your followers' contributions are now safely protected.`)
                 );
 
                 components.push(successContainer);
@@ -277,7 +277,7 @@ module.exports = {
 
                 transactionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **TRANSACTION SUMMARY**\n\n**💰 Deposited Amount:** \`$${amount.toLocaleString()}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 New Tithe Balance:** \`$${profile.followerTithe.toLocaleString()}\`\n**📈 Tithe Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\``)
+                        .setContent(`## 📊 **TRANSACTION SUMMARY**\n\n**💰 Deposited Amount:** \`${amount.toLocaleString()} Embers\`\n**💳 New Wallet Balance:** \`${profile.wallet.toLocaleString()} Embers\`\n**🏦 New Tithe Balance:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**📈 Tithe Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\``)
                 );
 
                 components.push(transactionContainer);
@@ -296,7 +296,7 @@ module.exports = {
 
                     insufficientTitheContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 💸 Insufficient Tithe Funds\n## NOT ENOUGH MONEY IN TITHE\n\n> You don't have enough money in your follower tithe for this withdrawal!`)
+                            .setContent(`# 💸 Insufficient Tithe Funds\n## NOT ENOUGH EMBERS IN TITHE\n\n> You don't have enough Embers in your follower tithe for this withdrawal!`)
                     );
 
                     components.push(insufficientTitheContainer);
@@ -308,7 +308,7 @@ module.exports = {
 
                     titheBreakdownContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏦 **TITHE ANALYSIS**\n\n**Current Tithe Balance:** \`$${profile.followerTithe.toLocaleString()}\`\n**Attempted Withdrawal:** \`$${amount.toLocaleString()}\`\n**Shortage:** \`$${(amount - profile.followerTithe).toLocaleString()}\`\n\n**💡 Suggestion:** Try \`!tithe withdraw all\` to withdraw everything available!`)
+                            .setContent(`## 🏦 **TITHE ANALYSIS**\n\n**Current Tithe Balance:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**Attempted Withdrawal:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.followerTithe).toLocaleString()} Embers\`\n\n**💡 Suggestion:** Try \`!tithe withdraw all\` to withdraw everything available!`)
                     );
 
                     components.push(titheBreakdownContainer);
@@ -330,7 +330,7 @@ module.exports = {
 
                 withdrawSuccessContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🏦 Tithe Withdrawal Successful!\n## FUNDS TRANSFERRED TO WALLET\n\n> Successfully withdrew **\`$${amount.toLocaleString()}\`** from your follower tithe!\n> The funds are now available in your wallet for immediate use.`)
+                        .setContent(`# 🏦 Tithe Withdrawal Successful!\n## FUNDS TRANSFERRED TO WALLET\n\n> Successfully withdrew **\`${amount.toLocaleString()} Embers\`** from your follower tithe!\n> The Embers are now available in your wallet for immediate use.`)
                 );
 
                 components.push(withdrawSuccessContainer);
@@ -342,7 +342,7 @@ module.exports = {
 
                 withdrawTransactionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **WITHDRAWAL SUMMARY**\n\n**💰 Withdrawn Amount:** \`$${amount.toLocaleString()}\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 New Tithe Balance:** \`$${profile.followerTithe.toLocaleString()}\`\n**📈 Tithe Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\``)
+                        .setContent(`## 📊 **WITHDRAWAL SUMMARY**\n\n**💰 Withdrawn Amount:** \`${amount.toLocaleString()} Embers\`\n**💳 New Wallet Balance:** \`${profile.wallet.toLocaleString()} Embers\`\n**🏦 New Tithe Balance:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**📈 Tithe Usage:** \`${((profile.followerTithe / vaultCapacity) * 100).toFixed(1)}%\``)
                 );
 
                 components.push(withdrawTransactionContainer);

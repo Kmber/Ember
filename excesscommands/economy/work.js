@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'work',
-    description: 'Work to earn money (affected by follower allegiance and active effects) with v2 components',
+    description: 'Work to earn Embers (affected by follower allegiance and active effects) with v2 components',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
@@ -106,11 +106,11 @@ module.exports = {
                     .setContent('## 💰 **EARNINGS BREAKDOWN**')
             );
 
-            let earningsContent = `**💼 Personal Earnings:** \`$${personalEarnings.toLocaleString()}\``;
+            let earningsContent = `**💼 Personal Earnings:** \`${personalEarnings.toLocaleString()} Embers\``;
             if (followerEarnings > 0) {
-                earningsContent += `\n**👥 Follower Contribution:** \`$${Math.floor(followerEarnings).toLocaleString()}\``;
+                earningsContent += `\n**👥 Follower Contribution:** \`${Math.floor(followerEarnings).toLocaleString()} Embers\``;
             }
-            earningsContent += `\n**💎 Total Earnings:** \`$${totalEarnings.toLocaleString()}\``;
+            earningsContent += `\n**💎 Total Earnings:** \`${totalEarnings.toLocaleString()} Embers\``;
 
             earningsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
@@ -119,7 +119,7 @@ module.exports = {
 
             earningsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📈 Work Multiplier:** \`${workMultiplier.toFixed(2)}x\`\n**⭐ Experience Gained:** \`+10 XP\`\n**💳 New Wallet Balance:** \`$${profile.wallet.toLocaleString()}\``)
+                    .setContent(`**📈 Work Multiplier:** \`${workMultiplier.toFixed(2)}x\`\n**⭐ Experience Gained:** \`+10 XP\`\n**💳 New Wallet Balance:** \`${profile.wallet.toLocaleString()} Embers\``)
             );
 
             components.push(earningsContainer);
@@ -167,7 +167,7 @@ module.exports = {
 
                     const followerDetails = profile.followers.slice(0, 3).map(member => {
                         const memberEarnings = member.salary * member.workEfficiency * (member.allegiance / 100);
-                        return `**${member.name}** (${member.relationship})\n> **Contribution:** \`$${Math.floor(memberEarnings).toLocaleString()}\` • **Allegiance:** \`${member.allegiance}%\``;
+                        return `**${member.name}** (${member.relationship})\n> **Contribution:** \`${Math.floor(memberEarnings).toLocaleString()} Embers\` • **Allegiance:** \`${member.allegiance}%\``;
                     }).join('\n\n');
 
                     followerContainer.addTextDisplayComponents(

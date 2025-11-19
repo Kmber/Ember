@@ -134,7 +134,7 @@ module.exports = {
                 const profitColor = netProfit >= 0 ? '+' : '';
                 summaryContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💚 Total Income:** \`$${totalIncome.toLocaleString()}\`\n**💸 Total Expenses:** \`$${totalExpenses.toLocaleString()}\`\n**📈 Net Profit/Loss:** \`${profitColor}$${netProfit.toLocaleString()}\`\n**📝 Transaction Count:** \`${transactions.length} records\``)
+                        .setContent(`**💚 Total Income:** \`${totalIncome.toLocaleString()} Embers\`\n**💸 Total Expenses:** \`${totalExpenses.toLocaleString()} Embers\`\n**📈 Net Profit/Loss:** \`${profitColor}${netProfit.toLocaleString()} Embers\`\n**📝 Transaction Count:** \`${transactions.length} records\``)
                 );
 
                 components.push(summaryContainer);
@@ -174,7 +174,7 @@ module.exports = {
                     group.forEach((transaction, index) => {
                         const emoji = getTransactionEmoji(transaction.type, transaction.category);
                         const sign = transaction.type === 'income' ? '+' : '-';
-                        const amount = `${sign}$${transaction.amount.toLocaleString()}`;
+                        const amount = `${sign}${transaction.amount.toLocaleString()} Embers`;
                         const date = new Date(transaction.timestamp).toLocaleDateString();
                         const description = transaction.description || 'No description';
                         

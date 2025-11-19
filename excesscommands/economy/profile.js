@@ -52,7 +52,7 @@ module.exports = {
 
             financialContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💵 Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**🏦 Bank:** \`$${profile.bank.toLocaleString()}\`\n**💰 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**💎 Total Wealth:** \`$${totalWealth.toLocaleString()}\``)
+                    .setContent(`**💵 Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**🏦 Bank:** \`${profile.bank.toLocaleString()} Embers\`\n**💰 Follower Tithe:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**💎 Total Wealth:** \`${totalWealth.toLocaleString()} Embers\``)
             );
 
             financialContainer.addTextDisplayComponents(
@@ -76,7 +76,7 @@ module.exports = {
 
             assetsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏘️ Citadels Owned:** \`${profile.citadels.length}\`\n**🏰 Citadel Value:** \`$${citadelValue.toLocaleString()}\`\n**👹 Beasts Owned:** \`${profile.beasts.length}\`\n**🔥 Beast Value:** \`$${beastValue.toLocaleString()}\``)
+                    .setContent(`**🏘️ Citadels Owned:** \`${profile.citadels.length}\`\n**🏰 Citadel Value:** \`${citadelValue.toLocaleString()} Embers\`\n**👹 Beasts Owned:** \`${profile.beasts.length}\`\n**🔥 Beast Value:** \`${beastValue.toLocaleString()} Embers\``)
             );
 
             assetsContainer.addTextDisplayComponents(
@@ -100,7 +100,7 @@ module.exports = {
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏁 Total Races:** \`${profile.racingStats.totalRaces}\`\n**🏆 Race Wins:** \`${profile.racingStats.wins}\`\n**📊 Win Rate:** \`${winRate}%\`\n**💰 Race Earnings:** \`$${profile.racingStats.earnings.toLocaleString()}\``)
+                    .setContent(`**🏁 Total Races:** \`${profile.racingStats.totalRaces}\`\n**🏆 Race Wins:** \`${profile.racingStats.wins}\`\n**📊 Win Rate:** \`${winRate}%\`\n**💰 Race Earnings:** \`${profile.racingStats.earnings.toLocaleString()} Embers\``)
             );
 
             statsContainer.addTextDisplayComponents(
@@ -129,7 +129,7 @@ module.exports = {
 
                 guildContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏢 Active Guilds:** \`${profile.guilds.length}/${profile.maxGuilds}\`\n**📊 Guild Skill:** \`${profile.guildSkill}%\`\n**💰 Total Investment:** \`$${totalGuildValue.toLocaleString()}\`\n**📈 Total Profit:** \`${totalProfit.toLocaleString()}\``)
+                        .setContent(`**🏢 Active Guilds:** \`${profile.guilds.length}/${profile.maxGuilds}\`\n**📊 Guild Skill:** \`${profile.guildSkill}%\`\n**💰 Total Investment:** \`${totalGuildValue.toLocaleString()} Embers\`\n**📈 Total Profit:** \`${totalProfit.toLocaleString()}\``)
                 );
 
             

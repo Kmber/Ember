@@ -37,7 +37,7 @@ module.exports = {
 
                 typesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏆 **AVAILABLE LEADERBOARDS**\n\n**💰 \`wealth\`** - Total wealth (wallet + bank + family vault)\n**⭐ \`level\`** - Player levels and experience points\n**🏁 \`racing\`** - Racing wins and success rates\n**👨‍👩‍👧‍👦 \`family\`** - Family bonds and household sizes\n\n**Example:** \`!leaderboard wealth\``)
+                        .setContent(`## 🏆 **AVAILABLE LEADERBOARDS**\n\n**💰 \`wealth\`** - Total wealth (wallet + bank + family vault, in Embers)\n**⭐ \`level\`** - Player levels and experience points\n**🏁 \`racing\`** - Racing wins and success rates\n**👨‍👩‍👧‍👦 \`family\`** - Family bonds and household sizes\n\n**Example:** \`!leaderboard wealth\``)
                 );
 
                 components.push(typesContainer);
@@ -162,7 +162,7 @@ module.exports = {
                 let valueText = '';
                 switch (type) {
                     case 'wealth':
-                        valueText = `$${profile.totalWealth.toLocaleString()}`;
+                        valueText = `${profile.totalWealth.toLocaleString()} Embers`;
                         break;
                     case 'level':
                         valueText = `Level ${profile.level} (${profile.experience} XP)`;
@@ -213,7 +213,7 @@ module.exports = {
                         let valueText = '';
                         switch (type) {
                             case 'wealth':
-                                valueText = `$${profile.totalWealth.toLocaleString()}`;
+                                valueText = `${profile.totalWealth.toLocaleString()} Embers`;
                                 break;
                             case 'level':
                                 valueText = `Level ${profile.level} (${profile.experience} XP)`;
@@ -260,7 +260,7 @@ module.exports = {
                 case 'wealth':
                     const totalWealth = leaderboardData.reduce((sum, p) => sum + p.totalWealth, 0);
                     const averageWealth = totalWealth / leaderboardData.length;
-                    statsText = `**💰 Combined Top 15 Wealth:** \`$${totalWealth.toLocaleString()}\`\n**📊 Average Top 15 Wealth:** \`$${Math.floor(averageWealth).toLocaleString()}\`\n**🏆 Wealth Gap:** \`$${(leaderboardData[0].totalWealth - leaderboardData[leaderboardData.length - 1].totalWealth).toLocaleString()}\``;
+                    statsText = `**💰 Combined Top 15 Wealth:** \`${totalWealth.toLocaleString()} Embers\`\n**📊 Average Top 15 Wealth:** \`${Math.floor(averageWealth).toLocaleString()} Embers\`\n**🏆 Wealth Gap:** \`${(leaderboardData[0].totalWealth - leaderboardData[leaderboardData.length - 1].totalWealth).toLocaleString()} Embers\``;
                     break;
                 case 'level':
                     const averageLevel = leaderboardData.reduce((sum, p) => sum + p.level, 0) / leaderboardData.length;
@@ -295,7 +295,7 @@ module.exports = {
             let tipText = '';
             switch (type) {
                 case 'wealth':
-                    tipText = '💡 **Wealth Building Tips:** Work regularly, run guilds, invest in properties, and save money in your bank and family vault!';
+                    tipText = '💡 **Wealth Building Tips:** Work regularly, run guilds, invest in properties, and save Embers in your bank and family vault!';
                     break;
                 case 'level':
                     tipText = '💡 **Leveling Tips:** Complete daily activities, work consistently, participate in all economy features to gain XP!';

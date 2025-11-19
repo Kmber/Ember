@@ -27,7 +27,7 @@ async function viewCitadels(message) {
             .setAccentColor(isPrimary ? 0xFFD700 : 0x95A5A6)
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(`## ${citadel.name} ${isPrimary ? '(Primary)' : ''}`),
-                new TextDisplayBuilder().setContent(`**Type:** ${citadel.type}\n**Value:** $${citadel.currentValue.toLocaleString()}`)
+                new TextDisplayBuilder().setContent(`**Type:** ${citadel.type}\n**Value:** ${citadel.currentValue.toLocaleString()} Embers`)
             );
         components.push(citadelContainer);
     });
@@ -102,7 +102,7 @@ async function sellCitadel(message, args) {
 
     await profile.save();
 
-    await message.reply(`You have sold \`${soldCitadel.name}\` for $${soldCitadel.currentValue.toLocaleString()}.`);
+    await message.reply(`You have sold \`${soldCitadel.name}\` for ${soldCitadel.currentValue.toLocaleString()} Embers.`);
 }
 
 module.exports = {

@@ -84,7 +84,7 @@ module.exports = {
                     
                     const memberText = `**${actualIndex}. ${member.name}** (${member.profession})\n` +
                         `> **📜 Role:** \`${member.profession}\`\n` +
-                        `> **💰 Tithe:** \`$${member.salary}/work\`\n` +
+                        `> **💰 Tithe:** \`${member.salary} Embers/work\`\n` +
                         `> **🖤 Allegiance Level:** \`${member.allegiance}%\`\n` +
                         `> **📈 Work Efficiency:** \`${efficiency}%\`\n` +
                         `> **💀 Total Rituals:** \`${member.totalRituals}\`\n` +
@@ -126,7 +126,7 @@ module.exports = {
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Combined Work Tithe:** \`$${Math.floor(totalIncome).toLocaleString()}/work\`\n**🖤 Follower Allegiance Average:** \`${profile.followerAllegiance}%\`\n**👥 Congregation Size:** \`${profile.followers.length}/${maxCapacity} followers\``)
+                    .setContent(`**💰 Combined Work Tithe:** \`${Math.floor(totalIncome).toLocaleString()} Embers/work\`\n**🖤 Follower Allegiance Average:** \`${profile.followerAllegiance}%\`\n**👥 Congregation Size:** \`${profile.followers.length}/${maxCapacity} followers\``)
             );
 
             statsContainer.addTextDisplayComponents(

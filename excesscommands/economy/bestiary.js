@@ -26,7 +26,7 @@ module.exports = {
                         .setContent(`# 👹 Empty Bestiary\n## NO BEASTS IN YOUR COLLECTION\n\n> Your bestiary is currently empty! You need to summon beasts to start building your collection.\n> Beasts are essential for racing and other activities.`)
                 );
 
-                components.push(noBeastContainer);
+                components.push(noBeBeastContainer);
 
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -145,7 +145,7 @@ module.exports = {
                         `> **⚔️ Speed:** \`${beast.speed}\` • **🔥 Power:** \`${beast.acceleration}\` • **🧠 Control:** \`${beast.handling}\`\n` +
                         `> **CONDITION:** ${condition} (\`${beast.durability}%\`)\n` +
                         `> **🏁 Racing Record:** \`${beast.raceWins}\` wins, \`${beast.raceLosses}\` losses\n` +
-                        `> **💰 Current Value:** \`$${(beast.currentValue || beast.purchasePrice).toLocaleString()}\``;
+                        `> **💰 Current Value:** \`${(beast.currentValue || beast.purchasePrice).toLocaleString()} Embers\``;
 
                     beastContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
@@ -183,7 +183,7 @@ module.exports = {
 
             statsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👹 Total Beasts:** \`${profile.beasts.length}${typeof lairCapacity === 'number' ? `/${lairCapacity}` : ''}\`\n**💰 Collection Value:** \`$${totalValue.toLocaleString()}\`\n**CONDITION:** \`${averageCondition.toFixed(1)}%\`\n**📊 Average Performance:** \`${averagePerformance.toFixed(1)}/100\``)
+                    .setContent(`**👹 Total Beasts:** \`${profile.beasts.length}${typeof lairCapacity === 'number' ? `/${lairCapacity}` : ''}\`\n**💰 Collection Value:** \`${totalValue.toLocaleString()} Embers\`\n**CONDITION:** \`${averageCondition.toFixed(1)}%\`\n**📊 Average Performance:** \`${averagePerformance.toFixed(1)}/100\``)
             );
 
             statsContainer.addTextDisplayComponents(

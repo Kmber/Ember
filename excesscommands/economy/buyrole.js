@@ -11,7 +11,7 @@ const { ROLES } = require('../../models/economy/constants/gameData');
 module.exports = {
     name: 'buyrole',
     aliases: ['role-buy'],
-    description: 'Purchase premium roles with special benefits using v2 components',
+    description: 'Purchase premium roles with special benefits using Embers (v2 components)',
     usage: '!buyrole <role_id>',
     async execute(message, args) {
         try {
@@ -59,7 +59,7 @@ module.exports = {
                     for (let i = 0; i < roles.length; i += 3) {
                         const roleGroup = roles.slice(i, i + 3);
                         const roleText = roleGroup.map(([id, role]) => 
-                            `**\`${id}\`** - ${role.name}\n> **Price:** \`$${role.price.toLocaleString()}\` • **Duration:** \`${formatDuration(role.duration)}\`\n> **Work:** ${role.benefits.workMultiplier}x • **Racing:** +${role.benefits.racingBonus} • **Security:** +${role.benefits.robberyProtection}%`
+                            `**\`${id}\`** - ${role.name}\n> **Price:** \`${role.price.toLocaleString()} Embers\` • **Duration:** \`${formatDuration(role.duration)}\`\n> **Work:** ${role.benefits.workMultiplier}x • **Racing:** +${role.benefits.racingBonus} • **Security:** +${role.benefits.robberyProtection}%`
                         ).join('\n\n');
 
                         tierContainer.addTextDisplayComponents(
@@ -142,7 +142,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD PREMIUM ROLE\n\n> You don't have enough money to purchase the **${roleData.name}** role!`)
+                        .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD PREMIUM ROLE\n\n> You don't have enough Embers to purchase the **${roleData.name}** role!`)
                 );
 
                 components.push(insufficientContainer);
@@ -154,7 +154,7 @@ module.exports = {
 
                 priceBreakdownContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **MEMBERSHIP PRICING**\n\n**Role:** \`${roleData.name}\`\n**Price:** \`$${roleData.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(roleData.price - profile.wallet).toLocaleString()}\`\n**Duration:** \`${formatDuration(roleData.duration)}\`\n\n**💡 Investment Tips:** Premium roles pay for themselves through enhanced earnings! Work consistently to afford these valuable upgrades.`)
+                        .setContent(`## 💰 **MEMBERSHIP PRICING**\n\n**Role:** \`${roleData.name}\`\n**Price:** \`${roleData.price.toLocaleString()} Embers\`\n**Your Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Shortage:** \`${(roleData.price - profile.wallet).toLocaleString()} Embers\`\n**Duration:** \`${formatDuration(roleData.duration)}\`\n\n**💡 Investment Tips:** Premium roles pay for themselves through enhanced earnings! Work consistently to afford these valuable upgrades.`)
                 );
 
                 components.push(priceBreakdownContainer);
@@ -209,7 +209,7 @@ module.exports = {
 
             successContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# 👑 Premium Role Purchased!\n## MEMBERSHIP ACTIVATED\n\n> Congratulations! You've successfully purchased the **${roleData.name}** role for **\`$${roleData.price.toLocaleString()}\`**!\n> Your premium membership is now active and ready to enhance your earnings!`)
+                    .setContent(`# 👑 Premium Role Purchased!\n## MEMBERSHIP ACTIVATED\n\n> Congratulations! You've successfully purchased the **${roleData.name}** role for **\`${roleData.price.toLocaleString()} Embers\`**!\n> Your premium membership is now active and ready to enhance your earnings!`)
             );
 
             components.push(successContainer);
@@ -227,7 +227,7 @@ module.exports = {
 
             benefitsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💼 Work Multiplier:** \`${roleData.benefits.workMultiplier}x\` (${((roleData.benefits.workMultiplier - 1) * 100).toFixed(0)}% bonus)\n**🏁 Racing Bonus:** \`+$${roleData.benefits.racingBonus}\` per race win\n**🛡️ Security Bonus:** \`+${roleData.benefits.robberyProtection}%\` robbery protection\n**👑 Status:** Premium member privileges`)
+                    .setContent(`**💼 Work Multiplier:** \`${roleData.benefits.workMultiplier}x\` (${((roleData.benefits.workMultiplier - 1) * 100).toFixed(0)}% bonus)\n**🏁 Racing Bonus:** \`+${roleData.benefits.racingBonus} Embers\` per race win\n**🛡️ Security Bonus:** \`+${roleData.benefits.robberyProtection}%\` robbery protection\n**👑 Status:** Premium member privileges`)
             );
 
             benefitsContainer.addTextDisplayComponents(
@@ -255,7 +255,7 @@ module.exports = {
 
             projectionContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Enhanced Work Earnings:** \`$${enhancedEarnings}\` per work (vs \`$${baseWorkEarnings}\` base)\n**📊 Daily Bonus:** \`+$${dailyBonus}\` per work session\n**🎯 Potential Total Bonus:** \`+$${totalBonus.toLocaleString()}\` over membership period\n**💎 ROI Timeline:** Role pays for itself in ${Math.ceil(roleData.price / dailyBonus)} work sessions`)
+                    .setContent(`**💰 Enhanced Work Earnings:** \`${enhancedEarnings} Embers\` per work (vs \`${baseWorkEarnings} Embers\` base)\n**📊 Daily Bonus:** \`+${dailyBonus} Embers\` per work session\n**🎯 Potential Total Bonus:** \`+${totalBonus.toLocaleString()} Embers\` over membership period\n**💎 ROI Timeline:** Role pays for itself in ${Math.ceil(roleData.price / dailyBonus)} work sessions`)
             );
 
             components.push(projectionContainer);
@@ -268,7 +268,7 @@ module.exports = {
 
             financialContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💰 **TRANSACTION SUMMARY**\n\n**Membership Fee:** \`$${roleData.price.toLocaleString()}\`\n**Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Active Roles:** \`${profile.purchasedRoles.filter(r => !r.expiryDate || r.expiryDate > new Date()).length}\`\n**Transaction Logged:** Purchase recorded in your transaction history\n\n> Your investment in premium membership will enhance all your future earnings!`)
+                    .setContent(`## 💰 **TRANSACTION SUMMARY**\n\n**Membership Fee:** \`${roleData.price.toLocaleString()} Embers\`\n**Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Active Roles:** \`${profile.purchasedRoles.filter(r => !r.expiryDate || r.expiryDate > new Date()).length}\`\n**Transaction Logged:** Purchase recorded in your transaction history\n\n> Your investment in premium membership will enhance all your future earnings!`)
             );
 
             components.push(financialContainer);
@@ -291,7 +291,7 @@ module.exports = {
             );
 
             return message.reply({
-                components: [errorContainer],
+                components: [errorContainer],             
                 flags: MessageFlags.IsComponentsV2
             });
         }

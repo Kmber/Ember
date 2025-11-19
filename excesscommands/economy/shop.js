@@ -68,7 +68,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🛒 Premium Shop\n## EXCLUSIVE ITEMS & POWER-UPS\n\n> Welcome to the premium shop! Purchase special items to enhance your gameplay experience.\n> Current wallet: **\`$${profile.wallet.toLocaleString()}\`**`)
+                        .setContent(`# 🛒 Premium Shop\n## EXCLUSIVE ITEMS & POWER-UPS\n\n> Welcome to the premium shop! Purchase special items to enhance your gameplay experience.\n> Current wallet: **\`${profile.wallet.toLocaleString()} Embers\`**`)
                 );
 
                 components.push(headerContainer);
@@ -92,7 +92,7 @@ module.exports = {
                         for (let i = 0; i < items.length; i += itemsPerGroup) {
                             const itemGroup = items.slice(i, i + itemsPerGroup);
                             const itemText = itemGroup.map(([id, item]) => 
-                                `**\`${id}\`** - ${item.name}\n> **Price:** \`$${item.price.toLocaleString()}\`\n> **Effect:** ${item.description}`
+                                `**\`${id}\`** - ${item.name}\n> **Price:** \`${item.price.toLocaleString()} Embers\`\n> **Effect:** ${item.description}`
                             ).join('\n\n');
 
                             categoryContainer.addTextDisplayComponents(
@@ -155,7 +155,7 @@ module.exports = {
 
                     insufficientContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD ITEM\n\n> You don't have enough money to purchase **${item.name}**!`)
+                            .setContent(`# 💸 Insufficient Funds\n## CANNOT AFFORD ITEM\n\n> You don't have enough Embers to purchase **${item.name}**!`)
                     );
 
                     components.push(insufficientContainer);
@@ -167,7 +167,7 @@ module.exports = {
 
                     priceContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Item:** \`${item.name}\`\n**Price:** \`$${item.price.toLocaleString()}\`\n**Your Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**Shortage:** \`$${(item.price - profile.wallet).toLocaleString()}\`\n\n> Work, complete dailies, or sell assets to earn more money!`)
+                            .setContent(`## 💰 **PRICE BREAKDOWN**\n\n**Item:** \`${item.name}\`\n**Price:** \`${item.price.toLocaleString()} Embers\`\n**Your Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Shortage:** \`${(item.price - profile.wallet).toLocaleString()} Embers\`\n\n> Work, complete dailies, or sell assets to earn more Embers!`)
                     );
 
                     components.push(priceContainer);
@@ -194,7 +194,7 @@ module.exports = {
 
                             noMinionsContainer.addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(`# 🦇 No Minions Available\n## ITEM CANNOT BE USED\n\n> You need minions to use **${item.name}**!\n> Visit the shop to summon some loyal servants first.\n\n**💰 Refund:** Your money has been returned to your wallet.`)
+                                    .setContent(`# 🦇 No Minions Available\n## ITEM CANNOT BE USED\n\n> You need minions to use **${item.name}**!\n> Visit the shop to summon some loyal servants first.\n\n**💰 Refund:** Your Embers have been returned to your wallet.`)
                             );
 
                             components.push(noMinionsContainer);
@@ -222,7 +222,7 @@ module.exports = {
 
                             noCarContainer.addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(`# 🚗 No Active Car\n## ITEM CANNOT BE USED\n\n> You need an active car to use **${item.name}**!\n> Purchase a car and set it as active first.\n\n**💰 Refund:** Your money has been returned to your wallet.`)
+                                    .setContent(`# 🚗 No Active Car\n## ITEM CANNOT BE USED\n\n> You need an active car to use **${item.name}**!\n> Purchase a car and set it as active first.\n\n**💰 Refund:** Your Embers have been returned to your wallet.`)
                             );
 
                             components.push(noCarContainer);
@@ -247,7 +247,7 @@ module.exports = {
 
                             noPropertyContainer.addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(`# 🏠 No Property Available\n## ITEM CANNOT BE USED\n\n> You need to own a property to use **${item.name}**!\n> Purchase a property and set it as your primary residence first.\n\n**💰 Refund:** Your money has been returned to your wallet.`)
+                                    .setContent(`# 🏠 No Property Available\n## ITEM CANNOT BE USED\n\n> You need to own a property to use **${item.name}**!\n> Purchase a property and set it as your primary residence first.\n\n**💰 Refund:** Your Embers have been returned to your wallet.`)
                             );
 
                             components.push(noPropertyContainer);
@@ -271,7 +271,7 @@ module.exports = {
 
                             noFamilyContainer.addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(`# 👨‍👩‍👧‍👦 No Family Members\n## ITEM CANNOT BE USED\n\n> You need family members to use **${item.name}**!\n> Add family members to your household first.\n\n**💰 Refund:** Your money has been returned to your wallet.`)
+                                    .setContent(`# 👨‍👩‍👧‍👦 No Family Members\n## ITEM CANNOT BE USED\n\n> You need family members to use **${item.name}**!\n> Add family members to your household first.\n\n**💰 Refund:** Your Embers have been returned to your wallet.`)
                             );
 
                             components.push(noFamilyContainer);
@@ -335,7 +335,7 @@ module.exports = {
 
                 successContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🛒 Purchase Successful!\n## ITEM ACQUIRED\n\n> You successfully purchased **${item.name}** for **\`$${item.price.toLocaleString()}\`**!\n> Your new item is ready to use and enhance your gameplay.`)
+                        .setContent(`# 🛒 Purchase Successful!\n## ITEM ACQUIRED\n\n> You successfully purchased **${item.name}** for **\`${item.price.toLocaleString()} Embers\`**!\n> Your new item is ready to use and enhance your gameplay.`)
                 );
 
                 components.push(successContainer);
@@ -353,7 +353,7 @@ module.exports = {
 
                 effectContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Remaining Wallet:** \`$${profile.wallet.toLocaleString()}\`\n**📊 Transaction Recorded:** Purchase logged in your transaction history`)
+                        .setContent(`**💳 Remaining Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**📊 Transaction Recorded:** Purchase logged in your transaction history`)
                 );
 
                 components.push(effectContainer);

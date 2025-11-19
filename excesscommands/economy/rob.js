@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'rob',
-    description: 'Attempt to rob another player with v2 components (risky!)',
+    description: 'Attempt to rob another player of Embers with v2 components (risky!)',
     usage: '!rob @user',
     cooldown: 1800,
     async execute(message, args) {
@@ -103,7 +103,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🕵️ **HOW TO ROB SOMEONE**\n\n**Command:** \`!rob @target\`\n**Example:** \`!rob @JohnDoe\`\n\n**💡 Robbery Tips:**\n> • Target users with lower power levels\n> • Higher level robbers have better success rates\n> • Victims need at least $500 to be worth robbing\n> • Failed robberies result in fines and reputation loss\n> • Successful robberies give XP and stolen money`)
+                        .setContent(`## 🕵️ **HOW TO ROB SOMEONE**\n\n**Command:** \`!rob @target\`\n**Example:** \`!rob @JohnDoe\`\n\n**💡 Robbery Tips:**\n> • Target users with lower power levels\n> • Higher level robbers have better success rates\n> • Victims need at least 500 Embers to be worth robbing\n> • Failed robberies result in fines and reputation loss\n> • Successful robberies give XP and stolen Embers`)
                 );
 
                 components.push(instructionsContainer);
@@ -134,7 +134,7 @@ module.exports = {
 
                 alternativeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **ALTERNATIVE MONEY METHODS**\n\n**💼 Work:** Use \`!work\` for legitimate income\n**🎰 Gamble:** Try \`!gamble\` for risky gains\n**🏪 Guild:** Run guilds for passive income\n**🎁 Daily:** Claim \`!daily\` rewards regularly\n\n> Why rob yourself when you can rob others? 😏`)
+                        .setContent(`## 💰 **ALTERNATIVE EMBERS METHODS**\n\n**💼 Work:** Use \`!work\` for legitimate income\n**🎰 Gamble:** Try \`!gamble\` for risky gains\n**🏪 Guild:** Run guilds for passive income\n**🎁 Daily:** Claim \`!daily\` rewards regularly\n\n> Why rob yourself when you can rob others? 😏`)
                 );
 
                 components.push(alternativeContainer);
@@ -153,7 +153,7 @@ module.exports = {
 
                 botRobContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🤖 Cannot Rob Bots\n## INVALID TARGET TYPE\n\n> Bots don't have money to steal and don't participate in the economy!\n> Choose a human player as your robbery target.`)
+                        .setContent(`# 🤖 Cannot Rob Bots\n## INVALID TARGET TYPE\n\n> Bots don't have Embers to steal and don't participate in the economy!\n> Choose a human player as your robbery target.`)
                 );
 
                 components.push(botRobContainer);
@@ -218,7 +218,7 @@ module.exports = {
 
                 poorTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Target Too Poor\n## INSUFFICIENT ROBBERY VALUE\n\n> **${target.username}** only has **\`$${victimProfile.wallet.toLocaleString()}\`**!\n> Targets need at least **\`$500\`** to be worth robbing.`)
+                        .setContent(`# 💸 Target Too Poor\n## INSUFFICIENT ROBBERY VALUE\n\n> **${target.username}** only has **\`${victimProfile.wallet.toLocaleString()} Embers\`**!\n> Targets need at least **\`500 Embers\`** to be worth robbing.`)
                 );
 
                 components.push(poorTargetContainer);
@@ -230,7 +230,7 @@ module.exports = {
 
                 betterTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎯 **FIND BETTER TARGETS**\n\n**💰 Look For:** Users with substantial wallet balances\n**📊 Check Activity:** Active players tend to have more money\n**🏆 Target Winners:** Look for successful gamblers or workers\n**⏰ Wait Strategy:** Check back when they might have earned more\n\n**💡 Pro Tip:** Use \`!leaderboard wealth\` to scout rich targets!`)
+                        .setContent(`## 🎯 **FIND BETTER TARGETS**\n\n**💰 Look For:** Users with substantial Embers balances\n**📊 Check Activity:** Active players tend to have more money\n**🏆 Target Winners:** Look for successful gamblers or workers\n**⏰ Wait Strategy:** Check back when they might have earned more\n\n**💡 Pro Tip:** Use \`!leaderboard wealth\` to scout rich targets!`)
                 );
 
                 components.push(betterTargetContainer);
@@ -327,12 +327,12 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 Target:** \`${target.username}\`\n**💰 Amount Stolen:** \`$${stolenAmount.toLocaleString()}\`\n**📊 Success Rate:** \`${successChance.toFixed(1)}%\`\n**🛡️ Target Power:** \`${victimPower}%\`\n**⭐ Experience Gained:** \`+20 XP\``)
+                        .setContent(`**🎯 Target:** \`${target.username}\`\n**💰 Amount Stolen:** \`${stolenAmount.toLocaleString()} Embers\`\n**📊 Success Rate:** \`${successChance.toFixed(1)}%\`\n**🛡️ Target Power:** \`${victimPower}%\`\n**⭐ Experience Gained:** \`+20 XP\``)
                 );
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Your New Balance:** \`$${robberProfile.wallet.toLocaleString()}\`\n**💸 Victim's Remaining:** \`$${victimProfile.wallet.toLocaleString()}\`\n**📈 Your Level:** \`${robberProfile.level || 1}\`\n**🏆 Successful Robberies:** \`${robberProfile.successfulRobberies}\``)
+                        .setContent(`**💳 Your New Balance:** \`${robberProfile.wallet.toLocaleString()} Embers\`\n**💸 Victim's Remaining:** \`${victimProfile.wallet.toLocaleString()} Embers\`\n**📈 Your Level:** \`${robberProfile.level || 1}\`\n**🏆 Successful Robberies:** \`${robberProfile.successfulRobberies}\``)
                 );
 
                 components.push(detailsContainer);
@@ -376,7 +376,7 @@ module.exports = {
 
                     lossDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💸 **LOSS DETAILS**\n\n**💰 Amount Lost:** \`$${stolenAmount.toLocaleString()}\`\n**🛡️ Your Power Level:** \`${victimPower}%\`\n**💳 Remaining Balance:** \`$${victimProfile.wallet.toLocaleString()}\`\n**🏠 Server:** \`${message.guild.name}\`\n\n**💡 Power Tip:** Summon minions and acquire citadels to increase your protection against future robberies!`)
+                            .setContent(`## 💸 **LOSS DETAILS**\n\n**💰 Amount Lost:** \`${stolenAmount.toLocaleString()} Embers\`\n**🛡️ Your Power Level:** \`${victimPower}%\`\n**💳 Remaining Balance:** \`${victimProfile.wallet.toLocaleString()} Embers\`\n**🏠 Server:** \`${message.guild.name}\`\n\n**💡 Power Tip:** Summon minions and acquire citadels to increase your protection against future robberies!`)
                     );
 
                     victimComponents.push(lossDetailsContainer);
@@ -437,12 +437,12 @@ module.exports = {
 
                 penaltyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💸 Fine Imposed:** \`$${penalty.toLocaleString()}\`\n**📊 Failure Chance:** \`${(100 - successChance).toFixed(1)}%\`\n**📉 Reputation Lost:** \`-5 reputation points\`\n**🛡️ Target Power:** \`${victimPower}%\` (too strong!)\n**📈 Your Level:** \`${robberProfile.level || 1}\` (need improvement)`)
+                        .setContent(`**💸 Fine Imposed:** \`${penalty.toLocaleString()} Embers\`\n**📊 Failure Chance:** \`${(100 - successChance).toFixed(1)}%\`\n**📉 Reputation Lost:** \`-5 reputation points\`\n**🛡️ Target Power:** \`${victimPower}%\` (too strong!)\n**📈 Your Level:** \`${robberProfile.level || 1}\` (need improvement)`)
                 );
 
                 penaltyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💳 Remaining Balance:** \`$${robberProfile.wallet.toLocaleString()}\`\n**🎯 Total Robbery Attempts:** \`${robberProfile.robberyAttempts}\`\n**⏰ Cooldown Applied:** \`30 minutes\` before next attempt`)
+                        .setContent(`**💳 Remaining Balance:** \`${robberProfile.wallet.toLocaleString()} Embers\`\n**🎯 Total Robbery Attempts:** \`${robberProfile.robberyAttempts}\`\n**⏰ Cooldown Applied:** \`30 minutes\` before next attempt`)
                 );
 
                 components.push(penaltyContainer);
@@ -455,7 +455,7 @@ module.exports = {
 
                 improvementContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **IMPROVE YOUR SUCCESS RATE**\n\n**📈 Level Up:** Work regularly to increase your level (current: ${robberProfile.level || 1})\n**🎯 Choose Easier Targets:** Look for users with lower power levels\n**🕵️ Scout First:** Research target power before attempting robberies\n**⏰ Timing:** Try robbing when targets are likely offline\n**💰 Build Funds:** Ensure you can afford potential failure fines\n\n**🎓 Remember:** Each level gives +2% success rate bonus!`)
+                        .setContent(`## 💡 **IMPROVE YOUR SUCCESS RATE**\n\n**📈 Level Up:** Work regularly to increase your level (current: ${robberProfile.level || 1})\n**🎯 Choose Easier Targets:** Look for users with lower power levels\n**🕵️ Scout First:** Research target power before attempting robberies\n**⏰ Timing:** Try robbing when targets are likely offline\n**💰 Build Embers:** Ensure you can afford potential failure fines\n\n**🎓 Remember:** Each level gives +2% success rate bonus!`)
                 );
 
                 components.push(improvementContainer);
