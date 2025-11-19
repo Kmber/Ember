@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'withdraw',
@@ -17,6 +19,8 @@ module.exports = {
             const userId = message.author.id;
             const guildId = message.guild.id;
             const profile = await EconomyManager.getProfile(userId, guildId);
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
 
             if (!args[0]) {
                 const components = [];
@@ -38,7 +42,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!withdraw 1000\`** - Withdraw specific amount\n**\`!withdraw all\`** - Withdraw all bank funds\n**\`!withdraw max\`** - Withdraw maximum available\n\n**🏦 Available Balance:** \`${profile.bank.toLocaleString()} Embers\``)
+                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`${prefix}withdraw 1000\`** - Withdraw specific amount\n**\`${prefix}withdraw all\`** - Withdraw all bank funds\n**\`${prefix}withdraw max\`** - Withdraw maximum available\n\n**🏦 Available Balance:** \`${profile.bank.toLocaleString()} Embers\``)
                 );
 
                 components.push(usageContainer);
@@ -95,7 +99,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Bank Funds\n## NOT ENOUGH EMBERS IN BANK\n\n> You don't have enough Embers in your bank account for this withdrawal!`)
+                        .setContent(`# 💸 Insufficient Bank Funds\n## NOT ENOUGH EMBERS IN BANK\n\n> You don\'t have enough Embers in your bank account for this withdrawal!`)
                 );
 
                 components.push(insufficientContainer);
@@ -112,7 +116,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Suggestions:**\n> • Try \`!withdraw all\` to withdraw everything\n> • Check \`!balance\` for complete financial overview\n> • Consider depositing more Embers first`)
+                        .setContent(`**💡 Suggestions:**\n> • Try \`${prefix}withdraw all\` to withdraw everything\n> • Check \`${prefix}balance\` for complete financial overview\n> • Consider depositing more Embers first`)
                 );
 
                 components.push(balanceContainer);
@@ -203,7 +207,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **FINANCIAL MANAGEMENT TIPS**\n\n**💳 Wallet Embers:** Ready for purchases, gambling, and donations\n**🏦 Bank Embers:** Safer from robberies, earns potential interest\n**🔄 Quick Banking:** Use \`!deposit <amount>\` to secure funds again\n**📊 Monitoring:** Check \`!balance\` for complete financial overview\n\n> Keep some Embers in the bank for security and some in wallet for convenience!`)
+                    .setContent(`## 💡 **FINANCIAL MANAGEMENT TIPS**\n\n**💳 Wallet Embers:** Ready for purchases, gambling, and donations\n**🏦 Bank Embers:** Safer from robberies, earns potential interest\n**🔄 Quick Banking:** Use \`${prefix}deposit <amount>\` to secure funds again\n**📊 Monitoring:** Check \`${prefix}balance\` for complete financial overview\n\n> Keep some Embers in the bank for security and some in wallet for convenience!`)
             );
 
             components.push(tipsContainer);

@@ -6,15 +6,19 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'tithe',
     aliases: ['t'],
     description: 'Manage your follower tithe .',
-    usage: '!tithe <deposit/withdraw> <amount>',
+    usage: 'tithe <deposit/withdraw> <amount>',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             
             const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
             if (!primaryCitadel) {
@@ -37,7 +41,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET STARTED WITH A CITADEL**\n\n**💡 Solutions:**\n> • Acquire a citadel through the citadel market (\`!acquirecitadel\`)\n> • Set it as your primary stronghold\n> • Unlock tithe storage capacity\n> • Enjoy secure wealth storage\n\n**Benefits of Follower Tithe:**\n> • Enhanced security from robberies\n> • Separate from personal banking\n> • Follower-focused wealth management`)
+                        .setContent(`## 🏘️ **GET STARTED WITH A CITADEL**\n\n**💡 Solutions:**\n> • Acquire a citadel through the citadel market (\`${prefix}acquirecitadel\`)\n> • Set it as your primary stronghold\n> • Unlock tithe storage capacity\n> • Enjoy secure wealth storage\n\n**Benefits of Follower Tithe:**\n> • Enhanced security from robberies\n> • Separate from personal banking\n> • Follower-focused wealth management`)
                 );
 
                 components.push(solutionContainer);
@@ -98,7 +102,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📋 **TITHE OPERATIONS**\n\n**\`!tithe deposit <amount>\`** - Store Embers securely\n**\`!tithe withdraw <amount>\`** - Retrieve stored Embers\n**\`!tithe deposit all\`** - Deposit all available wallet funds\n**\`!tithe withdraw all\`** - Withdraw all tithe funds\n\n**💡 Tip:** Keep emergency funds in the tithe for maximum security!`)
+                        .setContent(`## 📋 **TITHE OPERATIONS**\n\n**\`${prefix}tithe deposit <amount>\`** - Store Embers securely\n**\`${prefix}tithe withdraw <amount>\`** - Retrieve stored Embers\n**\`${prefix}tithe deposit all\`** - Deposit all available wallet funds\n**\`${prefix}tithe withdraw all\`** - Withdraw all tithe funds\n\n**💡 Tip:** Keep emergency funds in the tithe for maximum security!`)
                 );
 
                 components.push(instructionsContainer);
@@ -132,7 +136,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **CORRECT USAGE**\n\n**\`!tithe deposit <amount>\`** - Store Embers in tithe\n**\`!tithe withdraw <amount>\`** - Take Embers from tithe\n\n**Examples:**\n> \`!tithe deposit 5000\`\n> \`!tithe withdraw 2000\`\n> \`!tithe deposit all\``)
+                        .setContent(`## 💡 **CORRECT USAGE**\n\n**\`${prefix}tithe deposit <amount>\`** - Store Embers in tithe\n**\`${prefix}tithe withdraw <amount>\`** - Take Embers from tithe\n\n**Examples:**\n> \`${prefix}tithe deposit 5000\`\n> \`${prefix}tithe withdraw 2000\`\n> \`${prefix}tithe deposit all\``)
                 );
 
                 components.push(usageContainer);
@@ -206,7 +210,7 @@ module.exports = {
 
                     walletBreakdownContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💳 **WALLET ANALYSIS**\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Attempted Deposit:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Suggestion:** Try \`!tithe deposit all\` to deposit everything you have!`)
+                            .setContent(`## 💳 **WALLET ANALYSIS**\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Attempted Deposit:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Suggestion:** Try \`${prefix}tithe deposit all\` to deposit everything you have!`)
                     );
 
                     components.push(walletBreakdownContainer);
@@ -243,7 +247,7 @@ module.exports = {
 
                     capacityDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**💡 Solutions:**\n> • Try \`!tithe deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your citadel for more tithe capacity\n> • Use \`!tithe deposit max\` for automatic maximum deposit`)
+                            .setContent(`**💡 Solutions:**\n> • Try \`${prefix}tithe deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your citadel for more tithe capacity\n> • Use \`${prefix}tithe deposit max\` for automatic maximum deposit`)
                     );
 
                     components.push(capacityDetailsContainer);
@@ -308,7 +312,7 @@ module.exports = {
 
                     titheBreakdownContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏦 **TITHE ANALYSIS**\n\n**Current Tithe Balance:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**Attempted Withdrawal:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.followerTithe).toLocaleString()} Embers\`\n\n**💡 Suggestion:** Try \`!tithe withdraw all\` to withdraw everything available!`)
+                            .setContent(`## 🏦 **TITHE ANALYSIS**\n\n**Current Tithe Balance:** \`${profile.followerTithe.toLocaleString()} Embers\`\n**Attempted Withdrawal:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.followerTithe).toLocaleString()} Embers\`\n\n**💡 Suggestion:** Try \`${prefix}tithe withdraw all\` to withdraw everything available!`)
                     );
 
                     components.push(titheBreakdownContainer);

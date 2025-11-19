@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'work',
@@ -13,6 +15,8 @@ module.exports = {
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             
             const cooldownCheck = EconomyManager.checkCooldown(profile, 'work');
             if (cooldownCheck.onCooldown) {
@@ -184,7 +188,7 @@ module.exports = {
                 } else {
                     followerContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🏰 **FOLLOWERS NEED A CITADEL**\n\n> Your **${profile.followers.length}** followers want to help with work earnings, but they need a citadel first!\n\n**💡 Solution:** Acquire a citadel (\`!acquirecitadel\`) to unlock follower workforce contributions and boost your income significantly!`)
+                            .setContent(`## 🏰 **FOLLOWERS NEED A CITADEL**\n\n> Your **${profile.followers.length}** followers want to help with work earnings, but they need a citadel first!\n\n**💡 Solution:** Acquire a citadel (\`${prefix}acquirecitadel\`) to unlock follower workforce contributions and boost your income significantly!`)
                     );
                 }
 

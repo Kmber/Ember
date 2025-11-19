@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'transactionhistory',
@@ -14,6 +16,8 @@ module.exports = {
     async execute(message, args) {
         try {
             const targetUser = message.mentions.users.first() || message.author;
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             
            
             if (targetUser.id !== message.author.id && !message.member.permissions.has('Administrator')) {
@@ -76,7 +80,7 @@ module.exports = {
 
                     filterContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🔍 **ACTIVE FILTERS**\n\n${filterType ? `**Type:** \`${filterType}\`` : ''}${filterType && filterCategory ? '\n' : ''}${filterCategory ? `**Category:** \`${filterCategory}\`` : ''}\n\n**💡 Try:** Remove filters or use \`!transactions\` to see all records`)
+                            .setContent(`## 🔍 **ACTIVE FILTERS**\n\n${filterType ? `**Type:** \`${filterType}\`` : ''}${filterType && filterCategory ? '\n' : ''}${filterCategory ? `**Category:** \`${filterCategory}\`` : ''}\n\n**💡 Try:** Remove filters or use \`${prefix}transactions\` to see all records`)
                     );
 
                     components.push(filterContainer);
@@ -148,7 +152,7 @@ module.exports = {
 
                     filtersContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 🔍 **ACTIVE FILTERS**\n\n${filterType ? `**Type Filter:** \`${filterType}\`` : ''}${filterType && filterCategory ? '\n' : ''}${filterCategory ? `**Category Filter:** \`${filterCategory}\`` : ''}\n\n**💡 Note:** Showing filtered results - use \`!transactions\` for complete history`)
+                            .setContent(`## 🔍 **ACTIVE FILTERS**\n\n${filterType ? `**Type Filter:** \`${filterType}\`` : ''}${filterType && filterCategory ? '\n' : ''}${filterCategory ? `**Category Filter:** \`${filterCategory}\`` : ''}\n\n**💡 Note:** Showing filtered results - use \`${prefix}transactions\` for complete history`)
                     );
 
                     components.push(filtersContainer);
@@ -202,7 +206,7 @@ module.exports = {
                     const navigationContainer = new ContainerBuilder()
                         .setAccentColor(0x607D8B);
 
-                    const navText = `## 📄 **PAGE NAVIGATION**\n\n**Current Page:** ${page} of ${totalPages}\n**Records on Page:** ${pageTransactions.length}\n**Total Records:** ${transactions.length}\n\n**💡 Navigation Tips:**\n> • Use \`!transactions ${page > 1 ? page - 1 : 1}\` for previous page\n> • Use \`!transactions ${page < totalPages ? page + 1 : totalPages}\` for next page\n> • Use \`!transactions 1\` to return to first page`;
+                    const navText = `## 📄 **PAGE NAVIGATION**\n\n**Current Page:** ${page} of ${totalPages}\n**Records on Page:** ${pageTransactions.length}\n**Total Records:** ${transactions.length}\n\n**💡 Navigation Tips:**\n> • Use \`${prefix}transactions ${page > 1 ? page - 1 : 1}\` for previous page\n> • Use \`${prefix}transactions ${page < totalPages ? page + 1 : totalPages}\` for next page\n> • Use \`${prefix}transactions 1\` to return to first page`;
 
                     navigationContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
@@ -220,7 +224,7 @@ module.exports = {
 
                 filterGuideContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎯 **FILTERING OPTIONS**\n\n**By Type:** \`income\`, \`expense\`, \`transfer\`\n**By Category:** \`guild\`, \`raid\`, \`racing\`, \`gambling\`, \`shop\`, \`family\`, \`work\`, \`minion_care\`\n\n**Examples:**\n> • \`!transactions income\` - Only income records\n> • \`!transactions gambling\` - Only gambling transactions\n> • \`!transactions expense shop\` - Only shop purchases\n> • \`!transactions 2\` - Jump to page 2\n\n**💡 Combine filters and pages for precise record searching!`)
+                        .setContent(`## 🎯 **FILTERING OPTIONS**\n\n**By Type:** \`income\`, \`expense\`, \`transfer\`\n**By Category:** \`guild\`, \`raid\`, \`racing\`, \`gambling\`, \`shop\`, \`family\`, \`work\`, \`minion_care\`\n\n**Examples:**\n> • \`${prefix}transactions income\` - Only income records\n> • \`${prefix}transactions gambling\` - Only gambling transactions\n> • \`${prefix}transactions expense shop\` - Only shop purchases\n> • \`${prefix}transactions 2\` - Jump to page 2\n\n**💡 Combine filters and pages for precise record searching!`)
                 );
 
                 components.push(filterGuideContainer);
@@ -275,7 +279,7 @@ module.exports = {
 
                             closedContainer.addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(`# 📝 Transaction History Closed\n## SESSION TERMINATED\n\n> Transaction history viewing session has been closed.\n> Use \`!transactions\` anytime to reopen your financial records.\n\n**💡 Remember:** Keep track of your transactions for better financial management!`)
+                                    .setContent(`# 📝 Transaction History Closed\n## SESSION TERMINATED\n\n> Transaction history viewing session has been closed.\n> Use \`${prefix}transactions\` anytime to reopen your financial records.\n\n**💡 Remember:** Keep track of your transactions for better financial management!`)
                             );
 
                             closedComponents.push(closedContainer);

@@ -14,7 +14,7 @@ module.exports = {
     name: 'sell',
     aliases: ['sellitem', 'ssly', 'sellloot'],
     description: 'Sell slaying loot and items',
-    usage: 'sell <item_id> OR !sell all <type> OR !sell confirm',
+    usage: 'sell <item_id> OR sell all <type> OR sell confirm',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
@@ -39,7 +39,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Available Types:**\n\`flesh\`, \`hide\`, \`trophies\`, \`rare_essence\`, \`relic\`, \`artifact\`, \`common\`, \`uncommon\`, \`rare\`\n\n**📋 Use \`${prefix}inventory\` to see your items and their IDs**`)
+                        .setContent(`**💡 Available Types:**\n\`flesh\`, \`hide\`, \`trophies\`, \`rare_essence\`, \`relic\`, \`artifact\`, \`common\`, \`uncommon\`, \`rare\`\n\n**📋 Use \`${prefix}slayininventory\` to see your items and their IDs**`)
                 );
 
                 components.push(helpContainer);
@@ -201,7 +201,7 @@ module.exports = {
 
                 notFoundContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Item Not Found\n## INVALID ITEM ID\n\n> Item with ID \`${itemId}\` not found!\n> Use \`${prefix}inventory\` to see your items and their IDs.`)
+                        .setContent(`# ❌ Item Not Found\n## INVALID ITEM ID\n\n> Item with ID \`${itemId}\` not found!\n> Use \`${prefix}slayininventory\` to see your items and their IDs.`)
                 );
 
                 components.push(notFoundContainer);

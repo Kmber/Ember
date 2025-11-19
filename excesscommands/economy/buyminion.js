@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { MINIONS } = require('../../models/economy/constants/gameData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'buyminion',
     aliases: ['minion-buy'],
     description: 'Summon a minion for power and protection using Embers .',
-    usage: '!buyminion <minion_id> <name>',
+    usage: 'buyminion <minion_id> <name>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+
             if (!args[0]) {
                 const components = [];
 
@@ -70,7 +75,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎯 **HOW TO SUMMON**\n\n**Command:** \`!buyminion <minion_id> <minion_name>\`\n**Example:** \`!buyminion hellhound Cerberus\`\n\n**💡 Benefits:**\n> • Enhanced power against rivals\n> • Loyal servants for your citadel\n> • Property protection and dark surveillance\n> • Customizable minion names for personalization`)
+                        .setContent(`## 🎯 **HOW TO SUMMON**\n\n**Command:** \`${prefix}buyminion <minion_id> <minion_name>\`\n**Example:** \`${prefix}buyminion hellhound Cerberus\`\n\n**💡 Benefits:**\n> • Enhanced power against rivals\n> • Loyal servants for your citadel\n> • Property protection and dark surveillance\n> • Customizable minion names for personalization`)
                 );
 
                 components.push(instructionsContainer);
@@ -93,7 +98,7 @@ module.exports = {
 
                 invalidMinionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Minion ID\n## MINION NOT FOUND\n\n> **\`${minionId}\`** is not a valid minion ID!\n> Use \`!buyminion\` to see all available minions with their correct IDs.`)
+                        .setContent(`# ❌ Invalid Minion ID\n## MINION NOT FOUND\n\n> **\`${minionId}\`** is not a valid minion ID!\n> Use \`${prefix}buyminion\` to see all available minions with their correct IDs.`)
                 );
 
                 components.push(invalidMinionContainer);

@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 const FOLLOWER_TEMPLATES = {
     cultist: {
@@ -34,9 +36,12 @@ module.exports = {
     name: 'addfollower',
     aliases: ['follower-add'],
     description: 'Recruit a follower to your congregation .',
-    usage: '!addfollower <type> <name>',
+    usage: 'addfollower <type> <name>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+
             if (args.length < 2) {
                 const components = [];
 
@@ -45,7 +50,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⛪ Recruit Follower\n## MISSING REQUIRED INFORMATION\n\n> Please specify the follower type and their name!\n> **Usage:** \`!addfollower <type> <name>\``)
+                        .setContent(`# ⛪ Recruit Follower\n## MISSING REQUIRED INFORMATION\n\n> Please specify the follower type and their name!\n> **Usage:** \`${prefix}addfollower <type> <name>\``)
                 );
 
                 components.push(usageContainer);
@@ -63,7 +68,7 @@ module.exports = {
 
                 typesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 👥 **AVAILABLE FOLLOWER TYPES**\n\n${typesList}\n\n**Examples:**\n> \`!addfollower cultist Elara\`\n> \`!addfollower acolyte Kael\`\n> \`!addfollower zealot Morwen\``)
+                        .setContent(`## 👥 **AVAILABLE FOLLOWER TYPES**\n\n${typesList}\n\n**Examples:**\n> \`${prefix}addfollower cultist Elara\`\n> \`${prefix}addfollower acolyte Kael\`\n> \`${prefix}addfollower zealot Morwen\``)
                 );
 
                 components.push(typesContainer);
@@ -97,7 +102,7 @@ module.exports = {
 
                 validTypesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 👥 **VALID FOLLOWER TYPES**\n\n**🙏 \`cultist\`** - Devoted follower of the dark arts\n**🔮 \`acolyte\`** - Student of forbidden knowledge\n**⚔️ \`zealot\`** - Fervent warrior for the cause\n**💀 \`neophyte\`** - New recruit, eager to prove their worth\n\n**💡 Try:** \`!addfollower cultist ${name}\``)
+                        .setContent(`## 👥 **VALID FOLLOWER TYPES**\n\n**🙏 \`cultist\`** - Devoted follower of the dark arts\n**🔮 \`acolyte\`** - Student of forbidden knowledge\n**⚔️ \`zealot\`** - Fervent warrior for the cause\n**💀 \`neophyte\`** - New recruit, eager to prove their worth\n\n**💡 Try:** \`${prefix}addfollower cultist ${name}\``)
                 );
 
                 components.push(validTypesContainer);
@@ -130,7 +135,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **ESTABLISH A CITADEL FOR YOUR FOLLOWERS**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available Citadels\n**Step 2:** Acquire a Citadel with follower capacity\n**Step 3:** Set it as your primary sanctum\n**Step 4:** Return here to recruit **${name}** as your ${type}!\n\n**💡 Follower Benefits:**\n> • Followers contribute to work income\n> • Build allegiance through dark rituals and activities\n> • Enhanced security and influence\n> • Larger congregations = more power`)
+                        .setContent(`## 🏘️ **ESTABLISH A CITADEL FOR YOUR FOLLOWERS**\n\n**Step 1:** Use \`${prefix}acquirecitadel\` to browse available Citadels\n**Step 2:** Acquire a Citadel with follower capacity\n**Step 3:** Set it as your primary sanctum\n**Step 4:** Return here to recruit **${name}** as your ${type}!\n\n**💡 Follower Benefits:**\n> • Followers contribute to work income\n> • Build allegiance through dark rituals and activities\n> • Enhanced security and influence\n> • Larger congregations = more power`)
                 );
 
                 components.push(solutionContainer);
@@ -170,7 +175,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **EXPAND YOUR CITADEL**\n\n**Current Congregation:** ${profile.followers.map(m => m.name).join(', ')}\n\n**💡 Solutions:**\n> • Upgrade to a larger Citadel with more follower capacity (\`!acquirecitadel\`)\n> • Acquire an additional Citadel for your expanding congregation\n> • Consider which followers are most loyal\n\n**🎯 Goal:** Find a Citadel that can house **${profile.followers.length + 1}+** followers`)
+                        .setContent(`## 🏘️ **EXPAND YOUR CITADEL**\n\n**Current Congregation:** ${profile.followers.map(m => m.name).join(', ')}\n\n**💡 Solutions:**\n> • Upgrade to a larger Citadel with more follower capacity (\`${prefix}acquirecitadel\`)\n> • Acquire an additional Citadel for your expanding congregation\n> • Consider which followers are most loyal\n\n**🎯 Goal:** Find a Citadel that can house **${profile.followers.length + 1}+** followers`)
                 );
 
                 components.push(solutionContainer);
@@ -202,7 +207,7 @@ module.exports = {
                 const existingMember = profile.followers.find(m => m.name.toLowerCase() === name.toLowerCase());
                 suggestionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **NAME SUGGESTIONS**\n\n**Existing Follower:** **${existingMember.name}** (${existingMember.relationship})\n\n**Try Different Names:**\n> \`!addfollower ${type} ${name}2\`\n> \`!addfollower ${type} ${name.split(' ')[0]} ${name.split(' ')[1] || 'the Devout'}\`\n> \`!addfollower ${type} [Choose a different name]\`\n\n**💡 Tip:** Use titles or epithets to make each follower unique!`)
+                        .setContent(`## 💡 **NAME SUGGESTIONS**\n\n**Existing Follower:** **${existingMember.name}** (${existingMember.relationship})\n\n**Try Different Names:**\n> \`${prefix}addfollower ${type} ${name}2\`\n> \`${prefix}addfollower ${type} ${name.split(' ')[0]} ${name.split(' ')[1] || 'the Devout'}\`\n> \`${prefix}addfollower ${type} [Choose a different name]\`\n\n**💡 Tip:** Use titles or epithets to make each follower unique!`)
                 );
 
                 components.push(suggestionContainer);
@@ -319,7 +324,7 @@ module.exports = {
 
             bondingContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💀 Perform Dark Rituals:** Use \`!ritual\` to build stronger allegiance\n**❤️ Build Allegiance:** Higher allegiance = better work efficiency and income\n**⛪ Expand Congregation:** Recruit more followers if you have space\n**🏰 Upgrade Citadel:** Larger Citadels house bigger congregations\n**🎯 Long-term Goal:** Reach 100% allegiance with all followers`)
+                    .setContent(`**💀 Perform Dark Rituals:** Use \`${prefix}ritual\` to build stronger allegiance\n**❤️ Build Allegiance:** Higher allegiance = better work efficiency and income\n**⛪ Expand Congregation:** Recruit more followers if you have space\n**🏰 Upgrade Citadel:** Larger Citadels house bigger congregations\n**🎯 Long-term Goal:** Reach 100% allegiance with all followers`)
             );
 
             bondingContainer.addTextDisplayComponents(

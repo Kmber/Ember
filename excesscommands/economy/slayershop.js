@@ -23,7 +23,7 @@ module.exports = {
     name: 'slayershop',
     aliases: ['slaystore', 'buygear', 'sshop'],
     description: 'Buy slaying mounts, weapons, allies, vaults, potions, and oils',
-    usage: 'slayershop [category] [item] OR !slayershop buy [item_id] [quantity] OR !slayershop enchant/fortify',
+    usage: 'slayershop [category] [item] OR slayershop buy [item_id] [quantity] OR slayershop enchant/fortify',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);

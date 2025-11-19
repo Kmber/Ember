@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { CITADELS } = require('../../models/economy/constants/gameData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'acquirecitadel',
     aliases: ['citadel-buy', 'aqcitadel'],
     description: 'Acquire a citadel to house your followers and treasures.',
-    usage: '!acquirecitadel <citadel_id>',
+    usage: 'acquirecitadel <citadel_id>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+
             if (!args[0]) {
                 const components = [];
 
@@ -68,7 +73,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                    .setContent(`## 🛒 **HOW TO ACQUIRE**\n\n**Command:** \`!acquirecitadel <citadel_id>\`\n**Example:** \`!acquirecitadel outpost\`\n\n**💡 Benefits:**\n> • House your followers securely\n> • Unlock vault storage\n> • Enable lair for multiple beasts\n> • Increase security against raids\n> • First citadel becomes your primary stronghold`)
+                    .setContent(`## 🛒 **HOW TO ACQUIRE**\n\n**Command:** \`${prefix}acquirecitadel <citadel_id>\`\n**Example:** \`${prefix}acquirecitadel outpost\`\n\n**💡 Benefits:**\n> • House your followers securely\n> • Unlock vault storage\n> • Enable lair for multiple beasts\n> • Increase security against raids\n> • First citadel becomes your primary stronghold`)
                 );
 
                 components.push(instructionsContainer);
@@ -86,7 +91,7 @@ module.exports = {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xE74C3C)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`# ❌ Invalid Citadel ID\n## CITADEL NOT FOUND\n\n> **\`${citadelId}\`** is not a valid citadel ID!\n> Use \`!acquirecitadel\` to see all available citadels with their correct IDs.`)
+                        new TextDisplayBuilder().setContent(`# ❌ Invalid Citadel ID\n## CITADEL NOT FOUND\n\n> **\`${citadelId}\`** is not a valid citadel ID!\n> Use \`${prefix}acquirecitadel\` to see all available citadels with their correct IDs.`)
                     )
                 ];
                 return message.reply({
@@ -101,7 +106,7 @@ module.exports = {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xF39C12)
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`# 🏰 Citadel Already Acquired\n## DUPLICATE ACQUISITION BLOCKED\n\n> You already own **${citadelData.name}**!\n> Each player can only own one of each citadel type.\n\n**💡 Tip:** Check your citadel portfolio with \`!mycitadel\` to see your current holdings.`)
+                        new TextDisplayBuilder().setContent(`# 🏰 Citadel Already Acquired\n## DUPLICATE ACQUISITION BLOCKED\n\n> You already own **${citadelData.name}**!\n> Each player can only own one of each citadel type.\n\n**💡 Tip:** Check your citadel portfolio with \`${prefix}mycitadel\` to see your current holdings.`)
                     )
                 ];
                 return message.reply({

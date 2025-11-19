@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'mycitadel',
@@ -13,6 +15,8 @@ module.exports = {
     description: 'View your current citadel and follower status.',
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             if (profile.citadels.length === 0) {
@@ -35,7 +39,7 @@ module.exports = {
 
                 startContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET YOUR FIRST CITADEL**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available citadels\n**Step 2:** Choose a citadel that fits your budget and needs\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Start building your congregation with followers and minions!\n\n**💡 Citadel Benefits:**\n> • House followers for work bonuses\n> • Secure tithe storage\n> • Lair space for beast collection\n> • Enhanced power against raids\n> • Investment appreciation over time`)
+                        .setContent(`## 🏘️ **GET YOUR FIRST CITADEL**\n\n**Step 1:** Use \`${prefix}acquirecitadel\` to browse available citadels\n**Step 2:** Choose a citadel that fits your budget and needs\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Start building your congregation with followers and minions!\n\n**💡 Citadel Benefits:**\n> • House followers for work bonuses\n> • Secure tithe storage\n> • Lair space for beast collection\n> • Enhanced power against raids\n> • Investment appreciation over time`)
                 );
 
                 components.push(startContainer);
@@ -135,7 +139,7 @@ module.exports = {
             } else {
                 followerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🏰 Empty Citadel:** Your citadel is ready for followers!\n**Capacity:** \`0/${primaryCitadel.maxFollowers} followers\`\n\n**💡 Recruit Followers:** Use \`!addfollower\` to add loyal subjects\n**🎯 Benefits:** Followers provide work bonuses and allegiance\n**❤️ Relationships:** Build allegiance through rituals and activities`)
+                        .setContent(`**🏰 Empty Citadel:** Your citadel is ready for followers!\n**Capacity:** \`0/${primaryCitadel.maxFollowers} followers\`\n\n**💡 Recruit Followers:** Use \`${prefix}addfollower\` to add loyal subjects\n**🎯 Benefits:** Followers provide work bonuses and allegiance\n**❤️ Relationships:** Build allegiance through rituals and activities`)
                 );
             }
 
@@ -179,7 +183,7 @@ module.exports = {
                 } else {
                     lairContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**👹 Empty Lair:** Your lair is ready for beasts!\n\n**💡 Get Started:** Use \`!summon\` to acquire your first beast\n**🎯 Benefits:** Beasts enable racing and other activities`)
+                            .setContent(`**👹 Empty Lair:** Your lair is ready for beasts!\n\n**💡 Get Started:** Use \`${prefix}summon\` to acquire your first beast\n**🎯 Benefits:** Beasts enable racing and other activities`)
                     );
                 }
             } else {
@@ -255,7 +259,7 @@ module.exports = {
                 } else {
                     minionContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🦇 No Minions Yet:** Your citadel can house up to ${profile.maxMinions} minions\n\n**💡 Summon Today:** Use \`!buyminion\` to summon loyal servants\n**🛡️ Power Boost:** Minions enhance your citadel's power`)
+                            .setContent(`**🦇 No Minions Yet:** Your citadel can house up to ${profile.maxMinions} minions\n\n**💡 Summon Today:** Use \`${prefix}buyminion\` to summon loyal servants\n**🛡️ Power Boost:** Minions enhance your citadel's power`)
                     );
                 }
 
@@ -270,7 +274,7 @@ module.exports = {
 
             managementContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`!tithe\` to manage your secure Embers\n**⛪ Follower Growth:** Recruit more followers if space allows\n**👹 Beast Collection:** Expand your lair with more beasts for racing\n**🦇 Summon Minions:** Summon minions to increase power and for protection\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
+                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`${prefix}tithe\` to manage your secure Embers\n**⛪ Follower Growth:** Recruit more followers if space allows\n**👹 Beast Collection:** Expand your lair with more beasts for racing\n**🦇 Summon Minions:** Summon minions to increase power and for protection\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
             );
 
             components.push(managementContainer);

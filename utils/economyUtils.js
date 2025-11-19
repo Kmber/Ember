@@ -44,7 +44,7 @@ class EconomyUtils {
         const profiles = await Economy.find({});
         
         for (const profile of profiles) {
-            const primaryProperty = profile.citadels.find(p => p.propertyId === profile.primaryResidence);
+            const primaryProperty = profile.citadels.find(p => p.propertyId === profile.primaryCitadel);
             if (!primaryProperty) continue;
             
             const totalBills = primaryProperty.monthlyRent + primaryProperty.utilities;

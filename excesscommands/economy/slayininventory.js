@@ -108,7 +108,7 @@ module.exports = {
             console.error('Error in inventory command:', error);
             const errorContainer = new ContainerBuilder().setAccentColor(0xE74C3C);
             errorContainer.addTextDisplayComponents(
-                new TextDisplayDisplayBuilder().setContent(`## ❌ INVENTORY ERROR\n\nCouldn't load your inventory. Please try again.`)
+                new TextDisplayBuilder().setContent(`## ❌ INVENTORY ERROR\n\nCouldn't load your inventory. Please try again.`)
             );
             return message.reply({ components: [errorContainer], flags: MessageFlags.IsComponentsV2 });
         }

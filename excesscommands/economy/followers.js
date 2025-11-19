@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'followers',
@@ -13,6 +15,8 @@ module.exports = {
     description: 'View your followers and their status .',
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             if (profile.followers.length === 0) {
@@ -35,7 +39,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⛪ **HOW TO BUILD YOUR CONGREGATION**\n\n**Step 1:** Acquire a Citadel with follower capacity (\`!acquirecitadel\`)\n**Step 2:** Recruit followers through recruitment commands (\`!addfollower\`)\n**Step 3:** Build allegiance through dark rituals and activities\n**Step 4:** Enjoy enhanced earnings and power\n\n**💡 Benefits:**\n> • Enhanced work income through follower support\n> • Dark allegiance that boosts productivity\n> • Unholy rituals and shared experiences\n> • Larger citadels with more capacity`)
+                        .setContent(`## ⛪ **HOW TO BUILD YOUR CONGREGATION**\n\n**Step 1:** Acquire a Citadel with follower capacity (\`${prefix}acquirecitadel\`)\n**Step 2:** Recruit followers through recruitment commands (\`${prefix}addfollower\`)\n**Step 3:** Build allegiance through dark rituals and activities\n**Step 4:** Enjoy enhanced earnings and power\n\n**💡 Benefits:**\n> • Enhanced work income through follower support\n> • Dark allegiance that boosts productivity\n> • Unholy rituals and shared experiences\n> • Larger citadels with more capacity`)
                 );
 
                 components.push(solutionContainer);
@@ -174,7 +178,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **CONGREGATION MANAGEMENT TIPS**\n\n**💀 Perform Rituals:** Use \`!ritual\` to improve follower allegiance and relationships\n**💼 Work Benefits:** Followers contribute to your work earnings automatically\n**🏰 Expand Citadel:** Upgrade to larger citadels with more follower capacity (\`!acquirecitadel\`)\n**❤️ Build Allegiance:** Higher allegiance levels = better work efficiency and income\n**📅 Regular Indoctrination:** Consistent rituals and attention maintain strong follower relationships\n\n> A devoted congregation is a productive congregation!`)
+                    .setContent(`## 💡 **CONGREGATION MANAGEMENT TIPS**\n\n**💀 Perform Rituals:** Use \`${prefix}ritual\` to improve follower allegiance and relationships\n**💼 Work Benefits:** Followers contribute to your work earnings automatically\n**🏰 Expand Citadel:** Upgrade to larger citadels with more follower capacity (\`${prefix}acquirecitadel\`)\n**❤️ Build Allegiance:** Higher allegiance levels = better work efficiency and income\n**📅 Regular Indoctrination:** Consistent rituals and attention maintain strong follower relationships\n\n> A devoted congregation is a productive congregation!`)
             );
 
             components.push(tipsContainer);

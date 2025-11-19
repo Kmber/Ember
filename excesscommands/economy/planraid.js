@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager, Raid } = require('../../models/economy/economy');
 const { RAID_DUNGEONS, RAID_GEAR } = require('../../models/economy/constants/guildData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'planraid',
     aliases: ['raid-plan', 'newraid'],
     description: 'Plan a raid and recruit party members .',
-    usage: '!planraid <dungeon>',
+    usage: 'planraid <dungeon>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+
             if (!args[0]) {
                 const components = [];
 
@@ -77,7 +82,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚔️ **HOW TO PLAN A RAID**\n\n**Command:** \`!planraid <dungeon_id>\`\n**Example:** \`!planraid goblin_cave\`\n\n**💡 Planning Tips:**\n> • Start with lower difficulty dungeons to build experience\n> • Ensure you have enough funds for gear\n> • Check your threat level requirements\n> • Plan when you have time to recruit a full party\n> • Higher difficulty = higher rewards but more risk`)
+                        .setContent(`## ⚔️ **HOW TO PLAN A RAID**\n\n**Command:** \`${prefix}planraid <dungeon_id>\`\n**Example:** \`${prefix}planraid goblin_cave\`\n\n**💡 Planning Tips:**\n> • Start with lower difficulty dungeons to build experience\n> • Ensure you have enough funds for gear\n> • Check your threat level requirements\n> • Plan when you have time to recruit a full party\n> • Higher difficulty = higher rewards but more risk`)
                 );
 
                 components.push(instructionsContainer);
@@ -115,7 +120,7 @@ module.exports = {
 
                 validDungeonsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚔️ **VALID DUNGEONS**\n\n${dungeonsList}\n\n**💡 Try:** \`!planraid ${Object.keys(RAID_DUNGEONS)[0]}\``)
+                        .setContent(`## ⚔️ **VALID DUNGEONS**\n\n${dungeonsList}\n\n**💡 Try:** \`${prefix}planraid ${Object.keys(RAID_DUNGEONS)[0]}\``)
                 );
 
                 components.push(validDungeonsContainer);
@@ -220,7 +225,7 @@ module.exports = {
 
                 currentRaidContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **CURRENT EXPEDITION STATUS**\n\n**⚔️ Dungeon:** \`${existingRaid.dungeonName}\`\n**🆔 Raid ID:** \`${existingRaid.raidId}\`\n**👥 Party Status:** \`${existingRaid.members.length}/${existingRaid.requiredMembers} adventurers\`\n**💰 Potential Reward:** \`${existingRaid.potential_reward.toLocaleString()} Embers\`\n\n**💡 Next Steps:**\n> • Use \`!raid\` to check detailed status\n> • Complete current expedition before planning new ones\n> • Focus on recruiting remaining party members`)
+                        .setContent(`## 📊 **CURRENT EXPEDITION STATUS**\n\n**⚔️ Dungeon:** \`${existingRaid.dungeonName}\`\n**🆔 Raid ID:** \`${existingRaid.raidId}\`\n**👥 Party Status:** \`${existingRaid.members.length}/${existingRaid.requiredMembers} adventurers\`\n**💰 Potential Reward:** \`${existingRaid.potential_reward.toLocaleString()} Embers\`\n\n**💡 Next Steps:**\n> • Use \`${prefix}raid\` to check detailed status\n> • Complete current expedition before planning new ones\n> • Focus on recruiting remaining party members`)
                 );
 
                 components.push(currentRaidContainer);
@@ -378,7 +383,7 @@ module.exports = {
 
             teamContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**📢 Recruitment Command:** \`!joinraid ${raidId} <class>\`\n**💡 Share With Party:** Give potential members the raid ID\n**⏰ Recruitment Window:** Open until party is complete`)
+                    .setContent(`**📢 Recruitment Command:** \`${prefix}joinraid ${raidId} <class>\`\n**💡 Share With Party:** Give potential members the raid ID\n**⏰ Recruitment Window:** Open until party is complete`)
             );
 
             components.push(teamContainer);
@@ -414,7 +419,7 @@ module.exports = {
 
             nextStepsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## ⚔️ **NEXT STEPS FOR SUCCESS**\n\n**1. Recruit Your Party:** Share raid ID \`${raidId}\` with trusted adventurers\n**2. Assign Classes:** Ensure each required class is filled by capable adventurers\n**3. Plan Coordination:** Discuss strategy and timing with your party\n**4. Execute Expedition:** Use \`!executeraid ${raidId}\` when ready\n**💡 Leader Tips:**\n> • Choose party members with relevant skills\n> • Coordinate timing for maximum success\n> • Higher skilled party = better success chances\n> • Communication is key to raid success`)
+                    .setContent(`## ⚔️ **NEXT STEPS FOR SUCCESS**\n\n**1. Recruit Your Party:** Share raid ID \`${raidId}\` with trusted adventurers\n**2. Assign Classes:** Ensure each required class is filled by capable adventurers\n**3. Plan Coordination:** Discuss strategy and timing with your party\n**4. Execute Expedition:** Use \`${prefix}executeraid ${raidId}\` when ready\n**💡 Leader Tips:**\n> • Choose party members with relevant skills\n> • Coordinate timing for maximum success\n> • Higher skilled party = better success chances\n> • Communication is key to raid success`)
             );
 
             components.push(nextStepsContainer);
@@ -433,7 +438,7 @@ module.exports = {
 
                 recruitmentContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 📢 RAID RECRUITMENT OPEN\n## ${dungeonData.name.toUpperCase()} EXPEDITION\n\n> **Leader:** \`${message.author.username}\`\n> **Dungeon:** \`${dungeonData.name}\`\n> **Potential Reward:** \`${raid.potential_reward.toLocaleString()} Embers\`\n> **Difficulty:** \`${dungeonData.difficulty}/5\`\n\n**👥 SEEKING:** ${dungeonData.requiredMembers - 1} skilled adventurers\n**⚔️ CLASSES NEEDED:** ${dungeonData.requiredClasses.filter(role => role !== 'leader').join(', ')}\n\n**⚡ JOIN NOW:** \`!joinraid ${raidId} <your_class>\``)
+                        .setContent(`# 📢 RAID RECRUITMENT OPEN\n## ${dungeonData.name.toUpperCase()} EXPEDITION\n\n> **Leader:** \`${message.author.username}\`\n> **Dungeon:** \`${dungeonData.name}\`\n> **Potential Reward:** \`${raid.potential_reward.toLocaleString()} Embers\`\n> **Difficulty:** \`${dungeonData.difficulty}/5\`\n\n**👥 SEEKING:** ${dungeonData.requiredMembers - 1} skilled adventurers\n**⚔️ CLASSES NEEDED:** ${dungeonData.requiredClasses.filter(role => role !== 'leader').join(', ')}\n\n**⚡ JOIN NOW:** \`${prefix}joinraid ${raidId} <your_class>\``)
                 );
 
                 recruitmentComponents.push(recruitmentContainer);

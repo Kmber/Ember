@@ -6,15 +6,18 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'rob',
     description: 'Attempt to rob another player of Embers . (risky!)',
-    usage: '!rob @user',
+    usage: 'rob @user',
     cooldown: 1800,
     async execute(message, args) {
         try {
-          
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             let robberProfile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             if (!robberProfile) {
@@ -25,7 +28,7 @@ module.exports = {
 
                 profileErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Profile Access Error\n## ACCOUNT INITIALIZATION REQUIRED\n\n> Unable to access your criminal profile!\n> Please use \`!balance\` first to initialize your account before attempting robberies.`)
+                        .setContent(`# ❌ Profile Access Error\n## ACCOUNT INITIALIZATION REQUIRED\n\n> Unable to access your criminal profile!\n> Please use \`${prefix}balance\` first to initialize your account before attempting robberies.`)
                 );
 
                 components.push(profileErrorContainer);
@@ -91,7 +94,7 @@ module.exports = {
 
                 noTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🎯 No Target Specified\n## ROBBERY TARGET REQUIRED\n\n> You need to mention someone to rob!\n> **Usage:** \`!rob @username\``)
+                        .setContent(`# 🎯 No Target Specified\n## ROBBERY TARGET REQUIRED\n\n> You need to mention someone to rob!\n> **Usage:** \`${prefix}rob @username\``)
                 );
 
                 components.push(noTargetContainer);
@@ -103,7 +106,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🕵️ **HOW TO ROB SOMEONE**\n\n**Command:** \`!rob @target\`\n**Example:** \`!rob @JohnDoe\`\n\n**💡 Robbery Tips:**\n> • Target users with lower power levels\n> • Higher level robbers have better success rates\n> • Victims need at least 500 Embers to be worth robbing\n> • Failed robberies result in fines and reputation loss\n> • Successful robberies give XP and stolen Embers`)
+                        .setContent(`## 🕵️ **HOW TO ROB SOMEONE**\n\n**Command:** \`${prefix}rob @target\`\n**Example:** \`${prefix}rob @JohnDoe\`\n\n**💡 Robbery Tips:**\n> • Target users with lower power levels\n> • Higher level robbers have better success rates\n> • Victims need at least 500 Embers to be worth robbing\n> • Failed robberies result in fines and reputation loss\n> • Successful robberies give XP and stolen Embers`)
                 );
 
                 components.push(instructionsContainer);
@@ -134,7 +137,7 @@ module.exports = {
 
                 alternativeContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **ALTERNATIVE EMBERS METHODS**\n\n**💼 Work:** Use \`!work\` for legitimate income\n**🎰 Gamble:** Try \`!gamble\` for risky gains\n**🏪 Guild:** Run guilds for passive income\n**🎁 Daily:** Claim \`!daily\` rewards regularly\n\n> Why rob yourself when you can rob others? 😏`)
+                        .setContent(`## 💰 **ALTERNATIVE EMBERS METHODS**\n\n**💼 Work:** Use \`${prefix}work\` for legitimate income\n**🎰 Gamble:** Try \`${prefix}gamble\` for risky gains\n**🏪 Guild:** Run guilds for passive income\n**🎁 Daily:** Claim \`${prefix}daily\` rewards regularly\n\n> Why rob yourself when you can rob others? 😏`)
                 );
 
                 components.push(alternativeContainer);
@@ -187,7 +190,7 @@ module.exports = {
 
                 victimErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Target Profile Error\n## VICTIM ACCOUNT INACCESSIBLE\n\n> Unable to access **${target.username}**'s profile!\n> They may need to use \`!balance\` first to initialize their account.`)
+                        .setContent(`# 🚫 Target Profile Error\n## VICTIM ACCOUNT INACCESSIBLE\n\n> Unable to access **${target.username}**'s profile!\n> They may need to use \`${prefix}balance\` first to initialize their account.`)
                 );
 
                 components.push(victimErrorContainer);
@@ -230,7 +233,7 @@ module.exports = {
 
                 betterTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎯 **FIND BETTER TARGETS**\n\n**💰 Look For:** Users with substantial Embers balances\n**📊 Check Activity:** Active players tend to have more Ember\n**🏆 Target Winners:** Look for successful gamblers or workers\n**⏰ Wait Strategy:** Check back when they might have earned more\n\n**💡 Pro Tip:** Use \`!leaderboard wealth\` to scout rich targets!`)
+                        .setContent(`## 🎯 **FIND BETTER TARGETS**\n\n**💰 Look For:** Users with substantial Embers balances\n**📊 Check Activity:** Active players tend to have more Ember\n**🏆 Target Winners:** Look for successful gamblers or workers\n**⏰ Wait Strategy:** Check back when they might have earned more\n\n**💡 Pro Tip:** Use \`${prefix}leaderboard wealth\` to scout rich targets!`)
                 );
 
                 components.push(betterTargetContainer);
@@ -488,7 +491,7 @@ module.exports = {
 
             troubleshootContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🛠️ **TROUBLESHOOTING STEPS**\n\n**1.** Both users should try \`!balance\` first to initialize accounts\n**2.** Wait 30 seconds and try the robbery again\n**3.** Ensure the target user is a valid server member\n**4.** Contact an admin if the issue persists\n\n**💡 Note:** System errors don't trigger cooldowns or penalties.`)
+                    .setContent(`## 🛠️ **TROUBLESHOOTING STEPS**\n\n**1.** Both users should try \`${prefix}balance\` first to initialize accounts\n**2.** Wait 30 seconds and try the robbery again\n**3.** Ensure the target user is a valid server member\n**4.** Contact an admin if the issue persists\n\n**💡 Note:** System errors don\'t trigger cooldowns or penalties.`)
             );
 
             components.push(troubleshootContainer);

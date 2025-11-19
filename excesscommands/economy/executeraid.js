@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager, Raid } = require('../../models/economy/economy');
 const { RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'executeraid',
     aliases: ['raid-execute', 'startraid'],
     description: 'Execute a planned raid .',
-    usage: '!executeraid <raid_id>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+            this.usage = `${prefix}executeraid <raid_id>`;
+
             if (!args[0]) {
                 const components = [];
 
@@ -23,7 +28,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⚔️ Execute Raid Expedition\n## MISSING RAID IDENTIFIER\n\n> Please specify the raid ID to begin the expedition!\n> **Usage:** \`!executeraid <raid_id>\``)
+                        .setContent(`# ⚔️ Execute Raid Expedition\n## MISSING RAID IDENTIFIER\n\n> Please specify the raid ID to begin the expedition!\n> **Usage:** \`${prefix}executeraid <raid_id>\``)
                 );
 
                 components.push(usageContainer);
@@ -35,7 +40,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚔️ **EXECUTION REQUIREMENTS**\n\n**🆔 Raid ID:** Find this in your active raids (\`!raid\`)\n**👑 Authority:** Only the raid planner can execute\n**👥 Party Status:** All party members must be recruited\n**⏰ Timing:** Execute when the party is ready\n\n**Example:** \`!executeraid ABC123\`\n\n**⚠️ Warning:** Once executed, there\'s no turning back! `)
+                        .setContent(`## ⚔️ **EXECUTION REQUIREMENTS**\n\n**🆔 Raid ID:** Find this in your active raids (\`${prefix}raid\`)\n**👑 Authority:** Only the raid planner can execute\n**👥 Party Status:** All party members must be recruited\n**⏰ Timing:** Execute when the party is ready\n\n**Example:** \`${prefix}executeraid ABC123\`\n\n**⚠️ Warning:** Once executed, there's no turning back! `)
                 );
 
                 components.push(instructionsContainer);
@@ -57,7 +62,7 @@ module.exports = {
 
                 notFoundContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🚫 Raid Expedition Not Found\n## INVALID EXPEDITION ID\n\n> Raid ID **\`${raidId}\`** doesn\'t exist or has been completed!\n> Verify the raid identifier and try again.`)
+                        .setContent(`# 🚫 Raid Expedition Not Found\n## INVALID EXPEDITION ID\n\n> Raid ID **\`${raidId}\`** doesn't exist or has been completed!\n> Verify the raid identifier and try again.`)
                 );
 
                 components.push(notFoundContainer);
@@ -69,7 +74,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🔍 **FIND YOUR ACTIVE RAIDS**\n\n**Check Status:** Use \`!raid\` to see your active expeditions\n**Verify ID:** Copy the exact raid ID from your active list\n**Case Sensitive:** Raid IDs must match exactly\n\n**💡 Alternatives:**\n> • Check if the raid has already been executed\n> • Verify you\'re in the correct server\n> • Plan a new raid with \`!planraid\``)
+                        .setContent(`## 🔍 **FIND YOUR ACTIVE RAIDS**\n\n**Check Status:** Use \`${prefix}raid\` to see your active expeditions\n**Verify ID:** Copy the exact raid ID from your active list\n**Case Sensitive:** Raid IDs must match exactly\n\n**💡 Alternatives:**\n> • Check if the raid has already been executed\n> • Verify you're in the correct server\n> • Plan a new raid with \`${prefix}planraid\``)
                 );
 
                 components.push(helpContainer);

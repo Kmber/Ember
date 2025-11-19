@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { ROLES } = require('../../models/economy/constants/gameData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'buyrole',
     aliases: ['role-buy'],
     description: 'Purchase premium roles with special benefits using Embers (v2 components)',
-    usage: '!buyrole <role_id>',
+    usage: 'buyrole <role_id>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+
             if (!args[0]) {
       
                 const components = [];
@@ -78,7 +83,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **HOW TO PURCHASE**\n\n**Command:** \`!buyrole <role_id>\`\n**Example:** \`!buyrole premium_member\`\n\n**💡 Benefits:**\n> • Enhanced work earnings with multipliers\n> • Racing bonuses for competitive advantage\n> • Security boosts against robberies\n> • Exclusive status and recognition\n> • Automatic Discord role assignment`)
+                        .setContent(`## 🛒 **HOW TO PURCHASE**\n\n**Command:** \`${prefix}buyrole <role_id>\`\n**Example:** \`${prefix}buyrole premium_member\`\n\n**💡 Benefits:**\n> • Enhanced work earnings with multipliers\n> • Racing bonuses for competitive advantage\n> • Security boosts against robberies\n> • Exclusive status and recognition\n> • Automatic Discord role assignment`)
                 );
 
                 components.push(instructionsContainer);
@@ -100,7 +105,7 @@ module.exports = {
 
                 invalidRoleContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Role ID\n## ROLE NOT FOUND\n\n> **\`${roleId}\`** is not a valid role ID!\n> Use \`!buyrole\` to see all available premium roles with their correct IDs.`)
+                        .setContent(`# ❌ Invalid Role ID\n## ROLE NOT FOUND\n\n> **\`${roleId}\`** is not a valid role ID!\n> Use \`${prefix}buyrole\` to see all available premium roles with their correct IDs.`)
                 );
 
                 components.push(invalidRoleContainer);

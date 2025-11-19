@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 // Thematic outcomes for the ritual
 const RITUAL_OUTCOMES = {
@@ -28,6 +30,8 @@ module.exports = {
     cooldown: 86400, // 24 hours
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
 
             // Check cooldown for 'ritual'
@@ -56,7 +60,7 @@ module.exports = {
             if (profile.followers.length === 0) {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xE74C3C)
-                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# ⛪ No Congregation\n## A RITUAL REQUIRES FOLLOWERS\n\n> You have no followers to perform the dark ritual!\n\n**💡 Tip:** Use \`!addfollower\` to recruit cultists to your cause.`))
+                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# ⛪ No Congregation\n## A RITUAL REQUIRES FOLLOWERS\n\n> You have no followers to perform the dark ritual!\n\n**💡 Tip:** Use \`${prefix}addfollower\` to recruit cultists to your cause.`))
                 ];
                 return message.reply({ components, flags: MessageFlags.IsComponentsV2 });
             }
@@ -66,7 +70,7 @@ module.exports = {
             if (profile.wallet < ritualCost) {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xE74C3C)
-                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 💸 Insufficient Offerings\n## THE OLD ONES DEMAND A PRICE\n\n> You need **\`${ritualCost.toLocaleString()} Embers\`** for the ritual components!\n> **Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n> **Shortage:** \`${(ritualCost - profile.wallet).toLocaleString()} Embers\`),`)),
+                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 💸 Insufficient Offerings\n## THE OLD ONES DEMAND A PRICE\n\n> You need **\`${ritualCost.toLocaleString()} Embers\`** for the ritual components!\n> **Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n> **Shortage:** \`${(ritualCost - profile.wallet).toLocaleString()} Embers\``)),
                     new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
 
                     new ContainerBuilder().setAccentColor(0xF39C12)

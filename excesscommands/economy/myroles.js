@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'myroles',
@@ -13,6 +15,8 @@ module.exports = {
     description: 'View your purchased premium roles .',
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             const now = new Date();
@@ -44,7 +48,7 @@ module.exports = {
 
                 purchaseContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛒 **GET YOUR FIRST PREMIUM ROLE**\n\n**Step 1:** Use \`!buyrole\` to see available premium memberships\n**Step 2:** Choose a role that fits your budget and goals\n**Step 3:** Enjoy enhanced earnings and exclusive benefits\n**Step 4:** Stack multiple roles for maximum advantage!\n\n**💡 Benefits of Premium Roles:**\n> • Enhanced work earnings with multipliers\n> • Racing bonuses for competitive advantage\n> • Security boosts against robberies\n> • Follower bonuses for household management\n> • Exclusive status and recognition`)
+                        .setContent(`## 🛒 **GET YOUR FIRST PREMIUM ROLE**\n\n**Step 1:** Use \`${prefix}buyrole\` to see available premium memberships\n**Step 2:** Choose a role that fits your budget and goals\n**Step 3:** Enjoy enhanced earnings and exclusive benefits\n**Step 4:** Stack multiple roles for maximum advantage!\n\n**💡 Benefits of Premium Roles:**\n> • Enhanced work earnings with multipliers\n> • Racing bonuses for competitive advantage\n> • Security boosts against robberies\n> • Follower bonuses for household management\n> • Exclusive status and recognition`)
                 );
 
                 components.push(purchaseContainer);
@@ -178,7 +182,7 @@ module.exports = {
 
                 expiredContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🔄 Renewal:** Use \`!buyrole\` to purchase new memberships and restore your premium benefits!`)
+                        .setContent(`**🔄 Renewal:** Use \`${prefix}buyrole\` to purchase new memberships and restore your premium benefits!`)
                 );
 
                 components.push(expiredContainer);
@@ -211,7 +215,7 @@ module.exports = {
 
                 managementContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🛒 Expand Collection:** Use \`!buyrole\` to add more premium roles\n**📊 Monitor Benefits:** Your roles are actively boosting your earnings\n**💰 ROI Tracking:** Premium roles typically pay for themselves quickly\n**⏰ Renewal Planning:** Plan renewals before expiration to avoid benefit gaps`)
+                        .setContent(`**🛒 Expand Collection:** Use \`${prefix}buyrole\` to add more premium roles\n**📊 Monitor Benefits:** Your roles are actively boosting your earnings\n**💰 ROI Tracking:** Premium roles typically pay for themselves quickly\n**⏰ Renewal Planning:** Plan renewals before expiration to avoid benefit gaps`)
                 );
             } else {
                 managementContainer.addTextDisplayComponents(

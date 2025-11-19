@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'deposit',
@@ -13,6 +15,8 @@ module.exports = {
     description: 'Deposit Embers into your bank .',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const userId = message.author.id;
             const guildId = message.guild.id;
             const profile = await EconomyManager.getProfile(userId, guildId);
@@ -47,7 +51,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`!deposit 1000\`** - Deposit specific amount\n**\`!deposit all\`** - Deposit all available funds\n**\`!deposit max\`** - Deposit maximum possible\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Available Space:** \`${(bankLimit - profile.bank).toLocaleString()} Embers\``)
+                        .setContent(`## 💡 **USAGE EXAMPLES**\n\n**\`${prefix}deposit 1000\`** - Deposit specific amount\n**\`${prefix}deposit all\`** - Deposit all available funds\n**\`${prefix}deposit max\`** - Deposit maximum possible\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Available Space:** \`${(bankLimit - profile.bank).toLocaleString()} Embers\``)
                 );
 
                 components.push(usageContainer);
@@ -78,7 +82,7 @@ module.exports = {
 
                 balanceContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **WALLET BREAKDOWN**\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Attempted Deposit:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Tip:** Try \`!deposit all\` to deposit everything you have!`)
+                        .setContent(`## 💰 **WALLET BREAKDOWN**\n\n**Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Attempted Deposit:** \`${amount.toLocaleString()} Embers\`\n**Shortage:** \`${(amount - profile.wallet).toLocaleString()} Embers\`\n\n**💡 Tip:** Try \`${prefix}deposit all\` to deposit everything you have!`)
                 );
 
                 components.push(balanceContainer);
@@ -115,7 +119,7 @@ module.exports = {
 
                 limitDetailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💡 Solutions:**\n> • Try \`!deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your bank limit through properties or roles\n> • Use \`!deposit max\` for automatic maximum deposit`)
+                        .setContent(`**💡 Solutions:**\n> • Try \`${prefix}deposit ${maxDeposit}\` to fill remaining space\n> • Upgrade your bank limit through properties or roles\n> • Use \`${prefix}deposit max\` for automatic maximum deposit`)
                 );
 
                 components.push(limitDetailsContainer);
@@ -206,7 +210,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **BANKING BENEFITS**\n\n**🛡️ Security:** Embers in bank are safer from robberies\n**📈 Interest:** Banked Embers may earn passive income\n**🏠 Requirements:** Some purchases require banked funds\n**👥 Followers:** Separate from follower tithe for organization\n\n> Use \`!withdraw <amount>\` to take Embers out when needed!`)
+                    .setContent(`## 💡 **BANKING BENEFITS**\n\n**🛡️ Security:** Embers in bank are safer from robberies\n**📈 Interest:** Banked Embers may earn passive income\n**🏠 Requirements:** Some purchases require banked funds\n**👥 Followers:** Separate from follower tithe for organization\n\n> Use \`${prefix}withdraw <amount>\` to take Embers out when needed!`)
             );
 
             components.push(tipsContainer);

@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'balance',
@@ -13,6 +15,8 @@ module.exports = {
     description: 'Check your financial status .',
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             const totalWealth = profile.wallet + profile.bank + profile.followerTithe;

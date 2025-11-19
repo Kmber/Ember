@@ -5,6 +5,8 @@ const {
     SeparatorSpacingSize,
     MessageFlags
 } = require('discord.js');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'economy',
@@ -12,7 +14,8 @@ module.exports = {
     description: 'Complete guide to the SANCTYR economy system.',
     async execute(message) {
         try {
-            const serverPrefix = message.prefix || '!';
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             let currentPage = 0;
             const totalPages = 9;
 
@@ -43,7 +46,7 @@ module.exports = {
 
                         basicContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`${serverPrefix}balance\`** (*bal*, *embers*) - Check your Soul Embers & active effects\n**\`${serverPrefix}daily\`** - Claim daily Soul Embers with streak bonuses\n**\`${serverPrefix}weekly\`** (*week*) - Claim weekly mega Soul Ember rewards\n**\`${serverPrefix}work\`** - Toil for Soul Embers (1 hour cooldown)\n**\`${serverPrefix}beg\`** (*ask*, *plead*) - Plead for Soul Embers (10 min cooldown)`)
+                                .setContent(`**\`${prefix}balance\`** (*bal*, *embers*) - Check your Soul Embers & active effects\n**\`${prefix}daily\`** - Claim daily Soul Embers with streak bonuses\n**\`${prefix}weekly\`** (*week*) - Claim weekly mega Soul Ember rewards\n**\`${prefix}work\`** - Toil for Soul Embers (1 hour cooldown)\n**\`${prefix}beg\`** (*ask*, *plead*) - Plead for Soul Embers (10 min cooldown)`)
                         );
 
                         components.push(basicContainer);
@@ -60,7 +63,7 @@ module.exports = {
 
                         bankingContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`${serverPrefix}deposit\`** (*dep*) - Store Soul Embers safely in the vault\n**\`${serverPrefix}withdraw\`** (*with*) - Take Soul Embers from the vault\n**\`${serverPrefix}donate\`** (*give*, *transfer*) - Bestow your Embers to another soul\n**\`${serverPrefix}gamble\`** (*bet*) - Risk Soul Embers for twisted fortunes\n**\`${serverPrefix}rob\`** - Attempt to plunder another soul's Embers`)
+                                .setContent(`**\`${prefix}deposit\`** (*dep*) - Store Soul Embers safely in the vault\n**\`${prefix}withdraw\`** (*with*) - Take Soul Embers from the vault\n**\`${prefix}donate\`** (*give*, *transfer*) - Bestow your Embers to another soul\n**\`${prefix}gamble\`** (*bet*) - Risk Soul Embers for twisted fortunes\n**\`${prefix}rob\`** - Attempt to plunder another soul's Embers`)
                         );
 
                         components.push(bankingContainer);
@@ -77,7 +80,7 @@ module.exports = {
 
                         propertyContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`${serverPrefix}acquirecitadel\`** (*citadel-buy*) - Acquire a citadel for your followers\n**\`${serverPrefix}mycitadel\`** (*citadel-info*) - View your citadel and its inhabitants\n**\`${serverPrefix}addfollower\`** (*follower-add*) - Bind a follower to your citadel`)
+                                .setContent(`**\`${prefix}acquirecitadel\`** (*citadel-buy*) - Acquire a citadel for your followers\n**\`${prefix}mycitadel\`** (*citadel-info*) - View your citadel and its inhabitants\n**\`${prefix}addfollower\`** (*follower-add*) - Bind a follower to your citadel`)
                         );
 
                         components.push(propertyContainer);
@@ -94,7 +97,7 @@ module.exports = {
 
                         vehicleContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**\`${serverPrefix}summon\`** (*beast-summon*) - Summon beasts for races and combat\n**\`${serverPrefix}bestiary\`** (*beasts*) - Manage your collection of beasts\n**\`${serverPrefix}beastrace\`** - Race your beasts for Ember prizes`)
+                                .setContent(`**\`${prefix}summon\`** (*beast-summon*) - Summon beasts for races and combat\n**\`${prefix}bestiary\`** (*beasts*) - Manage your collection of beasts\n**\`${prefix}beastrace\`** - Race your beasts for Ember prizes`)
                         );
 
                         components.push(vehicleContainer);
@@ -384,228 +387,228 @@ module.exports = {
                         const premiumContainer = new ContainerBuilder()
                             .setAccentColor(0x483D8B);
 
-                        premiumContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`## 💎 **ELITE GUILDS**\n\n**NECROMANCER COVEN** - \`200,000 Embers\`\n> • Daily Tribute: 400-1,000 Embers per level\n> • Max Level: 10 • Acolytes: 10\n> • Sell minions to players, undead bonuses\n\n**DARK WARRIORS CLAN** - \`150,000 Embers\`\n> • Daily Tribute: 250-700 Embers per level\n> • Max Level: 10 • Acolytes: 25\n> • Lucrative contracts, mercenary services\n\n**ILLUMINATI CABAL** - \`500,000 Embers\`\n> • Daily Tribute: 0-3,000 Embers per level (very volatile)\n> • Max Level: 10 • Acolytes: 30\n> • Ultimate high-risk guild, Ember laundering`)
-                        );
-
-                        components.push(premiumContainer);
-                        break;
-
-                    case 7: // Page 8: Raid System
-                        const heistHeader = new ContainerBuilder()
-                            .setAccentColor(0xA52A2A);
-
-                        heistHeader.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`# 🎯 RAID SYSTEM - TEAM-BASED ASSAULTS\n## PLAN & EXECUTE RAIDS ON DARK FORTRESSES\n\n> **Page 8 of 9** | Master the art of the raid\n> High risk operations with massive spoils - requires teamwork`)
-                        );
-
-                        components.push(heistHeader);
-                        components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-                        // Raid Targets
-                        const targetsContainer = new ContainerBuilder()
-                            .setAccentColor(0xDC143C);
-
-                        targetsContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent('## 🎯 **RAID TARGETS & SPOILS**')
-                        );
-
-                        targetsContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`**GOBLIN ENCAMPMENT** - Easy (75% success)\n> • Spoils: 50,000-150,000 Embers • Members: 3\n> • Gear: Weapons, getaway beasts\n\n**HAUNTED CRYPT** - Medium (60% success)\n> • Spoils: 100,000-400,000 Embers • Members: 3\n> • Gear: Warding charms, lockpicks, beasts\n\n**DRAGON'S LAIR** - Hard (25% success)\n> • Spoils: 800,000-2,000,000 Embers • Members: 5\n> • Gear: Dragonfire wards, climbing tools\n\n**LICH'S SANCTUM** - Ultimate (15% success)\n> • Spoils: 2,000,000-5,000,000 Embers • Members: 6\n> • Gear: Soul-forged weapons, EMP, explosives`)
-                        );
-
-                        components.push(targetsContainer);
-                        components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-                        // Raid Roles
-                        const rolesContainer = new ContainerBuilder()
-                            .setAccentColor(0x483D8B);
-
-                        rolesContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`## 👥 **RAID ROLES & RESPONSIBILITIES**\n\n**WARLORD** (Required)\n> • Plans the raid, gets 1.5x spoil share\n> • Must own gear and recruit warband\n\n**SORCERER** (Magic raids)\n> • Bypasses magical wards, 1.3x spoils\n> • Requires high raid skill level\n\n**ROGUE** (Vault raids)\n> • Opens locks and chests, 1.2x spoils\n> • Specialized role for sanctums\n\n**BERSERKER/RANGER/SENTINEL** (Support)\n> • Essential support roles, 1.0x spoils\n> • Lower skill requirements`)
-                        );
-
-                        components.push(rolesContainer);
-                        break;
-
-                    case 8: // Page 9: Pro Strategies
-                        const proHeader = new ContainerBuilder()
-                            .setAccentColor(0xFFD700);
-
-                        proHeader.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`# 💡 DARK LORD STRATEGIES & MASTER TIPS\n## ELITE STRATEGIES FOR TOTAL ECONOMIC DOMINATION\n\n> **Page 9 of 9** | Become the server's most powerful soul\n> Master these strategies to build an unstoppable shadow empire`)
-                        );
-
-                        components.push(proHeader);
-                        components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-                        // Early Game Mastery
-                        const earlyGameContainer = new ContainerBuilder()
-                            .setAccentColor(0x2E8B57);
-
-                        earlyGameContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent('## 🚀 **EARLY GAME MASTERY** (Levels 1-10)')
-                        );
-
-                        earlyGameContainer.addTextDisplayComponents(
-                            new TextDisplayBuilder()
-                                .setContent(`**Week 1: Foundation**\n1. Claim daily tithes religiously (build streaks)\n2. Toil every hour possible\n3. Save 50,000 Embers for a Crypt + Thieves Guild\n4. Immediately bind an Acolyte (highest income)\n5. Summon an Imp for basic warding (500 Embers)\n\n**Week 2-3: Guild Scaling**\n6. Upgrade Thieves Guild to level 3-4\n7. Hire 5-10 acolytes for the guild\n8. Save for Fortified Manor upgrade\n9. Add a Mercenary as 2nd follower\n10. Collect guild tribute daily`)
-                        );
-
-                        components.push(earlyGameContainer);
-                        components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-
-                                             // Mid Game Tactics
-                                             const midGameContainer = new ContainerBuilder()
-                                             .setAccentColor(0xDAA520);
-                 
-                                         midGameContainer.addTextDisplayComponents(
-                                             new TextDisplayBuilder()
-                                                 .setContent(`## 💎 **MID GAME TACTICS** (Levels 10-25)\n\n**Month 2: Empire Expansion**\n1. Own a Thieves Guild + Assassins Guild\n2. Save 300,000 Embers for a Shadow Keep\n3. Fill all 5 follower slots\n4. Bestow Dark Gifts to boost loyalty to 80%+\n5. Plan first Goblin Encampment raid (easy Embers)\n\n**Tribute Targets Per Week:**\n> • Guild Tribute: 20,000-40,000 Embers\n> • Toil + Followers: 15,000-25,000 Embers\n> • Raid Spoils: 50,000-200,000 Embers\n> • **Total: 85,000-265,000 Embers weekly tribute**`)
-                                         );
-                 
-                                         components.push(midGameContainer);
-                                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-                 
-                                         // The 12 Dark Oaths
-                                         const commandmentsContainer = new ContainerBuilder()
-                                             .setAccentColor(0xDC143C);
-                 
-                                         commandmentsContainer.addTextDisplayComponents(
-                                             new TextDisplayBuilder()
-                                                 .setContent(`## ⚠️ **THE 12 DARK OATHS OF POWER**\n\n1. **NEVER** attempt raids without full gear\n2. **ALWAYS** inspect your warband's raid skills\n3. **NEVER** plan raids during high alert periods\n4. **ALWAYS** collect guild tribute daily\n5. **NEVER** gamble without forbidden luck\n6. **ALWAYS** tend to your minions every 2-3 days\n7. **NEVER** keep more than 25% of your Embers in your wallet\n8. **ALWAYS** upgrade guilds before acquiring new ones\n9. **NEVER** race with beasts below 70% health\n10. **ALWAYS** recruit experienced raid members\n11. **NEVER** attempt a Lich's Sanctum with <80 raid skill\n12. **ALWAYS** diversify tribute: guilds + followers + raids`)
-                                         );
-                 
-                                         components.push(commandmentsContainer);
-                                         break;
-                 
-                                     default:
-                                         components.push(new ContainerBuilder().setAccentColor(0xFF0000)
-                                             .addTextDisplayComponents(new TextDisplayBuilder().setContent('Page not found')));
-                                 }
-                 
-                                 return components;
-                             };
-                 
-                             const createNavigationButtons = () => {
-                                 const navContainer = new ContainerBuilder()
-                                     .setAccentColor(0x696969);
-                 
-                                 const navText = `## 📖 **NAVIGATION**\n\n**Current Page:** ${currentPage + 1} of ${totalPages}\n\n**📚 Guide Sections:**\n> 1. Command Overview • 2. Basic Economy • 3. Citadel System\n> 4. Followers & Minions • 5. Black Market & Effects • 6. Beasts & Minions\n> 7. Guild Empire • 8. Raid System • 9. Dark Lord Strategies\n\n**⏰ This guide expires in 10 minutes**`;
-                 
-                                 if (currentPage > 0) {
-                                     navContainer.addTextDisplayComponents(
-                                         new TextDisplayBuilder().setContent(`${navText}\n\n**◀️ Previous:** Page ${currentPage}`)
-                                     );
-                                 } else if (currentPage < totalPages - 1) {
-                                     navContainer.addTextDisplayComponents(
-                                         new TextDisplayBuilder().setContent(`${navText}\n\n**▶️ Next:** Page ${currentPage + 2}`)
-                                     );
-                                 } else {
-                                     navContainer.addTextDisplayComponents(
-                                         new TextDisplayBuilder().setContent(navText)
-                                     );
-                                 }
-                 
-                                 return navContainer;
-                             };
-                 
-                             const sendPage = async (isEdit = false) => {
-                                 const components = createPage(currentPage);
-                                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
-                                 components.push(createNavigationButtons());
-                 
-                                 const messageData = {
-                                     components: components,
-                                     flags: MessageFlags.IsComponentsV2
+                            premiumContainer.addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent(`## 💎 **ELITE GUILDS**\n\n**NECROMANCER COVEN** - \`200,000 Embers\`\n> • Daily Tribute: 400-1,000 Embers per level\n> • Max Level: 10 • Acolytes: 10\n> • Sell minions to players, undead bonuses\n\n**DARK WARRIORS CLAN** - \`150,000 Embers\`\n> • Daily Tribute: 250-700 Embers per level\n> • Max Level: 10 • Acolytes: 25\n> • Lucrative contracts, mercenary services\n\n**ILLUMINATI CABAL** - \`500,000 Embers\`\n> • Daily Tribute: 0-3,000 Embers per level (very volatile)\n> • Max Level: 10 • Acolytes: 30\n> • Ultimate high-risk guild, Ember laundering`)
+                            );
+    
+                            components.push(premiumContainer);
+                            break;
+    
+                        case 7: // Page 8: Raid System
+                            const heistHeader = new ContainerBuilder()
+                                .setAccentColor(0xA52A2A);
+    
+                            heistHeader.addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent(`# 🎯 RAID SYSTEM - TEAM-BASED ASSAULTS\n## PLAN & EXECUTE RAIDS ON DARK FORTRESSES\n\n> **Page 8 of 9** | Master the art of the raid\n> High risk operations with massive spoils - requires teamwork`)
+                            );
+    
+                            components.push(heistHeader);
+                            components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+    
+                            // Raid Targets
+                            const targetsContainer = new ContainerBuilder()
+                                .setAccentColor(0xDC143C);
+    
+                            targetsContainer.addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent('## 🎯 **RAID TARGETS & SPOILS**')
+                            );
+    
+                            targetsContainer.addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent(`**GOBLIN ENCAMPMENT** - Easy (75% success)\n> • Spoils: 50,000-150,000 Embers • Members: 3\n> • Gear: Weapons, getaway beasts\n\n**HAUNTED CRYPT** - Medium (60% success)\n> • Spoils: 100,000-400,000 Embers • Members: 3\n> • Gear: Warding charms, lockpicks, beasts\n\n**DRAGON'S LAIR** - Hard (25% success)\n> • Spoils: 800,000-2,000,000 Embers • Members: 5\n> • Gear: Dragonfire wards, climbing tools\n\n**LICH'S SANCTUM** - Ultimate (15% success)\n> • Spoils: 2,000,000-5,000,000 Embers • Members: 6\n> • Gear: Soul-forged weapons, EMP, explosives`)
+                            );
+    
+                            components.push(targetsContainer);
+                            components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+    
+                            // Raid Roles
+                            const rolesContainer = new ContainerBuilder()
+                                .setAccentColor(0x483D8B);
+    
+                            rolesContainer.addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent(`## 👥 **RAID ROLES & RESPONSIBILITIES**\n\n**WARLORD** (Required)\n> • Plans the raid, gets 1.5x spoil share\n> • Must own gear and recruit warband\n\n**SORCERER** (Magic raids)\n> • Bypasses magical wards, 1.3x spoils\n> • Requires high raid skill level\n\n**ROGUE** (Vault raids)\n> • Opens locks and chests, 1.2x spoils\n> • Specialized role for sanctums\n\n**BERSERKER/RANGER/SENTINEL** (Support)\n> • Essential support roles, 1.0x spoils\n> • Lower skill requirements`)
+                            );
+    
+                            components.push(rolesContainer);
+                            break;
+    
+                        case 8: // Page 9: Pro Strategies
+                            const proHeader = new ContainerBuilder()
+                                .setAccentColor(0xFFD700);
+    
+                            proHeader.addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent(`# 💡 DARK LORD STRATEGIES & MASTER TIPS\n## ELITE STRATEGIES FOR TOTAL ECONOMIC DOMINATION\n\n> **Page 9 of 9** | Become the server's most powerful soul\n> Master these strategies to build an unstoppable shadow empire`)
+                            );
+    
+                            components.push(proHeader);
+                            components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+    
+                            // Early Game Mastery
+                            const earlyGameContainer = new ContainerBuilder()
+                                .setAccentColor(0x2E8B57);
+    
+                            earlyGameContainer.addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent('## 🚀 **EARLY GAME MASTERY** (Levels 1-10)')
+                            );
+    
+                            earlyGameContainer.addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent(`**Week 1: Foundation**\n1. Claim daily tithes religiously (build streaks)\n2. Toil every hour possible\n3. Save 50,000 Embers for a Crypt + Thieves Guild\n4. Immediately bind an Acolyte (highest income)\n5. Summon an Imp for basic warding (500 Embers)\n\n**Week 2-3: Guild Scaling**\n6. Upgrade Thieves Guild to level 3-4\n7. Hire 5-10 acolytes for the guild\n8. Save for Fortified Manor upgrade\n9. Add a Mercenary as 2nd follower\n10. Collect guild tribute daily`)
+                            );
+    
+                            components.push(earlyGameContainer);
+                            components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+    
+                                                 // Mid Game Tactics
+                                                 const midGameContainer = new ContainerBuilder()
+                                                 .setAccentColor(0xDAA520);
+                     
+                                             midGameContainer.addTextDisplayComponents(
+                                                 new TextDisplayBuilder()
+                                                     .setContent(`## 💎 **MID GAME TACTICS** (Levels 10-25)\n\n**Month 2: Empire Expansion**\n1. Own a Thieves Guild + Assassins Guild\n2. Save 300,000 Embers for a Shadow Keep\n3. Fill all 5 follower slots\n4. Bestow Dark Gifts to boost loyalty to 80%+\n5. Plan first Goblin Encampment raid (easy Embers)\n\n**Tribute Targets Per Week:**\n> • Guild Tribute: 20,000-40,000 Embers\n> • Toil + Followers: 15,000-25,000 Embers\n> • Raid Spoils: 50,000-200,000 Embers\n> • **Total: 85,000-265,000 Embers weekly tribute**`)
+                                             );
+                     
+                                             components.push(midGameContainer);
+                                             components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+                     
+                                             // The 12 Dark Oaths
+                                             const commandmentsContainer = new ContainerBuilder()
+                                                 .setAccentColor(0xDC143C);
+                     
+                                             commandmentsContainer.addTextDisplayComponents(
+                                                 new TextDisplayBuilder()
+                                                     .setContent(`## ⚠️ **THE 12 DARK OATHS OF POWER**\n\n1. **NEVER** attempt raids without full gear\n2. **ALWAYS** inspect your warband's raid skills\n3. **NEVER** plan raids during high alert periods\n4. **ALWAYS** collect guild tribute daily\n5. **NEVER** gamble without forbidden luck\n6. **ALWAYS** tend to your minions every 2-3 days\n7. **NEVER** keep more than 25% of your Embers in your wallet\n8. **ALWAYS** upgrade guilds before acquiring new ones\n9. **NEVER** race with beasts below 70% health\n10. **ALWAYS** recruit experienced raid members\n11. **NEVER** attempt a Lich's Sanctum with <80 raid skill\n12. **ALWAYS** diversify tribute: guilds + followers + raids`)
+                                             );
+                     
+                                             components.push(commandmentsContainer);
+                                             break;
+                     
+                                         default:
+                                             components.push(new ContainerBuilder().setAccentColor(0xFF0000)
+                                                 .addTextDisplayComponents(new TextDisplayBuilder().setContent('Page not found')));
+                                     }
+                     
+                                     return components;
                                  };
-                 
-                                 if (isEdit) {
-                                     return msg.edit(messageData);
-                                 } else {
-                                     return message.reply(messageData);
-                                 }
-                             };
-                 
-                 
-                             const msg = await sendPage();
-                 
-                 
-                             await msg.react('◀️');
-                             await msg.react('▶️');
-                             await msg.react('❌');
-                 
-                             const reactionCollector = msg.createReactionCollector({
-                                 filter: (reaction, user) => {
-                                     return ['◀️', '▶️', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
-                                 },
-                                 time: 600000
-                             });
-                 
-                             reactionCollector.on('collect', async (reaction, user) => {
-                                 await reaction.users.remove(user.id);
-                 
-                                 switch (reaction.emoji.name) {
-                                     case '◀️':
-                                         if (currentPage > 0) {
-                                             currentPage--;
-                                             await sendPage(true);
-                                         }
-                                         break;
-                                     case '▶️':
-                                         if (currentPage < totalPages - 1) {
-                                             currentPage++;
-                                             await sendPage(true);
-                                         }
-                                         break;
-                                     case '❌':
-                                         const closedComponents = [];
-                                         const closedContainer = new ContainerBuilder()
-                                             .setAccentColor(0x696969);
-                 
-                                         closedContainer.addTextDisplayComponents(
-                                             new TextDisplayBuilder()
-                                                 .setContent(`\# 📚 SANCTYR Economy Guide Closed\n## MAY YOUR EMBERS NEVER FADE\n\n> The guide has been closed. Use \`${serverPrefix}economy\` to reopen it.`)
+                     
+                                 const createNavigationButtons = () => {
+                                     const navContainer = new ContainerBuilder()
+                                         .setAccentColor(0x696969);
+                     
+                                     const navText = `## 📖 **NAVIGATION**\n\n**Current Page:** ${currentPage + 1} of ${totalPages}\n\n**📚 Guide Sections:**\n> 1. Command Overview • 2. Basic Economy • 3. Citadel System\n> 4. Followers & Minions • 5. Black Market & Effects • 6. Beasts & Minions\n> 7. Guild Empire • 8. Raid System • 9. Dark Lord Strategies\n\n**⏰ This guide expires in 10 minutes**`;
+                     
+                                     if (currentPage > 0) {
+                                         navContainer.addTextDisplayComponents(
+                                             new TextDisplayBuilder().setContent(`${navText}\n\n**◀️ Previous:** Page ${currentPage}`)
                                          );
-                 
-                                         closedComponents.push(closedContainer);
-                 
-                                         await msg.edit({
-                                             components: closedComponents,
-                                             flags: MessageFlags.IsComponentsV2
-                                         });
-                                         reactionCollector.stop();
-                                         break;
-                                 }
-                             });
-                 
-                             reactionCollector.on('end', () => {
-                                 msg.reactions.removeAll().catch(() => {});
-                             });
-                 
-                         } catch (error) {
-                             console.error('Error in economy command:', error);
-                 
-                             const errorContainer = new ContainerBuilder()
-                                 .setAccentColor(0xFF0000);
-                 
-                             errorContainer.addTextDisplayComponents(
-                                 new TextDisplayBuilder()
-                                     .setContent('## ❌ **ECONOMY GUIDE ERROR**\n\nSomething went wrong while loading the economy guide. Please try again in a moment.')
-                             );
-                 
-                             return message.reply({
-                                 components: [errorContainer],
-                                 flags: MessageFlags.IsComponentsV2
-                             });
+                                     } else if (currentPage < totalPages - 1) {
+                                         navContainer.addTextDisplayComponents(
+                                             new TextDisplayBuilder().setContent(`${navText}\n\n**▶️ Next:** Page ${currentPage + 2}`)
+                                         );
+                                     } else {
+                                         navContainer.addTextDisplayComponents(
+                                             new TextDisplayBuilder().setContent(navText)
+                                         );
+                                     }
+                     
+                                     return navContainer;
+                                 };
+                     
+                                 const sendPage = async (isEdit = false) => {
+                                     const components = createPage(currentPage);
+                                     components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
+                                     components.push(createNavigationButtons());
+                     
+                                     const messageData = {
+                                         components: components,
+                                         flags: MessageFlags.IsComponentsV2
+                                     };
+                     
+                                     if (isEdit) {
+                                         return msg.edit(messageData);
+                                     } else {
+                                         return message.reply(messageData);
+                                     }
+                                 };
+                     
+                     
+                                 const msg = await sendPage();
+                     
+                     
+                                 await msg.react('◀️');
+                                 await msg.react('▶️');
+                                 await msg.react('❌');
+                     
+                                 const reactionCollector = msg.createReactionCollector({
+                                     filter: (reaction, user) => {
+                                         return ['◀️', '▶️', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
+                                     },
+                                     time: 600000
+                                 });
+                     
+                                 reactionCollector.on('collect', async (reaction, user) => {
+                                     await reaction.users.remove(user.id);
+                     
+                                     switch (reaction.emoji.name) {
+                                         case '◀️':
+                                             if (currentPage > 0) {
+                                                 currentPage--;
+                                                 await sendPage(true);
+                                             }
+                                             break;
+                                         case '▶️':
+                                             if (currentPage < totalPages - 1) {
+                                                 currentPage++;
+                                                 await sendPage(true);
+                                             }
+                                             break;
+                                         case '❌':
+                                             const closedComponents = [];
+                                             const closedContainer = new ContainerBuilder()
+                                                 .setAccentColor(0x696969);
+                     
+                                             closedContainer.addTextDisplayComponents(
+                                                 new TextDisplayBuilder()
+                                                     .setContent(`\# 📚 SANCTYR Economy Guide Closed\n## MAY YOUR EMBERS NEVER FADE\n\n> The guide has been closed. Use \`${prefix}economy\` to reopen it.`)
+                                             );
+                     
+                                             closedComponents.push(closedContainer);
+                     
+                                             await msg.edit({
+                                                 components: closedComponents,
+                                                 flags: MessageFlags.IsComponentsV2
+                                             });
+                                             reactionCollector.stop();
+                                             break;
+                                     }
+                                 });
+                     
+                                 reactionCollector.on('end', () => {
+                                     msg.reactions.removeAll().catch(() => {});
+                                 });
+                     
+                             } catch (error) {
+                                 console.error('Error in economy command:', error);
+                     
+                                 const errorContainer = new ContainerBuilder()
+                                     .setAccentColor(0xFF0000);
+                     
+                                 errorContainer.addTextDisplayComponents(
+                                     new TextDisplayBuilder()
+                                         .setContent('## ❌ **ECONOMY GUIDE ERROR**\n\nSomething went wrong while loading the economy guide. Please try again in a moment.')
+                                 );
+                     
+                                 return message.reply({
+                                     components: [errorContainer],
+                                     flags: MessageFlags.IsComponentsV2
+                                 });
+                             }
                          }
-                     }
-                 };
-                 
+                     };
+    

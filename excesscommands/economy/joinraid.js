@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager, Raid } = require('../../models/economy/economy');
 const { RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'joinraid',
     aliases: ['raid-join'],
     description: 'Join a planned raid .',
-    usage: '!joinraid <raid_id> <class>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+            this.usage = `${prefix}joinraid <raid_id> <class>`;
+
             if (!args[0]) {
                 const components = [];
 
@@ -23,7 +28,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🤝 Join Raid Party\n## MISSING REQUIRED INFORMATION\n\n> Please specify the raid ID and your desired class!\n> **Usage:** \`!joinraid <raid_id> <class>\``)
+                        .setContent(`# 🤝 Join Raid Party\n## MISSING REQUIRED INFORMATION\n\n> Please specify the raid ID and your desired class!\n> **Usage:** \`${prefix}joinraid <raid_id> <class>\``)
                 );
 
                 components.push(usageContainer);
@@ -45,7 +50,7 @@ module.exports = {
 
                 classesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Examples:**\n> \`!joinraid ABC123 warrior\`\n> \`!joinraid DEF456 mage\`\n\n**💡 Tip:** Choose a class that matches your skills and the raid requirements!`)
+                        .setContent(`**Examples:**\n> \`${prefix}joinraid ABC123 warrior\`\n> \`${prefix}joinraid DEF456 mage\`\n\n**💡 Tip:** Choose a class that matches your skills and the raid requirements!`)
                 );
 
                 components.push(classesContainer);
@@ -79,7 +84,7 @@ module.exports = {
 
                 validClassesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚔️ **VALID ADVENTURER CLASSES**\n\n**🛡️ \`warrior\`** - Melee combat specialist\n**🧙 \`mage\`** - Master of arcane arts\n**🏹 \`ranger\`** - Expert tracker and archer\n**⛪ \`cleric\`** - Divine healer and protector\n**⚔️ \`paladin\`** - Holy knight of justice\n**🔪 \`thief\`** - Stealth and lockpicking expert\n\n**💡 Try:** \`!joinraid ${raidId} warrior\``)
+                        .setContent(`## ⚔️ **VALID ADVENTURER CLASSES**\n\n**🛡️ \`warrior\`** - Melee combat specialist\n**🧙 \`mage\`** - Master of arcane arts\n**🏹 \`ranger\`** - Expert tracker and archer\n**⛪ \`cleric\`** - Divine healer and protector\n**⚔️ \`paladin\`** - Holy knight of justice\n**🔪 \`thief\`** - Stealth and lockpicking expert\n\n**💡 Try:** \`${prefix}joinraid ${raidId} warrior\``)
                 );
 
                 components.push(validClassesContainer);
@@ -111,7 +116,7 @@ module.exports = {
 
                 helpContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🔍 **FIND ACTIVE RAIDS**\n\n**Check Available Raids:** Use \`!raid\` to see your active expeditions\n**Browse All Raids:** Look for raids in recruiting status\n**Plan New Raid:** Use \`!planraid\` to start your own expedition\n\n**💡 Tip:** Raid IDs are case-sensitive - copy them exactly!`)
+                        .setContent(`## 🔍 **FIND ACTIVE RAIDS**\n\n**Check Available Raids:** Use \`${prefix}raid\` to see your active expeditions\n**Browse All Raids:** Look for raids in recruiting status\n**Plan New Raid:** Use \`${prefix}planraid\` to start your own expedition\n\n**💡 Tip:** Raid IDs are case-sensitive - copy them exactly!`)
                 );
 
                 components.push(helpContainer);
@@ -163,7 +168,7 @@ module.exports = {
 
                 statusContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📊 **RAID STATUS DETAILS**\n\n${statusMessage}\n\n**💡 Alternative:** Use \`!planraid\` to organize your own adventuring party!`)
+                        .setContent(`## 📊 **RAID STATUS DETAILS**\n\n${statusMessage}\n\n**💡 Alternative:** Use \`${prefix}planraid\` to organize your own adventuring party!`)
                 );
 
                 components.push(statusContainer);
@@ -232,7 +237,7 @@ module.exports = {
 
                 statusContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚔️ **YOUR RAID STATUS**\n\n**Dungeon:** \`${raid.dungeonName}\`\n**Class:** \`${currentClass}\`\n**Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**Expected Share:** \`${Math.floor(raid.potential_reward / raid.requiredMembers).toLocaleString()} Embers\`\n\n**💡 Next Steps:** Use \`!raid\` to check when the expedition is ready to begin!`)
+                        .setContent(`## ⚔️ **YOUR RAID STATUS**\n\n**Dungeon:** \`${raid.dungeonName}\`\n**Class:** \`${currentClass}\`\n**Party Status:** \`${raid.members.length}/${raid.requiredMembers} members\`\n**Expected Share:** \`${Math.floor(raid.potential_reward / raid.requiredMembers).toLocaleString()} Embers\`\n\n**💡 Next Steps:** Use \`${prefix}raid\` to check when the expedition is ready to begin!`)
                 );
 
                 components.push(statusContainer);
@@ -270,7 +275,7 @@ module.exports = {
                 if (availableClasses.length > 0) {
                     availableClassesContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## ⚔️ **AVAILABLE CLASSES**\n\n${availableClasses.map(r => `**${r.charAt(0).toUpperCase() + r.slice(1)}** - \`!joinraid ${raidId} ${r}\``).join('\n')}\n\n**💡 Quick Join:** Choose an available class to secure your spot!`)
+                            .setContent(`## ⚔️ **AVAILABLE CLASSES**\n\n${availableClasses.map(r => `**${r.charAt(0).toUpperCase() + r.slice(1)}** - \`${prefix}joinraid ${raidId} ${r}\``).join('\n')}\n\n**💡 Quick Join:** Choose an available class to secure your spot!`)
                     );
                 } else {
                     availableClassesContainer.addTextDisplayComponents(
@@ -352,7 +357,7 @@ module.exports = {
 
                 partyRosterContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🛡️ **CURRENT PARTY ROSTER**\n\n${currentParty}\n\n**💡 Alternatives:**\n> • Look for other raids that are recruiting\n> • Use \`!planraid\` to organize your own expedition\n> • Wait for new raids to be planned`)
+                        .setContent(`## 🛡️ **CURRENT PARTY ROSTER**\n\n${currentParty}\n\n**💡 Alternatives:**\n> • Look for other raids that are recruiting\n> • Use \`${prefix}planraid\` to organize your own expedition\n> • Wait for new raids to be planned`)
                 );
 
                 components.push(partyRosterContainer);
@@ -464,12 +469,12 @@ module.exports = {
             if (raid.status === 'ready' && !wasReady) {
                 nextStepsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚨 **PARTY COMPLETE - READY FOR ADVENTURE!**\n\n**⚔️ Mission Status:** READY TO EMBARK\n**⚡ Next Step:** Use \`!executeraid ${raidId}\` to begin the expedition\n**⏰ Timing:** Strike when the omens are good\n**🎲 Success Depends On:** Party coordination and skill\n\n> **ALERT:** Your party is assembled and ready for the dungeon! `)
+                        .setContent(`## 🚨 **PARTY COMPLETE - READY FOR ADVENTURE!**\n\n**⚔️ Mission Status:** READY TO EMBARK\n**⚡ Next Step:** Use \`${prefix}executeraid ${raidId}\` to begin the expedition\n**⏰ Timing:** Strike when the omens are good\n**🎲 Success Depends On:** Party coordination and skill\n\n> **ALERT:** Your party is assembled and ready for the dungeon! `)
                 );
             } else {
                 nextStepsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📋 **WHAT HAPPENS NEXT?**\n\n**⏳ Wait for Full Party:** ${raid.requiredMembers - raid.members.length} more adventurer${raid.requiredMembers - raid.members.length !== 1 ? 's' : ''} needed\n**📊 Check Status:** Use \`!raid\` to monitor progress\n**⚔️ Prepare:** Review your class abilities\n**💬 Coordinate:** Discuss strategy with your party\n\n> Patience is key - wait for the right moment to strike!`)
+                        .setContent(`## 📋 **WHAT HAPPENS NEXT?**\n\n**⏳ Wait for Full Party:** ${raid.requiredMembers - raid.members.length} more adventurer${raid.requiredMembers - raid.members.length !== 1 ? 's' : ''} needed\n**📊 Check Status:** Use \`${prefix}raid\` to monitor progress\n**⚔️ Prepare:** Review your class abilities\n**💬 Coordinate:** Discuss strategy with your party\n\n> Patience is key - wait for the right moment to strike!`)
                 );
             }
 
@@ -490,7 +495,7 @@ module.exports = {
 
                     readyNotificationContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ⚔️ RAID PARTY READY!\n## ${raid.dungeonName.toUpperCase()} PARTY ASSEMBLED\n\n> The raid party is now complete and ready for adventure!\n> **Execute Command:** \`!executeraid ${raidId}\`\n\n**⚠️ ATTENTION ALL PARTY MEMBERS:** The expedition can now begin!`)
+                            .setContent(`# ⚔️ RAID PARTY READY!\n## ${raid.dungeonName.toUpperCase()} PARTY ASSEMBLED\n\n> The raid party is now complete and ready for adventure!\n> **Execute Command:** \`${prefix}executeraid ${raidId}\`\n\n**⚠️ ATTENTION ALL PARTY MEMBERS:** The expedition can now begin!`)
                     );
 
                     notificationComponents.push(readyNotificationContainer);

@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { BEASTS } = require('../../models/economy/constants/gameData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'summon',
     aliases: ['beast-summon'],
     description: 'Summon a beast for racing and other activities .',
-    usage: '!summon <beast_id>',
+    usage: 'summon <beast_id>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+
             if (!args[0]) {
               
                 const components = [];
@@ -77,7 +82,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📜 **HOW TO SUMMON**\n\n**Command:** \`!summon <beast_id>\`\n**Example:** \`!summon shadow_panther\`\n\n**💡 Tips:**\n> • Higher stats = Better performance in activities\n> • Your first beast automatically becomes your active one\n> • Beasts are required for certain quests and races`)
+                        .setContent(`## 📜 **HOW TO SUMMON**\n\n**Command:** \`${prefix}summon <beast_id>\`\n**Example:** \`${prefix}summon shadow_panther\`\n\n**💡 Tips:**\n> • Higher stats = Better performance in activities\n> • Your first beast automatically becomes your active one\n> • Beasts are required for certain quests and races`)
                 );
 
                 components.push(instructionsContainer);
@@ -99,7 +104,7 @@ module.exports = {
 
                 invalidBeastContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Beast ID\n## CREATURE NOT FOUND\n\n> **\`${beastId}\`** is not a valid beast ID!\n> Use \`!summon\` to see all available beasts with their correct IDs.`)
+                        .setContent(`# ❌ Invalid Beast ID\n## CREATURE NOT FOUND\n\n> **\`${beastId}\`** is not a valid beast ID!\n> Use \`${prefix}summon\` to see all available beasts with their correct IDs.`)
                 );
 
                 components.push(invalidBeastContainer);
@@ -289,7 +294,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🎯 **WHAT'S NEXT?**\n\n**🏁 Racing:** Use \`!beastrace\` to compete and earn Embers\n**🛡️ Quests:** Take your beast on epic quests\n**🔧 Upkeep:** Keep your beast well-maintained for best performance\n**📊 Stats:** Check your beast collection and racing statistics\n\n> Your new beast opens up exciting gameplay opportunities!`)
+                    .setContent(`## 🎯 **WHAT'S NEXT?**\n\n**🏁 Racing:** Use \`${prefix}beastrace\` to compete and earn Embers\n**🛡️ Quests:** Take your beast on epic quests\n**🔧 Upkeep:** Keep your beast well-maintained for best performance\n**📊 Stats:** Check your beast collection and racing statistics\n\n> Your new beast opens up exciting gameplay opportunities!`)
             );
 
             components.push(tipsContainer);

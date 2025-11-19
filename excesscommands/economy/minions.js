@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'minions',
@@ -13,6 +15,8 @@ module.exports = {
     description: 'View your minion collection and their status .',
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             if (profile.minions.length === 0) {
@@ -35,7 +39,7 @@ module.exports = {
 
                 summoningContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🦇 **START YOUR MINION HORDE**\n\n**Step 1:** Use \`!buyminion\` to see available minions\n**Step 2:** Choose a minion that fits your budget and needs\n**Step 3:** Give your new servant a fearsome name\n**Step 4:** Care for them with sustenance, tending, and communing!\n\n**💡 Benefits:**\n> • Enhanced power against rivals\n> • Loyal servants for your citadel\n> • Property protection and dark surveillance\n> • Building a powerful dark army`)
+                        .setContent(`## 🦇 **START YOUR MINION HORDE**\n\n**Step 1:** Use \`${prefix}buyminion\` to see available minions\n**Step 2:** Choose a minion that fits your budget and needs\n**Step 3:** Give your new servant a fearsome name\n**Step 4:** Care for them with sustenance, tending, and communing!\n\n**💡 Benefits:**\n> • Enhanced power against rivals\n> • Loyal servants for your citadel\n> • Property protection and dark surveillance\n> • Building a powerful dark army`)
                 );
 
                 components.push(summoningContainer);
@@ -155,7 +159,7 @@ module.exports = {
 
             careContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🍽️ Sustenance:** \`!minioncare sustain <minion_number>\` - Increases energy and constitution\n**🛁 Tending:** \`!minioncare tend <minion_number>\` - Improves corruption and loyalty\n**🎾 Communing:** \`!minioncare commune <minion_number>\` - Boosts loyalty and bonding\n**🌟 All Care:** \`!minioncare all <minion_number>\` - Complete care package\n**💰 Care All Minions:** \`!minioncare all 0\` - Care for every minion at once`)
+                    .setContent(`**🍽️ Sustenance:** \`${prefix}minioncare sustain <minion_number>\` - Increases energy and constitution\n**🛁 Tending:** \`${prefix}minioncare tend <minion_number>\` - Improves corruption and loyalty\n**🎾 Communing:** \`${prefix}minioncare commune <minion_number>\` - Boosts loyalty and bonding\n**🌟 All Care:** \`${prefix}minioncare all <minion_number>\` - Complete care package\n**💰 Care All Minions:** \`${prefix}minioncare all 0\` - Care for every minion at once`)
             );
 
             careContainer.addTextDisplayComponents(

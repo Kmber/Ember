@@ -7,13 +7,17 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { SHOP_ITEMS } = require('../../models/economy/constants/gameData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'shop',
     description: 'Browse and buy special items and power-ups .',
-    usage: '!shop [buy <item_id>]',
+    usage: 'shop [buy <item_id>]',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             const cooldownCheck = EconomyManager.checkCooldown(profile, 'shop');
@@ -107,7 +111,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **HOW TO PURCHASE**\n\n**Command:** \`!shop buy <item_id>\`\n**Example:** \`!shop buy minion_sustenance\`\n**Cooldown:** \`10 seconds between purchases\`\n\n> Choose your items wisely! Each purchase has strategic benefits for your economy journey.`)
+                        .setContent(`## 💡 **HOW TO PURCHASE**\n\n**Command:** \`${prefix}shop buy <item_id>\`\n**Example:** \`${prefix}shop buy minion_sustenance\`\n**Cooldown:** \`10 seconds between purchases\`\n\n> Choose your items wisely! Each purchase has strategic benefits for your economy journey.`)
                 );
 
                 components.push(instructionsContainer);
@@ -130,7 +134,7 @@ module.exports = {
 
                     invalidItemContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Item ID\n## ITEM NOT FOUND\n\n> **\`${itemId}\`** is not a valid item ID!\n> Use \`!shop\` to see all available items with their correct IDs.`)
+                            .setContent(`# ❌ Invalid Item ID\n## ITEM NOT FOUND\n\n> **\`${itemId}\`** is not a valid item ID!\n> Use \`${prefix}shop\` to see all available items with their correct IDs.`)
                     );
 
                     components.push(invalidItemContainer);
@@ -355,7 +359,7 @@ module.exports = {
 
                 tipsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **SHOPPING TIPS**\n\n**⏰ Cooldown:** Wait 10 seconds before your next purchase\n**🎯 Strategy:** Plan purchases based on your current needs\n**💰 Budget:** Monitor your wallet balance for smart shopping\n**📈 Effects:** Some items provide temporary boosts - use them wisely!\n\n> Return to \`!shop\` anytime to browse more premium items!`)
+                        .setContent(`## 💡 **SHOPPING TIPS**\n\n**⏰ Cooldown:** Wait 10 seconds before your next purchase\n**🎯 Strategy:** Plan purchases based on your current needs\n**💰 Budget:** Monitor your wallet balance for smart shopping\n**📈 Effects:** Some items provide temporary boosts - use them wisely!\n\n> Return to \`${prefix}shop\` anytime to browse more premium items!`)
                 );
 
                 components.push(tipsContainer);

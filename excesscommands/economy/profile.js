@@ -7,6 +7,8 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { GUILD_TYPES, RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'profile',
@@ -14,6 +16,8 @@ module.exports = {
     description: 'View your complete economy profile .',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const targetUser = message.mentions.users.first() || message.author;
             const profile = await EconomyManager.getProfile(targetUser.id, message.guild.id);
             
@@ -198,7 +202,7 @@ module.exports = {
                 if (profile.activeRaids.length > 0) {
                     raidContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🎯 ACTIVE RAID EXPEDITIONS**\n\n> You are currently involved in \`${profile.activeRaids.length}\` active raid(s)\n> Use \`!raid status\` for detailed information`)
+                            .setContent(`**🎯 ACTIVE RAID EXPEDITIONS**\n\n> You are currently involved in \`${profile.activeRaids.length}\` active raid(s)\n> Use \`${prefix}raid status\` for detailed information`)
                     );
                 }
 

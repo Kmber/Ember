@@ -6,16 +6,19 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'donate',
     aliases: ['give', 'transfer'],
     description: 'Donate Embers to another user .',
-    usage: '!donate @user <amount>',
+    usage: 'donate @user <amount>',
     cooldown: 5000,
     async execute(message, args) {
         try {
-
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
 
             
             if (args.length < 2) {
@@ -26,7 +29,7 @@ module.exports = {
 
                 usageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Command Usage\n## MISSING REQUIRED PARAMETERS\n\n> **Correct Usage:** \`!donate @user <amount>\`\n> **Example:** \`!donate @friend 1000\`\n> **Donate All:** \`!donate @friend all\``)
+                        .setContent(`# ❌ Invalid Command Usage\n## MISSING REQUIRED PARAMETERS\n\n> **Correct Usage:** \`${prefix}donate @user <amount>\`\n> **Example:** \`${prefix}donate @friend 1000\`\n> **Donate All:** \`${prefix}donate @friend all\``)
                 );
 
                 components.push(usageContainer);
@@ -47,7 +50,7 @@ module.exports = {
 
                 noUserContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ No User Mentioned\n## RECIPIENT REQUIRED\n\n> You need to mention a valid user to donate to!\n> **Example:** \`!donate @friend 500\`\n\n**💡 Tip:** Make sure to use @ to mention the user properly.`)
+                        .setContent(`# ❌ No User Mentioned\n## RECIPIENT REQUIRED\n\n> You need to mention a valid user to donate to!\n> **Example:** \`${prefix}donate @friend 500\`\n\n**💡 Tip:** Make sure to use @ to mention the user properly.`)
                 );
 
                 components.push(noUserContainer);
@@ -142,7 +145,7 @@ module.exports = {
 
                 invalidAmountContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Donation Amount\n## AMOUNT MUST BE POSITIVE\n\n> Please enter a valid donation amount greater than zero!\n> **Examples:** \`!donate @friend 100\` or \`!donate @friend all\``)
+                        .setContent(`# ❌ Invalid Donation Amount\n## AMOUNT MUST BE POSITIVE\n\n> Please enter a valid donation amount greater than zero!\n> **Examples:** \`${prefix}donate @friend 100\` or \`${prefix}donate @friend all\``)
                 );
 
                 components.push(invalidAmountContainer);
@@ -224,7 +227,7 @@ module.exports = {
 
                 donorErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Donor Profile Error\n## ACCOUNT ACCESS FAILED\n\n> Error accessing your profile. Please try \`!balance\` first to initialize your account.\n\n**💡 Troubleshooting:** Wait 30 seconds and try the command again.`)
+                        .setContent(`# ❌ Donor Profile Error\n## ACCOUNT ACCESS FAILED\n\n> Error accessing your profile. Please try \`${prefix}balance\` first to initialize your account.\n\n**💡 Troubleshooting:** Wait 30 seconds and try the command again.`)
                 );
 
                 components.push(donorErrorContainer);
@@ -263,7 +266,7 @@ module.exports = {
 
                 recipientErrorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Recipient Profile Error\n## ACCOUNT ACCESS FAILED\n\n> Error accessing **${target.username}**'s profile.\n> They may need to use \`!balance\` first to initialize their account.`)
+                        .setContent(`# ❌ Recipient Profile Error\n## ACCOUNT ACCESS FAILED\n\n> Error accessing **${target.username}**'s profile.\n> They may need to use \`${prefix}balance\` first to initialize their account.`)
                 );
 
                 components.push(recipientErrorContainer);
@@ -481,7 +484,7 @@ module.exports = {
 
             troubleshootContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🛠️ **TROUBLESHOOTING STEPS**\n\n**1.** Both users should try \`!balance\` first\n**2.** Wait 30 seconds and try again\n**3.** Contact an admin if the issue persists\n**4.** Provide the error code above for faster support`)
+                    .setContent(`## 🛠️ **TROUBLESHOOTING STEPS**\n\n**1.** Both users should try \`${prefix}balance\` first\n**2.** Wait 30 seconds and try again\n**3.** Contact an admin if the issue persists\n**4.** Provide the error code above for faster support`)
             );
 
             components.push(troubleshootContainer);

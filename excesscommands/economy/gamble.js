@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'gamble',
@@ -13,6 +15,8 @@ module.exports = {
     description: 'Gamble your Embers for a chance to win more! (Affected by gambling luck) .',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
            
@@ -63,7 +67,7 @@ module.exports = {
 
                 invalidAmountContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Bet Amount\n## PLEASE SPECIFY VALID AMOUNT\n\n> Please provide a valid amount to gamble!\n> **Examples:** \`!gamble 1000\`, \`!gamble all\`, \`!gamble max\`\n\n**💡 Tip:** Start with smaller amounts to test your luck before going all-in!`)
+                        .setContent(`# ❌ Invalid Bet Amount\n## PLEASE SPECIFY VALID AMOUNT\n\n> Please provide a valid amount to gamble!\n> **Examples:** \`${prefix}gamble 1000\`, \`${prefix}gamble all\`, \`${prefix}gamble max\`\n\n**💡 Tip:** Start with smaller amounts to test your luck before going all-in!`)
                 );
 
                 components.push(invalidAmountContainer);
@@ -94,7 +98,7 @@ module.exports = {
 
                 suggestionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **BETTING SUGGESTIONS**\n\n**Available to Bet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Try:** \`!gamble ${Math.floor(profile.wallet / 2)}\` (Half your Embers)\n**Safe Bet:** \`!gamble ${Math.floor(profile.wallet * 0.1)}\` (10% of Embers)\n**All-In:** \`!gamble all\` (Everything you have)\n\n> Remember: Only gamble what you can afford to lose!`)
+                        .setContent(`## 💡 **BETTING SUGGESTIONS**\n\n**Available to Bet:** \`${profile.wallet.toLocaleString()} Embers\`\n**Try:** \`${prefix}gamble ${Math.floor(profile.wallet / 2)}\` (Half your Embers)\n**Safe Bet:** \`${prefix}gamble ${Math.floor(profile.wallet * 0.1)}\` (10% of Embers)\n**All-In:** \`${prefix}gamble all\` (Everything you have)\n\n> Remember: Only gamble what you can afford to lose!`)
                 );
 
                 components.push(suggestionContainer);

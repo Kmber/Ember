@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { GUILD_TYPES } = require('../../models/economy/constants/guildData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'guild',
     aliases: ['g', 'guilds'],
     description: 'Manage your guild conglomerate with enhanced v2 components',
-    usage: '!guild [collect/upgrade/recruit/dismiss/delete] [guild_id] [amount]',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+            this.usage = `${prefix}guild [collect/upgrade/recruit/dismiss/delete] [guild_id] [amount]`;
+            
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
 
             if (profile.guilds.length === 0) {
@@ -36,7 +41,7 @@ module.exports = {
 
                 infoContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚀 **GET STARTED**\n\n**Command:** \`!startguild <type>\`\n**Available Types:** \`alchemists_guild, scriveners_guild, masons_guild, mercenary_guild, thieves_guild, arcane_syndicate\`\n\n**💡 Enhanced Features:**\n> • Much higher profit margins\n> • Acolytes now generate significant income\n> • Experience and skill progression\n> • Guild selling/deletion options`)
+                        .setContent(`## 🚀 **GET STARTED**\n\n**Command:** \`${prefix}startguild <type>\`\n**Available Types:** \`alchemists_guild, scriveners_guild, masons_guild, mercenary_guild, thieves_guild, arcane_syndicate\`\n\n**💡 Enhanced Features:**\n> • Much higher profit margins\n> • Acolytes now generate significant income\n> • Experience and skill progression\n> • Guild selling/deletion options`)
                 );
 
                 components.push(infoContainer);
@@ -142,7 +147,7 @@ module.exports = {
 
                 footerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📋 **QUICK COMMANDS**\n\n**\`!guild collect\`** - Collect daily profits\n**\`!guild upgrade <#>\`** - Upgrade guild level\n**\`!guild recruit <#> [amount]\`** - Recruit acolytes\n**\`!guild dismiss <#> [amount]\`** - Dismiss acolytes\n**\`!guild delete <#>\`** - Sell guild\n**\`!guild help\`** - Full command list`)
+                        .setContent(`## 📋 **QUICK COMMANDS**\n\n**\`${prefix}guild collect\`** - Collect daily profits\n**\`${prefix}guild upgrade <#>\`** - Upgrade guild level\n**\`${prefix}guild recruit <#> [amount]\`** - Recruit acolytes\n**\`${prefix}guild dismiss <#> [amount]\`** - Dismiss acolytes\n**\`${prefix}guild delete <#>\`** - Sell guild\n**\`${prefix}guild help\`** - Full command list`)
                 );
 
                 components.push(footerContainer);
@@ -256,7 +261,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Guild Number\n## SELECTION ERROR\n\n> Invalid guild number! Use \`!guild\` to see your guilds numbered 1-${profile.guilds.length}.`)
+                            .setContent(`# ❌ Invalid Guild Number\n## SELECTION ERROR\n\n> Invalid guild number! Use \`${prefix}guild\` to see your guilds numbered 1-${profile.guilds.length}.`)
                     );
 
                     components.push(errorContainer);
@@ -343,7 +348,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Guild Number\n## SELECTION ERROR\n\n> Invalid guild number! Use \`!guild\` to see your guilds numbered 1-${profile.guilds.length}.`)
+                            .setContent(`# ❌ Invalid Guild Number\n## SELECTION ERROR\n\n> Invalid guild number! Use \`${prefix}guild\` to see your guilds numbered 1-${profile.guilds.length}.`)
                     );
 
                     components.push(errorContainer);
@@ -411,7 +416,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Guild Number\n## SELECTION ERROR\n\n> Invalid guild number! Use \`!guild\` to see your guilds numbered 1-${profile.guilds.length}.`)
+                            .setContent(`# ❌ Invalid Guild Number\n## SELECTION ERROR\n\n> Invalid guild number! Use \`${prefix}guild\` to see your guilds numbered 1-${profile.guilds.length}.`)
                     );
 
                     components.push(errorContainer);
@@ -549,7 +554,7 @@ module.exports = {
 
                     errorContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Guild Number\n## SELECTION ERROR\n\n> Invalid guild number! Use \`!guild\` to see your guilds.`)
+                            .setContent(`# ❌ Invalid Guild Number\n## SELECTION ERROR\n\n> Invalid guild number! Use \`${prefix}guild\` to see your guilds.`)
                     );
 
                     components.push(errorContainer);
@@ -682,17 +687,17 @@ module.exports = {
 
                 commandsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**\`!guild\`** - View all your guilds with enhanced stats\n**\`!guild collect\`** - Collect daily profits (24h cooldown)\n**\`!guild upgrade <#>\`** - Upgrade guild level for massive income boost`)
+                        .setContent(`**\`${prefix}guild\`** - View all your guilds with enhanced stats\n**\`${prefix}guild collect\`** - Collect daily profits (24h cooldown)\n**\`${prefix}guild upgrade <#>\`** - Upgrade guild level for massive income boost`)
                 );
 
                 commandsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**\`!guild recruit <#> [amount]\`** - Recruit acolytes for significant profit boost\n**\`!guild dismiss <#> [amount]\`** - Dismiss acolytes to reduce costs\n**\`!guild delete <#>\`** - Sell guild for 60-80% of purchase price`)
+                        .setContent(`**\`${prefix}guild recruit <#> [amount]\`** - Recruit acolytes for significant profit boost\n**\`${prefix}guild dismiss <#> [amount]\`** - Dismiss acolytes to reduce costs\n**\`${prefix}guild delete <#>\`** - Sell guild for 60-80% of purchase price`)
                 );
 
                 commandsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**\`!startguild <type>\`** - Start a new guild with enhanced profits\n\n**💡 Enhanced Features:**\n> • Much higher profit margins\n> • Experience and skill progression\n> • Better acolyte ROI\n> • Guild selling options`)
+                        .setContent(`**\`${prefix}startguild <type>\`** - Start a new guild with enhanced profits\n\n**💡 Enhanced Features:**\n> • Much higher profit margins\n> • Experience and skill progression\n> • Better acolyte ROI\n> • Guild selling options`)
                 );
 
                 components.push(commandsContainer);

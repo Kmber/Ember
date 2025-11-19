@@ -6,13 +6,19 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'beastrace',
     description: 'Race your beast to win Embers .',
     cooldown: 300, 
+    usage: 'beastrace',
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
          
@@ -69,7 +75,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📜 **GET RACING READY**\n\n**Step 1:** Use \`!summon\` to summon a beast\n**Step 2:** Set it as your active beast\n**Step 3:** Return here to start racing!\n\n**💡 Tip:** Better beasts have higher win chances and bigger payouts!`)
+                        .setContent(`## 📜 **GET RACING READY**\n\n**Step 1:** Use \`${prefix}summon\` to summon a beast\n**Step 2:** Set it as your active beast\n**Step 3:** Return here to start racing!\n\n**💡 Tip:** Better beasts have higher win chances and bigger payouts!`)
                 );
 
                 components.push(solutionContainer);

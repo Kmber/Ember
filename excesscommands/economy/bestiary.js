@@ -6,13 +6,18 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'bestiary',
     aliases: ['beasts', 'mybeasts'],
     description: 'View and manage your beast collection .',
+    usage: 'bestiary [select <number>]',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             
             if (profile.beasts.length === 0) {
@@ -26,7 +31,7 @@ module.exports = {
                         .setContent(`# 👹 Empty Bestiary\n## NO BEASTS IN YOUR COLLECTION\n\n> Your bestiary is currently empty! You need to summon beasts to start building your collection.\n> Beasts are essential for racing and other activities.`)
                 );
 
-                components.push(noBeBeastContainer);
+                components.push(noBeastContainer);
 
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
@@ -35,7 +40,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📜 **GET YOUR FIRST BEAST**\n\n**Step 1:** Use \`!summon\` to see available beasts\n**Step 2:** Choose a beast that fits your budget\n**Step 3:** Summon your first beast\n**Step 4:** Start racing and taking on quests!\n\n**💡 Benefits:**\n> • Unlock beast races for prize Ember\n> • Enable special quests and events\n> • Build a valuable collection of beasts\n> • Show off your power and success`)
+                        .setContent(`## 📜 **GET YOUR FIRST BEAST**\n\n**Step 1:** Use \`${prefix}summon\` to see available beasts\n**Step 2:** Choose a beast that fits your budget\n**Step 3:** Summon your first beast\n**Step 4:** Start racing and taking on quests!\n\n**💡 Benefits:**\n> • Unlock beast races for prize Ember\n> • Enable special quests and events\n> • Build a valuable collection of beasts\n> • Show off your power and success`)
                 );
 
                 components.push(solutionContainer);
@@ -58,7 +63,7 @@ module.exports = {
 
                     invalidSelectionContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`# ❌ Invalid Beast Selection\n## BEAST NUMBER OUT OF RANGE\n\n> Beast number must be between **1** and **${profile.beasts.length}**!\n> Use \`!bestiary\` to see your numbered beast list.`)
+                            .setContent(`# ❌ Invalid Beast Selection\n## BEAST NUMBER OUT OF RANGE\n\n> Beast number must be between **1** and **${profile.beasts.length}**!\n> Use \`${prefix}bestiary\` to see your numbered beast list.`)
                     );
 
                     components.push(invalidSelectionContainer);
@@ -201,7 +206,7 @@ module.exports = {
 
             managementContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 🔧 **BESTIARY MANAGEMENT**\n\n**👹 Select Active Beast:** \`!bestiary select <number>\`\n**🏁 Race Your Beasts:** Use \`!beastrace\` with your active beast\n**🛡️ Quests:** Take your beast on epic quests\n**🛒 Expand Collection:** Summon more beasts with \`!summon\`\n**🔧 Upkeep:** Use shop items to care for your beasts\n**📈 Performance:** Better beasts = higher race win chances\n\n> Keep your beasts well-cared for optimal performance!`)
+                    .setContent(`## 🔧 **BESTIARY MANAGEMENT**\n\n**👹 Select Active Beast:** \`${prefix}bestiary select <number>\`\n**🏁 Race Your Beasts:** Use \`${prefix}beastrace\` with your active beast\n**🛡️ Quests:** Take your beast on epic quests\n**🛒 Expand Collection:** Summon more beasts with \`${prefix}summon\`\n**🔧 Upkeep:** Use shop items to care for your beasts\n**📈 Performance:** Better beasts = higher race win chances\n\n> Keep your beasts well-cared for optimal performance!`)
             );
 
             components.push(managementContainer);

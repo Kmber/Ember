@@ -137,7 +137,7 @@ module.exports = {
                 
                 storageContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💎 Inventory Value:** ${totalInventoryValue.toLocaleString()} Embers\n**💡 Commands:**\n> **\`${prefix}inventory\`** - View your full inventory\n> **\`${prefix}openchest <id>\`** - Open a found chest\n> **\`${prefix}sell <id>\`** - Sell an item for Embers`)
+                        .setContent(`**💎 Inventory Value:** ${totalInventoryValue.toLocaleString()} Embers\n**💡 Commands:**\n> **\`${prefix}slayininventory\`** - View your full inventory\n> **\`${prefix}openchest <id>\`** - Open a found chest\n> **\`${prefix}sell <id>\`** - Sell an item for Embers`)
                 );
 
                 components.push(storageContainer);

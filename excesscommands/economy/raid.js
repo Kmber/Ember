@@ -7,14 +7,18 @@ const {
 } = require('discord.js');
 const { EconomyManager, Raid } = require('../../models/economy/economy');
 const { RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'raid',
     aliases: ['raids'],
     description: 'View active raids and raid management .',
-    usage: '!raid [status/history/leaderboard]',
+    usage: 'raid [status/history/leaderboard]',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
             const action = args[0]?.toLowerCase();
             
@@ -53,7 +57,7 @@ module.exports = {
 
                     startContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🆕 Plan a Raid:** \`!planraid\` - Organize your own expedition\n**🤝 Join Others:** \`!joinraid <id> <class>\` - Join existing raid parties\n**📚 Learn Classes:** Each raid needs warriors, mages, healers, and thieves\n**💡 Strategy:** Choose dungeons based on your skill level and threat`)
+                            .setContent(`**🆕 Plan a Raid:** \`${prefix}planraid\` - Organize your own expedition\n**🤝 Join Others:** \`${prefix}joinraid <id> <class>\` - Join existing raid parties\n**📚 Learn Classes:** Each raid needs warriors, mages, healers, and thieves\n**💡 Strategy:** Choose dungeons based on your skill level and threat`)
                     );
 
                     components.push(startContainer);
@@ -140,7 +144,7 @@ module.exports = {
                     } else {
                         raidContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`**🚨 Status:** \`READY TO EMBARK!\`\n**⚡ Action Required:** Use \`!executeraid ${raid.raidId}\` to begin\n\n> **Alert:** Your party is ready - the dungeon awaits!`)
+                                .setContent(`**🚨 Status:** \`READY TO EMBARK!\`\n**⚡ Action Required:** Use \`${prefix}executeraid ${raid.raidId}\` to begin\n\n> **Alert:** Your party is ready - the dungeon awaits!`)
                         );
                     }
 
@@ -403,7 +407,7 @@ module.exports = {
 
             optionsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## ⚔️ **AVAILABLE RAID COMMANDS**\n\n**\`!raid\`** or **\`!raid status\`** - View your active raids\n**\`!raid history\`** - See your completed raid history\n**\`!raid leaderboard\`** - Check top adventurers\n\n**Additional Commands:**\n> • \`!planraid\` - Plan a new raid expedition\n> • \`!joinraid <id> <class>\` - Join an existing raid party`)
+                    .setContent(`## ⚔️ **AVAILABLE RAID COMMANDS**\n\n**\`${prefix}raid\`** or **\`${prefix}raid status\`** - View your active raids\n**\`${prefix}raid history\`** - See your completed raid history\n**\`${prefix}raid leaderboard\`** - Check top adventurers\n\n**Additional Commands:**\n> • \`${prefix}planraid\` - Plan a new raid expedition\n> • \`${prefix}joinraid <id> <class>\` - Join an existing raid party`)
             );
 
             components.push(optionsContainer);

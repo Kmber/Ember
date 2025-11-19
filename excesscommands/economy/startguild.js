@@ -7,14 +7,19 @@ const {
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
 const { GUILD_TYPES } = require('../../models/economy/constants/guildData');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'startguild',
     aliases: ['guild-start', 'newguild'],
     description: 'Start a new guild for passive income .',
-    usage: '!startguild <type>',
+    usage: 'startguild <type>',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+
             if (!args[0]) {
                 
                 const components = [];
@@ -79,7 +84,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🚀 **HOW TO START**\n\n**Command:** \`!startguild <type>\`\n**Example:** \`!startguild thieves_guild\`\n\n**💡 Tips:**\n> • Each guild type has different profit potential\n> • Higher cost guilds usually have better returns\n> • You can upgrade and recruit acolytes later`)
+                        .setContent(`## 🚀 **HOW TO START**\n\n**Command:** \`${prefix}startguild <type>\`\n**Example:** \`${prefix}startguild thieves_guild\`\n\n**💡 Tips:**\n> • Each guild type has different profit potential\n> • Higher cost guilds usually have better returns\n> • You can upgrade and recruit acolytes later`)
                 );
 
                 components.push(instructionsContainer);
@@ -101,7 +106,7 @@ module.exports = {
 
                 errorContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ❌ Invalid Guild Type\n## GUILD NOT FOUND\n\n> **\`${guildType}\`** is not a valid guild type!\n> Use \`!startguild\` to see all available options.`)
+                        .setContent(`# ❌ Invalid Guild Type\n## GUILD NOT FOUND\n\n> **\`${guildType}\`** is not a valid guild type!\n> Use \`${prefix}startguild\` to see all available options.`)
                 );
 
                 components.push(errorContainer);
@@ -268,7 +273,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **MANAGEMENT TIPS**\n\n**\`!guild\`** - View your guild conglomerate\n**\`!guild collect\`** - Collect daily profits (24h cooldown)\n**\`!guild upgrade <#>\`** - Upgrade for higher income\n**\`!guild recruit <#> [amount]\`** - Recruit acolytes to boost profits\n\n> Your guild will start generating income immediately!`)
+                    .setContent(`## 💡 **MANAGEMENT TIPS**\n\n**\`${prefix}guild\`** - View your guild conglomerate\n**\`${prefix}guild collect\`** - Collect daily profits (24h cooldown)\n**\`${prefix}guild upgrade <#>\`** - Upgrade for higher income\n**\`${prefix}guild recruit <#> [amount]\`** - Recruit acolytes to boost profits\n\n> Your guild will start generating income immediately!`)
             );
 
             components.push(tipsContainer);

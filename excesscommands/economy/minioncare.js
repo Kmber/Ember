@@ -6,15 +6,19 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'minioncare',
     aliases: ['sustain', 'tend', 'commune'],
     description: 'Care for your minions to improve their power and effectiveness .',
-    usage: '!minioncare <action> [minion_index]',
+    usage: 'minioncare <action> [minion_index]',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             
             if (profile.minions.length === 0) {
                 const components = [];
@@ -35,7 +39,7 @@ module.exports = {
 
                 summoningContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🦇 **BEGIN YOUR REIGN**\n\n**Step 1:** Use \`!buyminion\` to summon your first servant\n**Step 2:** Bestow a fearsome name upon your new minion\n**Step 3:** Return here to provide dark care\n**Step 4:** Watch them become powerful agents of your will!\n\n**💡 Benefits of Minion Care:**\n> • Loyal minions provide greater power\n> • Well-sustained minions are more formidable\n> • Regular care maintains peak effectiveness\n> • Builds a stronger bond with your dark servants`)
+                        .setContent(`## 🦇 **BEGIN YOUR REIGN**\n\n**Step 1:** Use \`${prefix}buyminion\` to summon your first servant\n**Step 2:** Bestow a fearsome name upon your new minion\n**Step 3:** Return here to provide dark care\n**Step 4:** Watch them become powerful agents of your will!\n\n**💡 Benefits of Minion Care:**\n> • Loyal minions provide greater power\n> • Well-sustained minions are more formidable\n> • Regular care maintains peak effectiveness\n> • Builds a stronger bond with your dark servants`)
                 );
 
                 components.push(summoningContainer);
@@ -68,7 +72,7 @@ module.exports = {
 
                 actionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🦇 **AVAILABLE RITUALS**\n\n**⚡ \`sustain\`** - Sustain your minion to restore energy and constitution (\`75 Embers\`)\n**🖤 \`tend\`** - Tend to your minion to increase corruption and loyalty (\`150 Embers\`)\n**💀 \`commune\`** - Commune with your minion to boost loyalty and bonding (\`50 Embers\`)\n**🌟 \`all\`** - Perform a grand ritual for maximum effect (\`275 Embers\`)\n\n**Examples:**\n> \`!minioncare sustain 1\` - Sustain your first minion\n> \`!minioncare all 2\` - Perform a grand ritual for your second minion`)
+                        .setContent(`## 🦇 **AVAILABLE RITUALS**\n\n**⚡ \`sustain\`** - Sustain your minion to restore energy and constitution (\`75 Embers\`)\n**🖤 \`tend\`** - Tend to your minion to increase corruption and loyalty (\`150 Embers\`)\n**💀 \`commune\`** - Commune with your minion to boost loyalty and bonding (\`50 Embers\`)\n**🌟 \`all\`** - Perform a grand ritual for maximum effect (\`275 Embers\`)\n\n**Examples:**\n> \`${prefix}minioncare sustain 1\` - Sustain your first minion\n> \`${prefix}minioncare all 2\` - Perform a grand ritual for your second minion`)
                 );
 
                 components.push(actionsContainer);
@@ -87,7 +91,7 @@ module.exports = {
 
                 invalidMinionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🦇 Invalid Minion Selection\n## MINION NUMBER OUT OF RANGE\n\n> Minion number must be between **1** and **${profile.minions.length}**!\n> Use \`!minions\` to see your numbered minion list.`)
+                        .setContent(`# 🦇 Invalid Minion Selection\n## MINION NUMBER OUT OF RANGE\n\n> Minion number must be between **1** and **${profile.minions.length}**!\n> Use \`${prefix}minions\` to see your numbered minion list.`)
                 );
 
                 components.push(invalidMinionContainer);
@@ -134,7 +138,7 @@ module.exports = {
 
                 earningContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💰 **GATHER MORE WEALTH**\n\n**Shortage:** \`${cost - profile.wallet} Embers\`\n\n**💡 Quick Earning Tips:**\n> • Use \`!work\` to earn regular income\n> • Complete \`!daily\` rewards\n> • Try your luck with \`!gamble\`\n> • Run guilds for passive income\n\n**🦇 Your minion awaits its tribute!**`)
+                        .setContent(`## 💰 **GATHER MORE WEALTH**\n\n**Shortage:** \`${cost - profile.wallet} Embers\`\n\n**💡 Quick Earning Tips:**\n> • Use \`${prefix}work\` to earn regular income\n> • Complete \`${prefix}daily\` rewards\n> • Try your luck with \`${prefix}gamble\`\n> • Run guilds for passive income\n\n**🦇 Your minion awaits its tribute!**`)
                 );
 
                 components.push(earningContainer);
@@ -262,7 +266,7 @@ module.exports = {
 
             powerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**Power Efficiency:** \`${beforeEfficiency}%\` → \`${afterEfficiency}%\` ${powerImprovement > 0 ? `(+${powerImprovement}%)` : ''}\n**Effective Power:** \`${(minion.powerLevel * afterEfficiency / 100).toFixed(1)}\`\n**Maximum Potential:** \`${minion.powerLevel}\`\n\n**💡 Impact:** ${powerImprovement > 0 ? `Your ritual empowered ${minion.name}'s dark abilities!` : `${minion.name} maintains its dark effectiveness!`}`)
+                    .setContent(`**Power Efficiency:** \`${beforeEfficiency}%\` → \`${afterEfficiency}%\` ${powerImprovement > 0 ? `(+${powerImprovement}%)` : ''}\n**Effective Power:** \`${(minion.powerLevel * afterEfficiency / 100).toFixed(1)}\`\n**Maximum Potential:** \`${minion.powerLevel}\`\n\n**💡 Impact:** ${powerImprovement > 0 ? `Your ritual empowered ${minion.name}\'s dark abilities!` : `${minion.name} maintains its dark effectiveness!`}`)
             );
 
             components.push(powerContainer);
@@ -314,6 +318,7 @@ module.exports = {
 
             return message.reply({
                 components: [errorContainer],
+  
                 flags: MessageFlags.IsComponentsV2
             });
         }

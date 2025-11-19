@@ -6,6 +6,8 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'beg',
@@ -13,6 +15,8 @@ module.exports = {
     description: 'Beg for some Embers from kind strangers using v2 components',
     async execute(message) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
             const userId = message.author.id;
             const guildId = message.guild.id;
             const profile = await EconomyManager.getProfile(userId, guildId);

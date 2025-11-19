@@ -6,14 +6,19 @@ const {
     MessageFlags
 } = require('discord.js');
 const { Economy } = require('../../models/economy/economy');
+const ServerConfig = require('../../models/serverConfig/schema');
+const config = require('../../config.json');
 
 module.exports = {
     name: 'leaderboard',
     aliases: ['lb', 'top'],
     description: 'View server leaderboards with v2 components',
-    usage: '!leaderboard [wealth/level/racing/followers]',
     async execute(message, args) {
         try {
+            const serverConfig = await ServerConfig.findOne({ serverId: message.guild.id });
+            const prefix = serverConfig?.prefix || config.prefix;
+            this.usage = `${prefix}leaderboard [wealth/level/racing/followers]`;
+
             const type = args[0]?.toLowerCase() || 'wealth';
             const validTypes = ['wealth', 'level', 'racing', 'followers'];
             
@@ -37,7 +42,7 @@ module.exports = {
 
                 typesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏆 **AVAILABLE LEADERBOARDS**\n\n**💰 \`wealth\`** - Total wealth (wallet + bank + follower tithe, in Embers)\n**⭐ \`level\`** - Player levels and experience points\n**🏁 \`racing\`** - Racing wins and success rates\n**👥 \`followers\`** - Number of followers and their allegiance\n\n**Example:** \`!leaderboard wealth\``)
+                        .setContent(`## 🏆 **AVAILABLE LEADERBOARDS**\n\n**💰 \`wealth\`** - Total wealth (wallet + bank + follower tithe, in Embers)\n**⭐ \`level\`** - Player levels and experience points\n**🏁 \`racing\`** - Racing wins and success rates\n**👥 \`followers\`** - Number of followers and their allegiance\n\n**Example:** \`${prefix}leaderboard wealth\``)
                 );
 
                 components.push(typesContainer);
@@ -318,7 +323,7 @@ module.exports = {
 
             tipsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **CLIMB THE RANKS**\n\n${tipText}\n\n**🔄 Other Leaderboards:** Try \`!leaderboard wealth\`, \`!leaderboard level\`, \`!leaderboard racing\`, or \`!leaderboard followers\``)
+                    .setContent(`## 💡 **CLIMB THE RANKS**\n\n${tipText}\n\n**🔄 Other Leaderboards:** Try \`${prefix}leaderboard wealth\`, \`${prefix}leaderboard level\`, \`${prefix}leaderboard racing\`, or \`${prefix}leaderboard followers\``)
             );
 
             components.push(tipsContainer);

@@ -98,7 +98,7 @@ module.exports = {
         );
 
         helpContainer.addTextDisplayComponents(
-             new TextDisplayBuilder().setContent('**Tip:** Find item IDs with `!slaying` or `!slayinv`')
+             new TextDisplayBuilder().setContent(`**Tip:** Find item IDs with \`${prefix}slaying\` or \`${prefix}slayinv\``)
         );
 
         components.push(loadoutContainer, helpContainer);
