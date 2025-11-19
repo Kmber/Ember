@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'work',
-    description: 'Work to earn Embers (affected by follower allegiance and active effects) with v2 components',
+    description: 'Work to earn Embers (affected by follower allegiance and active effects) .',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);

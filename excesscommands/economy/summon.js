@@ -11,7 +11,7 @@ const { BEASTS } = require('../../models/economy/constants/gameData');
 module.exports = {
     name: 'summon',
     aliases: ['beast-summon'],
-    description: 'Summon a beast for racing and other activities with v2 components',
+    description: 'Summon a beast for racing and other activities .',
     usage: '!summon <beast_id>',
     async execute(message, args) {
         try {

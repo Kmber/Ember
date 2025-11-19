@@ -11,7 +11,7 @@ const { GUILD_TYPES } = require('../../models/economy/constants/guildData');
 module.exports = {
     name: 'startguild',
     aliases: ['guild-start', 'newguild'],
-    description: 'Start a new guild for passive income with v2 components',
+    description: 'Start a new guild for passive income .',
     usage: '!startguild <type>',
     async execute(message, args) {
         try {

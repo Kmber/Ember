@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'withdraw',
     aliases: ['with'],
-    description: 'Withdraw Embers from your bank to your wallet with v2 components',
+    description: 'Withdraw Embers from your bank to your wallet .',
     usage: '<amount | all | max>',
     async execute(message, args) {
         try {

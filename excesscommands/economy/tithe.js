@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'tithe',
     aliases: ['t'],
-    description: 'Manage your follower tithe with v2 components',
+    description: 'Manage your follower tithe .',
     usage: '!tithe <deposit/withdraw> <amount>',
     async execute(message, args) {
         try {

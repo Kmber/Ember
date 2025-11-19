@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'gamble',
     aliases: ['bet'],
-    description: 'Gamble your Embers for a chance to win more! (Affected by gambling luck) with v2 components',
+    description: 'Gamble your Embers for a chance to win more! (Affected by gambling luck) .',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);

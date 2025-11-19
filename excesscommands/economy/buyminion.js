@@ -11,7 +11,7 @@ const { MINIONS } = require('../../models/economy/constants/gameData');
 module.exports = {
     name: 'buyminion',
     aliases: ['minion-buy'],
-    description: 'Summon a minion for power and protection using Embers with v2 components',
+    description: 'Summon a minion for power and protection using Embers .',
     usage: '!buyminion <minion_id> <name>',
     async execute(message, args) {
         try {

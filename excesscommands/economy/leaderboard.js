@@ -10,7 +10,7 @@ const { Economy } = require('../../models/economy/economy');
 module.exports = {
     name: 'leaderboard',
     aliases: ['lb', 'top'],
-    description: 'View server leaderboards with v2 components',
+    description: 'View server leaderboards .',
     usage: '!leaderboard [wealth/level/racing/family]',
     async execute(message, args) {
         try {

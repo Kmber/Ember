@@ -16,7 +16,7 @@ const spotifyApi = new SpotifyWebApi({
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('music')
-        .setDescription('🎵 Advanced music player with V2 components')
+        .setDescription('🎵 Advanced music player .')
         .addSubcommand(subcommand =>
             subcommand
                 .setName('play')

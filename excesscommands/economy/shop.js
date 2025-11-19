@@ -10,7 +10,7 @@ const { SHOP_ITEMS } = require('../../models/economy/constants/gameData');
 
 module.exports = {
     name: 'shop',
-    description: 'Browse and buy special items and power-ups with v2 components',
+    description: 'Browse and buy special items and power-ups .',
     usage: '!shop [buy <item_id>]',
     async execute(message, args) {
         try {

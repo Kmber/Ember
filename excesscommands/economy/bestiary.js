@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'bestiary',
     aliases: ['beasts', 'mybeasts'],
-    description: 'View and manage your beast collection with v2 components',
+    description: 'View and manage your beast collection .',
     async execute(message, args) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);

@@ -382,7 +382,7 @@ class GiveawayController {
     }
   }
 
-  // Send DM to winners with v2 components
+  // Send DM to winners .
   static async dmWinners(client, winners, giveaway) {
     for (const winner of winners) {
       try {

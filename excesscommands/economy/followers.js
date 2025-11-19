@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'followers',
     aliases: ['flw'],
-    description: 'View your followers and their status with v2 components',
+    description: 'View your followers and their status .',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);

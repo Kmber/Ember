@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'beastrace',
-    description: 'Race your beast to win Embers with v2 components',
+    description: 'Race your beast to win Embers .',
     cooldown: 300, 
     async execute(message) {
         try {

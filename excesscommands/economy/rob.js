@@ -9,7 +9,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 
 module.exports = {
     name: 'rob',
-    description: 'Attempt to rob another player of Embers with v2 components (risky!)',
+    description: 'Attempt to rob another player of Embers . (risky!)',
     usage: '!rob @user',
     cooldown: 1800,
     async execute(message, args) {

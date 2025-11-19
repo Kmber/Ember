@@ -11,7 +11,7 @@ const { RAID_DUNGEONS, RAID_GEAR } = require('../../models/economy/constants/gui
 module.exports = {
     name: 'planraid',
     aliases: ['raid-plan', 'newraid'],
-    description: 'Plan a raid and recruit party members with v2 components',
+    description: 'Plan a raid and recruit party members .',
     usage: '!planraid <dungeon>',
     async execute(message, args) {
         try {

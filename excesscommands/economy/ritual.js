@@ -66,7 +66,7 @@ module.exports = {
             if (profile.wallet < ritualCost) {
                 const components = [
                     new ContainerBuilder().setAccentColor(0xE74C3C)
-                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 💸 Insufficient Offerings\n## THE OLD ONES DEMAND A PRICE\n\n> You need **\`${ritualCost.toLocaleString()} Embers\`** for the ritual components!\n> **Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n> **Shortage:** \`${(ritualCost - profile.wallet).toLocaleString()} Embers\`\`)),
+                        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`# 💸 Insufficient Offerings\n## THE OLD ONES DEMAND A PRICE\n\n> You need **\`${ritualCost.toLocaleString()} Embers\`** for the ritual components!\n> **Current Wallet:** \`${profile.wallet.toLocaleString()} Embers\`\n> **Shortage:** \`${(ritualCost - profile.wallet).toLocaleString()} Embers\`),`)),
                     new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
 
                     new ContainerBuilder().setAccentColor(0xF39C12)

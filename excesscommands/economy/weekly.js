@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'weekly',
     aliases: ['week'],
-    description: 'Claim your weekly reward with v2 components',
+    description: 'Claim your weekly reward .',
     async execute(message) {
         try {
             const userId = message.author.id;

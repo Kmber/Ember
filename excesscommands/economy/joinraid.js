@@ -11,7 +11,7 @@ const { RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
 module.exports = {
     name: 'joinraid',
     aliases: ['raid-join'],
-    description: 'Join a planned raid with v2 components',
+    description: 'Join a planned raid .',
     usage: '!joinraid <raid_id> <class>',
     async execute(message, args) {
         try {

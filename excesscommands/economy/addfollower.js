@@ -33,7 +33,7 @@ const FOLLOWER_TEMPLATES = {
 module.exports = {
     name: 'addfollower',
     aliases: ['follower-add'],
-    description: 'Recruit a follower to your congregation with v2 components',
+    description: 'Recruit a follower to your congregation .',
     usage: '!addfollower <type> <name>',
     async execute(message, args) {
         try {

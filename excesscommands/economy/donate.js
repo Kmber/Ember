@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'donate',
     aliases: ['give', 'transfer'],
-    description: 'Donate Embers to another user with v2 components',
+    description: 'Donate Embers to another user .',
     usage: '!donate @user <amount>',
     cooldown: 5000,
     async execute(message, args) {

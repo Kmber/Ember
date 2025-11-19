@@ -11,7 +11,7 @@ const { RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
 module.exports = {
     name: 'raid',
     aliases: ['raids'],
-    description: 'View active raids and raid management with v2 components',
+    description: 'View active raids and raid management .',
     usage: '!raid [status/history/leaderboard]',
     async execute(message, args) {
         try {

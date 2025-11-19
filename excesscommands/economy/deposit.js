@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'deposit',
     aliases: ['dep'],
-    description: 'Deposit Embers into your bank with v2 components',
+    description: 'Deposit Embers into your bank .',
     async execute(message, args) {
         try {
             const userId = message.author.id;

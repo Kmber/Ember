@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'myroles',
     aliases: ['roles'],
-    description: 'View your purchased premium roles with v2 components',
+    description: 'View your purchased premium roles .',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);

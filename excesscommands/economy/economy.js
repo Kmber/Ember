@@ -9,7 +9,7 @@ const {
 module.exports = {
     name: 'economy',
     aliases: ['eco', 'help-economy', 'guide'],
-    description: 'Complete guide to the advanced economy system with v2 components',
+    description: 'Complete guide to the advanced economy system .',
     async execute(message) {
         try {
             let currentPage = 0;

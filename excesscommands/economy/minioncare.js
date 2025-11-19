@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'minioncare',
     aliases: ['sustain', 'tend', 'commune'],
-    description: 'Care for your minions to improve their power and effectiveness with v2 components',
+    description: 'Care for your minions to improve their power and effectiveness .',
     usage: '!minioncare <action> [minion_index]',
     async execute(message, args) {
         try {

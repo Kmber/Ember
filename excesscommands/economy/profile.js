@@ -11,7 +11,7 @@ const { GUILD_TYPES, RAID_DUNGEONS } = require('../../models/economy/constants/g
 module.exports = {
     name: 'profile',
     aliases: ['stats', 'me'],
-    description: 'View your complete economy profile with v2 components',
+    description: 'View your complete economy profile .',
     async execute(message, args) {
         try {
             const targetUser = message.mentions.users.first() || message.author;

@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'minions',
     aliases: ['myminions'],
-    description: 'View your minion collection and their status with v2 components',
+    description: 'View your minion collection and their status .',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);

@@ -10,7 +10,7 @@ const { EconomyManager } = require('../../models/economy/economy');
 module.exports = {
     name: 'balance',
     aliases: ['bal', 'embers'],
-    description: 'Check your financial status with v2 components',
+    description: 'Check your financial status .',
     async execute(message) {
         try {
             const profile = await EconomyManager.getProfile(message.author.id, message.guild.id);

@@ -11,7 +11,7 @@ const { RAID_DUNGEONS } = require('../../models/economy/constants/guildData');
 module.exports = {
     name: 'executeraid',
     aliases: ['raid-execute', 'startraid'],
-    description: 'Execute a planned raid with v2 components',
+    description: 'Execute a planned raid .',
     usage: '!executeraid <raid_id>',
     async execute(message, args) {
         try {
