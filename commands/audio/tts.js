@@ -25,7 +25,7 @@ const inactivityTimers = new Map();
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('tts-live')
-        .setDescription('Live TTS - Bot reads messages in voice channel')
+        .setDescription('Live TTS - Emberlyn reads messages in voice channel')
         .addSubcommand(sub =>
             sub.setName('start')
                 .setDescription('Start live TTS session')
