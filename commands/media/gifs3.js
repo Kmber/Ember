@@ -32,6 +32,8 @@ const gestures = {
 };
 
 module.exports = {
+    name: 'gif-gestures',
+    aliases: ['gif-gestures', 'gestures', 'gif3','gest'],
     data: new SlashCommandBuilder()
         .setName('gif-gestures')
         .setDescription('Make anime-style gestures and actions!')
@@ -161,81 +163,92 @@ module.exports = {
                 .setDescription('Stare intensely!')
         ),
 
-    async execute(interaction) {
-        if (interaction.isCommand && interaction.isCommand()) {
-            await interaction.deferReply();
-            
-            const subcommand = interaction.options.getSubcommand();
-            const action = gestures[subcommand];
-            const sender = interaction.user;
+    async execute(interactionOrMessage, args, client) {
+        const isSlash = interactionOrMessage.isCommand && interactionOrMessage.isCommand();
 
-            try {
-                const gif = await action.func();
+        let subcommand, sender, replyFunc;
 
-              
-                let verbForm;
-                if (subcommand === 'sleep') {
-                    verbForm = 'falls asleep';
-                } else if (subcommand === 'run') {
-                    verbForm = 'runs away';
-                } else if (subcommand === 'hide') {
-                    verbForm = 'hides';
-                } else if (subcommand === 'sit') {
-                    verbForm = 'sits down';
-                } else if (subcommand === 'disappear') {
-                    verbForm = 'disappears';
-                } else if (subcommand === 'sigh') {
-                    verbForm = 'sighs';
-                } else if (subcommand === 'stare') {
-                    verbForm = 'stares intensely';
-                } else if (subcommand === 'purr') {
-                    verbForm = 'purrs';
-                } else if (subcommand === 'peek') {
-                    verbForm = 'peeks';
-                } else if (subcommand === 'nom') {
-                    verbForm = 'noms';
-                } else if (subcommand === 'dodge') {
-                    verbForm = 'dodges';
-                } else if (subcommand === 'dance') {
-                    verbForm = 'dances';
-                } else if (subcommand.endsWith('p')) {
-                   
-                    verbForm = `${subcommand}s`;
-                } else {
-                  
-                    verbForm = `${subcommand}s`;
-                }
-
-                const description = `${sender} ${verbForm}!`;
-
-                const embed = new EmbedBuilder()
-                    .setColor('#92FF7E') 
-                    .setDescription(description)
-                    .setImage(gif)
-                    .setTimestamp();
-                
-                await interaction.editReply({ embeds: [embed] });
-            } catch (error) {
-                console.error(error);
-                
-                await interaction.editReply({
-                    content: 'Something went wrong while performing the gesture.',
-                    ephemeral: true
-                });
-            }
+        if (isSlash) {
+            await interactionOrMessage.deferReply();
+            subcommand = interactionOrMessage.options.getSubcommand();
+            sender = interactionOrMessage.user;
+            replyFunc = (content) => interactionOrMessage.editReply(content);
         } else {
+            const message = interactionOrMessage;
+            subcommand = args[0]?.toLowerCase();
+            sender = message.author;
+            replyFunc = (content) => message.reply(content);
+        }
+
+        if (!subcommand || !gestures[subcommand]) {
             const embed = new EmbedBuilder()
                 .setColor('#3498db')
-                .setAuthor({ 
-                    name: "Alert!", 
+                .setAuthor({
+                    name: "Alert!",
                     iconURL: cmdIcons.dotIcon,
                     url: "https://discord.gg/sanctyr"
                 })
-                .setDescription('- This command can only be used through slash command!\n- Please use `/gif-gestures`')
+                .setDescription(`- Invalid subcommand!\n- Available: ${Object.keys(gestures).join(', ')}\n- Usage: ${isSlash ? '/gif-gestures <subcommand>' : '!gif-gestures <subcommand>'}`)
                 .setTimestamp();
-          
-            await interaction.reply({ embeds: [embed] });
-        } 
+
+            return replyFunc({ embeds: [embed] });
+        }
+
+        const action = gestures[subcommand];
+
+        try {
+            const gif = await action.func();
+
+            let verbForm;
+            if (subcommand === 'sleep') {
+                verbForm = 'falls asleep';
+            } else if (subcommand === 'run') {
+                verbForm = 'runs away';
+            } else if (subcommand === 'hide') {
+                verbForm = 'hides';
+            } else if (subcommand === 'sit') {
+                verbForm = 'sits down';
+            } else if (subcommand === 'disappear') {
+                verbForm = 'disappears';
+            } else if (subcommand === 'sigh') {
+                verbForm = 'sighs';
+            } else if (subcommand === 'stare') {
+                verbForm = 'stares intensely';
+            } else if (subcommand === 'purr') {
+                verbForm = 'purrs';
+            } else if (subcommand === 'peek') {
+                verbForm = 'peeks';
+            } else if (subcommand === 'nom') {
+                verbForm = 'noms';
+            } else if (subcommand === 'dodge') {
+                verbForm = 'dodges';
+            } else if (subcommand === 'dance') {
+                verbForm = 'dances';
+            } else if (subcommand.endsWith('p')) {
+                verbForm = `${subcommand}s`;
+            } else {
+                verbForm = `${subcommand}s`;
+            }
+
+            const description = `${sender} ${verbForm}!`;
+
+            const embed = new EmbedBuilder()
+                .setColor('#92FF7E')
+                .setDescription(description)
+                .setImage(gif)
+                .setTimestamp();
+
+            await replyFunc({ embeds: [embed] });
+        } catch (error) {
+            console.error(error);
+
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#ff0000')
+                .setDescription('Something went wrong while performing the gesture.')
+                .setTimestamp();
+
+            await replyFunc({ embeds: [errorEmbed] });
+        }
     }
 };
 

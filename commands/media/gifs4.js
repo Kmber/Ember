@@ -32,6 +32,8 @@ const reactions = {
 };
 
 module.exports = {
+    name: 'gif-reactions',
+    aliases: ['gif-reactions', 'reactions', 'gif4', 'react'],
     data: new SlashCommandBuilder()
         .setName('gif-reactions')
         .setDescription('React to situations with anime gifs!')
@@ -191,97 +193,124 @@ module.exports = {
                 .setDescription('Let out a yawn!')
         ),
 
-    async execute(interaction) {
-        if (interaction.isCommand && interaction.isCommand()) {
-            await interaction.deferReply();
-            
-            const subcommand = interaction.options.getSubcommand();
-            const action = reactions[subcommand];
-            const sender = interaction.user;
-            let target = null;
+    async execute(interactionOrMessage, args, client) {
+        const isSlash = interactionOrMessage.isCommand && interactionOrMessage.isCommand();
 
-            if (action.requiresTarget) {
-                target = interaction.options.getUser('user');
-            }
+        let subcommand, sender, target, replyFunc;
 
-            try {
-                const gif = await action.func();
-
-              
-                let description;
-                if (target) {
-                    if (subcommand === 'baka') {
-                        description = `${sender} calls ${target} a baka!`;
-                    } else if (subcommand === 'shame') {
-                        description = `${sender} shames ${target}!`;
-                    } else if (subcommand === 'sorry') {
-                        description = `${sender} apologizes to ${target}!`;
-                    } else if (subcommand === 'wave') {
-                        description = `${sender} waves at ${target}!`;
-                    } else if (subcommand === 'wink') {
-                        description = `${sender} winks at ${target}!`;
-                    } else {
-                     
-                        description = `${sender} ${subcommand}s at ${target}!`;
-                    }
-                } else {
-                 
-                    if (subcommand === 'angrystare') {
-                        description = `${sender} gives an angry stare!`;
-                    } else if (subcommand === 'error') {
-                        description = `${sender} encountered an error!`;
-                    } else if (subcommand === 'coffee') {
-                        description = `${sender} enjoys some coffee!`;
-                    } else if (subcommand === 'comfy') {
-                        description = `${sender} feels comfy!`;
-                    } else if (subcommand === 'scream') {
-                        description = `${sender} screams!`;
-                    } else if (subcommand === 'sneeze') {
-                        description = `${sender} sneezes!`;
-                    } else if (subcommand === 'tired') {
-                        description = `${sender} is tired!`;
-                    } else if (subcommand === 'thumbsup') {
-                        description = `${sender} gives a thumbs up!`;
-                    } else if (subcommand === 'triggered') {
-                        description = `${sender} is triggered!`;
-                    } else if (subcommand === 'woah') {
-                        description = `${sender} says woah!`;
-                    } else if (subcommand === 'yawn') {
-                        description = `${sender} yawns!`;
-                    } else {
-                     
-                        description = `${sender} ${subcommand}s!`;
-                    }
-                }
-
-                const embed = new EmbedBuilder()
-                    .setColor('#FFCC4D') 
-                    .setDescription(description)
-                    .setImage(gif)
-                    .setTimestamp();
-                
-                await interaction.editReply({ embeds: [embed] });
-            } catch (error) {
-                console.error(error);
-                
-                await interaction.editReply({
-                    content: 'Something went wrong while showing the reaction.',
-                    ephemeral: true
-                });
-            }
+        if (isSlash) {
+            await interactionOrMessage.deferReply();
+            subcommand = interactionOrMessage.options.getSubcommand();
+            sender = interactionOrMessage.user;
+            target = interactionOrMessage.options.getUser('user');
+            replyFunc = (content) => interactionOrMessage.editReply(content);
         } else {
+            const message = interactionOrMessage;
+            subcommand = args[0]?.toLowerCase();
+            sender = message.author;
+            // Parse target from mention or user ID
+            const targetMention = args[1];
+            if (targetMention) {
+                target = message.mentions.users.first() ||
+                         message.guild.members.cache.get(targetMention.replace(/[<@!>]/g, ''))?.user ||
+                         await client.users.fetch(targetMention.replace(/[<@!>]/g, '')).catch(() => null);
+            }
+            replyFunc = (content) => message.reply(content);
+        }
+
+        if (!subcommand || !reactions[subcommand]) {
             const embed = new EmbedBuilder()
                 .setColor('#3498db')
-                .setAuthor({ 
-                    name: "Alert!", 
+                .setAuthor({
+                    name: "Alert!",
                     iconURL: cmdIcons.dotIcon,
                     url: "https://discord.gg/sanctyr"
                 })
-                .setDescription('- This command can only be used through slash command!\n- Please use `/gif-reactions`')
+                .setDescription(`- Invalid subcommand!\n- Available: ${Object.keys(reactions).join(', ')}\n- Usage: ${isSlash ? '/gif-reactions <subcommand> [user]' : '!gif-reactions <subcommand> [@user]'}`)
                 .setTimestamp();
-          
-            await interaction.reply({ embeds: [embed] });
-        } 
+
+            return replyFunc({ embeds: [embed] });
+        }
+
+        const action = reactions[subcommand];
+
+        if (action.requiresTarget && !target) {
+            const embed = new EmbedBuilder()
+                .setColor('#3498db')
+                .setAuthor({
+                    name: "Alert!",
+                    iconURL: cmdIcons.dotIcon,
+                    url: "https://discord.gg/sanctyr"
+                })
+                .setDescription(`- This subcommand requires a target user!\n- Usage: ${isSlash ? '/gif-reactions ' + subcommand + ' <user>' : '!gif-reactions ' + subcommand + ' <@user>'}`)
+                .setTimestamp();
+
+            return replyFunc({ embeds: [embed] });
+        }
+
+        try {
+            const gif = await action.func();
+
+            let description;
+            if (target) {
+                if (subcommand === 'baka') {
+                    description = `${sender} calls ${target} a baka!`;
+                } else if (subcommand === 'shame') {
+                    description = `${sender} shames ${target}!`;
+                } else if (subcommand === 'sorry') {
+                    description = `${sender} apologizes to ${target}!`;
+                } else if (subcommand === 'wave') {
+                    description = `${sender} waves at ${target}!`;
+                } else if (subcommand === 'wink') {
+                    description = `${sender} winks at ${target}!`;
+                } else {
+                    description = `${sender} ${subcommand}s at ${target}!`;
+                }
+            } else {
+                if (subcommand === 'angrystare') {
+                    description = `${sender} gives an angry stare!`;
+                } else if (subcommand === 'error') {
+                    description = `${sender} encountered an error!`;
+                } else if (subcommand === 'coffee') {
+                    description = `${sender} enjoys some coffee!`;
+                } else if (subcommand === 'comfy') {
+                    description = `${sender} feels comfy!`;
+                } else if (subcommand === 'scream') {
+                    description = `${sender} screams!`;
+                } else if (subcommand === 'sneeze') {
+                    description = `${sender} sneezes!`;
+                } else if (subcommand === 'tired') {
+                    description = `${sender} is tired!`;
+                } else if (subcommand === 'thumbsup') {
+                    description = `${sender} gives a thumbs up!`;
+                } else if (subcommand === 'triggered') {
+                    description = `${sender} is triggered!`;
+                } else if (subcommand === 'woah') {
+                    description = `${sender} says woah!`;
+                } else if (subcommand === 'yawn') {
+                    description = `${sender} yawns!`;
+                } else {
+                    description = `${sender} ${subcommand}s!`;
+                }
+            }
+
+            const embed = new EmbedBuilder()
+                .setColor('#FFCC4D')
+                .setDescription(description)
+                .setImage(gif)
+                .setTimestamp();
+
+            await replyFunc({ embeds: [embed] });
+        } catch (error) {
+            console.error(error);
+
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#ff0000')
+                .setDescription('Something went wrong while showing the reaction.')
+                .setTimestamp();
+
+            await replyFunc({ embeds: [errorEmbed] });
+        }
     }
 };
 /* EMBERLYN */

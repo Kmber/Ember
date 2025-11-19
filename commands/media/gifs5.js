@@ -27,6 +27,8 @@ const special = {
 };
 
 module.exports = {
+    name: 'gif-special',
+    aliases: ['gif-special', 'special', 'gif5','emb'],
     data: new SlashCommandBuilder()
         .setName('gif-special')
         .setDescription('Special anime gifs for unique situations!')
@@ -155,99 +157,128 @@ module.exports = {
                 .setDescription('Say yes!')
         ),
 
-    async execute(interaction) {
-        if (interaction.isCommand && interaction.isCommand()) {
-            await interaction.deferReply();
-            
-            const subcommand = interaction.options.getSubcommand();
-            const action = special[subcommand];
-            const sender = interaction.user;
-            let target = null;
+    async execute(interactionOrMessage, args, client) {
+        const isSlash = interactionOrMessage.isCommand && interactionOrMessage.isCommand();
 
-            if (action.requiresTarget) {
-                target = interaction.options.getUser('user');
-            }
+        let subcommand, sender, target, replyFunc;
 
-            try {
-                const gif = await action.func();
-
-               
-                let description;
-                if (target) {
-                    if (subcommand === 'destroy') {
-                        description = `${sender} destroys ${target}!`;
-                    } else if (subcommand === 'kill') {
-                        description = `${sender} kills ${target}!`;
-                    } else if (subcommand === 'wasted') {
-                        description = `${target} is wasted!`;
-                    } else if (subcommand === 'yeet') {
-                        description = `${sender} yeets ${target}!`;
-                    } else {
-                        description = `${sender} ${subcommand}s ${target}!`;
-                    }
-                } else {
-                    
-                    if (subcommand === 'die') {
-                        description = `${sender} dies dramatically!`;
-                    } else if (subcommand === 'eevee') {
-                        description = `${sender} shows an Eevee!`;
-                    } else if (subcommand === 'fbi') {
-                        description = `${sender} calls the FBI!`;
-                    } else if (subcommand === 'neko') {
-                        description = `${sender} shows a neko!`;
-                    } else if (subcommand === 'party') {
-                        description = `${sender} starts a party!`;
-                    } else if (subcommand === 'puke') {
-                        description = `${sender} pukes!`;
-                    } else if (subcommand === 'pusheen') {
-                        description = `${sender} shows Pusheen!`;
-                    } else if (subcommand === 'random') {
-                        description = `${sender} shows a random gif!`;
-                    } else if (subcommand === 'tail') {
-                        description = `${sender} wags their tail!`;
-                    } else if (subcommand === 'trap') {
-                        description = `${sender} says it's a trap!`;
-                    } else if (subcommand === 'uwu') {
-                        description = `${sender} says UwU!`;
-                    } else if (subcommand === 'wiggle') {
-                        description = `${sender} wiggles!`;
-                    } else if (subcommand === 'yay') {
-                        description = `${sender} says yay!`;
-                    } else if (subcommand === 'yes') {
-                        description = `${sender} says yes!`;
-                    } else {
-                        description = `${sender} ${subcommand}s!`;
-                    }
-                }
-
-                const embed = new EmbedBuilder()
-                    .setColor('#D580FF') 
-                    .setDescription(description)
-                    .setImage(gif)
-                    .setTimestamp();
-                
-                await interaction.editReply({ embeds: [embed] });
-            } catch (error) {
-                console.error(error);
-                
-                await interaction.editReply({
-                    content: 'Something went wrong while showing the special gif.',
-                    ephemeral: true
-                });
-            }
+        if (isSlash) {
+            await interactionOrMessage.deferReply();
+            subcommand = interactionOrMessage.options.getSubcommand();
+            sender = interactionOrMessage.user;
+            target = interactionOrMessage.options.getUser('user');
+            replyFunc = (content) => interactionOrMessage.editReply(content);
         } else {
+            const message = interactionOrMessage;
+            subcommand = args[0]?.toLowerCase();
+            sender = message.author;
+            // Parse target from mention or user ID
+            const targetMention = args[1];
+            if (targetMention) {
+                target = message.mentions.users.first() ||
+                         message.guild.members.cache.get(targetMention.replace(/[<@!>]/g, ''))?.user ||
+                         await client.users.fetch(targetMention.replace(/[<@!>]/g, '')).catch(() => null);
+            }
+            replyFunc = (content) => message.reply(content);
+        }
+
+        if (!subcommand || !special[subcommand]) {
             const embed = new EmbedBuilder()
                 .setColor('#3498db')
-                .setAuthor({ 
-                    name: "Alert!", 
+                .setAuthor({
+                    name: "Alert!",
                     iconURL: cmdIcons.dotIcon,
                     url: "https://discord.gg/sanctyr"
                 })
-                .setDescription('- This command can only be used through slash command!\n- Please use `/gif-special`')
+                .setDescription(`- Invalid subcommand!\n- Available: ${Object.keys(special).join(', ')}\n- Usage: ${isSlash ? '/gif-special <subcommand> [user]' : '!gif-special <subcommand> [@user]'}`)
                 .setTimestamp();
-          
-            await interaction.reply({ embeds: [embed] });
-        } 
+
+            return replyFunc({ embeds: [embed] });
+        }
+
+        const action = special[subcommand];
+
+        if (action.requiresTarget && !target) {
+            const embed = new EmbedBuilder()
+                .setColor('#3498db')
+                .setAuthor({
+                    name: "Alert!",
+                    iconURL: cmdIcons.dotIcon,
+                    url: "https://discord.gg/sanctyr"
+                })
+                .setDescription(`- This subcommand requires a target user!\n- Usage: ${isSlash ? '/gif-special ' + subcommand + ' <user>' : '!gif-special ' + subcommand + ' <@user>'}`)
+                .setTimestamp();
+
+            return replyFunc({ embeds: [embed] });
+        }
+
+        try {
+            const gif = await action.func();
+
+            let description;
+            if (target) {
+                if (subcommand === 'destroy') {
+                    description = `${sender} destroys ${target}!`;
+                } else if (subcommand === 'kill') {
+                    description = `${sender} kills ${target}!`;
+                } else if (subcommand === 'wasted') {
+                    description = `${target} is wasted!`;
+                } else if (subcommand === 'yeet') {
+                    description = `${sender} yeets ${target}!`;
+                } else {
+                    description = `${sender} ${subcommand}s ${target}!`;
+                }
+            } else {
+                if (subcommand === 'die') {
+                    description = `${sender} dies dramatically!`;
+                } else if (subcommand === 'eevee') {
+                    description = `${sender} shows an Eevee!`;
+                } else if (subcommand === 'fbi') {
+                    description = `${sender} calls the FBI!`;
+                } else if (subcommand === 'neko') {
+                    description = `${sender} shows a neko!`;
+                } else if (subcommand === 'party') {
+                    description = `${sender} starts a party!`;
+                } else if (subcommand === 'puke') {
+                    description = `${sender} pukes!`;
+                } else if (subcommand === 'pusheen') {
+                    description = `${sender} shows Pusheen!`;
+                } else if (subcommand === 'random') {
+                    description = `${sender} shows a random gif!`;
+                } else if (subcommand === 'tail') {
+                    description = `${sender} wags their tail!`;
+                } else if (subcommand === 'trap') {
+                    description = `${sender} says it's a trap!`;
+                } else if (subcommand === 'uwu') {
+                    description = `${sender} says UwU!`;
+                } else if (subcommand === 'wiggle') {
+                    description = `${sender} wiggles!`;
+                } else if (subcommand === 'yay') {
+                    description = `${sender} says yay!`;
+                } else if (subcommand === 'yes') {
+                    description = `${sender} says yes!`;
+                } else {
+                    description = `${sender} ${subcommand}s!`;
+                }
+            }
+
+            const embed = new EmbedBuilder()
+                .setColor('#D580FF')
+                .setDescription(description)
+                .setImage(gif)
+                .setTimestamp();
+
+            await replyFunc({ embeds: [embed] });
+        } catch (error) {
+            console.error(error);
+
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#ff0000')
+                .setDescription('Something went wrong while showing the special gif.')
+                .setTimestamp();
+
+            await replyFunc({ embeds: [errorEmbed] });
+        }
     }
 };
 /* EMBERLYN */

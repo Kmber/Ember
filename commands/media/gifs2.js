@@ -32,6 +32,8 @@ const interactions = {
 };
 
 module.exports = {
+    name: 'gif-interactions',
+    aliases: ['gif-interactions', 'interactions', 'gif2','interact'],
     data: new SlashCommandBuilder()
         .setName('gif-interactions')
         .setDescription('Interact with other users using anime gifs!')
@@ -311,64 +313,96 @@ module.exports = {
                 )
         ),
 
-    async execute(interaction) {
-        if (interaction.isCommand && interaction.isCommand()) {
-            await interaction.deferReply();
-            
-            const subcommand = interaction.options.getSubcommand();
-            const action = interactions[subcommand];
-            const sender = interaction.user;
-            const target = interaction.options.getUser('user');
+    async execute(interactionOrMessage, args, client) {
+        const isSlash = interactionOrMessage.isCommand && interactionOrMessage.isCommand();
 
-            try {
-                const gif = await action.func();
+        let subcommand, sender, target, replyFunc;
 
-             
-                let verbForm;
-                if (subcommand === 'handhold') {
-                    verbForm = 'holds hands with';
-                } else if (subcommand === 'highfive') {
-                    verbForm = 'high fives';
-                } else if (subcommand === 'kiss') {
-                    verbForm = 'kisses';
-                } else if (subcommand.endsWith('h')) {
-                 
-                    verbForm = `${subcommand}es`;
-                } else {
-                   
-                    verbForm = `${subcommand}s`;
-                }
-
-                const description = `${sender} ${verbForm} ${target}!`;
-
-                const embed = new EmbedBuilder()
-                    .setColor('#82DCFF') 
-                    .setDescription(description)
-                    .setImage(gif)
-                    .setTimestamp();
-                
-                await interaction.editReply({ embeds: [embed] });
-            } catch (error) {
-                console.error(error);
-                
-                await interaction.editReply({
-                    content: 'Something went wrong while performing the interaction.',
-                    ephemeral: true
-                });
-            }
+        if (isSlash) {
+            await interactionOrMessage.deferReply();
+            subcommand = interactionOrMessage.options.getSubcommand();
+            sender = interactionOrMessage.user;
+            target = interactionOrMessage.options.getUser('user');
+            replyFunc = (content) => interactionOrMessage.editReply(content);
         } else {
+            const message = interactionOrMessage;
+            subcommand = args[0]?.toLowerCase();
+            sender = message.author;
+            // Parse target from mention or user ID
+            const targetMention = args[1];
+            if (targetMention) {
+                target = message.mentions.users.first() ||
+                         message.guild.members.cache.get(targetMention.replace(/[<@!>]/g, ''))?.user ||
+                         await client.users.fetch(targetMention.replace(/[<@!>]/g, '')).catch(() => null);
+            }
+            replyFunc = (content) => message.reply(content);
+        }
+
+        if (!subcommand || !interactions[subcommand]) {
             const embed = new EmbedBuilder()
                 .setColor('#3498db')
-                .setAuthor({ 
-                    name: "Alert!", 
+                .setAuthor({
+                    name: "Alert!",
                     iconURL: cmdIcons.dotIcon,
                     url: "https://discord.gg/sanctyr"
                 })
-                .setDescription('- This command can only be used through slash command!\n- Please use `/gif-interactions`')
+                .setDescription(`- Invalid subcommand!\n- Available: ${Object.keys(interactions).join(', ')}\n- Usage: ${isSlash ? '/gif-interactions <subcommand> <user>' : '!gif-interactions <subcommand> <@user>'}`)
                 .setTimestamp();
-          
-            await interaction.reply({ embeds: [embed] });
-        } 
+
+            return replyFunc({ embeds: [embed] });
+        }
+
+        const action = interactions[subcommand];
+
+        if (action.requiresTarget && !target) {
+            const embed = new EmbedBuilder()
+                .setColor('#3498db')
+                .setAuthor({
+                    name: "Alert!",
+                    iconURL: cmdIcons.dotIcon,
+                    url: "https://discord.gg/sanctyr"
+                })
+                .setDescription(`- This subcommand requires a target user!\n- Usage: ${isSlash ? '/gif-interactions ' + subcommand + ' <user>' : '!gif-interactions ' + subcommand + ' <@user>'}`)
+                .setTimestamp();
+
+            return replyFunc({ embeds: [embed] });
+        }
+
+        try {
+            const gif = await action.func();
+
+            let verbForm;
+            if (subcommand === 'handhold') {
+                verbForm = 'holds hands with';
+            } else if (subcommand === 'highfive') {
+                verbForm = 'high fives';
+            } else if (subcommand === 'kiss') {
+                verbForm = 'kisses';
+            } else if (subcommand.endsWith('h')) {
+                verbForm = `${subcommand}es`;
+            } else {
+                verbForm = `${subcommand}s`;
+            }
+
+            const description = `${sender} ${verbForm} ${target}!`;
+
+            const embed = new EmbedBuilder()
+                .setColor('#82DCFF')
+                .setDescription(description)
+                .setImage(gif)
+                .setTimestamp();
+
+            await replyFunc({ embeds: [embed] });
+        } catch (error) {
+            console.error(error);
+
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#ff0000')
+                .setDescription('Something went wrong while performing the interaction.')
+                .setTimestamp();
+
+            await replyFunc({ embeds: [errorEmbed] });
+        }
     }
 };
 

@@ -15,6 +15,11 @@ module.exports = async (client, config, colors) => {
         for (const file of commandFiles) {
             const command = require(path.join(commandsPath, folder, file));
             client.commands.set(command.data.name, command);
+            if (command.aliases) {
+                for (const alias of command.aliases) {
+                    client.commands.set(alias, command);
+                }
+            }
             commands.push(command.data.toJSON());
         }
     }

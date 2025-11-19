@@ -33,6 +33,8 @@ const emotions = {
 };
 
 module.exports = {
+    name: 'gif-emotions',
+    aliases: ['gif-emotions', 'emotions', 'gif1', 'emote'],
     data: new SlashCommandBuilder()
         .setName('gif-emotions')
         .setDescription('Express your emotions with anime gifs!')
@@ -162,63 +164,76 @@ module.exports = {
                 .setDescription('Show a nervous sweat!')
         ),
 
-    async execute(interaction) {
-        if (interaction.isCommand && interaction.isCommand()) {
-            await interaction.deferReply();
-            
-            const subcommand = interaction.options.getSubcommand();
-            const action = emotions[subcommand];
-            const sender = interaction.user;
+    async execute(interactionOrMessage, args, client) {
+        const isSlash = interactionOrMessage.isCommand && interactionOrMessage.isCommand();
 
-            try {
-                const gif = await action.func();
+        let subcommand, sender, replyFunc, deferFunc;
 
-                
-                let verbForm;
-                if (subcommand.endsWith('h')) {
-                 
-                    verbForm = `${subcommand}s`;
-                } else if (subcommand === 'cry') {
-                    verbForm = 'cries';
-                } else if (subcommand === 'love') {
-                    verbForm = 'is feeling love';
-                } else if (subcommand === 'nyah') {
-                    verbForm = 'says nyah~';
-                } else {
-                  
-                    verbForm = `${subcommand}s`;
-                }
-
-                const description = `${sender} ${verbForm}!`;
-
-                const embed = new EmbedBuilder()
-                    .setColor('#FF9CE0') 
-                    .setDescription(description)
-                    .setImage(gif)
-                    .setTimestamp();
-                
-                await interaction.editReply({ embeds: [embed] });
-            } catch (error) {
-                console.error(error);
-                
-                await interaction.editReply({
-                    content: 'Something went wrong while showing the emotion.',
-                    ephemeral: true
-                });
-            }
+        if (isSlash) {
+            await interactionOrMessage.deferReply();
+            subcommand = interactionOrMessage.options.getSubcommand();
+            sender = interactionOrMessage.user;
+            replyFunc = (content) => interactionOrMessage.editReply(content);
+            deferFunc = () => {}; // Already deferred
         } else {
+            const message = interactionOrMessage;
+            subcommand = args[0]?.toLowerCase();
+            sender = message.author;
+            replyFunc = (content) => message.reply(content);
+            deferFunc = () => {}; // No defer for prefix
+        }
+
+        if (!subcommand || !emotions[subcommand]) {
             const embed = new EmbedBuilder()
                 .setColor('#3498db')
-                .setAuthor({ 
-                    name: "Alert!", 
+                .setAuthor({
+                    name: "Alert!",
                     iconURL: cmdIcons.dotIcon,
                     url: "https://discord.gg/sanctyr"
                 })
-                .setDescription('- This command can only be used through slash command!\n- Please use `/gif-emotions`')
+                .setDescription(`- Invalid subcommand!\n- Available: ${Object.keys(emotions).join(', ')}\n- Usage: ${isSlash ? '/gif-emotions <subcommand>' : '!gif-emotions <subcommand>'}`)
                 .setTimestamp();
-          
-            await interaction.reply({ embeds: [embed] });
-        } 
+
+            return replyFunc({ embeds: [embed] });
+        }
+
+        const action = emotions[subcommand];
+
+        try {
+            const gif = await action.func();
+
+            let verbForm;
+            if (subcommand.endsWith('h')) {
+                verbForm = `${subcommand}s`;
+            } else if (subcommand === 'cry') {
+                verbForm = 'cries';
+            } else if (subcommand === 'love') {
+                verbForm = 'is feeling love';
+            } else if (subcommand === 'nyah') {
+                verbForm = 'says nyah~';
+            } else {
+                verbForm = `${subcommand}s`;
+            }
+
+            const description = `${sender} ${verbForm}!`;
+
+            const embed = new EmbedBuilder()
+                .setColor('#FF9CE0')
+                .setDescription(description)
+                .setImage(gif)
+                .setTimestamp();
+
+            await replyFunc({ embeds: [embed] });
+        } catch (error) {
+            console.error(error);
+
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#ff0000')
+                .setDescription('Something went wrong while showing the emotion.')
+                .setTimestamp();
+
+            await replyFunc({ embeds: [errorEmbed] });
+        }
     }
 };
 

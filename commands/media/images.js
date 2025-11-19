@@ -25,6 +25,8 @@ const imageTypes = {
 };
 
 module.exports = {
+    name: 'images',
+    aliases: ['images', 'image'],
     data: new SlashCommandBuilder()
         .setName('images')
         .setDescription('Send various anime/styled images')
@@ -86,10 +88,35 @@ module.exports = {
             sub.setName('random').setDescription('Get a completely random image')
         ),
 
-    async execute(interaction) {
-        if (interaction.isCommand && interaction.isCommand()) {
-        await interaction.deferReply();
-        const subcommand = interaction.options.getSubcommand();
+    async execute(interactionOrMessage, args, client) {
+        const isSlash = interactionOrMessage.isCommand && interactionOrMessage.isCommand();
+
+        let subcommand, replyFunc;
+
+        if (isSlash) {
+            await interactionOrMessage.deferReply();
+            subcommand = interactionOrMessage.options.getSubcommand();
+            replyFunc = (content) => interactionOrMessage.editReply(content);
+        } else {
+            const message = interactionOrMessage;
+            subcommand = args[0]?.toLowerCase();
+            replyFunc = (content) => message.reply(content);
+        }
+
+        if (!subcommand || !imageTypes[subcommand]) {
+            const embed = new EmbedBuilder()
+                .setColor('#3498db')
+                .setAuthor({
+                    name: "Alert!",
+                    iconURL: cmdIcons.dotIcon,
+                    url: "https://discord.gg/sanctyr"
+                })
+                .setDescription(`- Invalid subcommand!\n- Available: ${Object.keys(imageTypes).join(', ')}\n- Usage: ${isSlash ? '/images <subcommand>' : '!images <subcommand>'}`)
+                .setTimestamp();
+
+            return replyFunc({ embeds: [embed] });
+        }
+
         const fetchImage = imageTypes[subcommand];
 
         try {
@@ -101,28 +128,17 @@ module.exports = {
                 .setImage(imageUrl)
                 .setTimestamp();
 
-            await interaction.editReply({ embeds: [embed] });
+            await replyFunc({ embeds: [embed] });
         } catch (error) {
             console.error(error);
 
-            await interaction.editReply({
-                content: 'Failed to fetch the image. Try again later.',
-                ephemeral: true
-            });
+            const errorEmbed = new EmbedBuilder()
+                .setColor('#ff0000')
+                .setDescription('Failed to fetch the image. Try again later.')
+                .setTimestamp();
+
+            await replyFunc({ embeds: [errorEmbed] });
         }
-    } else {
-        const embed = new EmbedBuilder()
-            .setColor('#3498db')
-            .setAuthor({ 
-                name: "Alert!", 
-                iconURL: cmdIcons.dotIcon,
-                url: "https://discord.gg/sanctyr"
-            })
-            .setDescription('- This command can only be used through slash command!\n- Please use `/images`')
-            .setTimestamp();
-      
-        await interaction.reply({ embeds: [embed] });
-    } 
     }
 };
 /* EMBERLYN */
