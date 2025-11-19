@@ -66,7 +66,7 @@ module.exports = {
 
                 insufficientContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 💸 Insufficient Wallet Funds\n## NOT ENOUGH MONEY TO DEPOSIT\n\n> You don't have enough Embers in your wallet for this deposit!`)
+                        .setContent(`# 💸 Insufficient Wallet Funds\n## Not enough Embers TO DEPOSIT\n\n> You don't have enough Embers in your wallet for this deposit!`)
                 );
 
                 components.push(insufficientContainer);
@@ -152,7 +152,7 @@ module.exports = {
 
             headerContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`# ✅ Deposit Successful!\n## MONEY SAFELY BANKED\n\n> You have successfully deposited **\`${amount.toLocaleString()} Embers\`** into your bank account!\n> Your Embers are now secure and earning interest.`)
+                    .setContent(`# ✅ Deposit Successful!\n## Ember SAFELY BANKED\n\n> You have successfully deposited **\`${amount.toLocaleString()} Embers\`** into your bank account!\n> Your Embers are now secure and earning interest.`)
             );
 
             components.push(headerContainer);

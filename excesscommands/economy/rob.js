@@ -230,7 +230,7 @@ module.exports = {
 
                 betterTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🎯 **FIND BETTER TARGETS**\n\n**💰 Look For:** Users with substantial Embers balances\n**📊 Check Activity:** Active players tend to have more money\n**🏆 Target Winners:** Look for successful gamblers or workers\n**⏰ Wait Strategy:** Check back when they might have earned more\n\n**💡 Pro Tip:** Use \`!leaderboard wealth\` to scout rich targets!`)
+                        .setContent(`## 🎯 **FIND BETTER TARGETS**\n\n**💰 Look For:** Users with substantial Embers balances\n**📊 Check Activity:** Active players tend to have more Ember\n**🏆 Target Winners:** Look for successful gamblers or workers\n**⏰ Wait Strategy:** Check back when they might have earned more\n\n**💡 Pro Tip:** Use \`!leaderboard wealth\` to scout rich targets!`)
                 );
 
                 components.push(betterTargetContainer);

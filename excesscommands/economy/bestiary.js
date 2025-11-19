@@ -35,7 +35,7 @@ module.exports = {
 
                 solutionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 📜 **GET YOUR FIRST BEAST**\n\n**Step 1:** Use \`!summon\` to see available beasts\n**Step 2:** Choose a beast that fits your budget\n**Step 3:** Summon your first beast\n**Step 4:** Start racing and taking on quests!\n\n**💡 Benefits:**\n> • Unlock beast races for prize money\n> • Enable special quests and events\n> • Build a valuable collection of beasts\n> • Show off your power and success`)
+                        .setContent(`## 📜 **GET YOUR FIRST BEAST**\n\n**Step 1:** Use \`!summon\` to see available beasts\n**Step 2:** Choose a beast that fits your budget\n**Step 3:** Summon your first beast\n**Step 4:** Start racing and taking on quests!\n\n**💡 Benefits:**\n> • Unlock beast races for prize Ember\n> • Enable special quests and events\n> • Build a valuable collection of beasts\n> • Show off your power and success`)
                 );
 
                 components.push(solutionContainer);

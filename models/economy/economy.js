@@ -273,7 +273,7 @@ static async sellGuild(profile, guildIndex) {
     
     const sellValue = Math.floor(baseValue + levelBonus + reputationBonus);
     
-    // Remove guild and add money
+    // Remove guild and add Ember
     profile.guilds.splice(guildIndex, 1);
     profile.wallet += sellValue;
     

@@ -85,7 +85,7 @@ module.exports = {
 
                 botDonateContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# 🤖 Bot Donations Not Allowed\n## BOTS DON'T NEED MONEY\n\n> You cannot donate to bots! They don't have economy profiles.\n> Find a real person to help instead.`)
+                        .setContent(`# 🤖 Bot Donations Not Allowed\n## BOTS DON'T NEED Ember\n\n> You cannot donate to bots! They don't have economy profiles.\n> Find a real person to help instead.`)
                 );
 
                 components.push(botDonateContainer);

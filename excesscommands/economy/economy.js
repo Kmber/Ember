@@ -157,7 +157,7 @@ module.exports = {
                         components.push(expensesContainer);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                        // Money Strategy
+                        // Ember Strategy
                         const strategyContainer = new ContainerBuilder()
                             .setAccentColor(0xFF9800);
 
