@@ -502,11 +502,11 @@ module.exports = {
                  
                                  if (currentPage > 0) {
                                      navContainer.addTextDisplayComponents(
-                                         new TextDisplayBuilder().setContent(`\${navText}\n\n**◀️ Previous:** Page ${currentPage}`)
+                                         new TextDisplayBuilder().setContent(`${navText}\n\n**◀️ Previous:** Page ${currentPage}`)
                                      );
                                  } else if (currentPage < totalPages - 1) {
                                      navContainer.addTextDisplayComponents(
-                                         new TextDisplayBuilder().setContent(`\${navText}\n\n**▶️ Next:** Page ${currentPage + 2}`)
+                                         new TextDisplayBuilder().setContent(`${navText}\n\n**▶️ Next:** Page ${currentPage + 2}`)
                                      );
                                  } else {
                                      navContainer.addTextDisplayComponents(
