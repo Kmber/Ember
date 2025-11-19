@@ -8,8 +8,8 @@ const {
 
 module.exports = {
     name: 'economy',
-    aliases: ['dark-economy', 'deco', 'dark-guide'],
-    description: 'Complete guide to the dark fantasy economy system.',
+    aliases: ['dark-economy', 'deco', 'dark-guide', 'eco'],
+    description: 'Complete guide to the SANCTYR economy system.',
     async execute(message) {
         try {
             const serverPrefix = message.prefix || '!';
@@ -26,7 +26,7 @@ module.exports = {
 
                         headerContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`# 🌑 DARK FANTASY ECONOMY\n## FORGE YOUR EMPIRE IN SHADOW\n\n> **Page 1 of 9** | Complete mastery guide for total domination\n> Use navigation buttons to explore all advanced systems and strategies`)
+                                .setContent(`# 🌑 SANCTYR ECONOMY\n## FORGE YOUR EMPIRE IN SHADOW\n\n> **Page 1 of 9** | Complete mastery guide for total domination\n> Use navigation buttons to explore all advanced systems and strategies`)
                         );
 
                         components.push(headerContainer);
@@ -502,11 +502,11 @@ module.exports = {
                  
                                  if (currentPage > 0) {
                                      navContainer.addTextDisplayComponents(
-                                         new TextDisplayBuilder().setContent(\`${navText}\n\n**◀️ Previous:** Page ${currentPage}\`)
+                                         new TextDisplayBuilder().setContent(`\${navText}\n\n**◀️ Previous:** Page ${currentPage}`)
                                      );
                                  } else if (currentPage < totalPages - 1) {
                                      navContainer.addTextDisplayComponents(
-                                         new TextDisplayBuilder().setContent(\`${navText}\n\n**▶️ Next:** Page ${currentPage + 2}\`)
+                                         new TextDisplayBuilder().setContent(`\${navText}\n\n**▶️ Next:** Page ${currentPage + 2}`)
                                      );
                                  } else {
                                      navContainer.addTextDisplayComponents(
@@ -572,7 +572,7 @@ module.exports = {
                  
                                          closedContainer.addTextDisplayComponents(
                                              new TextDisplayBuilder()
-                                                 .setContent(\`# 📚 Dark Fantasy Economy Guide Closed\n## MAY YOUR EMBERS NEVER FADE\n\n> The guide has been closed. Use \`${serverPrefix}economy\` to reopen it.\`)
+                                                 .setContent(`\# 📚 SANCTYR Economy Guide Closed\n## MAY YOUR EMBERS NEVER FADE\n\n> The guide has been closed. Use \`${serverPrefix}economy\` to reopen it.`)
                                          );
                  
                                          closedComponents.push(closedContainer);

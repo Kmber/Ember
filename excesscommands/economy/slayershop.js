@@ -196,7 +196,7 @@ module.exports = {
 
                 headerContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`# ⚔️ The Slayer\'s Emporium\n## DARK FANTASY ARMORY\n\n> Everything you need for your monster-slaying quests!`)
+                        .setContent(`# ⚔️ The Slayer\'s Emporium\n## SANCTYR ARMORY\n\n> Everything you need for your monster-slaying quests!`)
                 );
 
                 components.push(headerContainer);
