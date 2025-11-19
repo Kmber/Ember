@@ -1,11 +1,11 @@
 
 module.exports = {
-    enabled: true, 
+    enabled: true,
     lavalink: {
-      name: "GlaceYT",
-      password: "glace",
-      host: "87.106.62.92",
-      port:  11642,
-      secure: false
+      name: process.env.LAVALINK_NAME,
+      password: process.env.LAVALINK_PASSWORD,
+      host: process.env.LAVALINK_HOST,
+      port: process.env.LAVALINK_PORT,
+      secure: process.env.LAVALINK_SECURE === 'true'
     }
 };
