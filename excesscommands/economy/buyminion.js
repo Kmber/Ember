@@ -239,7 +239,7 @@ module.exports = {
 
             const newPowerLevel = EconomyManager.calculatePowerLevel(profile);
             powerContainer.addTextDisplayComponents(
-                new TextDisplay_builder()
+                new TextDisplayBuilder()
                     .setContent(`**🏰 Enhanced Citadel Power:** Your citadel is now more formidable!\n**🔒 Rival Protection:** \`+${minionData.powerLevel}%\` power boost\n**📊 Total Power Level:** \`${newPowerLevel}%\`\n**🎯 Protection Value:** Your minion actively deters potential rivals`)
             );
 

@@ -149,7 +149,7 @@ module.exports = {
 
           
             const multiplierSources = [];
-            if (profile.followers.length > 0 && profile.properties.length > 0) {
+            if (profile.followers.length > 0 && profile.citadels.length > 0) {
                 multiplierSources.push(`Follower Allegiance (+${((profile.followerAllegiance / 100) * 0.5 * 100).toFixed(1)}%)`);
             }
             if (profile.purchasedRoles.length > 0) {

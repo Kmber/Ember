@@ -237,7 +237,7 @@ module.exports = {
                         break;
                         
                     case 'security_upgrade':
-                        const primaryProperty = profile.properties.find(p => p.propertyId === profile.primaryResidence);
+                        const primaryProperty = profile.citadels.find(p => p.propertyId === profile.primaryResidence);
                         if (!primaryProperty) {
                             profile.wallet += item.price;
                             const components = [];

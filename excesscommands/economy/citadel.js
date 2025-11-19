@@ -43,7 +43,7 @@ async function setPrimary(message, args) {
         return message.reply('Please specify the name of the citadel you want to set as primary.');
     }
 
-    const targetCitadel = profile.properties.find(p => p.name.toLowerCase() === citadelName.toLowerCase());
+    const targetCitadel = profile.citadels.find(p => p.name.toLowerCase() === citadelName.toLowerCase());
 
     if (!targetCitadel) {
         return message.reply(`You do not own a citadel named \`${citadelName}\`.`);

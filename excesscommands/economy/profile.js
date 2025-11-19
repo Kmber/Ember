@@ -21,7 +21,7 @@ module.exports = {
             const powerLevel = EconomyManager.calculatePowerLevel(profile);
             const workMultiplier = EconomyManager.calculateWorkMultiplier(profile);
             const beastValue = profile.beasts.reduce((sum, beast) => sum + beast.currentValue, 0);
-            const citadelValue = profile.properties.reduce((sum, prop) => sum + prop.currentValue, 0);
+            const citadelValue = profile.citadels.reduce((sum, prop) => sum + prop.currentValue, 0);
             const winRate = profile.racingStats.totalRaces > 0 ? 
                 ((profile.racingStats.wins / profile.racingStats.totalRaces) * 100).toFixed(1) : '0.0';
             
@@ -76,7 +76,7 @@ module.exports = {
 
             assetsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏘️ Citadels Owned:** \`${profile.properties.length}\`\n**🏰 Citadel Value:** \`$${citadelValue.toLocaleString()}\`\n**👹 Beasts Owned:** \`${profile.beasts.length}\`\n**🔥 Beast Value:** \`$${beastValue.toLocaleString()}\``)
+                    .setContent(`**🏘️ Citadels Owned:** \`${profile.citadels.length}\`\n**🏰 Citadel Value:** \`$${citadelValue.toLocaleString()}\`\n**👹 Beasts Owned:** \`${profile.beasts.length}\`\n**🔥 Beast Value:** \`$${beastValue.toLocaleString()}\``)
             );
 
             assetsContainer.addTextDisplayComponents(

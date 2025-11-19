@@ -262,9 +262,9 @@ module.exports = (client) => {
             {
                 name: 'Property Appreciation',
                 type: 'positive',
-                condition: () => profile.properties.length > 0,
+                condition: () => profile.citadels.length > 0,
                 action: () => {
-                    const property = profile.properties[Math.floor(Math.random() * profile.properties.length)];
+                    const property = profile.citadels[Math.floor(Math.random() * profile.citadels.length)];
                     const appreciation = Math.floor(property.currentValue * 0.02); // 2% appreciation
                     
                     property.currentValue += appreciation;
@@ -279,7 +279,7 @@ module.exports = (client) => {
             {
                 name: 'Utility Bill Spike',
                 type: 'negative',
-                condition: () => profile.properties.length > 0,
+                condition: () => profile.citadels.length > 0,
                 action: () => {
                     const extraCost = Math.floor(Math.random() * 800) + 200;
                     profile.wallet = Math.max(0, profile.wallet - extraCost);
