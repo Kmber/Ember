@@ -103,7 +103,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🕵️ **HOW TO ROB SOMEONE**\n\n**Command:** \`!rob @target\`\n**Example:** \`!rob @JohnDoe\`\n\n**💡 Robbery Tips:**\n> • Target users with lower security levels\n> • Higher level robbers have better success rates\n> • Victims need at least $500 to be worth robbing\n> • Failed robberies result in fines and reputation loss\n> • Successful robberies give XP and stolen money`)
+                        .setContent(`## 🕵️ **HOW TO ROB SOMEONE**\n\n**Command:** \`!rob @target\`\n**Example:** \`!rob @JohnDoe\`\n\n**💡 Robbery Tips:**\n> • Target users with lower power levels\n> • Higher level robbers have better success rates\n> • Victims need at least $500 to be worth robbing\n> • Failed robberies result in fines and reputation loss\n> • Successful robberies give XP and stolen money`)
                 );
 
                 components.push(instructionsContainer);
@@ -165,7 +165,7 @@ module.exports = {
 
                 humanTargetContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 👥 **FIND HUMAN TARGETS**\n\n**🎯 Look For:** Active server members who participate in the economy\n**💰 Target Rich:** Players with high wallet balances\n**🛡️ Avoid Strong:** Users with high security levels (pets/properties)\n**⏰ Time It Right:** Rob when targets are likely offline\n\n> Focus on human players for successful robberies!`)
+                        .setContent(`## 👥 **FIND HUMAN TARGETS**\n\n**🎯 Look For:** Active server members who participate in the economy\n**💰 Target Rich:** Players with high wallet balances\n**🛡️ Avoid Strong:** Users with high power levels (minions/citadels)\n**⏰ Time It Right:** Rob when targets are likely offline\n\n> Focus on human players for successful robberies!`)
                 );
 
                 components.push(humanTargetContainer);
@@ -204,8 +204,8 @@ module.exports = {
                 await victimProfile.save();
             }
 
-            if (!Array.isArray(victimProfile.pets)) {
-                victimProfile.pets = [];
+            if (!Array.isArray(victimProfile.minions)) {
+                victimProfile.minions = [];
                 await victimProfile.save();
             }
 
@@ -242,14 +242,14 @@ module.exports = {
             }
             
       
-            const victimSecurity = EconomyManager.calculateSecurityLevel(victimProfile);
+            const victimPower = EconomyManager.calculatePowerLevel(victimProfile);
             const robberLevel = robberProfile.level || 1;
             
             const baseSuccessChance = 30;
             const levelBonus = Math.min(robberLevel * 2, 20);
-            const securityPenalty = victimSecurity * 0.5;
+            const powerPenalty = victimPower * 0.5;
             
-            const successChance = Math.max(5, baseSuccessChance + levelBonus - securityPenalty);
+            const successChance = Math.max(5, baseSuccessChance + levelBonus - powerPenalty);
             const success = Math.random() * 100 < successChance;
             
            
@@ -268,11 +268,11 @@ module.exports = {
                 robberProfile.successfulRobberies = (robberProfile.successfulRobberies || 0) + 1;
                 
               
-                if (victimProfile.pets && victimProfile.pets.length > 0) {
-                    victimProfile.pets.forEach(pet => {
+                if (victimProfile.minions && victimProfile.minions.length > 0) {
+                    victimProfile.minions.forEach(minion => {
                         if (Math.random() < 0.5) {
-                            pet.health = Math.max(10, (pet.health || 100) - Math.floor(Math.random() * 15));
-                            pet.happiness = Math.max(0, (pet.happiness || 50) - Math.floor(Math.random() * 20));
+                            minion.constitution = Math.max(10, (minion.constitution || 100) - Math.floor(Math.random() * 15));
+                            minion.loyalty = Math.max(0, (minion.loyalty || 50) - Math.floor(Math.random() * 20));
                         }
                     });
                 }
@@ -327,7 +327,7 @@ module.exports = {
 
                 detailsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**🎯 Target:** \`${target.username}\`\n**💰 Amount Stolen:** \`$${stolenAmount.toLocaleString()}\`\n**📊 Success Rate:** \`${successChance.toFixed(1)}%\`\n**🛡️ Target Security:** \`${victimSecurity}%\`\n**⭐ Experience Gained:** \`+20 XP\``)
+                        .setContent(`**🎯 Target:** \`${target.username}\`\n**💰 Amount Stolen:** \`$${stolenAmount.toLocaleString()}\`\n**📊 Success Rate:** \`${successChance.toFixed(1)}%\`\n**🛡️ Target Power:** \`${victimPower}%\`\n**⭐ Experience Gained:** \`+20 XP\``)
                 );
 
                 detailsContainer.addTextDisplayComponents(
@@ -345,7 +345,7 @@ module.exports = {
 
                 consequencesContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## ⚠️ **ROBBERY CONSEQUENCES**\n\n**📉 Reputation Impact:** \`-10 reputation points\`\n**🐕 Pet Damage:** Some of the victim's pets may have been hurt during the robbery\n**⏰ Cooldown Applied:** \`30 minutes\` before your next robbery attempt\n**🔍 Increased Suspicion:** Law enforcement awareness heightened\n\n**💡 Advice:** Lay low and avoid suspicious activities for a while!`)
+                        .setContent(`## ⚠️ **ROBBERY CONSEQUENCES**\n\n**📉 Reputation Impact:** \`-10 reputation points\`\n**🦇 Minion Damage:** Some of the victim's minions may have been hurt during the robbery\n**⏰ Cooldown Applied:** \`30 minutes\` before your next robbery attempt\n**🔍 Increased Suspicion:** Law enforcement awareness heightened\n\n**💡 Advice:** Lay low and avoid suspicious activities for a while!`)
                 );
 
                 components.push(consequencesContainer);
@@ -376,7 +376,7 @@ module.exports = {
 
                     lossDetailsContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`## 💸 **LOSS DETAILS**\n\n**💰 Amount Lost:** \`$${stolenAmount.toLocaleString()}\`\n**🛡️ Your Security Level:** \`${victimSecurity}%\`\n**💳 Remaining Balance:** \`$${victimProfile.wallet.toLocaleString()}\`\n**🏠 Server:** \`${message.guild.name}\`\n\n**💡 Security Tip:** Buy pets and properties to increase your protection against future robberies!`)
+                            .setContent(`## 💸 **LOSS DETAILS**\n\n**💰 Amount Lost:** \`$${stolenAmount.toLocaleString()}\`\n**🛡️ Your Power Level:** \`${victimPower}%\`\n**💳 Remaining Balance:** \`$${victimProfile.wallet.toLocaleString()}\`\n**🏠 Server:** \`${message.guild.name}\`\n\n**💡 Power Tip:** Summon minions and acquire citadels to increase your protection against future robberies!`)
                     );
 
                     victimComponents.push(lossDetailsContainer);
@@ -437,7 +437,7 @@ module.exports = {
 
                 penaltyContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**💸 Fine Imposed:** \`$${penalty.toLocaleString()}\`\n**📊 Failure Chance:** \`${(100 - successChance).toFixed(1)}%\`\n**📉 Reputation Lost:** \`-5 reputation points\`\n**🛡️ Target Security:** \`${victimSecurity}%\` (too strong!)\n**📈 Your Level:** \`${robberProfile.level || 1}\` (need improvement)`)
+                        .setContent(`**💸 Fine Imposed:** \`$${penalty.toLocaleString()}\`\n**📊 Failure Chance:** \`${(100 - successChance).toFixed(1)}%\`\n**📉 Reputation Lost:** \`-5 reputation points\`\n**🛡️ Target Power:** \`${victimPower}%\` (too strong!)\n**📈 Your Level:** \`${robberProfile.level || 1}\` (need improvement)`)
                 );
 
                 penaltyContainer.addTextDisplayComponents(
@@ -455,7 +455,7 @@ module.exports = {
 
                 improvementContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **IMPROVE YOUR SUCCESS RATE**\n\n**📈 Level Up:** Work regularly to increase your level (current: ${robberProfile.level || 1})\n**🎯 Choose Easier Targets:** Look for users with lower security levels\n**🕵️ Scout First:** Research target security before attempting robberies\n**⏰ Timing:** Try robbing when targets are likely offline\n**💰 Build Funds:** Ensure you can afford potential failure fines\n\n**🎓 Remember:** Each level gives +2% success rate bonus!`)
+                        .setContent(`## 💡 **IMPROVE YOUR SUCCESS RATE**\n\n**📈 Level Up:** Work regularly to increase your level (current: ${robberProfile.level || 1})\n**🎯 Choose Easier Targets:** Look for users with lower power levels\n**🕵️ Scout First:** Research target power before attempting robberies\n**⏰ Timing:** Try robbing when targets are likely offline\n**💰 Build Funds:** Ensure you can afford potential failure fines\n\n**🎓 Remember:** Each level gives +2% success rate bonus!`)
                 );
 
                 components.push(improvementContainer);

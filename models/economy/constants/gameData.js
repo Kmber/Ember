@@ -46,41 +46,41 @@ const BEASTS = {
     }
 };
 
-const PETS = {
-    'house_cat': {
-        name: 'House Cat',
-        type: 'cat',
-        price: 500,
-        securityLevel: 10,
-        breed: 'Domestic'
+const MINIONS = {
+    'shadow_imp': {
+        name: 'Shadow Imp',
+        type: 'imp',
+        price: 750,
+        powerLevel: 15,
+        breed: 'Underworld'
     },
-    'guard_dog': {
-        name: 'Guard Dog',
-        type: 'security_dog',
-        price: 2000,
-        securityLevel: 40,
-        breed: 'German Shepherd'
+    'hellhound': {
+        name: 'Hellhound',
+        type: 'hellhound',
+        price: 2500,
+        powerLevel: 45,
+        breed: 'Volcanic'
     },
-    'security_cat': {
-        name: 'Security Cat',
-        type: 'guard_cat',
-        price: 1500,
-        securityLevel: 25,
-        breed: 'Maine Coon'
+    'gargoyle': {
+        name: 'Gargoyle',
+        type: 'gargoyle',
+        price: 4000,
+        powerLevel: 60,
+        breed: 'Stone'
     },
-    'attack_dog': {
-        name: 'Attack Dog',
-        type: 'security_dog',
-        price: 5000,
-        securityLevel: 70,
-        breed: 'Rottweiler'
+    'abyssal_watcher': {
+        name: 'Abyssal Watcher',
+        type: 'watcher',
+        price: 6000,
+        powerLevel: 80,
+        breed: 'Abyssal'
     },
-    'surveillance_bird': {
-        name: 'Surveillance Parrot',
-        type: 'bird',
-        price: 3000,
-        securityLevel: 35,
-        breed: 'Macaw'
+    'spectral_raven': {
+        name: 'Spectral Raven',
+        type: 'raven',
+        price: 3500,
+        powerLevel: 40,
+        breed: 'Ethereal'
     }
 };
 
@@ -175,11 +175,11 @@ const ROLES = {
 
 // NEW ENHANCED SHOP ITEMS
 const SHOP_ITEMS = {
-    'pet_food': {
-        name: 'Premium Pet Food',
-        price: 200,
-        description: 'Instantly restores 40 hunger and 10 health to all pets',
-        category: 'pet_care',
+    'minion_sustenance': {
+        name: 'Minion Sustenance',
+        price: 250,
+        description: 'Instantly restores 40 energy and 10 constitution to all minions',
+        category: 'minion_care',
         cooldown: 0
     },
     'beast_healing': {
@@ -267,4 +267,4 @@ const SHOP_ITEMS = {
     }
 };
 
-module.exports = { BEASTS, PETS, CITADELS, ROLES, SHOP_ITEMS };
+module.exports = { BEASTS, MINIONS, CITADELS, ROLES, SHOP_ITEMS };

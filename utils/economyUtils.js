@@ -1,35 +1,35 @@
 const { Economy } = require('../models/economy/economy');
 
 class EconomyUtils {
-    static async decayPetStats() {
+    static async decayMinionStats() {
         const profiles = await Economy.find({});
         
         for (const profile of profiles) {
             let needsUpdate = false;
             
-            profile.pets.forEach(pet => {
+            profile.minions.forEach(minion => {
                 const now = new Date();
-                const hoursSinceLastFed = pet.lastFed ? 
-                    (now - pet.lastFed) / (1000 * 60 * 60) : 24;
-                const hoursSinceLastGroomed = pet.lastGroomed ? 
-                    (now - pet.lastGroomed) / (1000 * 60 * 60) : 24;
-                const hoursSinceLastPlayed = pet.lastPlayed ? 
-                    (now - pet.lastPlayed) / (1000 * 60 * 60) : 24;
-                
-          
+                const hoursSinceLastFed = minion.lastFed ? 
+                    (now - minion.lastFed) / (1000 * 60 * 60) : 24;
+                const hoursSinceLastTrained = minion.lastTrained ? 
+                    (now - minion.lastTrained) / (1000 * 60 * 60) : 24;
+
+                // Decay for not being fed (replaces hunger and health decay)
                 if (hoursSinceLastFed > 12) {
-                    pet.hunger = Math.max(0, pet.hunger - 5);
-                    pet.health = Math.max(0, pet.health - 2);
+                    minion.energy = Math.max(0, minion.energy - 5);
+                    minion.constitution = Math.max(0, minion.constitution - 2);
                     needsUpdate = true;
                 }
                 
-                if (hoursSinceLastGroomed > 24) {
-                    pet.cleanliness = Math.max(0, pet.cleanliness - 3);
+                // Decay for neglect (replaces cleanliness decay, uses training timer)
+                if (hoursSinceLastTrained > 24) {
+                    minion.loyalty = Math.max(0, minion.loyalty - 3);
                     needsUpdate = true;
                 }
                 
-                if (hoursSinceLastPlayed > 18) {
-                    pet.happiness = Math.max(0, pet.happiness - 4);
+                // Decay for lack of activity (replaces happiness decay, uses training timer)
+                if (hoursSinceLastTrained > 18) {
+                    minion.loyalty = Math.max(0, minion.loyalty - 4);
                     needsUpdate = true;
                 }
             });

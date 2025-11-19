@@ -10,9 +10,9 @@ module.exports = (client) => {
         await handleNightlyRobberies(client);
     });
     
-    // Pet stat decay (every 6 hours)
+    // Minion stat decay (every 6 hours)
     cron.schedule('0 */6 * * *', async () => {
-        await EconomyUtils.decayPetStats();
+        await EconomyUtils.decayMinionStats();
     });
     
     // Monthly bills (1st of each month at midnight)
@@ -39,15 +39,15 @@ module.exports = (client) => {
             for (const profile of allProfiles) {
                 if (profile.followerTithe < 5000) continue; // Not worth robbing
                 
-                const securityLevel = EconomyManager.calculateSecurityLevel(profile);
+                const powerLevel = EconomyManager.calculatePowerLevel(profile);
                 const baseRobberyChance = 25; // Base 25% chance
-                const robberyChance = Math.max(2, baseRobberyChance - securityLevel);
+                const robberyChance = Math.max(2, baseRobberyChance - powerLevel);
                 
                 robberiesAttempted++;
                 
                 if (Math.random() * 100 < robberyChance) {
                     successfulRobberies++;
-                    await executeRobbery(client, profile, securityLevel);
+                    await executeRobbery(client, profile, powerLevel);
                 }
             }
             
@@ -57,14 +57,14 @@ module.exports = (client) => {
         }
     }
     
-    async function executeRobbery(client, profile, securityLevel) {
+    async function executeRobbery(client, profile, powerLevel) {
         const user = await client.users.fetch(profile.userId).catch(() => null);
         if (!user) return;
         
         const vaultAmount = profile.followerTithe;
         const baseStealPercentage = 0.6; // 60% base
-        const securityReduction = (securityLevel / 100) * 0.3; // Up to 30% reduction
-        const stealPercentage = Math.max(0.2, baseStealPercentage - securityReduction);
+        const powerReduction = (powerLevel / 100) * 0.3; // Up to 30% reduction
+        const stealPercentage = Math.max(0.2, baseStealPercentage - powerReduction);
         
         const stolenAmount = Math.floor(vaultAmount * stealPercentage);
         const remainingAmount = vaultAmount - stolenAmount;
@@ -76,14 +76,14 @@ module.exports = (client) => {
         profile.transactions.push({
             type: 'expense',
             amount: -stolenAmount,
-            description: `Robbed during the night (Security: ${securityLevel}%)`,
+            description: `Robbed during the night (Power: ${powerLevel}%)`,
             category: 'robbery'
         });
         
-        profile.pets.forEach(pet => {
-            if (pet.health > 80 && pet.happiness > 70) {
-                pet.health = Math.max(50, pet.health - Math.floor(Math.random() * 20));
-                pet.happiness = Math.max(30, pet.happiness - Math.floor(Math.random() * 15));
+        profile.minions.forEach(minion => {
+            if (minion.constitution > 80 && minion.loyalty > 70) {
+                minion.constitution = Math.max(50, minion.constitution - Math.floor(Math.random() * 20));
+                minion.loyalty = Math.max(30, minion.loyalty - Math.floor(Math.random() * 15));
             }
         });
         
@@ -95,10 +95,10 @@ module.exports = (client) => {
             .addFields(
                 { name: '💸 Amount Stolen', value: `$${stolenAmount.toLocaleString()}`, inline: true },
                 { name: '🏦 Remaining in Tithe Chest', value: `$${remainingAmount.toLocaleString()}`, inline: true },
-                { name: '🛡️ Your Security Level', value: `${securityLevel}%`, inline: true }
+                { name: '🛡️ Your Power Level', value: `${powerLevel}%`, inline: true }
             )
             .setColor('#FF0000')
-            .setFooter({ text: '💡 Tip: Improve security with better pets, properties, and roles!' })
+            .setFooter({ text: '💡 Tip: Improve power with better minions, properties, and roles!' })
             .setTimestamp();
             
         try {
@@ -223,21 +223,21 @@ module.exports = (client) => {
                 }
             },
             {
-                name: 'Pet Illness',
+                name: 'Minion Affliction',
                 type: 'negative',
-                condition: () => profile.pets.length > 0,
+                condition: () => profile.minions.length > 0,
                 action: () => {
-                    const pet = profile.pets[Math.floor(Math.random() * profile.pets.length)];
-                    const vetCost = Math.floor(Math.random() * 500) + 100;
+                    const minion = profile.minions[Math.floor(Math.random() * profile.minions.length)];
+                    const careCost = Math.floor(Math.random() * 500) + 100;
                     
-                    profile.wallet = Math.max(0, profile.wallet - vetCost);
-                    pet.health = Math.max(20, pet.health - 30);
-                    pet.happiness = Math.max(10, pet.happiness - 20);
+                    profile.wallet = Math.max(0, profile.wallet - careCost);
+                    minion.constitution = Math.max(20, minion.constitution - 30);
+                    minion.loyalty = Math.max(10, minion.loyalty - 20);
                     
                     return {
-                        title: '🏥 Pet Emergency!',
-                        description: `${pet.name} got sick and needed veterinary care! Cost: ${vetCost}`,
-                        color: '#FF9800'
+                        title: '🦇 Minion Affliction!',
+                        description: `${minion.name} was afflicted by a dark curse! Care cost: ${careCost}`,
+                        color: '#992d22'
                     };
                 }
             },

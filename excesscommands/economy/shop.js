@@ -52,7 +52,7 @@ module.exports = {
             if (!args[0]) {
                
                 const categories = {
-                    'pet_care': '🐕 Pet Care',
+                    'minion_care': '🦇 Minion Care',
                     'vehicle': '🚗 Vehicle', 
                     'security': '🛡️ Security',
                     'family': '👨‍👩‍👧‍👦 Family',
@@ -113,7 +113,7 @@ module.exports = {
 
                 instructionsContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 💡 **HOW TO PURCHASE**\n\n**Command:** \`!shop buy <item_id>\`\n**Example:** \`!shop buy pet_food\`\n**Cooldown:** \`10 seconds between purchases\`\n\n> Choose your items wisely! Each purchase has strategic benefits for your economy journey.`)
+                        .setContent(`## 💡 **HOW TO PURCHASE**\n\n**Command:** \`!shop buy <item_id>\`\n**Example:** \`!shop buy minion_food\`\n**Cooldown:** \`10 seconds between purchases\`\n\n> Choose your items wisely! Each purchase has strategic benefits for your economy journey.`)
                 );
 
                 components.push(instructionsContainer);
@@ -184,31 +184,31 @@ module.exports = {
                 let effectDescription = '';
                 
                 switch (itemId) {
-                    case 'pet_food':
-                        if (profile.pets.length === 0) {
+                    case 'minion_food':
+                        if (profile.minions.length === 0) {
                             profile.wallet += item.price;
                             const components = [];
 
-                            const noPetsContainer = new ContainerBuilder()
+                            const noMinionsContainer = new ContainerBuilder()
                                 .setAccentColor(0xF39C12);
 
-                            noPetsContainer.addTextDisplayComponents(
+                            noMinionsContainer.addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(`# 🐕 No Pets Available\n## ITEM CANNOT BE USED\n\n> You need pets to use **${item.name}**!\n> Visit the pet shop to adopt some furry friends first.\n\n**💰 Refund:** Your money has been returned to your wallet.`)
+                                    .setContent(`# 🦇 No Minions Available\n## ITEM CANNOT BE USED\n\n> You need minions to use **${item.name}**!\n> Visit the shop to summon some loyal servants first.\n\n**💰 Refund:** Your money has been returned to your wallet.`)
                             );
 
-                            components.push(noPetsContainer);
+                            components.push(noMinionsContainer);
 
                             return message.reply({
                                 components: components,
                                 flags: MessageFlags.IsComponentsV2
                             });
                         }
-                        profile.pets.forEach(pet => {
-                            pet.hunger = Math.min(100, pet.hunger + 40);
-                            pet.health = Math.min(100, pet.health + 10);
+                        profile.minions.forEach(minion => {
+                            minion.energy = Math.min(100, minion.energy + 40);
+                            minion.constitution = Math.min(100, minion.constitution + 10);
                         });
-                        effectDescription = `Fed all ${profile.pets.length} pets! (+40 hunger, +10 health each)`;
+                        effectDescription = `Fed all ${profile.minions.length} minions! (+40 energy, +10 constitution each)`;
                         break;
                         
                     case 'car_repair':
@@ -400,7 +400,7 @@ module.exports = {
 
 function getCategoryColor(category) {
     const colors = {
-        'pet_care': 0xFF9800,   
+        'minion_care': 0x992d22,   
         'vehicle': 0x2196F3,     
         'security': 0x4CAF50,   
         'family': 0x9C27B0,    

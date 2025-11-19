@@ -22,9 +22,9 @@ class EconomyManager {
                         // Beast System defaults
                         beasts: [],
                         activeBeast: null,
-                        // Pet System defaults
-                        pets: [],
-                        maxPets: 1,
+                        // Minion System defaults
+                        minions: [],
+                        maxMinions: 1,
                         // Citadel System defaults
                         citadels: [],
                         primaryCitadel: null,
@@ -66,7 +66,7 @@ class EconomyManager {
                             work: null,
                             beastrace: null,
                             ritual: null,
-                            petCare: null,
+                            minionCare: null,
                             robbery: null,
                             beg: null,
                             gambling: null,
@@ -133,7 +133,7 @@ class EconomyManager {
             work: 60 * 60 * 1000, // 1 hour
             beastrace: 5 * 60 * 1000, // 5 minutes
             ritual: 24 * 60 * 60 * 1000, // 24 hours
-            petCare: 30 * 60 * 1000, // 30 minutes
+            minionCare: 30 * 60 * 1000, // 30 minutes
             robbery: 30 * 60 * 1000, // 30 minutes
             beg: 10 * 60 * 1000, // 10 minutes
             gambling: 30 * 1000, // 30 seconds
@@ -164,37 +164,37 @@ class EconomyManager {
         return { onCooldown: false };
     }
 
-    // Calculate total security level
-    static calculateSecurityLevel(profile) {
-        let totalSecurity = 0;
+    // Calculate total power level
+    static calculatePowerLevel(profile) {
+        let totalPower = 0;
 
-        // Citadel security
+        // Citadel power
         const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel);
         if (primaryCitadel) {
-            totalSecurity += primaryCitadel.securityLevel * 10;
+            totalPower += primaryCitadel.securityLevel * 10;
         }
 
-        // Pet security
-        profile.pets.forEach(pet => {
-            const petEfficiency = (pet.happiness + pet.health + pet.cleanliness) / 300;
-            totalSecurity += pet.securityLevel * petEfficiency;
+        // Minion power
+        profile.minions.forEach(minion => {
+            const minionEfficiency = (minion.loyalty + minion.constitution + minion.corruption) / 300;
+            totalPower += minion.powerLevel * minionEfficiency;
         });
 
         // Role bonuses
         profile.purchasedRoles.forEach(role => {
             if (!role.expiryDate || role.expiryDate > new Date()) {
-                totalSecurity += role.benefits.robberyProtection;
+                totalPower += role.benefits.robberyProtection;
             }
         });
 
         // Active effect bonuses
         profile.activeEffects.forEach(effect => {
             if (effect.type === 'robbery_protection') {
-                totalSecurity += effect.multiplier * effect.stacks;
+                totalPower += effect.multiplier * effect.stacks;
             }
         });
 
-        return Math.min(100, totalSecurity);
+        return Math.min(100, totalPower);
     }
 
 // Add this corrected method to replace the buggy one:

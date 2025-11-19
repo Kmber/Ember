@@ -35,7 +35,7 @@ module.exports = {
 
                 startContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`## 🏘️ **GET YOUR FIRST CITADEL**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available citadels\n**Step 2:** Choose a citadel that fits your budget and needs\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Start building your congregation with followers and pets!\n\n**💡 Citadel Benefits:**\n> • House followers for work bonuses\n> • Secure tithe storage\n> • Lair space for beast collection\n> • Enhanced security against raids\n> • Investment appreciation over time`)
+                        .setContent(`## 🏘️ **GET YOUR FIRST CITADEL**\n\n**Step 1:** Use \`!acquirecitadel\` to browse available citadels\n**Step 2:** Choose a citadel that fits your budget and needs\n**Step 3:** Set it as your primary stronghold\n**Step 4:** Start building your congregation with followers and minions!\n\n**💡 Citadel Benefits:**\n> • House followers for work bonuses\n> • Secure tithe storage\n> • Lair space for beast collection\n> • Enhanced power against raids\n> • Investment appreciation over time`)
                 );
 
                 components.push(startContainer);
@@ -47,7 +47,7 @@ module.exports = {
             }
 
             const primaryCitadel = profile.citadels.find(c => c.propertyId === profile.primaryCitadel) || profile.citadels[0];
-            const securityLevel = EconomyManager.calculateSecurityLevel(profile);
+            const powerLevel = EconomyManager.calculatePowerLevel(profile);
             const vaultCapacity = EconomyManager.getVaultCapacity(profile);
 
             const components = [];
@@ -86,7 +86,7 @@ module.exports = {
 
             detailsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🏰 Citadel:** \`${primaryCitadel.name}\`\n**🏷️ Type:** \`${primaryCitadel.type}\`\n**🛡️ Base Security:** \`Level ${primaryCitadel.securityLevel}\`\n**💰 Current Value:** \`$${primaryCitadel.currentValue.toLocaleString()}\`\n**💸 Acquisition Price:** \`$${primaryCitadel.purchasePrice.toLocaleString()}\``)
+                    .setContent(`**🏰 Citadel:** \`${primaryCitadel.name}\`\n**🏷️ Type:** \`${primaryCitadel.type}\`\n**🛡️ Base Power:** \`Level ${primaryCitadel.securityLevel}\`\n**💰 Current Value:** \`$${primaryCitadel.currentValue.toLocaleString()}\`\n**💸 Acquisition Price:** \`$${primaryCitadel.purchasePrice.toLocaleString()}\``)
             );
 
             detailsContainer.addTextDisplayComponents(
@@ -199,67 +199,67 @@ module.exports = {
 
             securityContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent('## 🛡️ **SECURITY & STORAGE**')
+                    .setContent('## 🛡️ **POWER & STORAGE**')
             );
 
             const vaultUsage = ((profile.followerTithe / vaultCapacity) * 100).toFixed(1);
-            const petSecurityBonus = profile.pets.reduce((total, pet) => total + pet.securityLevel, 0);
+            const minionPowerBonus = profile.minions.reduce((total, minion) => total + minion.powerLevel, 0);
 
             securityContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🔒 Total Security Level:** \`${securityLevel}%\`\n**🏰 Citadel Base Security:** \`${primaryCitadel.securityLevel * 10}%\`\n**🐾 Pet Security Bonus:** \`+${petSecurityBonus}%\`\n**🛡️ Raid Protection:** Enhanced based on total security`)
+                    .setContent(`**🔒 Total Power Level:** \`${powerLevel}%\`\n**🏰 Citadel Base Power:** \`${primaryCitadel.securityLevel * 10}%\`\n**🦇 Minion Power Bonus:** \`+${minionPowerBonus}%\`\n**🛡️ Raid Protection:** Enhanced based on total power`)
             );
 
             securityContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**💰 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📊 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**💾 Storage Used:** \`${vaultUsage}%\`\n**🔐 Tithe Security:** Protected by citadel and pet security`)
+                    .setContent(`**💰 Follower Tithe:** \`$${profile.followerTithe.toLocaleString()}\`\n**📊 Tithe Capacity:** \`$${vaultCapacity.toLocaleString()}\`\n**💾 Storage Used:** \`${vaultUsage}%\`\n**🔐 Tithe Security:** Protected by citadel and minion power`)
             );
 
             components.push(securityContainer);
 
         
-            if (profile.maxPets > 0) {
+            if (profile.maxMinions > 0) {
                 components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
-                const petContainer = new ContainerBuilder()
-                    .setAccentColor(0xFF69B4);
+                const minionContainer = new ContainerBuilder()
+                    .setAccentColor(0x992d22);
 
-                petContainer.addTextDisplayComponents(
+                minionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent('## 🐾 **PETS**')
+                        .setContent('## 🦇 **MINIONS**')
                 );
 
-                petContainer.addTextDisplayComponents(
+                minionContainer.addTextDisplayComponents(
                     new TextDisplayBuilder()
-                        .setContent(`**Pet Capacity:** \`${profile.pets.length}/${profile.maxPets} pets\`\n**Security Contribution:** \`+${petSecurityBonus}%\` from pets\n**Pet Care Status:** ${profile.pets.filter(p => (p.happiness + p.health + p.cleanliness) / 3 > 70).length} well-cared pets`)
+                        .setContent(`**Minion Capacity:** \`${profile.minions.length}/${profile.maxMinions} minions\`\n**Power Contribution:** \`+${minionPowerBonus}%\` from minions\n**Minion Care Status:** ${profile.minions.filter(m => (m.loyalty + m.constitution + m.energy) / 3 > 70).length} well-cared for minions`)
                 );
 
-                if (profile.pets.length > 0) {
-                    const petList = profile.pets.slice(0, 3).map(pet => {
-                        const condition = ((pet.happiness + pet.health + pet.cleanliness) / 3);
+                if (profile.minions.length > 0) {
+                    const minionList = profile.minions.slice(0, 3).map(minion => {
+                        const condition = ((minion.loyalty + minion.constitution + minion.energy) / 3);
                         const conditionIcon = condition > 80 ? '🟢' : condition > 50 ? '🟡' : '🔴';
-                        return `**${pet.name}** (${pet.breed}) ${conditionIcon}\n> **Security:** \`${pet.securityLevel}%\` • **Condition:** \`${condition.toFixed(0)}%\``;
+                        return `**${minion.name}** (${minion.breed}) ${conditionIcon}\n> **Power:** \`${minion.powerLevel}%\` • **Condition:** \`${condition.toFixed(0)}%\``;
                     }).join('\n\n');
 
-                    petContainer.addTextDisplayComponents(
+                    minionContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(petList)
+                            .setContent(minionList)
                     );
 
-                    if (profile.pets.length > 3) {
-                        petContainer.addTextDisplayComponents(
+                    if (profile.minions.length > 3) {
+                        minionContainer.addTextDisplayComponents(
                             new TextDisplayBuilder()
-                                .setContent(`*...and ${profile.pets.length - 3} more pets*`)
+                                .setContent(`*...and ${profile.minions.length - 3} more minions*`)
                         );
                     }
                 } else {
-                    petContainer.addTextDisplayComponents(
+                    minionContainer.addTextDisplayComponents(
                         new TextDisplayBuilder()
-                            .setContent(`**🐾 No Pets Yet:** Your citadel can house up to ${profile.maxPets} pets\n\n**💡 Adopt Today:** Use \`!buypet\` to add loyal companions\n**🛡️ Security Boost:** Pets enhance your citadel protection`)
+                            .setContent(`**🦇 No Minions Yet:** Your citadel can house up to ${profile.maxMinions} minions\n\n**💡 Summon Today:** Use \`!buyminion\` to summon loyal servants\n**🛡️ Power Boost:** Minions enhance your citadel's power`)
                     );
                 }
 
-                components.push(petContainer);
+                components.push(minionContainer);
             }
 
           
@@ -270,7 +270,7 @@ module.exports = {
 
             managementContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`!tithe\` to manage your secure savings\n**⛪ Follower Growth:** Recruit more followers if space allows\n**👹 Beast Collection:** Expand your lair with more beasts for racing\n**🐾 Pet Adoption:** Adopt pets to increase security and companionship\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
+                    .setContent(`## 💡 **CITADEL MANAGEMENT**\n\n**💰 Tithe Management:** Use \`!tithe\` to manage your secure savings\n**⛪ Follower Growth:** Recruit more followers if space allows\n**👹 Beast Collection:** Expand your lair with more beasts for racing\n**🦇 Summon Minions:** Summon minions to increase power and for protection\n**🔧 Citadel Maintenance:** Keep your citadel in excellent condition\n**📈 Investment Tracking:** Monitor your citadel value appreciation\n\n> Your citadel is the foundation of your kingdom!`)
             );
 
             components.push(managementContainer);

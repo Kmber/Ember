@@ -175,7 +175,7 @@ const raidCollectionSchema = new mongoose.Schema({
 const transactionSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['income', 'expense', 'transfer', 'investment', 'trade', 'racing', 'robbery', 'follower_tithe', 'gambling', 'shop', 'raid'],
+        enum: ['income', 'expense', 'transfer', 'investment', 'trade', 'racing', 'robbery', 'follower_tithe', 'gambling', 'shop', 'raid', 'minion_care'],
         required: true
     },
     amount: { type: Number, required: true },
@@ -204,24 +204,23 @@ const beastSchema = new mongoose.Schema({
     dateAcquired: { type: Date, default: Date.now }
 });
 
-const petSchema = new mongoose.Schema({
-    petId: String,
+const minionSchema = new mongoose.Schema({
+    minionId: String,
     name: String,
     type: {
         type: String,
-        enum: ['dog', 'cat', 'bird', 'security_dog', 'guard_cat']
+        enum: ['imp', 'gargoyle', 'hellhound', 'succubus', 'lich']
     },
     breed: String,
-    securityLevel: { type: Number, min: 1, max: 100 },
-    happiness: { type: Number, min: 0, max: 100, default: 50 },
-    health: { type: Number, min: 0, max: 100, default: 100 },
-    hunger: { type: Number, min: 0, max: 100, default: 50 },
-    cleanliness: { type: Number, min: 0, max: 100, default: 50 },
+    powerLevel: { type: Number, min: 1, max: 100 },
+    constitution: { type: Number, min: 0, max: 100, default: 100 },
+    loyalty: { type: Number, min: 0, max: 100, default: 50 },
+    energy: { type: Number, min: 0, max: 100, default: 50 },
+    experience: { type: Number, default: 0 },
     lastFed: Date,
-    lastGroomed: Date,
-    lastPlayed: Date,
+    lastTrained: Date,
     purchasePrice: Number,
-    dateAdopted: { type: Date, default: Date.now }
+    dateAcquired: { type: Date, default: Date.now }
 });
 
 const followerSchema = new mongoose.Schema({
@@ -310,9 +309,9 @@ const economySchema = new mongoose.Schema({
     beasts: [beastSchema],
     activeBeast: String,
     
-    // Pet System
-    pets: [petSchema],
-    maxPets: { type: Number, default: 1 },
+    // Minion System
+    minions: [minionSchema],
+    maxMinions: { type: Number, default: 1 },
     
     // Citadel System
     citadels: [citadelSchema],
@@ -383,6 +382,7 @@ const economySchema = new mongoose.Schema({
     level: { type: Number, default: 1 },
     experience: { type: Number, default: 0 },
     reputation: { type: Number, default: 0 },
+    powerLevel: { type: Number, default: 0 },
     
     // Racing Stats
     racingStats: {
@@ -405,7 +405,7 @@ const economySchema = new mongoose.Schema({
         work: Date,
         beastrace: Date,
         ritual: Date,
-        petCare: Date,
+        minionCare: Date,
         robbery: Date,
         beg: Date,
         gambling: Date,

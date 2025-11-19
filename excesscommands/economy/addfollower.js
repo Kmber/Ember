@@ -238,7 +238,7 @@ module.exports = {
             profile.followerAllegiance = Math.floor(avgAllegiance);
             
          
-            profile.maxPets = Math.min(10, Math.floor(activeCitadel.maxFollowers / 2) + 1);
+            profile.maxMinions = Math.min(10, Math.floor(activeCitadel.maxFollowers / 2) + 1);
             
             await profile.save();
             
@@ -301,7 +301,7 @@ module.exports = {
 
             householdContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**🐕 Pet Capacity:** \`${profile.maxPets}\` (updated based on congregation size)\n**🎯 Congregation Goal:** Build allegiance through dark rituals\n**📈 Work Bonus:** Followers contribute to your earnings automatically`)
+                    .setContent(`**🦇 Minion Capacity:** \`${profile.maxMinions}\` (updated based on congregation size)\n**🎯 Congregation Goal:** Build allegiance through dark rituals\n**📈 Work Bonus:** Followers contribute to your earnings automatically`)
             );
 
             components.push(householdContainer);

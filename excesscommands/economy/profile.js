@@ -18,7 +18,7 @@ module.exports = {
             const profile = await EconomyManager.getProfile(targetUser.id, message.guild.id);
             
             const totalWealth = profile.wallet + profile.bank + profile.followerTithe;
-            const securityLevel = EconomyManager.calculateSecurityLevel(profile);
+            const powerLevel = EconomyManager.calculatePowerLevel(profile);
             const workMultiplier = EconomyManager.calculateWorkMultiplier(profile);
             const beastValue = profile.beasts.reduce((sum, beast) => sum + beast.currentValue, 0);
             const citadelValue = profile.properties.reduce((sum, prop) => sum + prop.currentValue, 0);
@@ -81,7 +81,7 @@ module.exports = {
 
             assetsContainer.addTextDisplayComponents(
                 new TextDisplayBuilder()
-                    .setContent(`**👥 Followers:** \`${profile.followers.length}\`\n**🤝 Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**🐕 Pets:** \`${profile.pets.length}/${profile.maxPets}\`\n**🛡️ Security Level:** \`${securityLevel}%\``)
+                    .setContent(`**👥 Followers:** \`${profile.followers.length}\`\n**🤝 Follower Allegiance:** \`${profile.followerAllegiance}%\`\n**🦇 Minions:** \`${profile.minions.length}/${profile.maxMinions}\`\n**🛡️ Power Level:** \`${powerLevel}%\``)
             );
 
             components.push(assetsContainer);

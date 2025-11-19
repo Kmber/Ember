@@ -148,7 +148,7 @@ module.exports = {
 
             if (isFirstCitadel) {
                 profile.primaryCitadel = citadelId;
-                profile.maxPets = Math.floor(citadelData.maxFollowers / 2);
+                profile.maxMinions = Math.floor(citadelData.maxFollowers / 2);
             }
 
             profile.transactions.push({
@@ -188,7 +188,7 @@ module.exports = {
             if (citadelData.vaultCapacity > 0) unlockedFeatures.push(`**🏦 Vault:** Secure storage for $${citadelData.vaultCapacity.toLocaleString()}`);
             if (citadelData.lairCapacity > 0) unlockedFeatures.push(`**👹 Lair:** House up to ${citadelData.lairCapacity} beasts safely`);
             if (citadelData.securityLevel > 0) unlockedFeatures.push(`**🛡️ Enhanced Security:** Level ${citadelData.securityLevel} protection against raids`);
-            if (isFirstCitadel) unlockedFeatures.push(`**🐾 Pet Ownership:** Own up to ${Math.floor(citadelData.maxFollowers / 2)} pets`);
+            if (isFirstCitadel) unlockedFeatures.push(`**🦇 Minion Capacity:** Own up to ${Math.floor(citadelData.maxFollowers / 2)} minions`);
 
             featuresContainer.addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(unlockedFeatures.join('\n\n'))
@@ -205,7 +205,7 @@ module.exports = {
 
             const nextStepsContainer = new ContainerBuilder().setAccentColor(0xE91E63);
             nextStepsContainer.addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit money in your vault for security\n**👹 Lair Beasts:** Store multiple beasts in your lair\n**🐾 Adopt Pets:** Adopt pets for companionship and security\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
+                new TextDisplayBuilder().setContent(`## 🎯 **WHAT'S NEXT?**\n\n**👨‍👩‍👧‍👦 Recruit Followers:** Recruit followers to work and earn bonuses\n**🏦 Use Vault:** Deposit money in your vault for security\n**👹 Lair Beasts:** Store multiple beasts in your lair\n**🦇 Summon Minions:** Summon minions for power and protection\n**📈 Citadel Value:** Watch your citadel investment appreciate over time\n\n> Your new citadel opens up exciting expansion opportunities!`)
             );
             components.push(nextStepsContainer);
 
