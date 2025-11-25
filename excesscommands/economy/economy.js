@@ -232,15 +232,15 @@ module.exports = {
                         break;
 
                     case 3: // Page 4: Follower & Minion System
-                        const familyHeader = new ContainerBuilder()
+                        const followerHeader = new ContainerBuilder()
                             .setAccentColor(0x9932CC);
 
-                        familyHeader.addTextDisplayComponents(
+                        followerHeader.addTextDisplayComponents(
                             new TextDisplayBuilder()
                                 .setContent(`# 👥 FOLLOWERS & 👾 MINIONS\n## YOUR LEGION OF SHADOW + VAULT GUARDIANS\n\n> **Page 4 of 9** | Build your legion and protect it\n> Followers generate passive income and minions provide security`)
                         );
 
-                        components.push(familyHeader);
+                        components.push(followerHeader);
                         components.push(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large));
 
                         // Follower Hierarchy

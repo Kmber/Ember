@@ -9,7 +9,7 @@ const slayingMountSchema = new mongoose.Schema({
         enum: ['horse', 'griffon', 'wyvern', 'pegasus', 'dragon']
     },
     tier: { type: Number, min: 1, max: 5 },
-    durability: { type: Number, min: 0, max: 100, default: 100 },
+    durability: { type: Number, min: 0, max: 120, default: 100 },
     maxDurability: { type: Number, default: 100 },
     staminaCapacity: { type: Number, default: 100 },
     currentStamina: { type: Number, default: 100 },
@@ -216,6 +216,7 @@ const minionSchema = new mongoose.Schema({
     constitution: { type: Number, min: 0, max: 100, default: 100 },
     loyalty: { type: Number, min: 0, max: 100, default: 50 },
     energy: { type: Number, min: 0, max: 100, default: 50 },
+    corruption: { type: Number, min: 0, max: 100, default: 50 },
     experience: { type: Number, default: 0 },
     lastFed: Date,
     lastTrained: Date,

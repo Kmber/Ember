@@ -116,6 +116,12 @@ module.exports = {
             }
             
             const minion = profile.minions[minionIndex - 1];
+
+            // Defensive fallback for corruption value to avoid NaN issues
+            if (typeof minion.corruption !== 'number' || isNaN(minion.corruption)) {
+                minion.corruption = 50;
+            }
+            
             const costs = { sustain: 75, tend: 150, commune: 50, all: 275 };
             const cost = costs[action];
             

@@ -1,71 +1,96 @@
 const mongoose = require('mongoose');
-const { Economy } = require('../models/economy/schema'); // Adjust path if needed
-
-// Connect to MongoDB - change the connection string to your environment
-const mongoUri = process.env.MONGO_URI || 'mongodb+srv://sanctyrdls_db_user:GJ3x0kNjmAB76etS@ember.qi9rden.mongodb.net/?appName=Ember'; // change as needed
-
-mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => {
-    console.log('Connected to MongoDB');
-    repairProfiles().then(() => {
-        console.log('Profile repair completed');
-        mongoose.disconnect();
-    }).catch(err => {
-        console.error('Error repairing profiles:', err);
-        mongoose.disconnect();
-    });
-}).catch(err => {
-    console.error('Error connecting to MongoDB:', err);
-});
+const { Economy } = require('../models/economy/schema');
+const { SLAYING_WEAPONS, SLAYING_MOUNTS } = require('../models/economy/constants/slayingData');
 
 async function repairProfiles() {
-    const profiles = await Economy.find({});
+    try {
+        console.log('Connecting to MongoDB...');
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://sanctyrdls_db_user:GJ3x0kNjmAB76etS@ember.qi9rden.mongodb.net/?appName=Ember', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
 
-    for (const profile of profiles) {
-        let modified = false;
+        console.log('Connected to MongoDB. Starting profile repair...');
 
-        // Defensive checks and fix for wallet
-        if (typeof profile.wallet !== 'number' || isNaN(profile.wallet)) {
-            console.warn(`profile.wallet invalid for user ${profile.userId}, fixing to 0`);
-            profile.wallet = 0;
-            modified = true;
-        }
+        const profiles = await Economy.find({});
+        console.log(`Found ${profiles.length} profiles.`);
 
-        // Defensive checks and fix for dailyStreak
-        if (typeof profile.dailyStreak !== 'number' || isNaN(profile.dailyStreak)) {
-            console.warn(`profile.dailyStreak invalid for user ${profile.userId}, fixing to 0`);
-            profile.dailyStreak = 0;
-            modified = true;
-        }
+        let repairedCount = 0;
 
-        // Defensive checks and fix for experience
-        if (typeof profile.experience !== 'number' || isNaN(profile.experience)) {
-            console.warn(`profile.experience invalid for user ${profile.userId}, fixing to 0`);
-            profile.experience = 0;
-            modified = true;
-        }
+        for (const profile of profiles) {
+            let changed = false;
 
-        // Defensive checks and fix for each transaction amount
-        if (Array.isArray(profile.transactions)) {
-            for (let i = 0; i < profile.transactions.length; i++) {
-                const txn = profile.transactions[i];
-                if (typeof txn.amount !== 'number' || isNaN(txn.amount)) {
-                    console.warn(`profile.transactions[${i}].amount invalid for user ${profile.userId}, fixing to 0`);
-                    profile.transactions[i].amount = 0;
-                    modified = true;
-                }
+            // Fix weapons purchasePrice
+            if (Array.isArray(profile.slayingWeapons)) {
+                profile.slayingWeapons.forEach(weapon => {
+                    if (!weapon.purchasePrice || typeof weapon.purchasePrice !== 'number' || isNaN(weapon.purchasePrice)) {
+                        // Find default weapon data from SLAYING_WEAPONS by type or name
+                        const defaultWeapon = Object.values(SLAYING_WEAPONS).find(w => w.name === weapon.name || w.type === weapon.type);
+                        const defaultPrice = defaultWeapon ? defaultWeapon.price || defaultWeapon.purchasePrice : 1000; // fallback default
+                        console.log(`Fixing weapon purchasePrice for user ${profile.userId}, weapon ${weapon.name}: set to ${defaultPrice}`);
+                        weapon.purchasePrice = defaultPrice;
+                        changed = true;
+                    }
+                });
             }
-        }
 
-        if (modified) {
-            try {
+            // Fix mounts purchasePrice
+            if (Array.isArray(profile.slayingMounts)) {
+                profile.slayingMounts.forEach(mount => {
+                    if (!mount.purchasePrice || typeof mount.purchasePrice !== 'number' || isNaN(mount.purchasePrice)) {
+                        // Find default mount data from SLAYING_MOUNTS by type or name
+                        const defaultMount = Object.values(SLAYING_MOUNTS).find(m => m.name === mount.name || m.type === mount.type);
+                        const defaultPrice = defaultMount ? defaultMount.price || defaultMount.purchasePrice : 1000; // fallback default
+                        console.log(`Fixing mount purchasePrice for user ${profile.userId}, mount ${mount.name}: set to ${defaultPrice}`);
+                        mount.purchasePrice = defaultPrice;
+                        changed = true;
+                    }
+                });
+            }
+
+            // Fix minion corrupted data (energy, constitution, loyalty, powerLevel)
+            if (Array.isArray(profile.minions)) {
+                profile.minions.forEach(minion => {
+                    let minionChanged = false;
+                    if (typeof minion.energy !== 'number' || isNaN(minion.energy) || minion.energy < 0 || minion.energy > 100) {
+                        console.log(`Fixing minion energy for user ${profile.userId}, minion ${minion.name}: reset to 50`);
+                        minion.energy = 50;
+                        minionChanged = true;
+                    }
+                    if (typeof minion.constitution !== 'number' || isNaN(minion.constitution) || minion.constitution < 0 || minion.constitution > 100) {
+                        console.log(`Fixing minion constitution for user ${profile.userId}, minion ${minion.name}: reset to 100`);
+                        minion.constitution = 100;
+                        minionChanged = true;
+                    }
+                    if (typeof minion.loyalty !== 'number' || isNaN(minion.loyalty) || minion.loyalty < 0 || minion.loyalty > 100) {
+                        console.log(`Fixing minion loyalty for user ${profile.userId}, minion ${minion.name}: reset to 50`);
+                        minion.loyalty = 50;
+                        minionChanged = true;
+                    }
+                    if (typeof minion.powerLevel !== 'number' || isNaN(minion.powerLevel) || minion.powerLevel < 1 || minion.powerLevel > 100) {
+                        console.log(`Fixing minion powerLevel for user ${profile.userId}, minion ${minion.name}: reset to 1`);
+                        minion.powerLevel = 1;
+                        minionChanged = true;
+                    }
+                    if (minionChanged) {
+                        changed = true;
+                    }
+                });
+            }
+
+            if (changed) {
                 await profile.save();
-                console.log(`Profile for user ${profile.userId} repaired and saved.`);
-            } catch (error) {
-                console.error(`Failed saving profile for user ${profile.userId}:`, error);
+                repairedCount++;
+                console.log(`Repaired profile for user ${profile.userId}`);
             }
         }
+
+        console.log(`Repair complete. Total profiles repaired: ${repairedCount}`);
+        mongoose.disconnect();
+    } catch (error) {
+        console.error('Error repairing profiles:', error);
+        mongoose.disconnect();
     }
 }
+
+repairProfiles();

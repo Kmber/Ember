@@ -60,13 +60,13 @@ module.exports = {
         if (!activeMount) {
             return this.sendError(message, 'You do not have an active mount to use this potion on.');
         }
-        if (activeMount.currentStamina >= activeMount.maxStamina) {
+        if (activeMount.currentStamina >= activeMount.staminaCapacity) {
             return this.sendError(message, `Your **${activeMount.name}** already has full stamina.`);
         }
 
         const staminaRestored = itemData.staminaValue;
         const oldStamina = activeMount.currentStamina;
-        activeMount.currentStamina = Math.min(activeMount.maxStamina, oldStamina + staminaRestored);
+        activeMount.currentStamina = Math.min(activeMount.staminaCapacity, oldStamina + staminaRestored);
         const actualStaminaGain = activeMount.currentStamina - oldStamina;
 
         this.consumeItem(profile, itemIndex);
@@ -75,7 +75,7 @@ module.exports = {
         const successContainer = new ContainerBuilder().setAccentColor(0x58D68D);
         successContainer.addTextDisplayComponents(
             new TextDisplayBuilder().setContent(`# 🧪 Potion Used!\n## ${item.name.toUpperCase()}\n\n> You used a **${item.name}** on your **${activeMount.name}**.`),
-            new TextDisplayBuilder().setContent(`**Stamina Restored:** +${actualStaminaGain}\n**New Stamina:** ${activeMount.currentStamina}/${activeMount.maxStamina}`)
+            new TextDisplayBuilder().setContent(`**Stamina Restored:** +${actualStaminaGain}\n**New Stamina:** ${activeMount.currentStamina}/${activeMount.staminaCapacity}`)
         );
         return message.reply({ components: [successContainer], flags: MessageFlags.IsComponentsV2 });
     },

@@ -6,6 +6,7 @@ const {
     MessageFlags
 } = require('discord.js');
 const { EconomyManager } = require('../../models/economy/economy');
+const { Economy } = require('../../models/economy/schema');
 const ServerConfig = require('../../models/serverConfig/schema');
 const config = require('../../config.json');
 
@@ -109,15 +110,48 @@ module.exports = {
     async equipItem(message, profile, type, itemId) {
         const itemArray = type === 'weapon' ? profile.slayingWeapons : profile.slayingMounts;
         const idKey = type === 'weapon' ? 'weaponId' : 'mountId';
-        const item = itemArray.find(i => i[idKey] === itemId || i.itemId.slice(-8) === itemId);
+
+        // Support itemId as 'idx:N' fallback or direct numeric index for missing IDs
+        let item;
+        if (itemId.startsWith('idx:')) {
+            const idx = parseInt(itemId.slice(4), 10);
+            if (isNaN(idx) || idx < 0 || idx >= itemArray.length) {
+                return this.sendError(message, `Invalid index specified for ${type}.`);
+            }
+            item = itemArray[idx];
+        } else if (/^\d+$/.test(itemId)) {
+            const idx = parseInt(itemId, 10);
+            if (idx < 0 || idx >= itemArray.length) {
+                return this.sendError(message, `Invalid index specified for ${type}.`);
+            }
+            item = itemArray[idx];
+        } else {
+            item = itemArray.find(i => i[idKey] === itemId || (i.itemId && i.itemId.slice(-8) === itemId));
+        }
 
         if (!item) {
             return this.sendError(message, `Could not find a ${type} with that ID in your inventory.`);
         }
 
         const activeField = type === 'weapon' ? 'activeWeapon' : 'activeMount';
-        profile[activeField] = item[idKey];
-        await profile.save();
+
+        // Update using Economy model directly to ensure persistence
+        await Economy.updateOne(
+            { userId: message.author.id, guildId: message.guild.id },
+            { $set: { [activeField]: item[idKey] } }
+        );
+
+        // Fetch the updated profile fresh from database
+        const updatedProfile = await EconomyManager.getProfile(message.author.id, message.guild.id);
+
+        // Confirm the update took place
+        const isActiveSet = (activeField === 'activeWeapon')
+            ? updatedProfile.activeWeapon === item[idKey]
+            : updatedProfile.activeMount === item[idKey];
+
+        if (!isActiveSet) {
+            return this.sendError(message, `Failed to update active ${type} in profile.`);
+        }
 
         const successContainer = new ContainerBuilder().setAccentColor(0x4CAF50);
         successContainer.addTextDisplayComponents(
@@ -127,11 +161,31 @@ module.exports = {
     },
 
     async equipAlly(message, profile, itemId) {
+        if (!Array.isArray(profile.activeAllies)) {
+            profile.activeAllies = [];
+        }
         if (profile.activeAllies.length >= profile.maxAllies) {
             return this.sendError(message, `You cannot have more than ${profile.maxAllies} active allies.`);
         }
 
-        const ally = profile.slayingAllies.find(a => a.allyId === itemId || a.itemId.slice(-8) === itemId);
+        // Support itemId as 'idx:N' fallback or direct numeric index for missing IDs
+        let ally;
+        if (itemId.startsWith('idx:')) {
+            const idx = parseInt(itemId.slice(4), 10);
+            if (isNaN(idx) || idx < 0 || idx >= profile.slayingAllies.length) {
+                return this.sendError(message, 'Invalid index specified for ally.');
+            }
+            ally = profile.slayingAllies[idx];
+        } else if (/^\d+$/.test(itemId)) {
+            const idx = parseInt(itemId, 10);
+            if (idx < 0 || idx >= profile.slayingAllies.length) {
+                return this.sendError(message, 'Invalid index specified for ally.');
+            }
+            ally = profile.slayingAllies[idx];
+        } else {
+            ally = profile.slayingAllies.find(a => a.allyId === itemId || (a.itemId && a.itemId.slice(-8) === itemId));
+        }
+
         if (!ally) {
             return this.sendError(message, `Could not find an ally with that ID in your inventory.`);
         }
@@ -151,7 +205,27 @@ module.exports = {
     },
 
     async unequipAlly(message, profile, itemId) {
-        const ally = profile.slayingAllies.find(a => a.allyId === itemId || a.itemId.slice(-8) === itemId);
+        if (!Array.isArray(profile.activeAllies)) {
+            profile.activeAllies = [];
+        }
+
+        let ally;
+        if (itemId.startsWith('idx:')) {
+            const idx = parseInt(itemId.slice(4), 10);
+            if (isNaN(idx) || idx < 0 || idx >= profile.slayingAllies.length) {
+                return this.sendError(message, 'Invalid index specified for ally.');
+            }
+            ally = profile.slayingAllies[idx];
+        } else if (/^\d+$/.test(itemId)) {
+            const idx = parseInt(itemId, 10);
+            if (idx < 0 || idx >= profile.slayingAllies.length) {
+                return this.sendError(message, 'Invalid index specified for ally.');
+            }
+            ally = profile.slayingAllies[idx];
+        } else {
+            ally = profile.slayingAllies.find(a => a.allyId === itemId || (a.itemId && a.itemId.slice(-8) === itemId));
+        }
+
         if (!ally || !profile.activeAllies.includes(ally.allyId)) {
             return this.sendError(message, `Could not find an active ally with that ID.`);
         }

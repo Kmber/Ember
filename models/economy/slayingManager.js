@@ -478,9 +478,24 @@ class SlayingManager {
             throw new Error('Weapon is already at maximum upgrade level!');
         }
 
-        const upgradeCost = Math.floor(weapon.purchasePrice * 0.3 * (weapon.upgradeLevel + 1));
+        // Validate purchasePrice and upgradeLevel
+        const purchasePrice = Number(weapon.purchasePrice);
+        const upgradeLevel = Number(weapon.upgradeLevel);
+        const walletAmount = Number(profile.wallet);
+
+        if (isNaN(purchasePrice) || purchasePrice <= 0) {
+            throw new Error('Invalid weapon purchase price.');
+        }
+        if (isNaN(upgradeLevel) || upgradeLevel < 0) {
+            throw new Error('Invalid weapon upgrade level.');
+        }
+        if (isNaN(walletAmount) || walletAmount < 0) {
+            throw new Error('Invalid wallet amount.');
+        }
+
+        const upgradeCost = Math.floor(purchasePrice * 0.3 * (upgradeLevel + 1));
         
-        if (profile.wallet < upgradeCost) {
+        if (walletAmount < upgradeCost) {
             throw new Error(`Not enough Embers! Upgrade costs ${upgradeCost.toLocaleString()} Embers`);
         }
 
@@ -490,7 +505,7 @@ class SlayingManager {
         const oldCritChance = weapon.criticalChance;
 
         // Apply upgrades
-        profile.wallet -= upgradeCost;
+        profile.wallet = walletAmount - upgradeCost;
         weapon.upgradeLevel += 1;
         weapon.damage = Math.floor(weapon.damage * 1.1);
         weapon.accuracy = Math.min(100, weapon.accuracy + 2);
@@ -530,9 +545,24 @@ class SlayingManager {
             throw new Error('Mount is already at maximum tier!');
         }
 
-        const upgradeCost = Math.floor(mount.purchasePrice * 0.4 * mount.tier);
+        // Validate purchasePrice, tier, and wallet
+        const purchasePrice = Number(mount.purchasePrice);
+        const tier = Number(mount.tier);
+        const walletAmount = Number(profile.wallet);
+
+        if (isNaN(purchasePrice) || purchasePrice <= 0) {
+            throw new Error('Invalid mount purchase price.');
+        }
+        if (isNaN(tier) || tier < 0) {
+            throw new Error('Invalid mount tier.');
+        }
+        if (isNaN(walletAmount) || walletAmount < 0) {
+            throw new Error('Invalid wallet amount.');
+        }
+
+        const upgradeCost = Math.floor(purchasePrice * 0.4 * tier);
         
-        if (profile.wallet < upgradeCost) {
+        if (walletAmount < upgradeCost) {
             throw new Error(`Not enough Embers! Upgrade costs ${upgradeCost.toLocaleString()} Embers`);
         }
 
@@ -540,7 +570,7 @@ class SlayingManager {
         const oldStaminaCapacity = mount.staminaCapacity;
         const oldHauntedLandsTier = mount.hauntedLandsTier;
 
-        profile.wallet -= upgradeCost;
+        profile.wallet = walletAmount - upgradeCost;
         mount.tier += 1;
         mount.capacity = Math.floor(mount.capacity * 1.2);
         mount.staminaCapacity = Math.floor(mount.staminaCapacity * 1.15);
