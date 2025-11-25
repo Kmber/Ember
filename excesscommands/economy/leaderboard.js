@@ -10,8 +10,8 @@ const ServerConfig = require('../../models/serverConfig/schema');
 const config = require('../../config.json');
 
 module.exports = {
-    name: 'leaderboard',
-    aliases: ['lb', 'top'],
+    name: 'wleaderboard',
+    aliases: ['wlb', 'wtop'],
     description: 'View server leaderboards with v2 components',
     async execute(message, args) {
         try {

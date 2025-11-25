@@ -67,33 +67,58 @@ module.exports = {
             }
             
           
+            // Defensive fallback for NaN / undefined values
+            profile.wallet = (typeof profile.wallet === 'number' && !isNaN(profile.wallet)) ? profile.wallet : 0;
+            profile.dailyStreak = (typeof profile.dailyStreak === 'number' && !isNaN(profile.dailyStreak)) ? profile.dailyStreak : 0;
+            profile.experience = (typeof profile.experience === 'number' && !isNaN(profile.experience)) ? profile.experience : 0;
+
             const baseReward = 500;
-            const streakBonus = Math.min(profile.dailyStreak * 50, 1000); 
+            const streakBonus = Math.min(profile.dailyStreak * 50, 1000);
             const roleBonus = profile.purchasedRoles
                 .filter(r => !r.expiryDate || r.expiryDate > new Date())
                 .reduce((sum, role) => sum + (role.benefits.followerBonus * 100), 0);
-            
-            const totalReward = baseReward + streakBonus + roleBonus;
-            
-         
+
+            let totalReward = baseReward + streakBonus + roleBonus;
+
+            // Validate totalReward is a valid number
+            if (typeof totalReward !== 'number' || isNaN(totalReward)) {
+                totalReward = baseReward; // fallback to baseReward
+            }
+
             profile.wallet += totalReward;
             profile.cooldowns.daily = new Date();
             profile.experience += 5;
 
           
+            // Validate totalReward before pushing transaction to avoid NaN saving
+            const transactionAmount = (typeof totalReward === 'number' && !isNaN(totalReward)) ? totalReward : 0;
+
             profile.transactions.push({
                 type: 'income',
-                amount: totalReward,
+                amount: transactionAmount,
                 description: `Daily reward (${profile.dailyStreak} day streak)`,
                 category: 'daily'
             });
-            
+
             await profile.save();
+
             
             
+    
             const components = [];
 
-        
+            // Defensive data sanitization: check wallet and transactions amount not NaN before continuing feedback to user
+            if (isNaN(profile.wallet)) {
+                console.warn(`Warning: profile.wallet is NaN for user ${message.author.id}, resetting to 0`);
+                profile.wallet = 0;
+            }
+            for (let i = 0; i < profile.transactions.length; i++) {
+                if (typeof profile.transactions[i].amount !== 'number' || isNaN(profile.transactions[i].amount)) {
+                    console.warn(`Warning: profile.transactions[${i}].amount is invalid for user ${message.author.id}, resetting to 0`);
+                    profile.transactions[i].amount = 0;
+                }
+            }
+
             const successContainer = new ContainerBuilder()
                 .setAccentColor(0xFFD700);
 

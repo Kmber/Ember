@@ -190,7 +190,7 @@ module.exports = {
                     const linkEmbed = new EmbedBuilder()
                         .setTitle('Link Added')
                         .setDescription(`Added **${linkName}** (${linkType})`)
-                        .addFields({ name: 'URL', value: linkUrl })
+                        .addFields([{ name: 'URL', value: String(linkUrl) }])
                         .setColor(0x00ff00);
                     
                     await interaction.reply({ embeds: [linkEmbed] });
@@ -231,13 +231,13 @@ module.exports = {
                         .setTitle('FAQ System Status')
                         .addFields(
                             { name: 'Enabled', value: statusConfig.enabled ? '✅ Yes' : '❌ No', inline: true },
-                            { name: 'Channels', value: statusConfig.channels, inline: true },
-                            { name: 'Language', value: statusConfig.context?.language || 'en', inline: true },
-                            { name: 'Context Length', value: `${statusConfig.context?.serverDescription?.length || 0} chars`, inline: true },
-                            { name: 'Links', value: `${statusConfig.links?.length || 0} links`, inline: true },
-                            { name: 'API Keys', value: `${statusConfig.apiConfig?.geminiKeys?.length || 0} keys`, inline: true },
-                            { name: 'Total Queries', value: statusConfig.usage?.totalQueries || 0, inline: true },
-                            { name: 'Daily Queries', value: statusConfig.usage?.dailyQueries || 0, inline: true }
+                            { name: 'Channels', value: String(statusConfig.channels), inline: true },
+                            { name: 'Language', value: String(statusConfig.context?.language || 'en'), inline: true },
+                            { name: 'Context Length', value: `${String(statusConfig.context?.serverDescription?.length || 0)} chars`, inline: true },
+                            { name: 'Links', value: `${String(statusConfig.links?.length || 0)} links`, inline: true },
+                            { name: 'API Keys', value: `${String(statusConfig.apiConfig?.geminiKeys?.length || 0)} keys`, inline: true },
+                            { name: 'Total Queries', value: String(statusConfig.usage?.totalQueries || 0), inline: true },
+                            { name: 'Daily Queries', value: String(statusConfig.usage?.dailyQueries || 0), inline: true }
                         )
                         .setColor(0x0099ff);
                     

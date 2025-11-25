@@ -3,7 +3,7 @@ const FaqConfig = require('../models/faq/faqModel');
 const axios = require('axios');
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 // 🔒 RATE LIMITING SYSTEM WITH MAPS
 const userCooldowns = new Map(); // userId -> { lastUsed, blockedUntil, requestCount, violations }
@@ -902,11 +902,14 @@ function getChannelTypeDisplay(type) {
 
 // 🚀 MAIN FAQ RESPONSE FUNCTION
 async function getFaqResponse(prompt, guildId, channelId, guild, user) {
+    console.log(`[FAQ DEBUG] getFaqResponse called for guild ${guildId}, prompt: "${prompt.substring(0, 50)}..."`);
     try {
         const config = await FaqConfig.findByGuild(guildId);
+        console.log(`[FAQ DEBUG] getFaqResponse config: ${!!config}`);
         if (!config) return null;
 
         const apiKey = config.getNextApiKey();
+        console.log(`[FAQ DEBUG] Next API key: ${!!apiKey ? 'found' : 'none'}`);
         if (!apiKey) {
             console.error('No active API keys available for guild:', guildId);
             return createErrorEmbed("FAQ system temporarily unavailable", "Please contact an administrator.", guild);
@@ -974,23 +977,37 @@ function createErrorEmbed(title, description, guild) {
 
 // 🚨 ENHANCED MESSAGE HANDLER WITH DISCORD TIMEOUT SUPPORT
 async function handleFaqMessage(message) {
-    if (message.author.bot || !message.guild) return false;
+    console.log(`[FAQ DEBUG] Message received: "${message.content.substring(0, 100)}..." from ${message.author.tag} in #${message.channel.name} (${message.channel.id}) guild ${message.guild?.id}`);
+    if (message.author.bot || !message.guild) {
+        console.log(`[FAQ DEBUG] Early exit: bot message or DM`);
+        return false;
+    }
     
+    console.log(`[FAQ DEBUG] Looking up config for guild ${message.guild.id}`);
     const config = await FaqConfig.findByGuild(message.guild.id);
-    if (!config || !config.enabled) return false;
+    console.log(`[FAQ DEBUG] Config: ${!!config}, enabled: ${config?.enabled}`);
+    if (!config || !config.enabled) {
+        console.log(`[FAQ DEBUG] Early exit: no config or disabled`);
+        return false;
+    }
     
+    console.log(`[FAQ DEBUG] Checking if channel ${message.channel.id} is enabled`);
     const isChannelEnabled = await FaqConfig.isChannelEnabled(message.guild.id, message.channel.id);
-    if (!isChannelEnabled) return false;
+    console.log(`[FAQ DEBUG] Channel enabled: ${isChannelEnabled}`);
+    if (!isChannelEnabled) {
+        console.log(`[FAQ DEBUG] Early exit: channel not enabled`);
+        return false;
+    }
     
-    const prefix = config.prefix || '?';
-    if (!message.content.startsWith(prefix)) return false;
-    
-    const question = message.content.slice(prefix.length).trim();
+    // Remove prefix requirement: allow all messages to be FAQ questions
+    const question = message.content.trim();
+    console.log(`[FAQ DEBUG] Question length: ${question.length}, content: "${question}"`);
     if (!question || question.length < 3) {
+        console.log(`[FAQ DEBUG] Early exit: question too short`);
         const helpEmbed = new EmbedBuilder()
             .setColor(EMBED_COLORS.warning)
             .setTitle('❓ FAQ Help')
-            .setDescription(`Please provide a more detailed question.\n\n**Example:** \`${prefix}How do I get started?\``)
+            .setDescription(`Please provide a more detailed question.\n\n**Example:** \`How do I get started?\``)
             .setAuthor({ 
                 name: `${message.guild.name} FAQ Assistant`, 
                 iconURL: message.guild.iconURL({ dynamic: true }) || undefined 
@@ -1002,9 +1019,11 @@ async function handleFaqMessage(message) {
     }
     
     // 🔒 ENHANCED RATE LIMITING CHECK WITH DISCORD TIMEOUT SUPPORT
+    console.log(`[FAQ DEBUG] Checking rate limit for user ${message.author.id}`);
     updateUserInfo(message.author);
     const member = message.member;
     const rateLimitCheck = await checkRateLimit(message.author.id, member, message.guild);
+    console.log(`[FAQ DEBUG] Rate limit: allowed=${rateLimitCheck.allowed}, timeLeft=${rateLimitCheck.timeLeft}, violations=${rateLimitCheck.violations || 0}`);
     
     if (!rateLimitCheck.allowed) {
         const rateLimitEmbed = createRateLimitEmbed(message.author, rateLimitCheck);
@@ -1017,6 +1036,7 @@ async function handleFaqMessage(message) {
         return true;
     }
     
+    console.log(`[FAQ DEBUG] Sending typing indicator and calling getFaqResponse`);
     await message.channel.sendTyping();
     
     try {
@@ -1026,6 +1046,7 @@ async function handleFaqMessage(message) {
             await message.reply({ embeds: [responseEmbed] });
             console.log(`[FAQ SUCCESS] ${message.author.tag} asked: "${question.substring(0, 50)}${question.length > 50 ? '...' : ''}"`);
         } else {
+            console.log(`[FAQ ERROR] No response embed generated for ${message.author.tag}`);
             const noResponseEmbed = createErrorEmbed(
                 "Unable to Generate Response", 
                 "Please try rephrasing your question or contact a moderator for help.", 
